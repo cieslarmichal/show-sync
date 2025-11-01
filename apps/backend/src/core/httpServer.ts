@@ -19,7 +19,7 @@ import { UnauthorizedAccessError } from '../common/errors/unathorizedAccessError
 import { httpStatusCodes } from '../common/http/httpStatusCode.ts';
 import { type LoggerService } from '../common/logger/loggerService.ts';
 import { OpenRouterService } from '../common/openRouter/openRouterService.ts';
-import type { Database } from '../infrastructure/database/database.ts';
+import type { DatabaseClient } from '../infrastructure/database/database.ts';
 import { seriesRoutes } from '../modules/series/routes/seriesRoutes.ts';
 import { userRoutes } from '../modules/user/routes/userRoutes.ts';
 import { watchroomRoutes } from '../modules/watchroom/routes/watchroomRoutes.ts';
@@ -30,10 +30,10 @@ export class HttpServer {
   public readonly fastifyServer: FastifyInstance;
   private readonly loggerService: LoggerService;
   private readonly config: Config;
-  private readonly database: Database;
+  private readonly database: DatabaseClient;
   private isShuttingDown = false;
 
-  public constructor(config: Config, loggerService: LoggerService, database: Database) {
+  public constructor(config: Config, loggerService: LoggerService, database: DatabaseClient) {
     this.config = config;
     this.loggerService = loggerService;
     this.database = database;

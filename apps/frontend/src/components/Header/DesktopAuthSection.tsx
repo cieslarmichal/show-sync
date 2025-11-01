@@ -38,7 +38,7 @@ export function DesktopAuthSection() {
         onClick={() => navigate('/login')}
         className="text-sm text-muted-foreground whitespace-nowrap h-10 px-3"
       >
-        Sign in
+        Sign In
       </Button>
       <Button
         size="lg"

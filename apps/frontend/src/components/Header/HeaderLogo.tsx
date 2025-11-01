@@ -6,7 +6,7 @@ export function HeaderLogo() {
   const { userData } = useContext(AuthContext);
 
   return (
-    <div className="flex-shrink-0 flex items-center">
+    <div className="shrink-0 flex items-center">
       <Link
         to={userData ? '/dashboard' : '/'}
         className="flex items-center gap-2"

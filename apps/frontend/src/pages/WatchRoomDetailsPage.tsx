@@ -1,7 +1,21 @@
 import { useEffect, useState, useContext } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
-import { Copy, Users, ArrowLeft, UserMinus, LogOut, Sparkles, TvMinimalPlay, Trash2, Calendar, X } from 'lucide-react';
+import {
+  Copy,
+  Users,
+  ArrowLeft,
+  UserMinus,
+  LogOut,
+  Sparkles,
+  TvMinimalPlay,
+  Trash2,
+  Calendar,
+  EyeOff,
+  ThumbsUp,
+  Star,
+  ExternalLink,
+} from 'lucide-react';
 
 import { AuthContext } from '../context/AuthContext.tsx';
 import {
@@ -12,10 +26,13 @@ import {
   generateRecommendations,
   checkRecommendationStatus,
   getRecommendations,
-  deleteRecommendation,
 } from '../api/queries/watchroom.ts';
 import { getSeriesDetails } from '../api/queries/getSeriesDetails.ts';
 import { getSeriesExternalIds } from '../api/queries/getSeriesExternalIds.ts';
+import { addIgnoredSeries } from '../api/queries/addIgnoredSeries.ts';
+import { getMyIgnoredSeries } from '../api/queries/getMyIgnoredSeries.ts';
+import { addFavoriteSeries } from '../api/queries/addFavoriteSeries.ts';
+import { getMyFavoriteSeries } from '../api/queries/getMyFavoriteSeries.ts';
 import type { WatchroomDetails } from '../api/types/watchroom.ts';
 import type { Recommendation } from '../api/types/recommendation.ts';
 import type { SeriesDetails } from '../api/types/series.ts';
@@ -43,6 +60,10 @@ export default function WatchRoomDetailsPage() {
   const [recommendations, setRecommendations] = useState<RecommendationWithDetails[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isLoadingRecommendations, setIsLoadingRecommendations] = useState(false);
+  const [ignoredSeriesIds, setIgnoredSeriesIds] = useState<Set<number>>(new Set());
+  const [profileSeriesIds, setProfileSeriesIds] = useState<Set<number>>(new Set());
+  const [fadingOutCards, setFadingOutCards] = useState<Set<string>>(new Set());
+  const [imageLoadingStates, setImageLoadingStates] = useState<Map<number, boolean>>(new Map());
   const [confirmRemoveDialog, setConfirmRemoveDialog] = useState<{
     open: boolean;
     participantId?: string;
@@ -102,6 +123,34 @@ export default function WatchRoomDetailsPage() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [watchroomId]);
+
+  useEffect(() => {
+    const loadIgnoredSeries = async () => {
+      try {
+        const response = await getMyIgnoredSeries();
+        const ignoredIds = new Set(response.data.map((item) => item.seriesTmdbId));
+        setIgnoredSeriesIds(ignoredIds);
+      } catch (error) {
+        console.error('Failed to load ignored series:', error);
+      }
+    };
+
+    loadIgnoredSeries();
+  }, []);
+
+  useEffect(() => {
+    const loadFavoriteSeries = async () => {
+      try {
+        const response = await getMyFavoriteSeries();
+        const favoriteIds = new Set(response.data.map((item) => item.seriesTmdbId));
+        setProfileSeriesIds(favoriteIds);
+      } catch (error) {
+        console.error('Failed to load favorite series:', error);
+      }
+    };
+
+    loadFavoriteSeries();
+  }, []);
 
   const handleCopyLink = () => {
     if (room) {
@@ -224,17 +273,65 @@ export default function WatchRoomDetailsPage() {
     }
   };
 
-  const handleDeleteRecommendation = async (recommendationId: string) => {
-    if (!watchroomId) {
-      return;
-    }
-
+  const handleIgnoreSeries = async (seriesTmdbId: number, seriesName: string, recommendationId: string) => {
     try {
-      await deleteRecommendation(watchroomId, recommendationId);
-      setRecommendations((prev) => prev.filter((rec) => rec.id !== recommendationId));
-      toast.success('Recommendation removed');
-    } catch {
-      toast.error('Failed to remove recommendation');
+      // Start fade-out animation
+      setFadingOutCards((prev) => new Set(prev).add(recommendationId));
+
+      await addIgnoredSeries(seriesTmdbId);
+      setIgnoredSeriesIds((prev) => new Set(prev).add(seriesTmdbId));
+      toast.success(`"${seriesName}" added to your ignored list`, {
+        description: "You won't see this series in future recommendations.",
+      });
+
+      // Clear fade-out after animation (card will be hidden via filter)
+      setTimeout(() => {
+        setFadingOutCards((prev) => {
+          const newSet = new Set(prev);
+          newSet.delete(recommendationId);
+          return newSet;
+        });
+      }, 300);
+    } catch (error) {
+      console.error('Failed to ignore series:', error);
+      toast.error('Failed to ignore series');
+      // Remove from fading set if error occurs
+      setFadingOutCards((prev) => {
+        const newSet = new Set(prev);
+        newSet.delete(recommendationId);
+        return newSet;
+      });
+    }
+  };
+
+  const handleLikeSeries = async (seriesTmdbId: number, seriesName: string, recommendationId: string) => {
+    try {
+      // Start fade-out animation
+      setFadingOutCards((prev) => new Set(prev).add(recommendationId));
+
+      await addFavoriteSeries(seriesTmdbId);
+      setProfileSeriesIds((prev) => new Set(prev).add(seriesTmdbId));
+      toast.success(`"${seriesName}" added to your favorites!`, {
+        description: "You won't see this series in future recommendations.",
+      });
+
+      // Clear fade-out after animation (card will be hidden via filter)
+      setTimeout(() => {
+        setFadingOutCards((prev) => {
+          const newSet = new Set(prev);
+          newSet.delete(recommendationId);
+          return newSet;
+        });
+      }, 300);
+    } catch (error) {
+      console.error('Failed to add to favorites:', error);
+      toast.error('Failed to add to favorites');
+      // Remove from fading set if error occurs
+      setFadingOutCards((prev) => {
+        const newSet = new Set(prev);
+        newSet.delete(recommendationId);
+        return newSet;
+      });
     }
   };
 
@@ -289,7 +386,7 @@ export default function WatchRoomDetailsPage() {
   const isOwner = userData?.id === room.ownerId;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5">
+    <div className="min-h-screen bg-linear-to-br from-background via-background to-primary/5">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10">
         <div className="space-y-8">
           {/* Back Button */}
@@ -305,16 +402,16 @@ export default function WatchRoomDetailsPage() {
 
           {/* Room Header Card */}
           <Card className="border shadow-lg hover:shadow-xl transition-shadow duration-300 overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-transparent pointer-events-none" />
+            <div className="absolute inset-0 bg-linear-to-br from-primary/5 via-transparent to-transparent pointer-events-none" />
             <CardHeader className="relative pb-6 space-y-4">
               <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
                 <div className="flex-1 min-w-0 space-y-3">
                   <div className="flex items-center flex-wrap gap-3">
-                    <CardTitle className="text-3xl sm:text-4xl font-bold bg-gradient-to-br from-foreground to-foreground/70 bg-clip-text">
+                    <CardTitle className="text-3xl sm:text-4xl font-bold bg-linear-to-br from-foreground to-foreground/70 bg-clip-text">
                       {room.name}
                     </CardTitle>
                     {isOwner && (
-                      <Badge className="bg-gradient-to-r from-primary to-primary/80 text-primary-foreground border-0 shadow-sm">
+                      <Badge className="bg-linear-to-r from-primary to-primary/80 text-primary-foreground border-0 shadow-sm">
                         <Users className="w-3 h-3 mr-1" />
                         Owner
                       </Badge>
@@ -370,7 +467,7 @@ export default function WatchRoomDetailsPage() {
           <Card className="border shadow-lg hover:shadow-xl transition-shadow duration-300">
             <CardHeader className="pb-6">
               <div className="flex items-center gap-3">
-                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary to-primary/70 flex items-center justify-center shadow-md">
+                <div className="w-12 h-12 rounded-xl bg-linear-to-br from-primary to-primary/70 flex items-center justify-center shadow-md">
                   <Users className="w-6 h-6 text-primary-foreground" />
                 </div>
                 <div>
@@ -390,13 +487,13 @@ export default function WatchRoomDetailsPage() {
                   >
                     <div className="flex items-center gap-4">
                       <div className="relative">
-                        <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary via-primary to-primary/70 flex items-center justify-center shadow-md ring-2 ring-background group-hover:ring-primary/20 transition-all">
+                        <div className="w-12 h-12 rounded-full bg-linear-to-br from-primary via-primary to-primary/70 flex items-center justify-center shadow-md ring-2 ring-background group-hover:ring-primary/20 transition-all">
                           <span className="text-lg font-bold text-primary-foreground">
                             {participant.name.charAt(0).toUpperCase()}
                           </span>
                         </div>
                         {participant.id === room.ownerId && (
-                          <div className="absolute -bottom-1 -right-1 w-5 h-5 rounded-full bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center shadow-sm ring-2 ring-background">
+                          <div className="absolute -bottom-1 -right-1 w-5 h-5 rounded-full bg-linear-to-br from-primary to-primary/80 flex items-center justify-center shadow-sm ring-2 ring-background">
                             <Users className="w-3 h-3 text-primary-foreground" />
                           </div>
                         )}
@@ -450,18 +547,23 @@ export default function WatchRoomDetailsPage() {
 
           {/* AI Recommendations Card */}
           <Card className="border shadow-lg hover:shadow-xl transition-shadow duration-300 overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-transparent pointer-events-none" />
+            <div className="absolute inset-0 bg-linear-to-br from-primary/5 via-transparent to-transparent pointer-events-none" />
             <CardHeader className="relative pb-6">
               <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
                 <div className="space-y-3">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-primary to-primary/70 flex items-center justify-center shadow-md">
+                    <div className="w-10 h-10 rounded-lg bg-linear-to-br from-primary to-primary/70 flex items-center justify-center shadow-md">
                       <Sparkles className="w-5 h-5 text-primary-foreground" />
                     </div>
                     <CardTitle className="text-2xl">AI Recommendations</CardTitle>
                   </div>
                   <CardDescription className="text-base">
-                    Get personalized series recommendations based on everyone's preferences
+                    Get personalized series recommendations based on everyone's preferences.
+                    {isOwner && (
+                      <span className="block text-xs mt-1.5 text-muted-foreground/80">
+                        Each generation creates fresh recommendations based on current preferences.
+                      </span>
+                    )}
                   </CardDescription>
                 </div>
                 {isOwner && (
@@ -496,7 +598,7 @@ export default function WatchRoomDetailsPage() {
                       className="rounded-xl border bg-card p-5"
                     >
                       <div className="flex flex-col sm:flex-row gap-4">
-                        <Skeleton className="h-36 w-full sm:w-24 flex-shrink-0 rounded-lg" />
+                        <Skeleton className="h-36 w-full sm:w-24 shrink-0 rounded-lg" />
                         <div className="flex-1 space-y-3">
                           <Skeleton className="h-6 w-3/4" />
                           <div className="flex gap-2">
@@ -514,8 +616,8 @@ export default function WatchRoomDetailsPage() {
                 </div>
               ) : recommendations.length === 0 ? (
                 <div className="text-center py-16 px-6">
-                  <div className="w-24 h-24 rounded-2xl bg-gradient-to-br from-primary/20 via-primary/10 to-primary/5 mx-auto mb-8 flex items-center justify-center shadow-inner">
-                    <TvMinimalPlay className="w-12 h-12 text-primary" />
+                  <div className="w-24 h-24 rounded-2xl bg-linear-to-br from-primary/20 via-primary/10 to-primary/5 mx-auto mb-8 flex items-center justify-center shadow-inner">
+                    <TvMinimalPlay className="w-12 h-12 text-primary animate-pulse" />
                   </div>
                   <h3 className="text-xl font-bold text-foreground mb-3">No recommendations yet</h3>
                   <p className="text-muted-foreground max-w-lg mx-auto leading-relaxed">
@@ -541,93 +643,227 @@ export default function WatchRoomDetailsPage() {
                 </div>
               ) : (
                 <div className="space-y-4">
-                  <p className="text-sm text-muted-foreground px-1">
-                    {recommendations.length} {recommendations.length === 1 ? 'recommendation' : 'recommendations'}{' '}
-                    generated
-                  </p>
-                  <div className="grid gap-6">
-                    {recommendations.map((recommendation) => (
-                      <div
-                        key={recommendation.id}
-                        className="group relative rounded-xl border bg-card hover:border-primary/40 hover:shadow-lg transition-all duration-200 overflow-hidden"
-                      >
-                        <div className="flex flex-col sm:flex-row gap-6 p-6">
-                          {/* Series Poster */}
-                          <Button
-                            variant="ghost"
-                            onMouseDown={(e) => handleOpenImdb(recommendation.seriesTmdbId, e)}
-                            className="flex-shrink-0 w-full sm:w-32 h-auto p-0 hover:bg-transparent"
+                  {/* Instructions Callout */}
+                  <div className="rounded-lg border border-primary/20 bg-primary/5 px-4 py-3">
+                    <p className="text-sm text-muted-foreground flex items-center gap-2 flex-wrap">
+                      <ThumbsUp className="w-4 h-4 text-primary" />
+                      <span>Like the shows you enjoy</span>
+                      <span className="text-muted-foreground/50">•</span>
+                      <EyeOff className="w-4 h-4 text-muted-foreground" />
+                      <span>Mark as Not Interested to exclude them from AI recommendations</span>
+                    </p>
+                  </div>
+
+                  {/* Recommendations Count Badge */}
+                  <div className="flex items-center gap-2">
+                    <Badge
+                      variant="secondary"
+                      className="text-sm font-semibold"
+                    >
+                      {
+                        recommendations.filter(
+                          (rec) => !ignoredSeriesIds.has(rec.seriesTmdbId) && !profileSeriesIds.has(rec.seriesTmdbId),
+                        ).length
+                      }{' '}
+                      {recommendations.filter(
+                        (rec) => !ignoredSeriesIds.has(rec.seriesTmdbId) && !profileSeriesIds.has(rec.seriesTmdbId),
+                      ).length === 1
+                        ? 'recommendation'
+                        : 'recommendations'}
+                    </Badge>
+                    <span className="text-xs text-muted-foreground">
+                      showing{' '}
+                      {
+                        recommendations.filter(
+                          (rec) => !ignoredSeriesIds.has(rec.seriesTmdbId) && !profileSeriesIds.has(rec.seriesTmdbId),
+                        ).length
+                      }{' '}
+                      of {recommendations.length} total
+                    </span>
+                  </div>
+
+                  <div className="grid gap-8">
+                    {recommendations
+                      .filter(
+                        (rec) => !ignoredSeriesIds.has(rec.seriesTmdbId) && !profileSeriesIds.has(rec.seriesTmdbId),
+                      )
+                      .map((recommendation) => {
+                        const isFadingOut = fadingOutCards.has(recommendation.id);
+                        const isImageLoading = imageLoadingStates.get(recommendation.seriesTmdbId) ?? true;
+
+                        return (
+                          <div
+                            key={recommendation.id}
+                            className={`group relative rounded-xl border bg-card hover:border-primary/40 hover:shadow-xl transition-all duration-300 overflow-hidden ${
+                              isFadingOut ? 'opacity-0 scale-95' : 'opacity-100 scale-100'
+                            }`}
                           >
-                            {recommendation.seriesDetails?.posterPath ? (
-                              <img
-                                src={`https://image.tmdb.org/t/p/w300${recommendation.seriesDetails.posterPath}`}
-                                alt={`${recommendation.seriesDetails.name} poster`}
-                                className="h-48 w-full sm:w-32 object-cover rounded-lg shadow-md hover:shadow-xl transition-shadow"
-                              />
-                            ) : (
-                              <div className="h-48 w-full sm:w-32 rounded-lg bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center">
-                                <TvMinimalPlay className="w-8 h-8 text-primary" />
-                              </div>
-                            )}
-                          </Button>
-
-                          {/* Series Details */}
-                          <div className="flex-1 min-w-0 space-y-4">
-                            <div className="space-y-2">
-                              <Button
-                                variant="ghost"
+                            <div className="flex flex-col sm:flex-row gap-8 p-6">
+                              {/* Series Poster */}
+                              <button
                                 onMouseDown={(e) => handleOpenImdb(recommendation.seriesTmdbId, e)}
-                                className="h-auto p-0 hover:bg-transparent justify-start"
+                                className="relative shrink-0 w-full sm:w-40 h-auto p-0 rounded-xl overflow-hidden group/poster focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 cursor-pointer"
                               >
-                                <h4 className="text-xl font-semibold text-foreground group-hover:text-primary transition-colors">
-                                  {recommendation.seriesDetails?.name || 'Loading...'}
-                                </h4>
-                              </Button>
-                              {recommendation.seriesDetails && (
-                                <div className="flex items-center gap-2">
-                                  {recommendation.seriesDetails.firstAirDate && (
-                                    <Badge
-                                      variant="secondary"
-                                      className="text-xs"
-                                    >
-                                      {new Date(recommendation.seriesDetails.firstAirDate).getFullYear()}
-                                    </Badge>
-                                  )}
-                                  <span className="text-xs text-muted-foreground">
-                                    ★ {recommendation.seriesDetails.voteAverage.toFixed(1)}
-                                  </span>
-                                </div>
-                              )}
-                            </div>
+                                {isImageLoading && <Skeleton className="absolute inset-0 h-60 w-full sm:w-40" />}
+                                {recommendation.seriesDetails?.posterPath ? (
+                                  <img
+                                    src={`https://image.tmdb.org/t/p/w300${recommendation.seriesDetails.posterPath}`}
+                                    alt={`${recommendation.seriesDetails.name} poster`}
+                                    className="h-60 w-full sm:w-40 object-cover rounded-xl shadow-md group-hover/poster:shadow-xl transition-shadow"
+                                    onLoad={() => {
+                                      setImageLoadingStates((prev) => {
+                                        const newMap = new Map(prev);
+                                        newMap.set(recommendation.seriesTmdbId, false);
+                                        return newMap;
+                                      });
+                                    }}
+                                    style={{ display: isImageLoading ? 'none' : 'block' }}
+                                  />
+                                ) : (
+                                  <div className="h-60 w-full sm:w-40 rounded-xl bg-linear-to-br from-primary/20 to-primary/10 flex items-center justify-center">
+                                    <TvMinimalPlay className="w-8 h-8 text-primary" />
+                                  </div>
+                                )}
+                              </button>
 
-                            {/* AI Justification */}
-                            <div className="space-y-2">
-                              <p className="text-xs font-semibold text-primary flex items-center gap-1">
-                                <Sparkles className="w-3 h-3" />
-                                Why we recommend this:
-                              </p>
-                              <p className="text-sm text-muted-foreground leading-relaxed">
-                                {recommendation.justification}
-                              </p>
+                              {/* Series Details */}
+                              <div className="flex-1 min-w-0 space-y-4">
+                                <div className="space-y-3">
+                                  <button
+                                    onMouseDown={(e) => handleOpenImdb(recommendation.seriesTmdbId, e)}
+                                    className="group/title h-auto p-0 hover:bg-transparent justify-start text-left focus:outline-none focus:underline cursor-pointer"
+                                  >
+                                    <h4 className="text-xl font-semibold text-foreground group-hover:text-primary transition-colors flex items-center gap-2">
+                                      {recommendation.seriesDetails?.name || 'Loading...'}
+                                      <ExternalLink className="w-4 h-4 opacity-0 group-hover/title:opacity-100 transition-opacity" />
+                                    </h4>
+                                  </button>
+                                  {recommendation.seriesDetails && (
+                                    <div className="space-y-2">
+                                      {/* Primary metadata: Year + Rating */}
+                                      <div className="flex flex-wrap items-center gap-2">
+                                        {recommendation.seriesDetails.firstAirDate && (
+                                          <Badge
+                                            variant="secondary"
+                                            className="text-xs"
+                                          >
+                                            {new Date(recommendation.seriesDetails.firstAirDate).getFullYear()}
+                                          </Badge>
+                                        )}
+                                        <div className="flex items-center gap-1 text-foreground">
+                                          <Star className="w-4 h-4 fill-current" />
+                                          <span className="text-sm font-semibold">
+                                            {recommendation.seriesDetails.voteAverage.toFixed(1)}
+                                          </span>
+                                          <span className="text-xs text-muted-foreground">/10</span>
+                                        </div>
+                                      </div>
+                                      {/* Secondary metadata: Seasons + Status */}
+                                      <div className="flex flex-wrap items-center gap-2">
+                                        {recommendation.seriesDetails.numberOfSeasons > 0 && (
+                                          <Badge
+                                            variant="outline"
+                                            className="text-xs"
+                                          >
+                                            {recommendation.seriesDetails.numberOfSeasons}{' '}
+                                            {recommendation.seriesDetails.numberOfSeasons === 1 ? 'Season' : 'Seasons'}
+                                          </Badge>
+                                        )}
+                                        {recommendation.seriesDetails.status && (
+                                          <Badge
+                                            variant="outline"
+                                            className={`text-xs ${
+                                              recommendation.seriesDetails.status === 'Ended'
+                                                ? 'border-muted-foreground/30 text-muted-foreground'
+                                                : recommendation.seriesDetails.status === 'Canceled' ||
+                                                    recommendation.seriesDetails.status === 'Cancelled'
+                                                  ? 'border-red-500/30 text-red-600 dark:text-red-400'
+                                                  : 'border-green-500/30 text-green-600 dark:text-green-400'
+                                            }`}
+                                          >
+                                            {recommendation.seriesDetails.status}
+                                          </Badge>
+                                        )}
+                                      </div>
+                                    </div>
+                                  )}
+                                  {recommendation.seriesDetails?.genres &&
+                                    recommendation.seriesDetails.genres.length > 0 && (
+                                      <div className="flex flex-wrap gap-2">
+                                        {recommendation.seriesDetails.genres.slice(0, 4).map((genre) => (
+                                          <Badge
+                                            key={genre}
+                                            variant="secondary"
+                                            className="text-xs font-normal bg-muted/50 text-muted-foreground border-0 hover:bg-muted transition-colors"
+                                          >
+                                            {genre}
+                                          </Badge>
+                                        ))}
+                                      </div>
+                                    )}
+                                </div>
+
+                                {/* AI Justification */}
+                                <div className="rounded-lg bg-primary/5 border-l-4 border-primary p-4 space-y-2 shadow-sm">
+                                  <p className="text-xs font-semibold text-primary flex items-center gap-1.5">
+                                    <Sparkles className="w-3.5 h-3.5" />
+                                    Why we recommend this:
+                                  </p>
+                                  <p className="text-sm text-foreground/80 leading-relaxed">
+                                    {recommendation.justification}
+                                  </p>
+                                </div>
+
+                                {/* Action Buttons */}
+                                <div className="flex gap-2">
+                                  <Button
+                                    variant={
+                                      profileSeriesIds.has(recommendation.seriesTmdbId) ? 'secondary' : 'default'
+                                    }
+                                    size="sm"
+                                    onClick={() =>
+                                      handleLikeSeries(
+                                        recommendation.seriesTmdbId,
+                                        recommendation.seriesDetails?.name || 'this series',
+                                        recommendation.id,
+                                      )
+                                    }
+                                    disabled={
+                                      profileSeriesIds.has(recommendation.seriesTmdbId) ||
+                                      ignoredSeriesIds.has(recommendation.seriesTmdbId) ||
+                                      isFadingOut
+                                    }
+                                    className="shadow-sm hover:shadow-md hover:scale-105 active:scale-95 transition-all"
+                                  >
+                                    <ThumbsUp className="w-4 h-4 mr-2" />
+                                    {profileSeriesIds.has(recommendation.seriesTmdbId) ? 'Liked' : 'Like'}
+                                  </Button>
+                                  <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() =>
+                                      handleIgnoreSeries(
+                                        recommendation.seriesTmdbId,
+                                        recommendation.seriesDetails?.name || 'this series',
+                                        recommendation.id,
+                                      )
+                                    }
+                                    disabled={
+                                      ignoredSeriesIds.has(recommendation.seriesTmdbId) ||
+                                      profileSeriesIds.has(recommendation.seriesTmdbId) ||
+                                      isFadingOut
+                                    }
+                                    className="hover:bg-destructive/10 hover:text-destructive hover:border-destructive/50 hover:scale-105 active:scale-95 transition-all"
+                                  >
+                                    <EyeOff className="w-4 h-4 mr-2" />
+                                    {ignoredSeriesIds.has(recommendation.seriesTmdbId) ? 'Ignored' : 'Not Interested'}
+                                  </Button>
+                                </div>
+                              </div>
                             </div>
                           </div>
-
-                          {/* Delete Button */}
-                          {isOwner && (
-                            <div className="flex sm:flex-col gap-2 sm:gap-0 justify-end sm:justify-start">
-                              <Button
-                                variant="ghost"
-                                size="icon"
-                                onClick={() => handleDeleteRecommendation(recommendation.id)}
-                                className="h-8 w-8 hover:bg-destructive/10 hover:text-destructive rounded-lg opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0"
-                              >
-                                <X className="w-4 h-4" />
-                              </Button>
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    ))}
+                        );
+                      })}
                   </div>
                 </div>
               )}

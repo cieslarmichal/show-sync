@@ -7,7 +7,7 @@ export interface DatabaseConfig {
   readonly url: string;
 }
 
-export class Database {
+export class DatabaseClient {
   private pool: Pool;
   public readonly db: ReturnType<typeof drizzle>;
 

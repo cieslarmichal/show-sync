@@ -1,7 +1,7 @@
 import { eq, desc, and, inArray, or, count, type SQL } from 'drizzle-orm';
 
 import { UuidService } from '../../../../common/uuid/uuidService.ts';
-import type { Database } from '../../../../infrastructure/database/database.ts';
+import type { DatabaseClient } from '../../../../infrastructure/database/database.ts';
 import { users, watchroomParticipants, watchrooms } from '../../../../infrastructure/database/schema.ts';
 import type {
   CreateWatchroomData,
@@ -22,9 +22,9 @@ interface WatchroomRow {
 }
 
 export class WatchroomRepositoryImpl implements WatchroomRepository {
-  private readonly database: Database;
+  private readonly database: DatabaseClient;
 
-  public constructor(database: Database) {
+  public constructor(database: DatabaseClient) {
     this.database = database;
   }
 

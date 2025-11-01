@@ -70,9 +70,22 @@ const recommendationsResponseFormat: ResponseFormat = {
   },
 } as const;
 
-const systemMessage = `You are an expert TV series recommender AI.
-Your task is to suggest TV series that a group of people would enjoy watching together based on their favorite series. Consider genres, themes, and styles that align with the group's collective tastes.
- Provide clear and concise justifications for each recommendation.`;
+const systemMessage = `You are an expert TV series recommender AI specializing in group recommendations.
+
+Your expertise includes:
+- Deep knowledge of TV series across all genres, eras, and platforms
+- Understanding of thematic connections, narrative styles, and tonal similarities between shows
+- Ability to identify common ground among diverse viewer preferences
+- Recognition of emerging trends and hidden gems that match specific tastes
+
+Core principles:
+1. NEVER recommend series that are already in the user's favorites or ignored lists
+2. Prioritize shows that would appeal to the entire group, not just individual members
+3. Consider both obvious and subtle connections (themes, mood, pacing, character types)
+4. Balance popular acclaimed series with lesser-known quality recommendations
+5. Ensure all recommended titles exist and use their exact TMDB names
+
+Your recommendations should be thoughtful, well-justified, and demonstrate clear understanding of why each series would resonate with the specific group based on their collective preferences.`;
 
 export class GenerateRecommendationsAction {
   private readonly watchroomRepository: WatchroomRepository;
@@ -104,10 +117,9 @@ export class GenerateRecommendationsAction {
   public async execute(payload: GenerateRecommendationsActionPayload): Promise<GenerateRecommendationsActionResult> {
     const { watchroomId, userId, requestId } = payload;
 
-    this.loggerService.debug({
-      message: 'Generating recommendations for watchroom...',
+    this.loggerService.info({
+      message: 'Generating recommendations for watchroom',
       watchroomId,
-      userId,
       requestId,
     });
 
@@ -126,70 +138,26 @@ export class GenerateRecommendationsAction {
       });
     }
 
-    // Fetch all participants' favorite series
     const participantIds = [watchroom.ownerId, ...watchroom.participants.map((p) => p.id)];
 
-    this.loggerService.debug({
-      message: 'Fetching favorite series for all participants',
-      watchroomId,
-      participantCount: participantIds.length,
-    });
+    const participantFavorites = await this.fetchParticipantFavorites(participantIds);
+    const participantIgnored = await this.fetchParticipantIgnored(participantIds);
 
-    const participantFavorites = await Promise.all(
-      participantIds.map(async (participantId) => {
-        const favorites = await this.favoriteSeriesRepository.findMany(participantId, 1, 100);
-        return {
-          participantId,
-          seriesTmdbIds: favorites.map((f) => f.seriesTmdbId),
-        };
-      }),
-    );
-
-    // Fetch all participants' ignored series
-    this.loggerService.debug({
-      message: 'Fetching ignored series for all participants',
-      watchroomId,
-      participantCount: participantIds.length,
-    });
-
-    const participantIgnored = await Promise.all(
-      participantIds.map(async (participantId) => {
-        const ignored = await this.ignoredSeriesRepository.findMany(participantId, 1, 100);
-        return {
-          participantId,
-          seriesTmdbIds: ignored.map((i) => i.seriesTmdbId),
-        };
-      }),
-    );
-
-    // Aggregate all ignored series IDs (unique)
     const allIgnoredSeriesIds = [...new Set(participantIgnored.flatMap((p) => p.seriesTmdbIds))];
-
-    this.loggerService.debug({
-      message: 'Aggregated ignored series',
-      watchroomId,
-      totalIgnored: allIgnoredSeriesIds.length,
-    });
-
-    // Fetch series details from TMDB to provide context to the LLM
     const allSeriesIds = [...new Set(participantFavorites.flatMap((p) => p.seriesTmdbIds))];
-
-    this.loggerService.debug({
-      message: 'Fetching series details from TMDB',
-      watchroomId,
-      seriesCount: allSeriesIds.length,
-    });
 
     const seriesInfoMap = await this.fetchSeriesInfo(allSeriesIds);
 
-    this.loggerService.debug({
-      message: 'Series details fetched successfully',
-      watchroomId,
-      fetchedCount: seriesInfoMap.size,
-      failedCount: allSeriesIds.length - seriesInfoMap.size,
-    });
+    if (allSeriesIds.length - seriesInfoMap.size > 0) {
+      this.loggerService.warn({
+        message: 'Some series details could not be fetched from TMDB',
+        watchroomId,
+        requestId,
+        failedCount: allSeriesIds.length - seriesInfoMap.size,
+        totalSeries: allSeriesIds.length,
+      });
+    }
 
-    // Generate AI recommendations with enriched series information
     const aiRecommendations = await this.generateAIRecommendations(
       participantFavorites,
       allIgnoredSeriesIds,
@@ -198,27 +166,28 @@ export class GenerateRecommendationsAction {
       watchroom.description,
     );
 
-    this.loggerService.info({
-      message: 'AI recommendations generated',
-      watchroomId,
-      recommendationCount: aiRecommendations.length,
-    });
+    const {
+      resolved: resolvedRecommendations,
+      failed: failedTitles,
+      skipped: skippedTitles,
+    } = await this.resolveSeriesNames(aiRecommendations, allSeriesIds, allIgnoredSeriesIds);
 
-    // Resolve series names to TMDB IDs by searching TMDB
-    const resolvedRecommendations = await this.resolveSeriesNames(aiRecommendations, allSeriesIds, allIgnoredSeriesIds);
+    if (failedTitles.length > 0 || skippedTitles.length > 0) {
+      this.loggerService.warn({
+        message: 'Some AI recommendations were skipped or failed to be resolved to TMDB series',
+        watchroomId,
+        requestId,
+        aiRecommendationCount: aiRecommendations.length,
+        resolvedCount: resolvedRecommendations.length,
+        failedCount: failedTitles.length,
+        failedTitles,
+        skippedCount: skippedTitles.length,
+        skippedTitles,
+      });
+    }
 
-    this.loggerService.info({
-      message: 'Series names resolved to TMDB IDs',
-      watchroomId,
-      originalCount: aiRecommendations.length,
-      resolvedCount: resolvedRecommendations.length,
-      failedCount: aiRecommendations.length - resolvedRecommendations.length,
-    });
-
-    // Delete old recommendations
     await this.recommendationRepository.deleteAllByWatchroomId(watchroomId);
 
-    // Create new recommendations
     const recommendations = await Promise.all(
       resolvedRecommendations.map((rec) =>
         this.recommendationRepository.create({
@@ -231,19 +200,46 @@ export class GenerateRecommendationsAction {
     );
 
     this.loggerService.info({
-      message: 'Recommendations saved successfully',
+      message: 'Recommendations generated and saved successfully',
       watchroomId,
       requestId,
-      count: recommendations.length,
+      resolvedCount: recommendations.length,
     });
 
     return { requestId };
   }
 
+  private async fetchParticipantFavorites(
+    participantIds: string[],
+  ): Promise<Array<{ participantId: string; seriesTmdbIds: number[] }>> {
+    return Promise.all(
+      participantIds.map(async (participantId) => {
+        const favorites = await this.favoriteSeriesRepository.findMany(participantId, 1, 100);
+        return {
+          participantId,
+          seriesTmdbIds: favorites.map((f) => f.seriesTmdbId),
+        };
+      }),
+    );
+  }
+
+  private async fetchParticipantIgnored(
+    participantIds: string[],
+  ): Promise<Array<{ participantId: string; seriesTmdbIds: number[] }>> {
+    return Promise.all(
+      participantIds.map(async (participantId) => {
+        const ignored = await this.ignoredSeriesRepository.findMany(participantId, 1, 100);
+        return {
+          participantId,
+          seriesTmdbIds: ignored.map((i) => i.seriesTmdbId),
+        };
+      }),
+    );
+  }
+
   private async fetchSeriesInfo(seriesIds: number[]): Promise<Map<number, SeriesInfo>> {
     const seriesInfoMap = new Map<number, SeriesInfo>();
 
-    // Fetch details in parallel with error handling per series
     await Promise.allSettled(
       seriesIds.map(async (tmdbId) => {
         try {
@@ -257,12 +253,7 @@ export class GenerateRecommendationsAction {
             firstAirDate: details.firstAirDate,
           });
         } catch (error) {
-          // Log but don't fail - some series might not be found
-          this.loggerService.warn({
-            message: 'Failed to fetch series details from TMDB',
-            tmdbId,
-            error: error instanceof Error ? error.message : String(error),
-          });
+          // Skip - failures are reported in aggregate
         }
       }),
     );
@@ -274,78 +265,65 @@ export class GenerateRecommendationsAction {
     recommendations: AIRecommendation[],
     favoritesSeriesIds: number[],
     ignoredSeriesIds: number[],
-  ): Promise<Array<{ seriesTmdbId: number; justification: string }>> {
-    const resolvedRecommendations: Array<{ seriesTmdbId: number; justification: string }> = [];
-
-    for (const recommendation of recommendations) {
-      try {
-        // Search TMDB for the series name
-        this.loggerService.debug({
-          message: 'Searching TMDB for series',
-          seriesName: recommendation.seriesName,
-        });
-
+  ): Promise<{
+    resolved: Array<{ seriesTmdbId: number; justification: string }>;
+    failed: string[];
+    skipped: string[];
+  }> {
+    const results = await Promise.allSettled(
+      recommendations.map(async (recommendation) => {
         const searchResult = await this.tmdbService.searchSeries({
           query: recommendation.seriesName,
           page: 1,
         });
 
         if (searchResult.results.length === 0) {
-          this.loggerService.warn({
-            message: 'No TMDB results found for series name',
-            seriesName: recommendation.seriesName,
-          });
-          continue;
+          return { type: 'failed' as const, seriesName: recommendation.seriesName };
         }
 
-        // Take the first (most relevant) result
         const firstResult = searchResult.results[0];
 
         if (!firstResult) {
-          continue;
+          return { type: 'failed' as const, seriesName: recommendation.seriesName };
         }
 
-        // Filter out series that are already in favorites
-        if (favoritesSeriesIds.includes(firstResult.id)) {
-          this.loggerService.debug({
-            message: 'Filtering out recommendation already in favorites',
-            seriesName: recommendation.seriesName,
-            seriesTmdbId: firstResult.id,
-          });
-          continue;
+        if (favoritesSeriesIds.includes(firstResult.id) || ignoredSeriesIds.includes(firstResult.id)) {
+          return { type: 'skipped' as const, seriesName: recommendation.seriesName };
         }
 
-        // Filter out series that are in ignored list
-        if (ignoredSeriesIds.includes(firstResult.id)) {
-          this.loggerService.debug({
-            message: 'Filtering out recommendation in ignored list',
-            seriesName: recommendation.seriesName,
-            seriesTmdbId: firstResult.id,
-          });
-          continue;
-        }
-
-        resolvedRecommendations.push({
+        return {
+          type: 'resolved' as const,
           seriesTmdbId: firstResult.id,
           justification: recommendation.justification,
-        });
+        };
+      }),
+    );
 
-        this.loggerService.debug({
-          message: 'Series name resolved to TMDB ID',
-          seriesName: recommendation.seriesName,
-          resolvedName: firstResult.name,
-          seriesTmdbId: firstResult.id,
-        });
-      } catch (error) {
-        this.loggerService.warn({
-          message: 'Failed to resolve series name to TMDB ID',
-          seriesName: recommendation.seriesName,
-          error: error instanceof Error ? error.message : String(error),
-        });
+    const resolvedRecommendations: Array<{ seriesTmdbId: number; justification: string }> = [];
+    const failedTitles: string[] = [];
+    const skippedTitles: string[] = [];
+
+    results.forEach((result, index) => {
+      if (result.status === 'fulfilled') {
+        if (result.value.type === 'resolved') {
+          resolvedRecommendations.push({
+            seriesTmdbId: result.value.seriesTmdbId,
+            justification: result.value.justification,
+          });
+        } else if (result.value.type === 'failed') {
+          failedTitles.push(result.value.seriesName);
+        } else {
+          skippedTitles.push(result.value.seriesName);
+        }
+      } else {
+        const recommendation = recommendations[index];
+        if (recommendation) {
+          failedTitles.push(recommendation.seriesName);
+        }
       }
-    }
+    });
 
-    return resolvedRecommendations;
+    return { resolved: resolvedRecommendations, failed: failedTitles, skipped: skippedTitles };
   }
 
   private async generateAIRecommendations(
@@ -369,11 +347,6 @@ export class GenerateRecommendationsAction {
       responseFormat: recommendationsResponseFormat,
     });
 
-    this.loggerService.debug({
-      message: 'AI recommendations response received',
-      recommendations: response.data.recommendations,
-    });
-
     return response.data.recommendations;
   }
 
@@ -386,33 +359,35 @@ export class GenerateRecommendationsAction {
   ): string {
     const participantsWithFavorites = participantFavorites.filter((p) => p.seriesTmdbIds.length > 0);
 
-    let message = `Watch room: "${watchroomName}"\n`;
+    let message = `WATCH ROOM: "${watchroomName}"\n`;
     if (watchroomDescription) {
       message += `Description: ${watchroomDescription}\n`;
+      message += `Use this description to understand the group's overall vibe and preferences.\n`;
     }
-    message += `\nParticipants and their favorite series:\n\n`;
+
+    message += `\n---\n`;
+    message += `PARTICIPANTS AND THEIR FAVORITE SERIES:\n`;
+    message += `These series are ALREADY WATCHED or FAVORITES. DO NOT recommend any of these.\n\n`;
 
     participantsWithFavorites.forEach((participant, index) => {
       message += `Participant ${(index + 1).toString()}:\n`;
       participant.seriesTmdbIds.forEach((tmdbId) => {
         const seriesInfo = seriesInfoMap.get(tmdbId);
         if (seriesInfo) {
+          const firstOverviewSentence = seriesInfo.overview.split(/[.!?]/)[0];
+          const summary = firstOverviewSentence ? firstOverviewSentence + '.' : '';
+
           message += `- ${seriesInfo.name}\n`;
           message += `  Genres: ${seriesInfo.genres.join(', ')}\n`;
-          message += `  Overview: ${seriesInfo.overview.substring(0, 150)}${seriesInfo.overview.length > 150 ? '...' : ''}\n`;
+          message += `  Summary: ${summary}\n`;
           message += `  Rating: ${seriesInfo.voteAverage.toFixed(1)}/10\n`;
         }
       });
       message += '\n';
     });
 
-    // Collect all favorite series names to show in the prompt
-    const allFavoriteNames = Array.from(seriesInfoMap.values()).map((info) => info.name);
-    message += `\nEXCLUDE these series from recommendations (already in favorites): ${allFavoriteNames.join(', ')}\n`;
-
-    // Add ignored series to exclusion list
+    message += `\n---\n`;
     if (ignoredSeriesIds.length > 0) {
-      // Fetch names for ignored series
       const ignoredNames: string[] = [];
       for (const tmdbId of ignoredSeriesIds) {
         const seriesInfo = seriesInfoMap.get(tmdbId);
@@ -421,14 +396,25 @@ export class GenerateRecommendationsAction {
         }
       }
       if (ignoredNames.length > 0) {
-        message += `\nALSO EXCLUDE these series (marked as not interested by participants): ${ignoredNames.join(', ')}\n`;
+        message += `SERIES MARKED AS NOT INTERESTED:\n`;
+        message += `These series are explicitly NOT wanted. DO NOT recommend any of these.\n`;
+        message += `${ignoredNames.join(', ')}\n`;
+        message += `\n---\n`;
       }
     }
 
-    message += `\nBased on the above preferences, recommend 5-10 NEW TV series that this group would enjoy watching together. `;
-    message += `Return the EXACT TITLE of each series as it appears in TMDB (The Movie Database). `;
-    message += `Provide short justification for each recommendation explaining why it fits the group's collective tastes. `;
-    message += `IMPORTANT: Do NOT recommend any series from the exclusion lists above.`;
+    message += `TASK:\n`;
+    message += `Recommend 5-10 BRAND NEW TV series that this group would likely enjoy watching together.\n`;
+    message += `\n`;
+    message += `CRITICAL REQUIREMENTS:\n`;
+    message += `1. Do NOT include ANY series from the "FAVORITE SERIES" lists above\n`;
+    message += `2. Do NOT include ANY series from the "NOT INTERESTED" list above\n`;
+    message += `3. Only recommend series that are DIFFERENT from those already listed\n`;
+    message += `4. Focus on finding shows that reflect shared themes, genres, tones, or storytelling styles\n`;
+    message += `5. Return the EXACT TITLE of each series as it appears in TMDB (The Movie Database)\n`;
+    message += `6. Provide a brief justification for each recommendation explaining why it fits the group's taste\n`;
+    message += `\n`;
+    message += `Remember: The goal is to find NEW series, not to repeat what they already know or dislike.`;
 
     return message;
   }

@@ -1,19 +1,19 @@
 import { LoggerServiceFactory } from '../common/logger/loggerServiceFactory.ts';
-import { Database } from '../infrastructure/database/database.ts';
+import { DatabaseClient } from '../infrastructure/database/database.ts';
 
 import { createConfig } from './config.ts';
 import { HttpServer } from './httpServer.ts';
 
 export class Application {
   private static server: HttpServer | undefined;
-  private static database: Database | undefined;
+  private static database: DatabaseClient | undefined;
 
   public static async start(): Promise<void> {
     const config = createConfig();
 
     const loggerService = LoggerServiceFactory.create({ logLevel: config.logLevel });
 
-    this.database = new Database({ url: config.database.url });
+    this.database = new DatabaseClient({ url: config.database.url });
 
     await this.database.testConnection();
 

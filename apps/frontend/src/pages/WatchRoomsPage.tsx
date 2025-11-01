@@ -95,7 +95,7 @@ export default function WatchRoomsPage() {
           {isLoading && (
             <div className="flex items-center justify-center py-20">
               <div className="text-center space-y-4">
-                <div className="w-16 h-16 rounded-full bg-gradient-to-br from-primary/20 to-primary/5 mx-auto flex items-center justify-center animate-pulse">
+                <div className="w-16 h-16 rounded-full bg-linear-to-br from-primary/20 to-primary/5 mx-auto flex items-center justify-center animate-pulse">
                   <Users className="w-8 h-8 text-primary" />
                 </div>
                 <p className="text-muted-foreground font-medium">Loading your rooms...</p>
@@ -164,7 +164,7 @@ export default function WatchRoomsPage() {
                         </div>
                       </CardHeader>
 
-                      <CardContent className="flex-grow px-6 py-4">
+                      <CardContent className="grow px-6 py-4">
                         {room.description ? (
                           <CardDescription className="line-clamp-2 text-sm leading-relaxed">
                             {room.description}

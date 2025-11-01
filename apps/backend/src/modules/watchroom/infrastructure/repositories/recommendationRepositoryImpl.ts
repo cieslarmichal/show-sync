@@ -1,7 +1,7 @@
 import { eq } from 'drizzle-orm';
 
 import { UuidService } from '../../../../common/uuid/uuidService.ts';
-import type { Database } from '../../../../infrastructure/database/database.ts';
+import type { DatabaseClient } from '../../../../infrastructure/database/database.ts';
 import { recommendations } from '../../../../infrastructure/database/schema.ts';
 import type {
   CreateRecommendationData,
@@ -10,9 +10,9 @@ import type {
 import type { Recommendation } from '../../domain/types/recommendation.ts';
 
 export class RecommendationRepositoryImpl implements RecommendationRepository {
-  private readonly database: Database;
+  private readonly database: DatabaseClient;
 
-  public constructor(database: Database) {
+  public constructor(database: DatabaseClient) {
     this.database = database;
   }
 

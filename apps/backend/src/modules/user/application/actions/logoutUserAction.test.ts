@@ -4,7 +4,7 @@ import { Generator } from '../../../../../tests/generator.ts';
 import { TokenService } from '../../../../common/auth/tokenService.ts';
 import type { LoggerService } from '../../../../common/logger/loggerService.ts';
 import { createConfig, type Config } from '../../../../core/config.ts';
-import { Database } from '../../../../infrastructure/database/database.ts';
+import { DatabaseClient } from '../../../../infrastructure/database/database.ts';
 import { userSessions, users } from '../../../../infrastructure/database/schema.ts';
 import { UserRepositoryImpl } from '../../infrastructure/repositories/userRepositoryImpl.ts';
 import { UserSessionRepositoryImpl } from '../../infrastructure/repositories/userSessionRepositoryImpl.ts';
@@ -14,7 +14,7 @@ import { LoginUserAction } from './loginUserAction.ts';
 import { LogoutUserAction } from './logoutUserAction.ts';
 
 describe('LogoutUserAction', () => {
-  let database: Database;
+  let database: DatabaseClient;
   let userRepository: UserRepositoryImpl;
   let userSessionRepository: UserSessionRepositoryImpl;
   let loginUserAction: LoginUserAction;
@@ -26,7 +26,7 @@ describe('LogoutUserAction', () => {
 
   beforeEach(async () => {
     config = createConfig();
-    database = new Database({ url: config.database.url });
+    database = new DatabaseClient({ url: config.database.url });
     userRepository = new UserRepositoryImpl(database);
     userSessionRepository = new UserSessionRepositoryImpl(database);
     tokenService = new TokenService(config);

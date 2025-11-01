@@ -1,8 +1,9 @@
 import { eq, and, desc, count } from 'drizzle-orm';
 
 import { UuidService } from '../../../../common/uuid/uuidService.ts';
-import type { Database } from '../../../../infrastructure/database/database.ts';
+import type { DatabaseClient } from '../../../../infrastructure/database/database.ts';
 import { userIgnoredSeries } from '../../../../infrastructure/database/schema.ts';
+import type { Transaction } from '../../../../infrastructure/database/transaction.ts';
 import type {
   CreateIgnoredSeriesData,
   IgnoredSeriesRepository,
@@ -10,14 +11,16 @@ import type {
 import type { IgnoredSeries } from '../../domain/types/ignoredSeries.ts';
 
 export class IgnoredSeriesRepositoryImpl implements IgnoredSeriesRepository {
-  private readonly database: Database;
+  private readonly database: DatabaseClient;
 
-  public constructor(database: Database) {
+  public constructor(database: DatabaseClient) {
     this.database = database;
   }
 
-  public async create(ignoredSeriesData: CreateIgnoredSeriesData): Promise<IgnoredSeries> {
-    const [newIgnored] = await this.database.db
+  public async create(ignoredSeriesData: CreateIgnoredSeriesData, tx?: Transaction): Promise<IgnoredSeries> {
+    const db = tx ? tx : this.database.db;
+
+    const [newIgnored] = await db
       .insert(userIgnoredSeries)
       .values({
         id: UuidService.generateUuid(),
@@ -54,18 +57,24 @@ export class IgnoredSeriesRepositoryImpl implements IgnoredSeriesRepository {
     return ignored.map(this.mapToIgnoredSeries);
   }
 
-  public async findOne(userId: string, seriesTmdbId: number): Promise<IgnoredSeries | null> {
-    const [ignored] = await this.database.db
+  public async findOne(userId: string, seriesTmdbId: number, tx?: Transaction): Promise<IgnoredSeries | null> {
+    const db = tx ? tx : this.database.db;
+
+    const query = db
       .select()
       .from(userIgnoredSeries)
       .where(and(eq(userIgnoredSeries.userId, userId), eq(userIgnoredSeries.seriesTmdbId, seriesTmdbId)))
       .limit(1);
 
+    const [ignored] = tx ? await query.for('update') : await query;
+
     return ignored ? this.mapToIgnoredSeries(ignored) : null;
   }
 
-  public async delete(userId: string, seriesTmdbId: number): Promise<void> {
-    await this.database.db
+  public async delete(userId: string, seriesTmdbId: number, tx?: Transaction): Promise<void> {
+    const db = tx ? tx : this.database.db;
+
+    await db
       .delete(userIgnoredSeries)
       .where(and(eq(userIgnoredSeries.userId, userId), eq(userIgnoredSeries.seriesTmdbId, seriesTmdbId)));
   }

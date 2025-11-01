@@ -7,7 +7,7 @@ export const getMyFavoriteSeries = async (page: number = 1, pageSize: number = 2
     pageSize: pageSize.toString(),
   });
 
-  return apiRequest<FavoriteSeriesList>(`/users/me/favorite-series?${params}`, {
+  return apiRequest<FavoriteSeriesList>(`/series/favorites?${params}`, {
     method: 'GET',
   });
 };

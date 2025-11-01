@@ -6,7 +6,7 @@ import { CryptoService } from '../../../common/crypto/cryptoService.ts';
 import { UnauthorizedAccessError } from '../../../common/errors/unathorizedAccessError.ts';
 import type { LoggerService } from '../../../common/logger/loggerService.ts';
 import type { Config } from '../../../core/config.ts';
-import type { Database } from '../../../infrastructure/database/database.ts';
+import type { DatabaseClient } from '../../../infrastructure/database/database.ts';
 import { ChangePasswordAction } from '../application/actions/changePasswordAction.ts';
 import { CreateUserAction } from '../application/actions/createUserAction.ts';
 import { DeleteUserAction } from '../application/actions/deleteUserAction.ts';
@@ -31,7 +31,7 @@ import {
 const appEnvironment = process.env['NODE_ENV'];
 
 export const userRoutes: FastifyPluginAsyncTypebox<{
-  database: Database;
+  database: DatabaseClient;
   config: Config;
   loggerService: LoggerService;
   tokenService: TokenService;
@@ -87,6 +87,7 @@ export const userRoutes: FastifyPluginAsyncTypebox<{
     loggerService,
     tokenService,
     config,
+    database,
   );
   const logoutUserAction = new LogoutUserAction(userSessionRepository, tokenService);
 

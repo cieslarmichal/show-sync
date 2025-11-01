@@ -40,3 +40,17 @@ export interface FavoriteSeriesList {
     readonly total: number;
   };
 }
+
+export interface IgnoredSeries {
+  readonly seriesTmdbId: number;
+  readonly ignoredAt: string;
+}
+
+export interface IgnoredSeriesList {
+  readonly data: IgnoredSeries[];
+  readonly metadata: {
+    readonly page: number;
+    readonly pageSize: number;
+    readonly total: number;
+  };
+}

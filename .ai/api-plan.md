@@ -138,12 +138,12 @@
 #### Get favorite series
 
 - **Method**: `GET`
-- **Path**: `/users/me/favorite-series`
+- **Path**: `/series/favorites`
 - **Description**: Retrieves the user's list of favorite series.
 - **Authentication**: Required.
 - **Query Parameters**:
   - `page` (integer, optional, default: 1): The page number for pagination.
-  - `limit` (integer, optional, default: 20): The number of items per page.
+  - `pageSize` (integer, optional, default: 20): The number of items per page.
 - **Response Body**:
 
   ```json
@@ -168,7 +168,7 @@
 #### Add a favorite series
 
 - **Method**: `POST`
-- **Path**: `/users/me/favorite-series`
+- **Path**: `/series/favorites`
 - **Description**: Adds a series to the user's list of favorites.
 - **Authentication**: Required.
 - **Request Body**:
@@ -194,7 +194,7 @@
 #### Remove a favorite series
 
 - **Method**: `DELETE`
-- **Path**: `/users/me/favorite-series/:seriesTmdbId`
+- **Path**: `/series/favorites/:seriesTmdbId`
 - **Description**: Removes a series from the user's list of favorites.
 - **Authentication**: Required.
 - **URL Parameters**:
@@ -205,12 +205,12 @@
 #### Get ignored series
 
 - **Method**: `GET`
-- **Path**: `/users/me/ignored-series`
+- **Path**: `/series/ignored`
 - **Description**: Retrieves the user's list of ignored series.
 - **Authentication**: Required.
 - **Query Parameters**:
   - `page` (integer, optional, default: 1): The page number for pagination.
-  - `limit` (integer, optional, default: 20): The number of items per page.
+  - `pageSize` (integer, optional, default: 20): The number of items per page.
 - **Response Body**:
 
   ```json
@@ -232,10 +232,36 @@
 - **Success Codes**: `200 OK`
 - **Error Codes**: `401 Unauthorized`
 
+#### Add an ignored series
+
+- **Method**: `POST`
+- **Path**: `/series/ignored`
+- **Description**: Adds a series to the user's list of ignored series.
+- **Authentication**: Required.
+- **Request Body**:
+
+  ```json
+  {
+    "seriesTmdbId": 1402
+  }
+  ```
+
+- **Response Body**:
+
+  ```json
+  {
+    "seriesTmdbId": 1402,
+    "ignoredAt": "iso-8601-date-string"
+  }
+  ```
+
+- **Success Codes**: `201 Created`
+- **Error Codes**: `400 Bad Request` (Invalid ID), `401 Unauthorized`, `409 Conflict` (Series already ignored)
+
 #### Remove an ignored series
 
 - **Method**: `DELETE`
-- **Path**: `/users/me/ignored-series/:seriesTmdbId`
+- **Path**: `/series/ignored/:seriesTmdbId`
 - **Description**: Removes a series from the user's list of ignored series.
 - **Authentication**: Required.
 - **URL Parameters**:
@@ -304,6 +330,29 @@
     "numberOfEpisodes": 73,
     "status": "Ended",
     "voteAverage": 8.4
+  }
+  ```
+
+- **Success Codes**: `200 OK`
+- **Error Codes**: `401 Unauthorized`, `404 Not Found` (Series not found), `502 Bad Gateway` (TMDB API error)
+
+#### Get series external IDs
+
+- **Method**: `GET`
+- **Path**: `/series/:seriesTmdbId/external-ids`
+- **Description**: Retrieves external IDs (IMDb, TVDB, etc.) for a specific TV series from TMDB.
+- **Authentication**: Required.
+- **URL Parameters**:
+  - `seriesTmdbId` (integer): The TMDB ID of the series.
+- **Response Body**:
+
+  ```json
+  {
+    "imdbId": "tt0944947",
+    "tvdbId": 121361,
+    "facebookId": "GameOfThrones",
+    "instagramId": "gameofthrones",
+    "twitterId": "GameOfThrones"
   }
   ```
 
@@ -526,7 +575,7 @@
 ## Implementation plan
 
 1. User Module
-This module handles everything related to user accounts, authentication, and user-specific data like favorite series and ignored series.
+This module handles everything related to user accounts and authentication.
 Endpoints:
 POST /users/register
 POST /users/login
@@ -534,12 +583,21 @@ POST /users/refresh
 POST /users/logout
 GET /users/me
 DELETE /users/me
-GET /users/me/favorite-series
-POST /users/me/favorite-series
-DELETE /users/me/favorite-series/:seriesTmdbId
-GET /users/me/ignored-series
-DELETE /users/me/ignored-series/:seriesTmdbId
-2. Watchroom Module
+
+2. Series Module
+This module handles all operations related to series including favorites, ignored series, and acts as a proxy to the external TMDB API.
+Endpoints:
+GET /series/search
+GET /series/:seriesTmdbId
+GET /series/:seriesTmdbId/external-ids
+GET /series/favorites
+POST /series/favorites
+DELETE /series/favorites/:seriesTmdbId
+GET /series/ignored
+POST /series/ignored
+DELETE /series/ignored/:seriesTmdbId
+
+3. Watchroom Module
 This module would be responsible for all operations related to watchrooms, including creation, management, and participant actions.
 Endpoints:
 POST /watchrooms
@@ -554,8 +612,3 @@ POST /watchrooms/:watchroomId/recommendations
 POST /watchrooms/:watchroomId/recommendations/:seriesTmdbId/ignore
 GET /watchrooms/:watchroomId/recommendations
 DELETE /watchrooms/:watchroomId/recommendations/:recommendationId
-3. Series Module
-This module acts as a proxy to the external TMDB API. It handles searching for series and retrieving detailed series information.
-Endpoints:
-GET /series/search
-GET /series/:seriesTmdbId

@@ -1,15 +1,15 @@
 import { eq } from 'drizzle-orm';
 
 import { UuidService } from '../../../../common/uuid/uuidService.ts';
-import type { Database } from '../../../../infrastructure/database/database.ts';
+import type { DatabaseClient } from '../../../../infrastructure/database/database.ts';
 import { users } from '../../../../infrastructure/database/schema.ts';
 import type { CreateUserData, UserRepository } from '../../domain/repositories/userRepository.ts';
 import type { User } from '../../domain/types/user.ts';
 
 export class UserRepositoryImpl implements UserRepository {
-  private readonly database: Database;
+  private readonly database: DatabaseClient;
 
-  public constructor(database: Database) {
+  public constructor(database: DatabaseClient) {
     this.database = database;
   }
 

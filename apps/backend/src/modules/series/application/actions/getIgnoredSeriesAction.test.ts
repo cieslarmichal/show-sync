@@ -2,7 +2,7 @@ import { beforeEach, afterEach, describe, expect, it } from 'vitest';
 
 import { Generator } from '../../../../../tests/generator.ts';
 import { createConfig } from '../../../../core/config.ts';
-import { Database } from '../../../../infrastructure/database/database.ts';
+import { DatabaseClient } from '../../../../infrastructure/database/database.ts';
 import { users, userIgnoredSeries } from '../../../../infrastructure/database/schema.ts';
 import { UserRepositoryImpl } from '../../../user/infrastructure/repositories/userRepositoryImpl.ts';
 import { IgnoredSeriesRepositoryImpl } from '../../infrastructure/repositories/ignoredSeriesRepositoryImpl.ts';
@@ -10,14 +10,14 @@ import { IgnoredSeriesRepositoryImpl } from '../../infrastructure/repositories/i
 import { GetIgnoredSeriesAction } from './getIgnoredSeriesAction.ts';
 
 describe('GetIgnoredSeriesAction', () => {
-  let database: Database;
+  let database: DatabaseClient;
   let userRepository: UserRepositoryImpl;
   let ignoredSeriesRepository: IgnoredSeriesRepositoryImpl;
   let getIgnoredSeriesAction: GetIgnoredSeriesAction;
 
   beforeEach(async () => {
     const config = createConfig();
-    database = new Database({ url: config.database.url });
+    database = new DatabaseClient({ url: config.database.url });
     userRepository = new UserRepositoryImpl(database);
     ignoredSeriesRepository = new IgnoredSeriesRepositoryImpl(database);
 

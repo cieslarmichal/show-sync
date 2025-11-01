@@ -5,7 +5,7 @@ import { TokenService } from '../../../../common/auth/tokenService.ts';
 import { UnauthorizedAccessError } from '../../../../common/errors/unathorizedAccessError.ts';
 import type { LoggerService } from '../../../../common/logger/loggerService.ts';
 import { createConfig, type Config } from '../../../../core/config.ts';
-import { Database } from '../../../../infrastructure/database/database.ts';
+import { DatabaseClient } from '../../../../infrastructure/database/database.ts';
 import { userSessions, users } from '../../../../infrastructure/database/schema.ts';
 import { UserRepositoryImpl } from '../../infrastructure/repositories/userRepositoryImpl.ts';
 import { UserSessionRepositoryImpl } from '../../infrastructure/repositories/userSessionRepositoryImpl.ts';
@@ -14,7 +14,7 @@ import { PasswordService } from '../services/passwordService.ts';
 import { LoginUserAction } from './loginUserAction.ts';
 
 describe('LoginUserAction', () => {
-  let database: Database;
+  let database: DatabaseClient;
   let userRepository: UserRepositoryImpl;
   let loginUserAction: LoginUserAction;
   let loggerService: LoggerService;
@@ -25,7 +25,7 @@ describe('LoginUserAction', () => {
 
   beforeEach(async () => {
     config = createConfig();
-    database = new Database({ url: config.database.url });
+    database = new DatabaseClient({ url: config.database.url });
     userRepository = new UserRepositoryImpl(database);
     userSessionRepository = new UserSessionRepositoryImpl(database);
     tokenService = new TokenService(config);

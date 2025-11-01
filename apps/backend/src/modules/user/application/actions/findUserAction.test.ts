@@ -3,20 +3,20 @@ import { beforeEach, afterEach, describe, expect, it } from 'vitest';
 import { Generator } from '../../../../../tests/generator.ts';
 import { ResourceNotFoundError } from '../../../../common/errors/resourceNotFoundError.ts';
 import { createConfig } from '../../../../core/config.ts';
-import { Database } from '../../../../infrastructure/database/database.ts';
+import { DatabaseClient } from '../../../../infrastructure/database/database.ts';
 import { users } from '../../../../infrastructure/database/schema.ts';
 import { UserRepositoryImpl } from '../../infrastructure/repositories/userRepositoryImpl.ts';
 
 import { FindUserAction } from './findUserAction.ts';
 
 describe('FindUserAction', () => {
-  let database: Database;
+  let database: DatabaseClient;
   let userRepository: UserRepositoryImpl;
   let findUserAction: FindUserAction;
 
   beforeEach(async () => {
     const config = createConfig();
-    database = new Database({ url: config.database.url });
+    database = new DatabaseClient({ url: config.database.url });
     userRepository = new UserRepositoryImpl(database);
 
     findUserAction = new FindUserAction(userRepository);

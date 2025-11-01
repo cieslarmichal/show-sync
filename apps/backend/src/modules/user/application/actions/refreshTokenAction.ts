@@ -3,6 +3,7 @@ import { CryptoService } from '../../../../common/crypto/cryptoService.ts';
 import { UnauthorizedAccessError } from '../../../../common/errors/unathorizedAccessError.ts';
 import type { LoggerService } from '../../../../common/logger/loggerService.ts';
 import type { Config } from '../../../../core/config.ts';
+import type { DatabaseClient } from '../../../../infrastructure/database/database.ts';
 import type { UserRepository } from '../../domain/repositories/userRepository.ts';
 import type { UserSessionRepository } from '../../domain/repositories/userSessionRepository.ts';
 
@@ -21,6 +22,7 @@ export class RefreshTokenAction {
   private readonly loggerService: LoggerService;
   private readonly tokenService: TokenService;
   private readonly config: Config;
+  private readonly databaseClient: DatabaseClient;
 
   public constructor(
     userRepository: UserRepository,
@@ -28,12 +30,14 @@ export class RefreshTokenAction {
     loggerService: LoggerService,
     tokenService: TokenService,
     config: Config,
+    databaseClient: DatabaseClient,
   ) {
     this.userRepository = userRepository;
     this.userSessionRepository = userSessionRepository;
     this.loggerService = loggerService;
     this.tokenService = tokenService;
     this.config = config;
+    this.databaseClient = databaseClient;
   }
 
   public async execute(data: RefreshTokenData): Promise<RefreshTokenResult> {
@@ -62,33 +66,39 @@ export class RefreshTokenAction {
     const newRefreshToken = this.tokenService.generateRefreshToken(newRefreshPayload);
     const newHash = CryptoService.hashData(newRefreshToken);
 
-    // Attempt atomic rotate; if it fails, try accept previous within grace
-    const locked = await this.userSessionRepository.getByIdForUpdate(sessionId);
-    if (!locked || locked.status !== 'active') {
-      throw new UnauthorizedAccessError({ reason: 'Session not active' });
-    }
+    await this.databaseClient.db.transaction(async (tx) => {
+      // Attempt atomic rotate; if it fails, try accept previous within grace
+      const existingSession = await this.userSessionRepository.findById(sessionId, tx);
 
-    if (locked.currentRefreshHash === tokenHash) {
-      await this.userSessionRepository.rotateWithGrace({
-        sessionId,
-        newRefreshHash: newHash,
-        graceMs: this.config.token.refresh.graceMs,
-      });
-    } else {
-      const accepted = await this.userSessionRepository.acceptPreviousIfWithinGrace({
-        sessionId,
-        presentedHash: tokenHash,
-      });
-      if (!accepted) {
-        await this.userSessionRepository.revoke(sessionId);
-        throw new UnauthorizedAccessError({ reason: 'Refresh token reuse detected' });
+      if (!existingSession || existingSession.status !== 'active') {
+        throw new UnauthorizedAccessError({ reason: 'Session not active' });
       }
-      // accepted: do not rotate again; return same newest tokens
-      return {
-        accessToken: newAccessToken,
-        refreshToken: newRefreshToken,
-      };
-    }
+
+      if (existingSession.currentRefreshHash === tokenHash) {
+        await this.userSessionRepository.rotateWithGrace(
+          {
+            sessionId,
+            newRefreshHash: newHash,
+            graceMs: this.config.token.refresh.graceMs,
+          },
+          tx,
+        );
+      } else {
+        const accepted = await this.userSessionRepository.acceptPreviousIfWithinGrace(
+          {
+            sessionId,
+            presentedHash: tokenHash,
+          },
+          tx,
+        );
+
+        if (!accepted) {
+          await this.userSessionRepository.revoke(sessionId, tx);
+
+          throw new UnauthorizedAccessError({ reason: 'Refresh token reuse detected' });
+        }
+      }
+    });
 
     this.loggerService.info({
       message: 'Tokens refreshed successfully.',

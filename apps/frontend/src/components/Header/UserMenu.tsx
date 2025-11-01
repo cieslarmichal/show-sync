@@ -12,7 +12,7 @@ export function UserMenu({ initial, size = 'large' }: UserMenuProps) {
   const sizeClasses = size === 'small' ? 'h-8 w-8 text-xs' : 'h-10 w-10 text-sm';
 
   return (
-    <Menubar className="rounded-none space-x-0 border-none data-[state=open]:!bg-none">
+    <Menubar className="rounded-none space-x-0 border-none data-[state=open]:bg-none!">
       <MenubarMenu>
         <MenubarTrigger
           omitOpenBg

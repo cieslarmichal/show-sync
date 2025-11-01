@@ -5,7 +5,7 @@ import { OperationNotValidError } from '../../../../common/errors/operationNotVa
 import { ResourceNotFoundError } from '../../../../common/errors/resourceNotFoundError.ts';
 import type { LoggerService } from '../../../../common/logger/loggerService.ts';
 import { createConfig } from '../../../../core/config.ts';
-import { Database } from '../../../../infrastructure/database/database.ts';
+import { DatabaseClient } from '../../../../infrastructure/database/database.ts';
 import { users } from '../../../../infrastructure/database/schema.ts';
 import { UserRepositoryImpl } from '../../infrastructure/repositories/userRepositoryImpl.ts';
 import { PasswordService } from '../services/passwordService.ts';
@@ -13,7 +13,7 @@ import { PasswordService } from '../services/passwordService.ts';
 import { ChangePasswordAction } from './changePasswordAction.ts';
 
 describe('ChangePasswordAction', () => {
-  let database: Database;
+  let database: DatabaseClient;
   let userRepository: UserRepositoryImpl;
   let changePasswordAction: ChangePasswordAction;
   let loggerService: LoggerService;
@@ -21,7 +21,7 @@ describe('ChangePasswordAction', () => {
 
   beforeEach(async () => {
     const config = createConfig();
-    database = new Database({ url: config.database.url });
+    database = new DatabaseClient({ url: config.database.url });
     userRepository = new UserRepositoryImpl(database);
     passwordService = new PasswordService(config);
 

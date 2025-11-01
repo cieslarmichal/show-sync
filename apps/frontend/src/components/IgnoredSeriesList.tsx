@@ -1,40 +1,40 @@
 import { useState, useEffect, useRef } from 'react';
 import { X } from 'lucide-react';
 import { getSeriesDetails } from '../api/queries/getSeriesDetails';
-import { FavoriteSeries, SeriesDetails } from '../api/types/series';
+import { IgnoredSeries, SeriesDetails } from '../api/types/series';
 import { Skeleton } from './ui/Skeleton';
 import { Button } from './ui/Button';
 import { Tooltip, TooltipContent, TooltipTrigger } from './ui/Tooltip';
 
-interface FavoriteSeriesListProps {
-  favorites: FavoriteSeries[];
-  onRemoveFavorite: (seriesTmdbId: number) => void;
+interface IgnoredSeriesListProps {
+  ignoredSeries: IgnoredSeries[];
+  onRemoveIgnored: (seriesTmdbId: number) => void;
   isLoading: boolean;
 }
 
-export default function FavoriteSeriesList({
-  favorites,
-  onRemoveFavorite,
+export default function IgnoredSeriesList({
+  ignoredSeries,
+  onRemoveIgnored,
   isLoading: externalLoading,
-}: FavoriteSeriesListProps) {
+}: IgnoredSeriesListProps) {
   const [seriesDetails, setSeriesDetails] = useState<Map<number, SeriesDetails>>(new Map());
   const [removingIds, setRemovingIds] = useState<Set<number>>(new Set());
   const timeoutIds = useRef<Map<number, NodeJS.Timeout>>(new Map());
 
   useEffect(() => {
     const loadSeriesDetails = async () => {
-      if (favorites.length === 0) {
+      if (ignoredSeries.length === 0) {
         setSeriesDetails(new Map());
         return;
       }
 
-      // Load series details for each favorite
-      const detailsPromises = favorites.map(async (favorite: FavoriteSeries) => {
+      // Load series details for each ignored series
+      const detailsPromises = ignoredSeries.map(async (ignored: IgnoredSeries) => {
         try {
-          const details = await getSeriesDetails(favorite.seriesTmdbId);
-          return { id: favorite.seriesTmdbId, details };
+          const details = await getSeriesDetails(ignored.seriesTmdbId);
+          return { id: ignored.seriesTmdbId, details };
         } catch (err) {
-          console.error(`Failed to load details for series ${favorite.seriesTmdbId}:`, err);
+          console.error(`Failed to load details for series ${ignored.seriesTmdbId}:`, err);
           return null;
         }
       });
@@ -51,7 +51,7 @@ export default function FavoriteSeriesList({
     };
 
     loadSeriesDetails();
-  }, [favorites]);
+  }, [ignoredSeries]);
 
   // Cleanup timeouts on unmount
   useEffect(() => {
@@ -62,12 +62,12 @@ export default function FavoriteSeriesList({
     };
   }, []);
 
-  const handleRemoveFavorite = async (seriesTmdbId: number) => {
+  const handleRemoveIgnored = async (seriesTmdbId: number) => {
     // Add to removing set for animation
     setRemovingIds((prev) => new Set(prev).add(seriesTmdbId));
 
     try {
-      await onRemoveFavorite(seriesTmdbId);
+      await onRemoveIgnored(seriesTmdbId);
 
       // Delay the actual removal to allow fade-out animation
       const timeoutId = setTimeout(() => {
@@ -92,7 +92,7 @@ export default function FavoriteSeriesList({
         newSet.delete(seriesTmdbId);
         return newSet;
       });
-      console.error('Failed to remove favorite:', err);
+      console.error('Failed to remove ignored series:', err);
     }
   };
 
@@ -116,21 +116,23 @@ export default function FavoriteSeriesList({
 
   return (
     <div className="space-y-3">
-      {favorites.length === 0 ? (
+      {ignoredSeries.length === 0 ? (
         <div className="text-center py-8 text-muted-foreground">
-          <p>No favorite series yet.</p>
-          <p className="text-sm mt-1">Search for series above and add them to your favorites!</p>
+          <p>No ignored series yet.</p>
+          <p className="text-sm mt-1">
+            Series you mark as "Not Interested" will appear here and be excluded from AI recommendations.
+          </p>
         </div>
       ) : (
         <div className="max-h-[400px] sm:max-h-[500px] overflow-y-auto">
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7 gap-4 sm:gap-6">
-            {favorites.map((favorite) => {
-              const details = seriesDetails.get(favorite.seriesTmdbId);
-              const isRemoving = removingIds.has(favorite.seriesTmdbId);
+            {ignoredSeries.map((ignored) => {
+              const details = seriesDetails.get(ignored.seriesTmdbId);
+              const isRemoving = removingIds.has(ignored.seriesTmdbId);
 
               return (
                 <div
-                  key={favorite.seriesTmdbId}
+                  key={ignored.seriesTmdbId}
                   className={`group relative transition-all duration-300 ${
                     isRemoving ? 'opacity-0 scale-95' : 'opacity-100 scale-100'
                   }`}
@@ -140,7 +142,7 @@ export default function FavoriteSeriesList({
                       <img
                         src={`https://image.tmdb.org/t/p/w342${details.posterPath}`}
                         alt={`${details.name} poster`}
-                        className="w-full h-full object-cover transition-transform group-hover:scale-105"
+                        className="w-full h-full object-cover transition-transform group-hover:scale-105 opacity-60 grayscale"
                       />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center bg-muted">
@@ -151,20 +153,20 @@ export default function FavoriteSeriesList({
                     <Tooltip>
                       <TooltipTrigger asChild>
                         <Button
-                          onClick={() => handleRemoveFavorite(favorite.seriesTmdbId)}
-                          variant="destructive"
+                          onClick={() => handleRemoveIgnored(ignored.seriesTmdbId)}
+                          variant="secondary"
                           size="icon"
                           className="absolute top-2 right-2 w-7 h-7 bg-black/50 hover:bg-red-600 rounded-full transition-all duration-200 shadow-lg"
-                          aria-label={`Remove ${details?.name || 'series'} from favorites`}
+                          aria-label={`Remove ${details?.name || 'series'} from ignored list`}
                         >
                           <X className="w-4 h-4 text-white" />
                         </Button>
                       </TooltipTrigger>
-                      <TooltipContent side="bottom">Remove from favorites</TooltipContent>
+                      <TooltipContent side="bottom">Remove from ignored list</TooltipContent>
                     </Tooltip>
                     <div className="absolute bottom-0 left-0 right-0 p-2">
                       <h3 className="text-xs font-bold text-white truncate text-center leading-tight">
-                        {details?.name || `Series ${favorite.seriesTmdbId}`}
+                        {details?.name || `Series ${ignored.seriesTmdbId}`}
                       </h3>
                     </div>
                   </div>

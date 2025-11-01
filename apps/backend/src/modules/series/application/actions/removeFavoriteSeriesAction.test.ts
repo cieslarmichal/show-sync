@@ -4,7 +4,7 @@ import { Generator } from '../../../../../tests/generator.ts';
 import { ResourceNotFoundError } from '../../../../common/errors/resourceNotFoundError.ts';
 import type { LoggerService } from '../../../../common/logger/loggerService.ts';
 import { createConfig } from '../../../../core/config.ts';
-import { Database } from '../../../../infrastructure/database/database.ts';
+import { DatabaseClient } from '../../../../infrastructure/database/database.ts';
 import { users, userFavoriteSeries } from '../../../../infrastructure/database/schema.ts';
 import { UserRepositoryImpl } from '../../../user/infrastructure/repositories/userRepositoryImpl.ts';
 import { FavoriteSeriesRepositoryImpl } from '../../infrastructure/repositories/favoriteSeriesRepositoryImpl.ts';
@@ -12,7 +12,7 @@ import { FavoriteSeriesRepositoryImpl } from '../../infrastructure/repositories/
 import { RemoveFavoriteSeriesAction } from './removeFavoriteSeriesAction.ts';
 
 describe('RemoveFavoriteSeriesAction', () => {
-  let database: Database;
+  let database: DatabaseClient;
   let userRepository: UserRepositoryImpl;
   let favoriteSeriesRepository: FavoriteSeriesRepositoryImpl;
   let loggerService: LoggerService;
@@ -20,7 +20,7 @@ describe('RemoveFavoriteSeriesAction', () => {
 
   beforeEach(async () => {
     const config = createConfig();
-    database = new Database({ url: config.database.url });
+    database = new DatabaseClient({ url: config.database.url });
     userRepository = new UserRepositoryImpl(database);
     favoriteSeriesRepository = new FavoriteSeriesRepositoryImpl(database);
     loggerService = {

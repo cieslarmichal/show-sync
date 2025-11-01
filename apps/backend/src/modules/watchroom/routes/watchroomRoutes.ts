@@ -7,7 +7,7 @@ import type { LoggerService } from '../../../common/logger/loggerService.ts';
 import type { OpenRouterService } from '../../../common/openRouter/openRouterService.ts';
 import { UuidService } from '../../../common/uuid/uuidService.ts';
 import type { Config } from '../../../core/config.ts';
-import type { Database } from '../../../infrastructure/database/database.ts';
+import type { DatabaseClient } from '../../../infrastructure/database/database.ts';
 import { FavoriteSeriesRepositoryImpl } from '../../series/infrastructure/repositories/favoriteSeriesRepositoryImpl.ts';
 import { IgnoredSeriesRepositoryImpl } from '../../series/infrastructure/repositories/ignoredSeriesRepositoryImpl.ts';
 import { TmdbServiceImpl } from '../../series/infrastructure/services/tmdbServiceImpl.ts';
@@ -54,7 +54,7 @@ const watchroomSchema = Type.Object({
 });
 
 export const watchroomRoutes: FastifyPluginAsyncTypebox<{
-  database: Database;
+  database: DatabaseClient;
   tokenService: TokenService;
   loggerService: LoggerService;
   openRouterService: OpenRouterService;

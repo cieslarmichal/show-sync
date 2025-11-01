@@ -4,7 +4,7 @@ import { Generator } from '../../../../../tests/generator.ts';
 import { ResourceNotFoundError } from '../../../../common/errors/resourceNotFoundError.ts';
 import type { LoggerService } from '../../../../common/logger/loggerService.ts';
 import { createConfig } from '../../../../core/config.ts';
-import { Database } from '../../../../infrastructure/database/database.ts';
+import { DatabaseClient } from '../../../../infrastructure/database/database.ts';
 import { users, userIgnoredSeries } from '../../../../infrastructure/database/schema.ts';
 import { UserRepositoryImpl } from '../../../user/infrastructure/repositories/userRepositoryImpl.ts';
 import { IgnoredSeriesRepositoryImpl } from '../../infrastructure/repositories/ignoredSeriesRepositoryImpl.ts';
@@ -12,7 +12,7 @@ import { IgnoredSeriesRepositoryImpl } from '../../infrastructure/repositories/i
 import { RemoveIgnoredSeriesAction } from './removeIgnoredSeriesAction.ts';
 
 describe('RemoveIgnoredSeriesAction', () => {
-  let database: Database;
+  let database: DatabaseClient;
   let userRepository: UserRepositoryImpl;
   let ignoredSeriesRepository: IgnoredSeriesRepositoryImpl;
   let loggerService: LoggerService;
@@ -20,7 +20,7 @@ describe('RemoveIgnoredSeriesAction', () => {
 
   beforeEach(async () => {
     const config = createConfig();
-    database = new Database({ url: config.database.url });
+    database = new DatabaseClient({ url: config.database.url });
     userRepository = new UserRepositoryImpl(database);
     ignoredSeriesRepository = new IgnoredSeriesRepositoryImpl(database);
     loggerService = {

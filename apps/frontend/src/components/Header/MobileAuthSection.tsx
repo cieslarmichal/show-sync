@@ -32,7 +32,7 @@ export function MobileAuthSection() {
       onClick={() => navigate('/login')}
       className="text-xs bg-primary hover:bg-primary/90 text-primary-foreground h-8 px-3"
     >
-      Sign in
+      Sign In
     </Button>
   );
 }

@@ -5,17 +5,22 @@ import SearchSeries from './SearchSeries';
 
 describe('SearchSeries', () => {
   const mockOnAddToProfile = vi.fn();
+  const mockOnAddToIgnored = vi.fn();
   const mockProfileSeriesIds = new Set<number>();
+  const mockIgnoredSeriesIds = new Set<number>();
 
   beforeEach(() => {
     mockOnAddToProfile.mockClear();
+    mockOnAddToIgnored.mockClear();
   });
 
   it('should render search input', async () => {
     await renderWithProviders(
       <SearchSeries
         onAddToProfile={mockOnAddToProfile}
+        onAddToIgnored={mockOnAddToIgnored}
         profileSeriesIds={mockProfileSeriesIds}
+        ignoredSeriesIds={mockIgnoredSeriesIds}
       />,
     );
 
@@ -27,7 +32,9 @@ describe('SearchSeries', () => {
     await renderWithProviders(
       <SearchSeries
         onAddToProfile={mockOnAddToProfile}
+        onAddToIgnored={mockOnAddToIgnored}
         profileSeriesIds={mockProfileSeriesIds}
+        ignoredSeriesIds={mockIgnoredSeriesIds}
       />,
     );
 
@@ -48,7 +55,9 @@ describe('SearchSeries', () => {
     await renderWithProviders(
       <SearchSeries
         onAddToProfile={mockOnAddToProfile}
+        onAddToIgnored={mockOnAddToIgnored}
         profileSeriesIds={mockProfileSeriesIds}
+        ignoredSeriesIds={mockIgnoredSeriesIds}
       />,
     );
 
@@ -69,7 +78,9 @@ describe('SearchSeries', () => {
     await renderWithProviders(
       <SearchSeries
         onAddToProfile={mockOnAddToProfile}
+        onAddToIgnored={mockOnAddToIgnored}
         profileSeriesIds={mockProfileSeriesIds}
+        ignoredSeriesIds={mockIgnoredSeriesIds}
       />,
     );
 
@@ -85,12 +96,14 @@ describe('SearchSeries', () => {
     );
   });
 
-  it('should show "Add to Profile" button for each result', async () => {
+  it('should show "Like" and "Not Interested" buttons for each result', async () => {
     const user = userEvent.setup();
     await renderWithProviders(
       <SearchSeries
         onAddToProfile={mockOnAddToProfile}
+        onAddToIgnored={mockOnAddToIgnored}
         profileSeriesIds={mockProfileSeriesIds}
+        ignoredSeriesIds={mockIgnoredSeriesIds}
       />,
     );
 
@@ -99,19 +112,23 @@ describe('SearchSeries', () => {
 
     await waitFor(
       () => {
-        const addButtons = screen.getAllByRole('button', { name: /add to profile/i });
-        expect(addButtons.length).toBeGreaterThan(0);
+        const likeButtons = screen.getAllByRole('button', { name: /^like$/i });
+        const notInterestedButtons = screen.getAllByRole('button', { name: /^not interested$/i });
+        expect(likeButtons.length).toBeGreaterThan(0);
+        expect(notInterestedButtons.length).toBeGreaterThan(0);
       },
       { timeout: 1000 },
     );
   });
 
-  it('should call onAddToProfile when clicking add button', async () => {
+  it('should call onAddToProfile when clicking like button', async () => {
     const user = userEvent.setup();
     await renderWithProviders(
       <SearchSeries
         onAddToProfile={mockOnAddToProfile}
+        onAddToIgnored={mockOnAddToIgnored}
         profileSeriesIds={mockProfileSeriesIds}
+        ignoredSeriesIds={mockIgnoredSeriesIds}
       />,
     );
 
@@ -125,8 +142,8 @@ describe('SearchSeries', () => {
       { timeout: 1000 },
     );
 
-    const addButton = screen.getAllByRole('button', { name: /add to profile/i })[0];
-    await user.click(addButton);
+    const likeButton = screen.getAllByRole('button', { name: /^like$/i })[0];
+    await user.click(likeButton);
 
     expect(mockOnAddToProfile).toHaveBeenCalledTimes(1);
     expect(mockOnAddToProfile).toHaveBeenCalledWith(
@@ -137,12 +154,14 @@ describe('SearchSeries', () => {
     );
   });
 
-  it('should clear search input after adding to profile', async () => {
+  it('should clear search input after liking series', async () => {
     const user = userEvent.setup();
     await renderWithProviders(
       <SearchSeries
         onAddToProfile={mockOnAddToProfile}
+        onAddToIgnored={mockOnAddToIgnored}
         profileSeriesIds={mockProfileSeriesIds}
+        ignoredSeriesIds={mockIgnoredSeriesIds}
       />,
     );
 
@@ -156,22 +175,24 @@ describe('SearchSeries', () => {
       { timeout: 1000 },
     );
 
-    const addButton = screen.getAllByRole('button', { name: /add to profile/i })[0];
-    await user.click(addButton);
+    const likeButton = screen.getAllByRole('button', { name: /^like$/i })[0];
+    await user.click(likeButton);
 
     await waitFor(() => {
       expect(searchInput).toHaveValue('');
     });
   });
 
-  it('should show "Added" for series already in profile', async () => {
+  it('should show "Liked" for series already in profile', async () => {
     const profileWithSeries = new Set<number>([1396]);
     const user = userEvent.setup();
 
     await renderWithProviders(
       <SearchSeries
         onAddToProfile={mockOnAddToProfile}
+        onAddToIgnored={mockOnAddToIgnored}
         profileSeriesIds={profileWithSeries}
+        ignoredSeriesIds={mockIgnoredSeriesIds}
       />,
     );
 
@@ -180,20 +201,22 @@ describe('SearchSeries', () => {
 
     await waitFor(
       () => {
-        expect(screen.getByRole('button', { name: /added/i })).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: /liked/i })).toBeInTheDocument();
       },
       { timeout: 1000 },
     );
   });
 
-  it('should disable button for series already in profile', async () => {
+  it('should disable like button for series already in profile', async () => {
     const profileWithSeries = new Set<number>([1396]);
     const user = userEvent.setup();
 
     await renderWithProviders(
       <SearchSeries
         onAddToProfile={mockOnAddToProfile}
+        onAddToIgnored={mockOnAddToIgnored}
         profileSeriesIds={profileWithSeries}
+        ignoredSeriesIds={mockIgnoredSeriesIds}
       />,
     );
 
@@ -202,8 +225,8 @@ describe('SearchSeries', () => {
 
     await waitFor(
       () => {
-        const addedButton = screen.getByRole('button', { name: /added/i });
-        expect(addedButton).toBeDisabled();
+        const likedButton = screen.getByRole('button', { name: /liked/i });
+        expect(likedButton).toBeDisabled();
       },
       { timeout: 1000 },
     );
@@ -214,7 +237,9 @@ describe('SearchSeries', () => {
     await renderWithProviders(
       <SearchSeries
         onAddToProfile={mockOnAddToProfile}
+        onAddToIgnored={mockOnAddToIgnored}
         profileSeriesIds={mockProfileSeriesIds}
+        ignoredSeriesIds={mockIgnoredSeriesIds}
       />,
     );
 
@@ -234,7 +259,9 @@ describe('SearchSeries', () => {
     await renderWithProviders(
       <SearchSeries
         onAddToProfile={mockOnAddToProfile}
+        onAddToIgnored={mockOnAddToIgnored}
         profileSeriesIds={mockProfileSeriesIds}
+        ignoredSeriesIds={mockIgnoredSeriesIds}
       />,
     );
 
@@ -254,7 +281,9 @@ describe('SearchSeries', () => {
     await renderWithProviders(
       <SearchSeries
         onAddToProfile={mockOnAddToProfile}
+        onAddToIgnored={mockOnAddToIgnored}
         profileSeriesIds={mockProfileSeriesIds}
+        ignoredSeriesIds={mockIgnoredSeriesIds}
       />,
     );
 
@@ -274,7 +303,9 @@ describe('SearchSeries', () => {
     await renderWithProviders(
       <SearchSeries
         onAddToProfile={mockOnAddToProfile}
+        onAddToIgnored={mockOnAddToIgnored}
         profileSeriesIds={mockProfileSeriesIds}
+        ignoredSeriesIds={mockIgnoredSeriesIds}
       />,
     );
 
@@ -293,6 +324,117 @@ describe('SearchSeries', () => {
     await waitFor(
       () => {
         expect(screen.queryByText('Breaking Bad')).not.toBeInTheDocument();
+      },
+      { timeout: 1000 },
+    );
+  });
+
+  it('should call onAddToIgnored when clicking not interested button', async () => {
+    const user = userEvent.setup();
+    await renderWithProviders(
+      <SearchSeries
+        onAddToProfile={mockOnAddToProfile}
+        onAddToIgnored={mockOnAddToIgnored}
+        profileSeriesIds={mockProfileSeriesIds}
+        ignoredSeriesIds={mockIgnoredSeriesIds}
+      />,
+    );
+
+    const searchInput = screen.getByPlaceholderText(/search for a tv series/i);
+    await user.type(searchInput, 'Breaking');
+
+    await waitFor(
+      () => {
+        expect(screen.getByText('Breaking Bad')).toBeInTheDocument();
+      },
+      { timeout: 1000 },
+    );
+
+    const notInterestedButton = screen.getAllByRole('button', { name: /^not interested$/i })[0];
+    await user.click(notInterestedButton);
+
+    expect(mockOnAddToIgnored).toHaveBeenCalledTimes(1);
+    expect(mockOnAddToIgnored).toHaveBeenCalledWith(
+      expect.objectContaining({
+        id: 1396,
+        name: 'Breaking Bad',
+      }),
+    );
+  });
+
+  it('should clear search input after marking series as not interested', async () => {
+    const user = userEvent.setup();
+    await renderWithProviders(
+      <SearchSeries
+        onAddToProfile={mockOnAddToProfile}
+        onAddToIgnored={mockOnAddToIgnored}
+        profileSeriesIds={mockProfileSeriesIds}
+        ignoredSeriesIds={mockIgnoredSeriesIds}
+      />,
+    );
+
+    const searchInput = screen.getByPlaceholderText(/search for a tv series/i);
+    await user.type(searchInput, 'Breaking');
+
+    await waitFor(
+      () => {
+        expect(screen.getByText('Breaking Bad')).toBeInTheDocument();
+      },
+      { timeout: 1000 },
+    );
+
+    const notInterestedButton = screen.getAllByRole('button', { name: /^not interested$/i })[0];
+    await user.click(notInterestedButton);
+
+    await waitFor(() => {
+      expect(searchInput).toHaveValue('');
+    });
+  });
+
+  it('should show "Ignored" for series already ignored', async () => {
+    const ignoredWithSeries = new Set<number>([1396]);
+    const user = userEvent.setup();
+
+    await renderWithProviders(
+      <SearchSeries
+        onAddToProfile={mockOnAddToProfile}
+        onAddToIgnored={mockOnAddToIgnored}
+        profileSeriesIds={mockProfileSeriesIds}
+        ignoredSeriesIds={ignoredWithSeries}
+      />,
+    );
+
+    const searchInput = screen.getByPlaceholderText(/search for a tv series/i);
+    await user.type(searchInput, 'Breaking');
+
+    await waitFor(
+      () => {
+        expect(screen.getByRole('button', { name: /ignored/i })).toBeInTheDocument();
+      },
+      { timeout: 1000 },
+    );
+  });
+
+  it('should disable not interested button for series already ignored', async () => {
+    const ignoredWithSeries = new Set<number>([1396]);
+    const user = userEvent.setup();
+
+    await renderWithProviders(
+      <SearchSeries
+        onAddToProfile={mockOnAddToProfile}
+        onAddToIgnored={mockOnAddToIgnored}
+        profileSeriesIds={mockProfileSeriesIds}
+        ignoredSeriesIds={ignoredWithSeries}
+      />,
+    );
+
+    const searchInput = screen.getByPlaceholderText(/search for a tv series/i);
+    await user.type(searchInput, 'Breaking');
+
+    await waitFor(
+      () => {
+        const ignoredButton = screen.getByRole('button', { name: /ignored/i });
+        expect(ignoredButton).toBeDisabled();
       },
       { timeout: 1000 },
     );

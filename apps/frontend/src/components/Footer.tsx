@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { useContext } from 'react';
 import { AuthContext } from '../context/AuthContext';
-import { Mail, Phone, MapPin, Facebook, Instagram, Heart, Users } from 'lucide-react';
+import { Mail, Phone, MapPin, Facebook, Instagram, Heart, Users, User } from 'lucide-react';
 
 export default function Footer() {
   const { userData } = useContext(AuthContext);
@@ -49,6 +49,15 @@ export default function Footer() {
                     className="hover:text-foreground transition-colors"
                   >
                     My Watch Rooms
+                  </Link>
+                </div>
+                <div className="flex items-center gap-3 text-muted-foreground">
+                  <User className="h-4 w-4" />
+                  <Link
+                    to="/my-profile"
+                    className="hover:text-foreground transition-colors"
+                  >
+                    My Profile
                   </Link>
                 </div>
               </div>

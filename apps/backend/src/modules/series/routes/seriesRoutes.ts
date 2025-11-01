@@ -5,7 +5,7 @@ import type { TokenService } from '../../../common/auth/tokenService.ts';
 import { UnauthorizedAccessError } from '../../../common/errors/unathorizedAccessError.ts';
 import type { LoggerService } from '../../../common/logger/loggerService.ts';
 import type { Config } from '../../../core/config.ts';
-import type { Database } from '../../../infrastructure/database/database.ts';
+import type { DatabaseClient } from '../../../infrastructure/database/database.ts';
 import { AddFavoriteSeriesAction } from '../application/actions/addFavoriteSeriesAction.ts';
 import { AddIgnoredSeriesAction } from '../application/actions/addIgnoredSeriesAction.ts';
 import { GetFavoriteSeriesAction } from '../application/actions/getFavoriteSeriesAction.ts';
@@ -45,7 +45,7 @@ export const seriesRoutes: FastifyPluginAsyncTypebox<{
   config: Config;
   loggerService: LoggerService;
   tokenService: TokenService;
-  database: Database;
+  database: DatabaseClient;
 }> = async function (fastify, opts) {
   const { config, loggerService, tokenService, database } = opts;
 
@@ -86,11 +86,21 @@ export const seriesRoutes: FastifyPluginAsyncTypebox<{
   const getSeriesExternalIdsAction = new GetSeriesExternalIdsAction(tmdbService);
   const favoriteSeriesRepository = new FavoriteSeriesRepositoryImpl(database);
   const getUserFavoriteSeriesAction = new GetFavoriteSeriesAction(favoriteSeriesRepository);
-  const addFavoriteSeriesAction = new AddFavoriteSeriesAction(favoriteSeriesRepository, loggerService);
-  const removeFavoriteSeriesAction = new RemoveFavoriteSeriesAction(favoriteSeriesRepository, loggerService);
   const ignoredSeriesRepository = new IgnoredSeriesRepositoryImpl(database);
   const getUserIgnoredSeriesAction = new GetIgnoredSeriesAction(ignoredSeriesRepository);
-  const addIgnoredSeriesAction = new AddIgnoredSeriesAction(ignoredSeriesRepository, loggerService);
+  const addFavoriteSeriesAction = new AddFavoriteSeriesAction(
+    favoriteSeriesRepository,
+    ignoredSeriesRepository,
+    database,
+    loggerService,
+  );
+  const removeFavoriteSeriesAction = new RemoveFavoriteSeriesAction(favoriteSeriesRepository, loggerService);
+  const addIgnoredSeriesAction = new AddIgnoredSeriesAction(
+    ignoredSeriesRepository,
+    favoriteSeriesRepository,
+    database,
+    loggerService,
+  );
   const removeIgnoredSeriesAction = new RemoveIgnoredSeriesAction(ignoredSeriesRepository, loggerService);
 
   const authenticationMiddleware = createAuthenticationMiddleware(tokenService);

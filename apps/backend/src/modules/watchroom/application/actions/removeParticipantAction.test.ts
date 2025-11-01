@@ -5,7 +5,7 @@ import { OperationNotValidError } from '../../../../common/errors/operationNotVa
 import { ResourceNotFoundError } from '../../../../common/errors/resourceNotFoundError.ts';
 import type { LoggerService } from '../../../../common/logger/loggerService.ts';
 import { createConfig } from '../../../../core/config.ts';
-import { Database } from '../../../../infrastructure/database/database.ts';
+import { DatabaseClient } from '../../../../infrastructure/database/database.ts';
 import { users, watchrooms, watchroomParticipants } from '../../../../infrastructure/database/schema.ts';
 import { UserRepositoryImpl } from '../../../user/infrastructure/repositories/userRepositoryImpl.ts';
 import { WatchroomRepositoryImpl } from '../../infrastructure/repositories/watchroomRepositoryImpl.ts';
@@ -15,7 +15,7 @@ import { JoinWatchroomAction } from './joinWatchroomAction.ts';
 import { RemoveParticipantAction } from './removeParticipantAction.ts';
 
 describe('RemoveParticipantAction', () => {
-  let database: Database;
+  let database: DatabaseClient;
   let watchroomRepository: WatchroomRepositoryImpl;
   let userRepository: UserRepositoryImpl;
   let createWatchroomAction: CreateWatchroomAction;
@@ -25,7 +25,7 @@ describe('RemoveParticipantAction', () => {
 
   beforeEach(async () => {
     const config = createConfig();
-    database = new Database({ url: config.database.url });
+    database = new DatabaseClient({ url: config.database.url });
     watchroomRepository = new WatchroomRepositoryImpl(database);
     userRepository = new UserRepositoryImpl(database);
 

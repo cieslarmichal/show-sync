@@ -1,3 +1,4 @@
+import type { Transaction } from '../../../../infrastructure/database/transaction.ts';
 import type { IgnoredSeries } from '../types/ignoredSeries.ts';
 
 export interface CreateIgnoredSeriesData {
@@ -6,9 +7,9 @@ export interface CreateIgnoredSeriesData {
 }
 
 export interface IgnoredSeriesRepository {
-  create(ignoredSeriesData: CreateIgnoredSeriesData): Promise<IgnoredSeries>;
+  create(ignoredSeriesData: CreateIgnoredSeriesData, tx?: Transaction): Promise<IgnoredSeries>;
   findMany(userId: string, page: number, pageSize: number): Promise<IgnoredSeries[]>;
   count(userId: string): Promise<number>;
-  findOne(userId: string, seriesTmdbId: number): Promise<IgnoredSeries | null>;
-  delete(userId: string, seriesTmdbId: number): Promise<void>;
+  findOne(userId: string, seriesTmdbId: number, tx?: Transaction): Promise<IgnoredSeries | null>;
+  delete(userId: string, seriesTmdbId: number, tx?: Transaction): Promise<void>;
 }

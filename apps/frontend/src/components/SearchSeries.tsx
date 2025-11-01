@@ -7,20 +7,43 @@ import { Card } from './ui/Card';
 import { Button } from './ui/Button';
 import { Skeleton } from './ui/Skeleton';
 import { Badge } from './ui/Badge';
-import { Search } from 'lucide-react';
+import { Search, ThumbsUp, EyeOff } from 'lucide-react';
 
 interface SearchSeriesProps {
   onAddToProfile: (series: Series) => void;
+  onAddToIgnored: (series: Series) => void;
   profileSeriesIds: Set<number>;
+  ignoredSeriesIds?: Set<number>;
 }
 
-export default function SearchSeries({ onAddToProfile, profileSeriesIds }: SearchSeriesProps) {
+export default function SearchSeries({
+  onAddToProfile,
+  onAddToIgnored,
+  profileSeriesIds,
+  ignoredSeriesIds,
+}: SearchSeriesProps) {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<Series[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const debouncedQuery = useDebounce(query, 500);
+
+  const truncateToTwoSentences = (text: string): string => {
+    if (!text) return '';
+
+    // Find the first two sentence endings (. followed by space or end of string)
+    const sentenceRegex = /[^.!?]+[.!?]+/g;
+    const sentences = text.match(sentenceRegex);
+
+    if (!sentences || sentences.length === 0) {
+      return text;
+    }
+
+    // Take first two sentences and ensure it ends with a dot
+    const twoSentences = sentences.slice(0, 2).join(' ').trim();
+    return twoSentences.endsWith('.') ? twoSentences : twoSentences + '.';
+  };
 
   useEffect(() => {
     const performSearch = async () => {
@@ -48,22 +71,28 @@ export default function SearchSeries({ onAddToProfile, profileSeriesIds }: Searc
 
   return (
     <div className="space-y-6">
-      <div className="relative">
-        <label
-          htmlFor="series-search"
-          className="sr-only"
-        >
-          Search for a TV series
-        </label>
-        <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-        <Input
-          id="series-search"
-          type="text"
-          placeholder="Search for a TV series by title..."
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          className="w-full pl-12 pr-4 py-6 text-base sm:text-lg rounded-full bg-muted border-2 border-transparent focus:border-primary focus:bg-background"
-        />
+      <div className="space-y-2">
+        <div className="relative">
+          <label
+            htmlFor="series-search"
+            className="sr-only"
+          >
+            Search for a TV series
+          </label>
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+          <Input
+            id="series-search"
+            type="text"
+            placeholder="Search for a TV series by title..."
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            className="w-full pl-12 pr-4 py-6 text-base sm:text-lg rounded-full bg-muted border-2 border-transparent focus:border-primary focus:bg-background"
+          />
+        </div>
+        <p className="text-xs text-muted-foreground px-1">
+          <span className="font-medium">Like</span> the shows you enjoy • Mark as{' '}
+          <span className="font-medium">Not Interested</span> to exclude them from AI recommendations
+        </p>
       </div>
 
       {error && <div className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-md p-3">{error}</div>}
@@ -75,14 +104,23 @@ export default function SearchSeries({ onAddToProfile, profileSeriesIds }: Searc
               key={i}
               className="p-4"
             >
-              <div className="flex gap-4">
-                <Skeleton className="h-36 w-24 flex-shrink-0" />
+              <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 sm:items-center">
+                <Skeleton className="h-36 w-24 shrink-0 rounded" />
                 <div className="flex-1 space-y-2">
-                  <Skeleton className="h-4 w-3/4" />
+                  <Skeleton className="h-3.5 w-3/4" />
                   <Skeleton className="h-3 w-full" />
-                  <Skeleton className="h-3 w-1/2" />
+                  <Skeleton className="h-3 w-full" />
+                  <div className="flex items-center gap-2 mt-2.5">
+                    <Skeleton className="h-5 w-12" />
+                    <Skeleton className="h-3 w-8" />
+                  </div>
                 </div>
-                <Skeleton className="h-8 w-20" />
+                <div className="shrink-0 w-full sm:w-auto mt-4 sm:mt-0 sm:ml-4">
+                  <div className="flex gap-2">
+                    <Skeleton className="h-8 w-20 flex-1 sm:flex-none" />
+                    <Skeleton className="h-8 w-32 flex-1 sm:flex-none" />
+                  </div>
+                </div>
               </div>
             </Card>
           ))}
@@ -96,8 +134,8 @@ export default function SearchSeries({ onAddToProfile, profileSeriesIds }: Searc
               key={series.id}
               className="p-4"
             >
-              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 sm:items-center">
-                <div className="flex-shrink-0">
+              <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 sm:items-center">
+                <div className="shrink-0">
                   {series.posterPath ? (
                     <img
                       src={`https://image.tmdb.org/t/p/w300${series.posterPath}`}
@@ -112,10 +150,10 @@ export default function SearchSeries({ onAddToProfile, profileSeriesIds }: Searc
                 </div>
                 <div className="flex-1 min-w-0">
                   <h3 className="font-medium text-sm truncate">{series.name}</h3>
-                  <p className="text-sm text-muted-foreground line-clamp-4 mt-1">
-                    {series.overview || 'No description available.'}
+                  <p className="text-sm text-muted-foreground mt-2">
+                    {truncateToTwoSentences(series.overview || 'No description available.')}
                   </p>
-                  <div className="space-y-2 mt-2">
+                  <div className="space-y-2 mt-2.5">
                     <div className="flex items-center gap-2">
                       {series?.firstAirDate && (
                         <Badge
@@ -132,19 +170,35 @@ export default function SearchSeries({ onAddToProfile, profileSeriesIds }: Searc
                     </div>
                   </div>
                 </div>
-                <div className="flex-shrink-0 w-full sm:w-auto mt-3 sm:mt-0">
-                  <Button
-                    size="sm"
-                    className="w-full sm:w-auto"
-                    onClick={() => {
-                      onAddToProfile(series);
-                      setQuery(''); // Clear search input
-                    }}
-                    disabled={profileSeriesIds.has(series.id)}
-                    variant={profileSeriesIds.has(series.id) ? 'secondary' : 'default'}
-                  >
-                    {profileSeriesIds.has(series.id) ? 'Added' : 'Add to Profile'}
-                  </Button>
+                <div className="shrink-0 w-full sm:w-auto mt-4 sm:mt-0 sm:ml-4">
+                  <div className="flex gap-2">
+                    <Button
+                      size="sm"
+                      className="flex-1 sm:flex-none shadow-sm hover:shadow-md hover:scale-105 active:scale-95 transition-all"
+                      onClick={() => {
+                        onAddToProfile(series);
+                        setQuery('');
+                      }}
+                      disabled={profileSeriesIds.has(series.id)}
+                      variant={profileSeriesIds.has(series.id) ? 'secondary' : 'default'}
+                    >
+                      <ThumbsUp className="w-4 h-4 mr-1" />
+                      {profileSeriesIds.has(series.id) ? 'Liked' : 'Like'}
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant={ignoredSeriesIds?.has(series.id) ? 'secondary' : 'outline'}
+                      className="flex-1 sm:flex-none hover:bg-destructive/10 hover:text-destructive hover:border-destructive/50 hover:scale-105 active:scale-95 transition-all"
+                      onClick={() => {
+                        onAddToIgnored(series);
+                        setQuery('');
+                      }}
+                      disabled={ignoredSeriesIds?.has(series.id)}
+                    >
+                      <EyeOff className="w-4 h-4 mr-1" />
+                      {ignoredSeriesIds?.has(series.id) ? 'Ignored' : 'Not Interested'}
+                    </Button>
+                  </div>
                 </div>
               </div>
             </Card>

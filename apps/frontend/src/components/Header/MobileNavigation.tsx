@@ -54,7 +54,7 @@ export function MobileNavigation({ onItemClick }: MobileNavigationProps) {
             onClick={() => handleNavigation('/login')}
             className="w-full justify-start px-3 py-2 text-sm font-medium rounded-md transition-colors text-muted-foreground hover:text-primary hover:bg-primary/10"
           >
-            Sign in
+            Sign In
           </Button>
           <Button
             variant="ghost"
