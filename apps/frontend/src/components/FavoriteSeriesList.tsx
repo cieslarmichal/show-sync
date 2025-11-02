@@ -12,6 +12,8 @@ interface FavoriteSeriesListProps {
   onRemoveFavorite: (seriesTmdbId: number) => void;
   onUpdatePreference?: (seriesTmdbId: number, preferenceLevel: PreferenceLevel) => Promise<void>;
   isLoading: boolean;
+  emptyMessage?: string;
+  emptySubMessage?: string;
 }
 
 export default function FavoriteSeriesList({
@@ -19,6 +21,8 @@ export default function FavoriteSeriesList({
   onRemoveFavorite,
   onUpdatePreference,
   isLoading: externalLoading,
+  emptyMessage = 'No favorite series yet.',
+  emptySubMessage = 'Search for series above and add them to your favorites!',
 }: FavoriteSeriesListProps) {
   const [seriesDetails, setSeriesDetails] = useState<Map<number, SeriesDetails>>(new Map());
   const [removingIds, setRemovingIds] = useState<Set<number>>(new Set());
@@ -140,8 +144,8 @@ export default function FavoriteSeriesList({
     <div className="space-y-3">
       {favorites.length === 0 ? (
         <div className="text-center py-8 text-muted-foreground">
-          <p>No favorite series yet.</p>
-          <p className="text-sm mt-1">Search for series above and add them to your favorites!</p>
+          <p>{emptyMessage}</p>
+          <p className="text-sm mt-1">{emptySubMessage}</p>
         </div>
       ) : (
         <div className="max-h-[400px] sm:max-h-[500px] overflow-y-auto">
@@ -174,7 +178,7 @@ export default function FavoriteSeriesList({
 
                     {/* Preference Toggle - Top Left */}
                     {onUpdatePreference && (
-                      <div className="absolute top-2 left-2 z-10">
+                      <div className="absolute top-2 left-2">
                         <PreferenceToggle
                           preferenceLevel={favorite.preferenceLevel}
                           onToggle={(newLevel) => handleUpdatePreference(favorite.seriesTmdbId, newLevel)}

@@ -13,8 +13,11 @@ export function PreferenceToggle({ preferenceLevel, onToggle, disabled = false }
   const isLoved = preferenceLevel === 'love';
 
   const handleClick = () => {
+    if (disabled) return;
     onToggle(isLoved ? 'like' : 'love');
   };
+
+  const label = isLoved ? 'Loved (click to set to Like)' : 'Like (click to set to Loved)';
 
   return (
     <Tooltip>
@@ -24,22 +27,20 @@ export function PreferenceToggle({ preferenceLevel, onToggle, disabled = false }
           disabled={disabled}
           variant="ghost"
           size="icon"
-          className={`
-            w-8 h-8 rounded-full transition-all duration-200
-            ${
-              isLoved
-                ? 'bg-red-500/20 hover:bg-red-500/30 text-red-500'
-                : 'bg-white/10 hover:bg-white/20 text-white/70 hover:text-white'
-            }
-          `}
-          aria-label={isLoved ? 'Mark as liked' : 'Mark as loved'}
+          aria-label={label}
+          aria-pressed={isLoved}
+          className={`relative h-8 w-8 rounded-full p-0 transition-colors
+            hover:bg-white/20
+            ${disabled ? 'cursor-not-allowed opacity-50' : ''}`}
         >
-          <Heart className={`w-4 h-4 transition-all ${isLoved ? 'fill-current' : ''}`} />
+          <Heart
+            className={`size-6 transition-all duration-300 ease-in-out group-hover:scale-110 group-active:scale-95
+              ${isLoved ? 'fill-red-500 text-red-500' : 'text-red-400'}`}
+            strokeWidth={2.2}
+          />
         </Button>
       </TooltipTrigger>
-      <TooltipContent side="bottom">
-        {isLoved ? 'Loved (click to change to Like)' : 'Liked (click to change to Love)'}
-      </TooltipContent>
+      <TooltipContent side="bottom">{label}</TooltipContent>
     </Tooltip>
   );
 }

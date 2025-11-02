@@ -89,10 +89,7 @@ export function CreateWatchRoomModal({ onRoomCreated, disabled = false, disabled
         <DialogHeader>
           <DialogTitle>Create Watch Room</DialogTitle>
         </DialogHeader>
-        <DialogDescription>
-          Create a new watch room to discover your next favorite series. Use the description to tell the AI what you're
-          looking for!
-        </DialogDescription>
+        <DialogDescription>Create a new watch room to discover your next favorite series.</DialogDescription>
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
@@ -120,7 +117,7 @@ export function CreateWatchRoomModal({ onRoomCreated, disabled = false, disabled
               name="description"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel htmlFor="create-room-description">AI Prompt (optional)</FormLabel>
+                  <FormLabel htmlFor="create-room-description">Description - AI Prompt (optional)</FormLabel>
                   <FormControl>
                     <Textarea
                       id="create-room-description"

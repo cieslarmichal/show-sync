@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { toast } from 'sonner';
+import { Heart, ThumbsUp } from 'lucide-react';
 import SearchSeries from '../components/SearchSeries.tsx';
 import FavoriteSeriesList from '../components/FavoriteSeriesList.tsx';
 import IgnoredSeriesList from '../components/IgnoredSeriesList.tsx';
@@ -229,10 +230,27 @@ export default function SeriesPage() {
                 onValueChange={(value: string) => setPreferenceFilter(value as 'all' | PreferenceLevel)}
                 className="w-full"
               >
-                <TabsList className="mb-6">
-                  <TabsTrigger value="all">All ({mySeries.length})</TabsTrigger>
-                  <TabsTrigger value="love">❤️ Loved ({lovedCount})</TabsTrigger>
-                  <TabsTrigger value="like">👍 Liked ({likedCount})</TabsTrigger>
+                <TabsList className="mb-6 bg-muted/50 p-1.5 rounded-xl">
+                  <TabsTrigger
+                    value="all"
+                    className="data-[state=active]:bg-background data-[state=active]:shadow-md rounded-lg px-4 py-2.5 font-medium transition-all"
+                  >
+                    All ({mySeries.length})
+                  </TabsTrigger>
+                  <TabsTrigger
+                    value="love"
+                    className="data-[state=active]:bg-red-50 data-[state=active]:text-red-600 data-[state=active]:shadow-md dark:data-[state=active]:bg-red-950/30 dark:data-[state=active]:text-red-400 rounded-lg px-4 py-2.5 font-medium transition-all"
+                  >
+                    <Heart className="w-4 h-4 mr-1.5 fill-current" />
+                    Loved ({lovedCount})
+                  </TabsTrigger>
+                  <TabsTrigger
+                    value="like"
+                    className="data-[state=active]:bg-sky-50 data-[state=active]:text-sky-600 data-[state=active]:shadow-md dark:data-[state=active]:bg-sky-950/30 dark:data-[state=active]:text-sky-400 rounded-lg px-4 py-2.5 font-medium transition-all"
+                  >
+                    <ThumbsUp className="w-4 h-4 mr-1.5" />
+                    Liked ({likedCount})
+                  </TabsTrigger>
                 </TabsList>
 
                 <TabsContent value="all">
@@ -250,6 +268,8 @@ export default function SeriesPage() {
                     onRemoveFavorite={handleRemoveSeries}
                     onUpdatePreference={handleUpdatePreference}
                     isLoading={isLoading}
+                    emptyMessage="No loved series yet."
+                    emptySubMessage="Click the heart icon on a series to mark it as loved!"
                   />
                 </TabsContent>
 
@@ -259,6 +279,8 @@ export default function SeriesPage() {
                     onRemoveFavorite={handleRemoveSeries}
                     onUpdatePreference={handleUpdatePreference}
                     isLoading={isLoading}
+                    emptyMessage="No liked series yet."
+                    emptySubMessage="Search for series above and add them to your favorites!"
                   />
                 </TabsContent>
               </Tabs>

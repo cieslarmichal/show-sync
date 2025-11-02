@@ -91,7 +91,7 @@ export default function SearchSeries({
         </div>
         <p className="text-xs text-muted-foreground px-1">
           <span className="font-medium">Like</span> or <span className="font-medium">Love</span> the shows you enjoy •
-          Mark as <span className="font-medium">Not Interested</span> to exclude them from AI recommendations
+          <span className="font-medium"> Skip</span> to exclude them from AI recommendations
         </p>
       </div>
 
@@ -178,8 +178,8 @@ export default function SearchSeries({
                       variant="outline"
                       className={`flex-1 sm:flex-none min-h-11 shadow-sm hover:shadow-md active:scale-95 transition-all duration-300 group ${
                         profileSeriesIds.has(series.id)
-                          ? 'bg-linear-to-br from-pink-400 to-pink-500 text-white border-pink-400 hover:from-pink-500 hover:to-pink-600'
-                          : 'bg-pink-50 border-pink-200 hover:bg-pink-100 hover:border-pink-400 dark:bg-pink-950/20 dark:border-pink-900/50 dark:hover:bg-pink-900/30 dark:hover:border-pink-700'
+                          ? 'bg-linear-to-br from-red-400 to-red-500 text-white border-red-400 hover:from-red-500 hover:to-red-600'
+                          : 'bg-red-50 border-red-200 hover:bg-red-100 hover:border-red-400 dark:bg-red-950/20 dark:border-red-900/50 dark:hover:bg-red-900/30 dark:hover:border-red-700'
                       }`}
                       onClick={() => {
                         onAddToProfile(series, 'love');
@@ -190,10 +190,10 @@ export default function SearchSeries({
                       aria-pressed={profileSeriesIds.has(series.id)}
                     >
                       <Heart
-                        className={`w-4 h-4 mr-1.5 transition-all duration-300 text-pink-500 dark:text-pink-400 ${
+                        className={`w-4 h-4 mr-1.5 transition-all duration-300 text-red-500 dark:text-red-400 ${
                           profileSeriesIds.has(series.id)
                             ? 'fill-current text-white!'
-                            : 'group-hover:scale-110 group-hover:text-pink-600 dark:group-hover:text-pink-300'
+                            : 'group-hover:scale-110 group-hover:text-red-600 dark:group-hover:text-red-300'
                         }`}
                       />
                       Love
