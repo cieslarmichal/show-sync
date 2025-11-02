@@ -707,14 +707,14 @@ export default function WatchRoomDetailsPage() {
                               {/* Series Poster */}
                               <button
                                 onMouseDown={(e) => handleOpenImdb(recommendation.seriesTmdbId, e)}
-                                className="relative shrink-0 w-full sm:w-40 h-auto p-0 rounded-xl overflow-hidden group/poster focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 cursor-pointer"
+                                className="relative shrink-0 w-full sm:w-42 h-auto p-0 rounded-xl overflow-hidden group/poster focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 cursor-pointer"
                               >
                                 {isImageLoading && <Skeleton className="absolute inset-0 h-60 w-full sm:w-40" />}
                                 {recommendation.seriesDetails?.posterPath ? (
                                   <img
                                     src={`https://image.tmdb.org/t/p/w300${recommendation.seriesDetails.posterPath}`}
                                     alt={`${recommendation.seriesDetails.name} poster`}
-                                    className="h-60 w-full sm:w-40 object-cover rounded-xl shadow-md group-hover/poster:shadow-xl transition-shadow"
+                                    className="h-64 w-full sm:w-42 object-cover rounded-xl shadow-md group-hover/poster:shadow-xl transition-shadow"
                                     onLoad={() => {
                                       setImageLoadingStates((prev) => {
                                         const newMap = new Map(prev);

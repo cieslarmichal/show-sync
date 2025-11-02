@@ -124,10 +124,10 @@ export default function JoinWatchRoomPage() {
           )}
 
           <div className="flex items-center justify-center gap-3 p-3 rounded-lg bg-secondary/50">
-            <Users className="w-4 h-4 text-muted-foreground" />
-            <div className="flex items-baseline gap-1.5">
-              <span className="text-lg font-bold">{participantCount}</span>
-              <span className="text-sm text-muted-foreground">
+            <Users className="w-5 h-5 text-muted-foreground shrink-0" />
+            <div className="flex items-center gap-1.5">
+              <span className="text-lg font-bold leading-none">{participantCount}</span>
+              <span className="text-sm text-muted-foreground leading-none">
                 {participantCount === 1 ? 'participant' : 'participants'}
               </span>
             </div>

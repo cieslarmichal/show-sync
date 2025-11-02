@@ -114,17 +114,17 @@ export function EditWatchRoomModal({
               name="description"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel htmlFor="edit-room-description">Description (optional)</FormLabel>
+                  <FormLabel htmlFor="edit-room-description">Description - AI Prompt (optional)</FormLabel>
                   <FormControl>
                     <Textarea
                       id="edit-room-description"
-                      placeholder="Looking for a great series to watch together..."
+                      placeholder="I'm looking for something light and funny, maybe a comedy series with strong character development..."
                       {...field}
                     />
                   </FormControl>
                   <p className="text-xs text-muted-foreground mt-1">
-                    Tip: Add preferences for AI recommendations (e.g., "something light and funny" or "dark thriller
-                    series")
+                    💡 Describe your preferences, mood, or what you're looking for. The AI will use this to recommend
+                    series that match your interests.
                   </p>
                   <FormMessage />
                 </FormItem>
