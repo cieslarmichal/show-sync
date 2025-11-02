@@ -386,7 +386,6 @@ export class GenerateRecommendationsAction {
     participantsWithFavorites.forEach((participant, index) => {
       message += `Participant ${(index + 1).toString()}:\n\n`;
 
-      // Show LOVED series first and prominently
       if (participant.lovedSeriesIds.length > 0) {
         message += `  ❤️ LOVED (HIGHEST PRIORITY - Core preferences):\n`;
         participant.lovedSeriesIds.forEach((tmdbId) => {
@@ -404,7 +403,6 @@ export class GenerateRecommendationsAction {
         message += '\n';
       }
 
-      // Show LIKED series secondary
       if (participant.likedSeriesIds.length > 0) {
         message += `  👍 LIKED (Secondary preferences):\n`;
         participant.likedSeriesIds.forEach((tmdbId) => {

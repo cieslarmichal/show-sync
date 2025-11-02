@@ -66,7 +66,7 @@ export default function SeriesPage() {
     loadIgnoredSeries();
   }, []);
 
-  const handleAddToProfile = async (series: Series) => {
+  const handleAddToProfile = async (series: Series, preferenceLevel: PreferenceLevel = 'like') => {
     try {
       // If series is in ignored list, remove it first
       if (ignoredSeriesIds.has(series.id)) {
@@ -79,15 +79,19 @@ export default function SeriesPage() {
         setMyIgnoredSeries((prev) => prev.filter((ignored) => ignored.seriesTmdbId !== series.id));
       }
 
-      await addFavoriteSeries(series.id, 'like');
+      await addFavoriteSeries(series.id, preferenceLevel);
       setProfileSeriesIds((prev) => new Set(prev).add(series.id));
       // Add to series list
       const newSeries: FavoriteSeries = {
         seriesTmdbId: series.id,
-        preferenceLevel: 'like',
+        preferenceLevel: preferenceLevel,
       };
       setMySeries((prev) => [...prev, newSeries]);
-      setLikedCount((prev) => prev + 1);
+      if (preferenceLevel === 'love') {
+        setLovedCount((prev) => prev + 1);
+      } else {
+        setLikedCount((prev) => prev + 1);
+      }
       toast.success(`"${series.name}" added to your favorites!`);
     } catch (error) {
       console.error('Failed to add to favorites:', error);

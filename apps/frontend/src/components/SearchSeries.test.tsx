@@ -151,6 +151,7 @@ describe('SearchSeries', () => {
         id: 1396,
         name: 'Breaking Bad',
       }),
+      'like',
     );
   });
 
@@ -201,7 +202,8 @@ describe('SearchSeries', () => {
 
     await waitFor(
       () => {
-        expect(screen.getByRole('button', { name: /liked/i })).toBeInTheDocument();
+        const likeButton = screen.getByRole('button', { name: /^like$/i });
+        expect(likeButton).toBeDisabled();
       },
       { timeout: 1000 },
     );
@@ -225,8 +227,8 @@ describe('SearchSeries', () => {
 
     await waitFor(
       () => {
-        const likedButton = screen.getByRole('button', { name: /liked/i });
-        expect(likedButton).toBeDisabled();
+        const likeButton = screen.getByRole('button', { name: /^like$/i });
+        expect(likeButton).toBeDisabled();
       },
       { timeout: 1000 },
     );

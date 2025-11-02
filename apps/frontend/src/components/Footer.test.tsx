@@ -69,18 +69,6 @@ describe('Footer', () => {
     expect(locationLink.closest('a')).toHaveAttribute('rel', 'noopener noreferrer');
   });
 
-  it('should render social media links', () => {
-    renderFooter();
-
-    const facebookLink = screen.getByLabelText('Facebook');
-    expect(facebookLink).toHaveAttribute('href', 'https://facebook.com/10x-series-matcher');
-    expect(facebookLink).toHaveAttribute('target', '_blank');
-
-    const instagramLink = screen.getByLabelText('Instagram');
-    expect(instagramLink).toHaveAttribute('href', 'https://instagram.com/10x-series-matcher');
-    expect(instagramLink).toHaveAttribute('target', '_blank');
-  });
-
   it('should render copyright notice', () => {
     renderFooter();
 

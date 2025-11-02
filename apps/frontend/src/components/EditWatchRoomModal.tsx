@@ -57,7 +57,7 @@ export function EditWatchRoomModal({
     try {
       await updateWatchroom(watchroomId, {
         name: values.name,
-        description: values.description,
+        description: values.description || undefined,
       });
 
       toast.success('Watch room updated successfully!');

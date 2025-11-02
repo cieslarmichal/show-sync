@@ -7,10 +7,10 @@ import { Card } from './ui/Card';
 import { Button } from './ui/Button';
 import { Skeleton } from './ui/Skeleton';
 import { Badge } from './ui/Badge';
-import { Search, ThumbsUp, EyeOff } from 'lucide-react';
+import { Search, ThumbsUp, Heart, EyeOff } from 'lucide-react';
 
 interface SearchSeriesProps {
-  onAddToProfile: (series: Series) => void;
+  onAddToProfile: (series: Series, preferenceLevel: 'like' | 'love') => void;
   onAddToIgnored: (series: Series) => void;
   profileSeriesIds: Set<number>;
   ignoredSeriesIds?: Set<number>;
@@ -90,8 +90,8 @@ export default function SearchSeries({
           />
         </div>
         <p className="text-xs text-muted-foreground px-1">
-          <span className="font-medium">Like</span> the shows you enjoy • Mark as{' '}
-          <span className="font-medium">Not Interested</span> to exclude them from AI recommendations
+          <span className="font-medium">Like</span> or <span className="font-medium">Love</span> the shows you enjoy •
+          Mark as <span className="font-medium">Not Interested</span> to exclude them from AI recommendations
         </p>
       </div>
 
@@ -176,14 +176,27 @@ export default function SearchSeries({
                       size="sm"
                       className="flex-1 sm:flex-none shadow-sm hover:shadow-md hover:scale-105 active:scale-95 transition-all"
                       onClick={() => {
-                        onAddToProfile(series);
+                        onAddToProfile(series, 'like');
                         setQuery('');
                       }}
                       disabled={profileSeriesIds.has(series.id)}
                       variant={profileSeriesIds.has(series.id) ? 'secondary' : 'default'}
                     >
                       <ThumbsUp className="w-4 h-4 mr-1" />
-                      {profileSeriesIds.has(series.id) ? 'Liked' : 'Like'}
+                      Like
+                    </Button>
+                    <Button
+                      size="sm"
+                      className="flex-1 sm:flex-none shadow-sm hover:shadow-md hover:scale-105 active:scale-95 transition-all bg-pink-600 hover:bg-pink-700 text-white"
+                      onClick={() => {
+                        onAddToProfile(series, 'love');
+                        setQuery('');
+                      }}
+                      disabled={profileSeriesIds.has(series.id)}
+                      variant={profileSeriesIds.has(series.id) ? 'secondary' : 'default'}
+                    >
+                      <Heart className="w-4 h-4 mr-1" />
+                      Love
                     </Button>
                     <Button
                       size="sm"

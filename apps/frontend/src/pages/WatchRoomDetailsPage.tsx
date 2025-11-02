@@ -13,6 +13,7 @@ import {
   Calendar,
   EyeOff,
   ThumbsUp,
+  Heart,
   Star,
   ExternalLink,
 } from 'lucide-react';
@@ -304,11 +305,16 @@ export default function WatchRoomDetailsPage() {
     }
   };
 
-  const handleLikeSeries = async (seriesTmdbId: number, seriesName: string, recommendationId: string) => {
+  const handleLikeSeries = async (
+    seriesTmdbId: number,
+    seriesName: string,
+    recommendationId: string,
+    preferenceLevel: 'like' | 'love' = 'like',
+  ) => {
     try {
       setFadingOutCards((prev) => new Set(prev).add(recommendationId));
 
-      await addFavoriteSeries(seriesTmdbId, 'like');
+      await addFavoriteSeries(seriesTmdbId, preferenceLevel);
       setProfileSeriesIds((prev) => new Set(prev).add(seriesTmdbId));
       toast.success(`"${seriesName}" added to your favorites!`, {
         description: "You won't see this series in future recommendations.",
@@ -644,7 +650,9 @@ export default function WatchRoomDetailsPage() {
                   <div className="rounded-lg border border-primary/20 bg-primary/5 px-4 py-3">
                     <p className="text-sm text-muted-foreground flex items-center gap-2 flex-wrap">
                       <ThumbsUp className="w-4 h-4 text-primary" />
-                      <span>Like the shows you enjoy</span>
+                      <span>Like or</span>
+                      <Heart className="w-4 h-4 text-pink-600" />
+                      <span>Love the shows you enjoy</span>
                       <span className="text-muted-foreground/50">•</span>
                       <EyeOff className="w-4 h-4 text-muted-foreground" />
                       <span>Mark as Not Interested to exclude them from AI recommendations</span>
@@ -823,6 +831,7 @@ export default function WatchRoomDetailsPage() {
                                         recommendation.seriesTmdbId,
                                         recommendation.seriesDetails?.name || 'this series',
                                         recommendation.id,
+                                        'like',
                                       )
                                     }
                                     disabled={
@@ -833,7 +842,30 @@ export default function WatchRoomDetailsPage() {
                                     className="shadow-sm hover:shadow-md hover:scale-105 active:scale-95 transition-all"
                                   >
                                     <ThumbsUp className="w-4 h-4 mr-2" />
-                                    {profileSeriesIds.has(recommendation.seriesTmdbId) ? 'Liked' : 'Like'}
+                                    Like
+                                  </Button>
+                                  <Button
+                                    variant={
+                                      profileSeriesIds.has(recommendation.seriesTmdbId) ? 'secondary' : 'default'
+                                    }
+                                    size="sm"
+                                    onClick={() =>
+                                      handleLikeSeries(
+                                        recommendation.seriesTmdbId,
+                                        recommendation.seriesDetails?.name || 'this series',
+                                        recommendation.id,
+                                        'love',
+                                      )
+                                    }
+                                    disabled={
+                                      profileSeriesIds.has(recommendation.seriesTmdbId) ||
+                                      ignoredSeriesIds.has(recommendation.seriesTmdbId) ||
+                                      isFadingOut
+                                    }
+                                    className="shadow-sm hover:shadow-md hover:scale-105 active:scale-95 transition-all bg-pink-600 hover:bg-pink-700 text-white disabled:bg-pink-600/50"
+                                  >
+                                    <Heart className="w-4 h-4 mr-2" />
+                                    Love
                                   </Button>
                                   <Button
                                     variant="outline"

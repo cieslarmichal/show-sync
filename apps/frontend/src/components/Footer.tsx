@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { useContext } from 'react';
 import { AuthContext } from '../context/AuthContext';
-import { Mail, Phone, MapPin, Facebook, Instagram, Heart, Users, User } from 'lucide-react';
+import { Mail, Phone, MapPin, Heart, Users, User } from 'lucide-react';
 
 export default function Footer() {
   const { userData } = useContext(AuthContext);
@@ -96,34 +96,25 @@ export default function Footer() {
                   Cracow, Poland
                 </a>
               </div>
-              <div className="flex items-center gap-4 pt-3">
-                <a
-                  href="https://facebook.com/10x-series-matcher"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="Facebook"
-                  className="text-muted-foreground hover:text-foreground transition-colors"
-                >
-                  <Facebook className="h-5 w-5" />
-                </a>
-                <a
-                  href="https://instagram.com/10x-series-matcher"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="Instagram"
-                  className="text-muted-foreground hover:text-foreground transition-colors"
-                >
-                  <Instagram className="h-5 w-5" />
-                </a>
-              </div>
             </div>
           </div>
         </div>
       </div>
 
       <div className="border-t border-border mt-10 pt-6 text-center max-w-6xl mx-auto px-4">
-        <div className="flex items-center justify-center gap-2 text-muted-foreground text-xs">
-          <span>© 2025 10x Series Matcher.</span>
+        <div className="flex flex-wrap items-baseline justify-center gap-x-1 gap-y-1 text-muted-foreground text-xs">
+          <span>© 2025 10x Series Matcher. Made with</span>
+          <Heart className="h-3 w-3 inline fill-current" />
+          <span>by</span>
+          <a
+            href="https://github.com/cieslarmichal"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:text-foreground transition-colors font-medium"
+            aria-label="Michał Cieślar on GitHub"
+          >
+            Michał Cieślar
+          </a>
         </div>
       </div>
     </footer>
