@@ -30,12 +30,6 @@ export class OpenRouterService {
   public constructor(config: OpenRouterConfig, logger: LoggerService) {
     this.config = config;
     this.logger = logger;
-
-    this.logger.info({
-      message: 'OpenRouterService initialized',
-      model: config.model,
-      baseUrl: config.baseUrl,
-    });
   }
 
   public async sendRequest<Response = Record<string, unknown>>(
@@ -159,14 +153,12 @@ export class OpenRouterService {
   ): OpenRouterRequest {
     const messages: Message[] = [];
 
-    // Add system message
     this.validateInput(systemMessage);
     messages.push({
       role: 'system',
       content: systemMessage,
     });
 
-    // Add user message
     this.validateInput(userMessage);
     messages.push({
       role: 'user',
@@ -218,14 +210,12 @@ export class OpenRouterService {
       }
     }
 
-    // This should never happen due to loop logic, but TypeScript needs it
     throw lastError ?? new Error('Unknown error during request retry');
   }
 
   private async executeRequest(payload: OpenRouterRequest): Promise<OpenRouterResponse> {
     const url = `${this.config.baseUrl}/chat/completions`;
 
-    // Create AbortController with timeout
     const abortController = new AbortController();
     const timeoutId = setTimeout(() => {
       abortController.abort();
@@ -261,7 +251,6 @@ export class OpenRouterService {
     } catch (error) {
       clearTimeout(timeoutId);
 
-      // Handle timeout error
       if (error instanceof Error && error.name === 'AbortError') {
         throw new ExternalServiceError({
           service: 'OpenRouter API',
@@ -310,8 +299,6 @@ export class OpenRouterService {
   }
 
   private calculateRetryDelay(attempt: number): number {
-    // Exponential backoff: baseDelay * 2^(attempt-1)
-    // e.g., 1s, 2s, 4s, 8s...
     const exponentialDelay = this.config.retryDelayMs * Math.pow(2, attempt - 1);
 
     // Cap at maximum retry delay
