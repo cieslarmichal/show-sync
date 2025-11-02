@@ -12,7 +12,7 @@ import { FavoriteSeriesRepositoryImpl } from '../../infrastructure/repositories/
 import { RemoveFavoriteSeriesAction } from './removeFavoriteSeriesAction.ts';
 
 describe('RemoveFavoriteSeriesAction', () => {
-  let database: DatabaseClient;
+  let databaseClient: DatabaseClient;
   let userRepository: UserRepositoryImpl;
   let favoriteSeriesRepository: FavoriteSeriesRepositoryImpl;
   let loggerService: LoggerService;
@@ -20,9 +20,9 @@ describe('RemoveFavoriteSeriesAction', () => {
 
   beforeEach(async () => {
     const config = createConfig();
-    database = new DatabaseClient({ url: config.database.url });
-    userRepository = new UserRepositoryImpl(database);
-    favoriteSeriesRepository = new FavoriteSeriesRepositoryImpl(database);
+    databaseClient = new DatabaseClient({ url: config.database.url });
+    userRepository = new UserRepositoryImpl(databaseClient);
+    favoriteSeriesRepository = new FavoriteSeriesRepositoryImpl(databaseClient);
     loggerService = {
       debug: () => {},
       info: () => {},
@@ -32,14 +32,14 @@ describe('RemoveFavoriteSeriesAction', () => {
 
     removeFavoriteSeriesAction = new RemoveFavoriteSeriesAction(favoriteSeriesRepository, loggerService);
 
-    await database.db.delete(userFavoriteSeries);
-    await database.db.delete(users);
+    await databaseClient.db.delete(userFavoriteSeries);
+    await databaseClient.db.delete(users);
   });
 
   afterEach(async () => {
-    await database.db.delete(userFavoriteSeries);
-    await database.db.delete(users);
-    await database.close();
+    await databaseClient.db.delete(userFavoriteSeries);
+    await databaseClient.db.delete(users);
+    await databaseClient.close();
   });
 
   describe('execute', () => {

@@ -14,7 +14,7 @@ import { LoginUserAction } from './loginUserAction.ts';
 import { LogoutUserAction } from './logoutUserAction.ts';
 
 describe('LogoutUserAction', () => {
-  let database: DatabaseClient;
+  let databaseClient: DatabaseClient;
   let userRepository: UserRepositoryImpl;
   let userSessionRepository: UserSessionRepositoryImpl;
   let loginUserAction: LoginUserAction;
@@ -26,9 +26,9 @@ describe('LogoutUserAction', () => {
 
   beforeEach(async () => {
     config = createConfig();
-    database = new DatabaseClient({ url: config.database.url });
-    userRepository = new UserRepositoryImpl(database);
-    userSessionRepository = new UserSessionRepositoryImpl(database);
+    databaseClient = new DatabaseClient({ url: config.database.url });
+    userRepository = new UserRepositoryImpl(databaseClient);
+    userSessionRepository = new UserSessionRepositoryImpl(databaseClient);
     tokenService = new TokenService(config);
     passwordService = new PasswordService(config);
 
@@ -48,13 +48,13 @@ describe('LogoutUserAction', () => {
     );
     logoutUserAction = new LogoutUserAction(userSessionRepository, tokenService);
 
-    await database.db.delete(userSessions);
-    await database.db.delete(users);
+    await databaseClient.db.delete(userSessions);
+    await databaseClient.db.delete(users);
   });
   afterEach(async () => {
-    await database.db.delete(userSessions);
-    await database.db.delete(users);
-    await database.close();
+    await databaseClient.db.delete(userSessions);
+    await databaseClient.db.delete(users);
+    await databaseClient.close();
   });
 
   describe('execute', () => {

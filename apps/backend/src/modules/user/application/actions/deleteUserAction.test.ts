@@ -13,14 +13,14 @@ import { DeleteUserAction } from './deleteUserAction.ts';
 describe('DeleteUserAction', () => {
   const config = createConfig();
 
-  let database: DatabaseClient;
+  let databaseClient: DatabaseClient;
   let userRepository: UserRepositoryImpl;
   let deleteUserAction: DeleteUserAction;
   let loggerService: LoggerService;
 
   beforeEach(async () => {
-    database = new DatabaseClient({ url: config.database.url });
-    userRepository = new UserRepositoryImpl(database);
+    databaseClient = new DatabaseClient({ url: config.database.url });
+    userRepository = new UserRepositoryImpl(databaseClient);
 
     loggerService = {
       debug: () => {},
@@ -31,11 +31,11 @@ describe('DeleteUserAction', () => {
 
     deleteUserAction = new DeleteUserAction(userRepository, loggerService);
 
-    await database.db.delete(users);
+    await databaseClient.db.delete(users);
   });
   afterEach(async () => {
-    await database.db.delete(users);
-    await database.close();
+    await databaseClient.db.delete(users);
+    await databaseClient.close();
   });
 
   describe('execute', () => {

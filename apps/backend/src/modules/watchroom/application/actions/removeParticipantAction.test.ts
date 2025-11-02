@@ -15,7 +15,7 @@ import { JoinWatchroomAction } from './joinWatchroomAction.ts';
 import { RemoveParticipantAction } from './removeParticipantAction.ts';
 
 describe('RemoveParticipantAction', () => {
-  let database: DatabaseClient;
+  let databaseClient: DatabaseClient;
   let watchroomRepository: WatchroomRepositoryImpl;
   let userRepository: UserRepositoryImpl;
   let createWatchroomAction: CreateWatchroomAction;
@@ -25,9 +25,9 @@ describe('RemoveParticipantAction', () => {
 
   beforeEach(async () => {
     const config = createConfig();
-    database = new DatabaseClient({ url: config.database.url });
-    watchroomRepository = new WatchroomRepositoryImpl(database);
-    userRepository = new UserRepositoryImpl(database);
+    databaseClient = new DatabaseClient({ url: config.database.url });
+    watchroomRepository = new WatchroomRepositoryImpl(databaseClient);
+    userRepository = new UserRepositoryImpl(databaseClient);
 
     loggerService = {
       debug: () => {},
@@ -40,16 +40,16 @@ describe('RemoveParticipantAction', () => {
     joinWatchroomAction = new JoinWatchroomAction(watchroomRepository, loggerService);
     removeParticipantAction = new RemoveParticipantAction(watchroomRepository, loggerService);
 
-    await database.db.delete(watchroomParticipants);
-    await database.db.delete(watchrooms);
-    await database.db.delete(users);
+    await databaseClient.db.delete(watchroomParticipants);
+    await databaseClient.db.delete(watchrooms);
+    await databaseClient.db.delete(users);
   });
 
   afterEach(async () => {
-    await database.db.delete(watchroomParticipants);
-    await database.db.delete(watchrooms);
-    await database.db.delete(users);
-    await database.close();
+    await databaseClient.db.delete(watchroomParticipants);
+    await databaseClient.db.delete(watchrooms);
+    await databaseClient.db.delete(users);
+    await databaseClient.close();
   });
 
   describe('execute', () => {

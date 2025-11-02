@@ -8,18 +8,18 @@ import type { FavoriteSeries, PreferenceLevel } from '../../domain/types/favorit
 export class AddFavoriteSeriesAction {
   private readonly favoriteSeriesRepository: FavoriteSeriesRepository;
   private readonly ignoredSeriesRepository: IgnoredSeriesRepository;
-  private readonly database: DatabaseClient;
+  private readonly databaseClient: DatabaseClient;
   private readonly loggerService: LoggerService;
 
   public constructor(
     favoriteSeriesRepository: FavoriteSeriesRepository,
     ignoredSeriesRepository: IgnoredSeriesRepository,
-    database: DatabaseClient,
+    databaseClient: DatabaseClient,
     loggerService: LoggerService,
   ) {
     this.favoriteSeriesRepository = favoriteSeriesRepository;
     this.ignoredSeriesRepository = ignoredSeriesRepository;
-    this.database = database;
+    this.databaseClient = databaseClient;
     this.loggerService = loggerService;
   }
 
@@ -39,7 +39,7 @@ export class AddFavoriteSeriesAction {
       });
     }
 
-    const favoriteSeries = await this.database.db.transaction(async (tx) => {
+    const favoriteSeries = await this.databaseClient.db.transaction(async (tx) => {
       const ignoredSeries = await this.ignoredSeriesRepository.findOne(userId, seriesTmdbId, tx);
 
       if (ignoredSeries) {

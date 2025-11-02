@@ -23,6 +23,8 @@ import { JoinWatchroomAction } from '../application/actions/joinWatchroomAction.
 import { LeaveWatchroomAction } from '../application/actions/leaveWatchroomAction.ts';
 import { RemoveParticipantAction } from '../application/actions/removeParticipantAction.ts';
 import { UpdateWatchroomAction } from '../application/actions/updateWatchroomAction.ts';
+import { RecommendationPromptBuilder } from '../application/services/recommendationPromptBuilder.ts';
+import { SeriesNameResolver } from '../application/services/seriesNameResolver.ts';
 import type { Recommendation } from '../domain/types/recommendation.ts';
 import type { Watchroom } from '../domain/types/watchroom.ts';
 import { RecommendationRepositoryImpl } from '../infrastructure/repositories/recommendationRepositoryImpl.ts';
@@ -53,18 +55,18 @@ const watchroomSchema = Type.Object({
 });
 
 export const watchroomRoutes: FastifyPluginAsyncTypebox<{
-  database: DatabaseClient;
+  databaseClient: DatabaseClient;
   tokenService: TokenService;
   loggerService: LoggerService;
   openRouterService: OpenRouterService;
   config: Config;
 }> = async function (fastify, opts) {
-  const { database, tokenService, loggerService, openRouterService, config } = opts;
+  const { databaseClient, tokenService, loggerService, openRouterService, config } = opts;
 
-  const watchroomRepository = new WatchroomRepositoryImpl(database);
-  const recommendationRepository = new RecommendationRepositoryImpl(database);
-  const favoriteSeriesRepository = new FavoriteSeriesRepositoryImpl(database);
-  const ignoredSeriesRepository = new IgnoredSeriesRepositoryImpl(database);
+  const watchroomRepository = new WatchroomRepositoryImpl(databaseClient);
+  const recommendationRepository = new RecommendationRepositoryImpl(databaseClient);
+  const favoriteSeriesRepository = new FavoriteSeriesRepositoryImpl(databaseClient);
+  const ignoredSeriesRepository = new IgnoredSeriesRepositoryImpl(databaseClient);
   const tmdbService = new TmdbServiceImpl(config.tmdb.apiKey, config.tmdb.baseUrl);
 
   const createWatchroomAction = new CreateWatchroomAction(watchroomRepository, loggerService);
@@ -76,6 +78,10 @@ export const watchroomRoutes: FastifyPluginAsyncTypebox<{
   const deleteWatchroomAction = new DeleteWatchroomAction(watchroomRepository, loggerService);
   const removeParticipantAction = new RemoveParticipantAction(watchroomRepository, loggerService);
   const leaveWatchroomAction = new LeaveWatchroomAction(watchroomRepository, loggerService);
+
+  const recommendationPromptBuilder = new RecommendationPromptBuilder();
+  const seriesNameResolver = new SeriesNameResolver(tmdbService);
+
   const generateRecommendationsAction = new GenerateRecommendationsAction(
     watchroomRepository,
     recommendationRepository,
@@ -84,6 +90,9 @@ export const watchroomRoutes: FastifyPluginAsyncTypebox<{
     tmdbService,
     openRouterService,
     loggerService,
+    recommendationPromptBuilder,
+    seriesNameResolver,
+    databaseClient,
   );
   const findRecommendationsAction = new FindRecommendationsAction(watchroomRepository, recommendationRepository);
   const checkRecommendationStatusAction = new CheckRecommendationStatusAction(

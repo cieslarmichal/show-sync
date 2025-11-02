@@ -14,7 +14,7 @@ import { PasswordService } from '../services/passwordService.ts';
 import { LoginUserAction } from './loginUserAction.ts';
 
 describe('LoginUserAction', () => {
-  let database: DatabaseClient;
+  let databaseClient: DatabaseClient;
   let userRepository: UserRepositoryImpl;
   let loginUserAction: LoginUserAction;
   let loggerService: LoggerService;
@@ -25,9 +25,9 @@ describe('LoginUserAction', () => {
 
   beforeEach(async () => {
     config = createConfig();
-    database = new DatabaseClient({ url: config.database.url });
-    userRepository = new UserRepositoryImpl(database);
-    userSessionRepository = new UserSessionRepositoryImpl(database);
+    databaseClient = new DatabaseClient({ url: config.database.url });
+    userRepository = new UserRepositoryImpl(databaseClient);
+    userSessionRepository = new UserSessionRepositoryImpl(databaseClient);
     tokenService = new TokenService(config);
     passwordService = new PasswordService(config);
 
@@ -46,13 +46,13 @@ describe('LoginUserAction', () => {
       userSessionRepository,
     );
 
-    await database.db.delete(userSessions);
-    await database.db.delete(users);
+    await databaseClient.db.delete(userSessions);
+    await databaseClient.db.delete(users);
   });
   afterEach(async () => {
-    await database.db.delete(userSessions);
-    await database.db.delete(users);
-    await database.close();
+    await databaseClient.db.delete(userSessions);
+    await databaseClient.db.delete(users);
+    await databaseClient.close();
   });
 
   describe('execute', () => {

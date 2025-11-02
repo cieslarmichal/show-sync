@@ -412,7 +412,7 @@ export class HttpServer {
     const openRouterService = new OpenRouterService(this.config.openRouter, this.loggerService);
 
     await this.fastifyServer.register(userRoutes, {
-      database: this.databaseClient,
+      databaseClient: this.databaseClient,
       config: this.config,
       loggerService: this.loggerService,
       tokenService,
@@ -422,7 +422,7 @@ export class HttpServer {
       config: this.config,
       loggerService: this.loggerService,
       tokenService,
-      database: this.databaseClient,
+      databaseClient: this.databaseClient,
     });
 
     await this.fastifyServer.register(watchroomRoutes, {

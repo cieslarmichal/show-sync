@@ -13,17 +13,17 @@ import type {
 import type { UserSession } from '../../domain/types/userSession.ts';
 
 export class UserSessionRepositoryImpl implements UserSessionRepository {
-  private readonly database: DatabaseClient;
+  private readonly databaseClient: DatabaseClient;
 
-  public constructor(database: DatabaseClient) {
-    this.database = database;
+  public constructor(databaseClient: DatabaseClient) {
+    this.databaseClient = databaseClient;
   }
 
   public async create(data: CreateUserSessionData): Promise<UserSession> {
     const id = data.id ?? UuidService.generateUuid();
     const now = new Date();
 
-    const result = await this.database.db
+    const result = await this.databaseClient.db
       .insert(userSessions)
       .values({
         id,
@@ -46,7 +46,7 @@ export class UserSessionRepositoryImpl implements UserSessionRepository {
   }
 
   public async findById(sessionId: string, tx?: Transaction): Promise<UserSession | null> {
-    const db = tx ?? this.database.db;
+    const db = tx ?? this.databaseClient.db;
 
     const query = db.select().from(userSessions).where(eq(userSessions.id, sessionId)).limit(1);
 
@@ -56,7 +56,7 @@ export class UserSessionRepositoryImpl implements UserSessionRepository {
   }
 
   public async findByCurrentHash(tokenHash: string, tx?: Transaction): Promise<UserSession | null> {
-    const db = tx ?? this.database.db;
+    const db = tx ?? this.databaseClient.db;
 
     const query = db.select().from(userSessions).where(eq(userSessions.currentRefreshHash, tokenHash)).limit(1);
 
@@ -69,7 +69,7 @@ export class UserSessionRepositoryImpl implements UserSessionRepository {
     const now = data.now ?? new Date();
     const prevUsableUntil = new Date(now.getTime() + data.graceMs);
 
-    const db = tx ?? this.database.db;
+    const db = tx ?? this.databaseClient.db;
 
     await db
       .update(userSessions)
@@ -92,7 +92,7 @@ export class UserSessionRepositoryImpl implements UserSessionRepository {
   public async acceptPreviousIfWithinGrace(data: AcceptPreviousData, tx?: Transaction): Promise<boolean> {
     const now = data.now ?? new Date();
 
-    const db = tx ?? this.database.db;
+    const db = tx ?? this.databaseClient.db;
 
     const [row] = await db
       .select({ prevRefreshHash: userSessions.prevRefreshHash, prevUsableUntil: userSessions.prevUsableUntil })
@@ -109,7 +109,7 @@ export class UserSessionRepositoryImpl implements UserSessionRepository {
   public async revoke(sessionId: string, tx?: Transaction): Promise<void> {
     const now = new Date();
 
-    const db = tx ?? this.database.db;
+    const db = tx ?? this.databaseClient.db;
 
     await db
       .update(userSessions)

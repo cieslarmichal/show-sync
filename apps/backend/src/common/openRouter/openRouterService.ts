@@ -50,6 +50,8 @@ export class OpenRouterService {
       model: this.config.model,
       userMessageLength: userMessage.length,
       systemMessageLength: systemMessage.length,
+      temperature: this.config.temperature,
+      maxTokens: this.config.maxTokens,
     });
 
     const startTime = Date.now();
@@ -61,9 +63,12 @@ export class OpenRouterService {
       this.logger.info({
         message: 'OpenRouter API request successful',
         duration,
+        model: this.config.model,
         promptTokens: response.usage.prompt_tokens,
         completionTokens: response.usage.completion_tokens,
         totalTokens: response.usage.total_tokens,
+        tokensPerSecond: Math.round((response.usage.completion_tokens / duration) * 1000),
+        estimatedCost: this.estimateCost(response.usage.prompt_tokens, response.usage.completion_tokens),
       });
 
       return this.formatResponse(response);
@@ -322,5 +327,26 @@ export class OpenRouterService {
 
   private sleep(ms: number): Promise<void> {
     return new Promise((resolve) => setTimeout(resolve, ms));
+  }
+
+  private estimateCost(promptTokens: number, completionTokens: number): string {
+    // Approximate pricing for common models (in USD per 1M tokens)
+    const modelPricing: Record<string, { prompt: number; completion: number }> = {
+      'anthropic/claude-3.5-sonnet': { prompt: 3.0, completion: 15.0 },
+      'anthropic/claude-3-opus': { prompt: 15.0, completion: 75.0 },
+      'openai/gpt-4o': { prompt: 2.5, completion: 10.0 },
+    };
+
+    const pricing = modelPricing[this.config.model];
+
+    if (!pricing) {
+      return 'unknown';
+    }
+
+    const promptCost = (promptTokens / 1_000_000) * pricing.prompt;
+    const completionCost = (completionTokens / 1_000_000) * pricing.completion;
+    const totalCost = promptCost + completionCost;
+
+    return `$${totalCost.toFixed(6)}`;
   }
 }

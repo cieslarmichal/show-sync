@@ -12,7 +12,7 @@ import { IgnoredSeriesRepositoryImpl } from '../../infrastructure/repositories/i
 import { RemoveIgnoredSeriesAction } from './removeIgnoredSeriesAction.ts';
 
 describe('RemoveIgnoredSeriesAction', () => {
-  let database: DatabaseClient;
+  let databaseClient: DatabaseClient;
   let userRepository: UserRepositoryImpl;
   let ignoredSeriesRepository: IgnoredSeriesRepositoryImpl;
   let loggerService: LoggerService;
@@ -20,9 +20,9 @@ describe('RemoveIgnoredSeriesAction', () => {
 
   beforeEach(async () => {
     const config = createConfig();
-    database = new DatabaseClient({ url: config.database.url });
-    userRepository = new UserRepositoryImpl(database);
-    ignoredSeriesRepository = new IgnoredSeriesRepositoryImpl(database);
+    databaseClient = new DatabaseClient({ url: config.database.url });
+    userRepository = new UserRepositoryImpl(databaseClient);
+    ignoredSeriesRepository = new IgnoredSeriesRepositoryImpl(databaseClient);
     loggerService = {
       debug: () => {},
       info: () => {},
@@ -32,14 +32,14 @@ describe('RemoveIgnoredSeriesAction', () => {
 
     removeIgnoredSeriesAction = new RemoveIgnoredSeriesAction(ignoredSeriesRepository, loggerService);
 
-    await database.db.delete(userIgnoredSeries);
-    await database.db.delete(users);
+    await databaseClient.db.delete(userIgnoredSeries);
+    await databaseClient.db.delete(users);
   });
 
   afterEach(async () => {
-    await database.db.delete(userIgnoredSeries);
-    await database.db.delete(users);
-    await database.close();
+    await databaseClient.db.delete(userIgnoredSeries);
+    await databaseClient.db.delete(users);
+    await databaseClient.close();
   });
 
   describe('execute', () => {

@@ -31,12 +31,12 @@ import {
 const appEnvironment = process.env['NODE_ENV'];
 
 export const userRoutes: FastifyPluginAsyncTypebox<{
-  database: DatabaseClient;
+  databaseClient: DatabaseClient;
   config: Config;
   loggerService: LoggerService;
   tokenService: TokenService;
 }> = async function (fastify, opts) {
-  const { config, database, loggerService, tokenService } = opts;
+  const { config, databaseClient, loggerService, tokenService } = opts;
 
   // Idempotency window and single-flight coordination for refresh calls
   // Keyed by refresh token hash to avoid storing sensitive data.
@@ -66,8 +66,8 @@ export const userRoutes: FastifyPluginAsyncTypebox<{
     },
   };
 
-  const userRepository = new UserRepositoryImpl(database);
-  const userSessionRepository = new UserSessionRepositoryImpl(database);
+  const userRepository = new UserRepositoryImpl(databaseClient);
+  const userSessionRepository = new UserSessionRepositoryImpl(databaseClient);
   const passwordService = new PasswordService(config);
 
   const createUserAction = new CreateUserAction(userRepository, loggerService, passwordService);
@@ -87,7 +87,7 @@ export const userRoutes: FastifyPluginAsyncTypebox<{
     loggerService,
     tokenService,
     config,
-    database,
+    databaseClient,
   );
   const logoutUserAction = new LogoutUserAction(userSessionRepository, tokenService);
 

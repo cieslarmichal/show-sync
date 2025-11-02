@@ -11,14 +11,14 @@ import type {
 import type { IgnoredSeries } from '../../domain/types/ignoredSeries.ts';
 
 export class IgnoredSeriesRepositoryImpl implements IgnoredSeriesRepository {
-  private readonly database: DatabaseClient;
+  private readonly databaseClient: DatabaseClient;
 
-  public constructor(database: DatabaseClient) {
-    this.database = database;
+  public constructor(databaseClient: DatabaseClient) {
+    this.databaseClient = databaseClient;
   }
 
   public async create(ignoredSeriesData: CreateIgnoredSeriesData, tx?: Transaction): Promise<IgnoredSeries> {
-    const db = tx ? tx : this.database.db;
+    const db = tx ? tx : this.databaseClient.db;
 
     const [newIgnored] = await db
       .insert(userIgnoredSeries)
@@ -37,7 +37,7 @@ export class IgnoredSeriesRepositoryImpl implements IgnoredSeriesRepository {
   }
 
   public async count(userId: string): Promise<number> {
-    const [countResult] = await this.database.db
+    const [countResult] = await this.databaseClient.db
       .select({ count: count() })
       .from(userIgnoredSeries)
       .where(eq(userIgnoredSeries.userId, userId));
@@ -46,7 +46,7 @@ export class IgnoredSeriesRepositoryImpl implements IgnoredSeriesRepository {
   }
 
   public async findMany(userId: string, page: number, pageSize: number): Promise<IgnoredSeries[]> {
-    const ignored = await this.database.db
+    const ignored = await this.databaseClient.db
       .select()
       .from(userIgnoredSeries)
       .where(eq(userIgnoredSeries.userId, userId))
@@ -58,7 +58,7 @@ export class IgnoredSeriesRepositoryImpl implements IgnoredSeriesRepository {
   }
 
   public async findOne(userId: string, seriesTmdbId: number, tx?: Transaction): Promise<IgnoredSeries | null> {
-    const db = tx ? tx : this.database.db;
+    const db = tx ? tx : this.databaseClient.db;
 
     const query = db
       .select()
@@ -72,7 +72,7 @@ export class IgnoredSeriesRepositoryImpl implements IgnoredSeriesRepository {
   }
 
   public async delete(userId: string, seriesTmdbId: number, tx?: Transaction): Promise<void> {
-    const db = tx ? tx : this.database.db;
+    const db = tx ? tx : this.databaseClient.db;
 
     await db
       .delete(userIgnoredSeries)

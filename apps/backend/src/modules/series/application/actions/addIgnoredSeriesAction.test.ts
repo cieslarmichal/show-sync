@@ -13,7 +13,7 @@ import { IgnoredSeriesRepositoryImpl } from '../../infrastructure/repositories/i
 import { AddIgnoredSeriesAction } from './addIgnoredSeriesAction.ts';
 
 describe('AddIgnoredSeriesAction', () => {
-  let database: DatabaseClient;
+  let databaseClient: DatabaseClient;
   let userRepository: UserRepositoryImpl;
   let ignoredSeriesRepository: IgnoredSeriesRepositoryImpl;
   let favoriteSeriesRepository: FavoriteSeriesRepositoryImpl;
@@ -22,10 +22,10 @@ describe('AddIgnoredSeriesAction', () => {
 
   beforeEach(async () => {
     const config = createConfig();
-    database = new DatabaseClient({ url: config.database.url });
-    userRepository = new UserRepositoryImpl(database);
-    ignoredSeriesRepository = new IgnoredSeriesRepositoryImpl(database);
-    favoriteSeriesRepository = new FavoriteSeriesRepositoryImpl(database);
+    databaseClient = new DatabaseClient({ url: config.database.url });
+    userRepository = new UserRepositoryImpl(databaseClient);
+    ignoredSeriesRepository = new IgnoredSeriesRepositoryImpl(databaseClient);
+    favoriteSeriesRepository = new FavoriteSeriesRepositoryImpl(databaseClient);
     loggerService = {
       debug: () => {},
       info: () => {},
@@ -35,20 +35,20 @@ describe('AddIgnoredSeriesAction', () => {
     addIgnoredSeriesAction = new AddIgnoredSeriesAction(
       ignoredSeriesRepository,
       favoriteSeriesRepository,
-      database,
+      databaseClient,
       loggerService,
     );
 
-    await database.db.delete(userFavoriteSeries);
-    await database.db.delete(userIgnoredSeries);
-    await database.db.delete(users);
+    await databaseClient.db.delete(userFavoriteSeries);
+    await databaseClient.db.delete(userIgnoredSeries);
+    await databaseClient.db.delete(users);
   });
 
   afterEach(async () => {
-    await database.db.delete(userFavoriteSeries);
-    await database.db.delete(userIgnoredSeries);
-    await database.db.delete(users);
-    await database.close();
+    await databaseClient.db.delete(userFavoriteSeries);
+    await databaseClient.db.delete(userIgnoredSeries);
+    await databaseClient.db.delete(users);
+    await databaseClient.close();
   });
 
   describe('execute', () => {

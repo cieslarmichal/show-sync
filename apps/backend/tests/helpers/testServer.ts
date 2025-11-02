@@ -8,7 +8,7 @@ import { DatabaseClient } from '../../src/infrastructure/database/database.ts';
 let testServer: HttpServer | undefined;
 let testDatabase: DatabaseClient | undefined;
 
-export async function createTestContext(): Promise<{ server: FastifyInstance; database: DatabaseClient }> {
+export async function createTestContext(): Promise<{ server: FastifyInstance; databaseClient: DatabaseClient }> {
   const config = createConfig();
   const loggerService = LoggerServiceFactory.create({ logLevel: 'silent' });
 
@@ -20,7 +20,7 @@ export async function createTestContext(): Promise<{ server: FastifyInstance; da
 
   return {
     server: testServer.fastifyServer,
-    database: testDatabase,
+    databaseClient: testDatabase,
   };
 }
 

@@ -22,16 +22,16 @@ interface WatchroomRow {
 }
 
 export class WatchroomRepositoryImpl implements WatchroomRepository {
-  private readonly database: DatabaseClient;
+  private readonly databaseClient: DatabaseClient;
 
-  public constructor(database: DatabaseClient) {
-    this.database = database;
+  public constructor(databaseClient: DatabaseClient) {
+    this.databaseClient = databaseClient;
   }
 
   public async create(data: CreateWatchroomData): Promise<Watchroom> {
     const watchroomId = UuidService.generateUuid();
 
-    await this.database.db.transaction(async (tx) => {
+    await this.databaseClient.db.transaction(async (tx) => {
       await tx.insert(watchrooms).values({
         id: watchroomId,
         name: data.name,
@@ -73,7 +73,7 @@ export class WatchroomRepositoryImpl implements WatchroomRepository {
 
     const whereClause = conditions.length === 1 ? conditions[0] : or(...conditions);
 
-    const [watchroomData] = await this.database.db
+    const [watchroomData] = await this.databaseClient.db
       .select({
         id: watchrooms.id,
         name: watchrooms.name,
@@ -92,7 +92,7 @@ export class WatchroomRepositoryImpl implements WatchroomRepository {
       return null;
     }
 
-    const participants = await this.database.db
+    const participants = await this.databaseClient.db
       .select({
         id: users.id,
         name: users.name,
@@ -105,7 +105,7 @@ export class WatchroomRepositoryImpl implements WatchroomRepository {
   }
 
   public async findMany(userId: string, page: number, pageSize: number): Promise<Watchroom[]> {
-    const userWatchroomIds = await this.database.db
+    const userWatchroomIds = await this.databaseClient.db
       .select({ watchroomId: watchroomParticipants.watchroomId })
       .from(watchroomParticipants)
       .where(eq(watchroomParticipants.userId, userId));
@@ -116,7 +116,7 @@ export class WatchroomRepositoryImpl implements WatchroomRepository {
 
     const watchroomIds = userWatchroomIds.map((w) => w.watchroomId);
 
-    const watchroomsData = await this.database.db
+    const watchroomsData = await this.databaseClient.db
       .select({
         id: watchrooms.id,
         name: watchrooms.name,
@@ -139,7 +139,7 @@ export class WatchroomRepositoryImpl implements WatchroomRepository {
 
     const paginatedWatchroomIds = watchroomsData.map((w) => w.id);
 
-    const allParticipants = await this.database.db
+    const allParticipants = await this.databaseClient.db
       .select({
         watchroomId: watchroomParticipants.watchroomId,
         userId: users.id,
@@ -157,7 +157,7 @@ export class WatchroomRepositoryImpl implements WatchroomRepository {
   }
 
   public async count(userId: string): Promise<number> {
-    const [countResult] = await this.database.db
+    const [countResult] = await this.databaseClient.db
       .select({ count: count() })
       .from(watchroomParticipants)
       .where(eq(watchroomParticipants.userId, userId));
@@ -166,7 +166,7 @@ export class WatchroomRepositoryImpl implements WatchroomRepository {
   }
 
   public async delete(watchroomId: string): Promise<void> {
-    await this.database.db.delete(watchrooms).where(eq(watchrooms.id, watchroomId));
+    await this.databaseClient.db.delete(watchrooms).where(eq(watchrooms.id, watchroomId));
   }
 
   public async update(watchroomId: string, data: UpdateWatchroomData): Promise<Watchroom> {
@@ -180,7 +180,7 @@ export class WatchroomRepositoryImpl implements WatchroomRepository {
       updateData = { ...updateData, description: data.description };
     }
 
-    await this.database.db.update(watchrooms).set(updateData).where(eq(watchrooms.id, watchroomId));
+    await this.databaseClient.db.update(watchrooms).set(updateData).where(eq(watchrooms.id, watchroomId));
 
     const updatedWatchroom = await this.findOne({ id: watchroomId });
 
@@ -192,7 +192,7 @@ export class WatchroomRepositoryImpl implements WatchroomRepository {
   }
 
   public async addParticipant(watchroomId: string, userId: string): Promise<void> {
-    await this.database.db.insert(watchroomParticipants).values({
+    await this.databaseClient.db.insert(watchroomParticipants).values({
       id: UuidService.generateUuid(),
       watchroomId,
       userId,
@@ -200,13 +200,13 @@ export class WatchroomRepositoryImpl implements WatchroomRepository {
   }
 
   public async removeParticipant(watchroomId: string, userId: string): Promise<void> {
-    await this.database.db
+    await this.databaseClient.db
       .delete(watchroomParticipants)
       .where(and(eq(watchroomParticipants.watchroomId, watchroomId), eq(watchroomParticipants.userId, userId)));
   }
 
   public async isParticipant(watchroomId: string, userId: string): Promise<boolean> {
-    const [participant] = await this.database.db
+    const [participant] = await this.databaseClient.db
       .select()
       .from(watchroomParticipants)
       .where(and(eq(watchroomParticipants.watchroomId, watchroomId), eq(watchroomParticipants.userId, userId)))

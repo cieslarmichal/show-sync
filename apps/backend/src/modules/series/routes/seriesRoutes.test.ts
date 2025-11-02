@@ -19,12 +19,12 @@ type LoginResponse = {
 
 describe('Series Routes Integration Tests', () => {
   let server: FastifyInstance;
-  let database: DatabaseClient;
+  let databaseClient: DatabaseClient;
 
   beforeAll(async () => {
     const testContext = await createTestContext();
     server = testContext.server;
-    database = testContext.database;
+    databaseClient = testContext.databaseClient;
   });
 
   afterAll(async () => {
@@ -32,7 +32,7 @@ describe('Series Routes Integration Tests', () => {
   });
 
   beforeEach(async () => {
-    await truncateTables(database);
+    await truncateTables(databaseClient);
   });
 
   // Helper function to register and login a user

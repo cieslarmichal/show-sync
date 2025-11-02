@@ -52,9 +52,9 @@ export const seriesRoutes: FastifyPluginAsyncTypebox<{
   config: Config;
   loggerService: LoggerService;
   tokenService: TokenService;
-  database: DatabaseClient;
+  databaseClient: DatabaseClient;
 }> = async function (fastify, opts) {
-  const { config, loggerService, tokenService, database } = opts;
+  const { config, loggerService, tokenService, databaseClient } = opts;
 
   const mapSeriesToResponse = (series: TmdbSeries): SeriesDto => ({
     id: series.id,
@@ -100,14 +100,14 @@ export const seriesRoutes: FastifyPluginAsyncTypebox<{
   const searchSeriesAction = new SearchSeriesAction(tmdbService);
   const getSeriesDetailsAction = new GetSeriesDetailsAction(tmdbService);
   const getSeriesExternalIdsAction = new GetSeriesExternalIdsAction(tmdbService);
-  const favoriteSeriesRepository = new FavoriteSeriesRepositoryImpl(database);
+  const favoriteSeriesRepository = new FavoriteSeriesRepositoryImpl(databaseClient);
   const getUserFavoriteSeriesAction = new GetFavoriteSeriesAction(favoriteSeriesRepository);
-  const ignoredSeriesRepository = new IgnoredSeriesRepositoryImpl(database);
+  const ignoredSeriesRepository = new IgnoredSeriesRepositoryImpl(databaseClient);
   const getUserIgnoredSeriesAction = new GetIgnoredSeriesAction(ignoredSeriesRepository);
   const addFavoriteSeriesAction = new AddFavoriteSeriesAction(
     favoriteSeriesRepository,
     ignoredSeriesRepository,
-    database,
+    databaseClient,
     loggerService,
   );
   const removeFavoriteSeriesAction = new RemoveFavoriteSeriesAction(favoriteSeriesRepository, loggerService);
@@ -118,7 +118,7 @@ export const seriesRoutes: FastifyPluginAsyncTypebox<{
   const addIgnoredSeriesAction = new AddIgnoredSeriesAction(
     ignoredSeriesRepository,
     favoriteSeriesRepository,
-    database,
+    databaseClient,
     loggerService,
   );
   const removeIgnoredSeriesAction = new RemoveIgnoredSeriesAction(ignoredSeriesRepository, loggerService);

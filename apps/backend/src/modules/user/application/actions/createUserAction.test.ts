@@ -12,7 +12,7 @@ import { PasswordService } from '../services/passwordService.ts';
 import { CreateUserAction } from './createUserAction.ts';
 
 describe('CreateUserAction', () => {
-  let database: DatabaseClient;
+  let databaseClient: DatabaseClient;
   let userRepository: UserRepositoryImpl;
   let createUserAction: CreateUserAction;
   let loggerService: LoggerService;
@@ -20,8 +20,8 @@ describe('CreateUserAction', () => {
 
   beforeEach(async () => {
     const config = createConfig();
-    database = new DatabaseClient({ url: config.database.url });
-    userRepository = new UserRepositoryImpl(database);
+    databaseClient = new DatabaseClient({ url: config.database.url });
+    userRepository = new UserRepositoryImpl(databaseClient);
     passwordService = new PasswordService(config);
 
     loggerService = {
@@ -33,11 +33,11 @@ describe('CreateUserAction', () => {
 
     createUserAction = new CreateUserAction(userRepository, loggerService, passwordService);
 
-    await database.db.delete(users);
+    await databaseClient.db.delete(users);
   });
   afterEach(async () => {
-    await database.db.delete(users);
-    await database.close();
+    await databaseClient.db.delete(users);
+    await databaseClient.close();
   });
 
   describe('execute', () => {

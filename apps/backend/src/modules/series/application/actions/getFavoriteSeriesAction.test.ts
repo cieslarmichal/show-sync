@@ -10,27 +10,27 @@ import { FavoriteSeriesRepositoryImpl } from '../../infrastructure/repositories/
 import { GetFavoriteSeriesAction } from './getFavoriteSeriesAction.ts';
 
 describe('GetFavoriteSeriesAction', () => {
-  let database: DatabaseClient;
+  let databaseClient: DatabaseClient;
   let userRepository: UserRepositoryImpl;
   let favoriteSeriesRepository: FavoriteSeriesRepositoryImpl;
   let getFavoriteSeriesAction: GetFavoriteSeriesAction;
 
   beforeEach(async () => {
     const config = createConfig();
-    database = new DatabaseClient({ url: config.database.url });
-    userRepository = new UserRepositoryImpl(database);
-    favoriteSeriesRepository = new FavoriteSeriesRepositoryImpl(database);
+    databaseClient = new DatabaseClient({ url: config.database.url });
+    userRepository = new UserRepositoryImpl(databaseClient);
+    favoriteSeriesRepository = new FavoriteSeriesRepositoryImpl(databaseClient);
 
     getFavoriteSeriesAction = new GetFavoriteSeriesAction(favoriteSeriesRepository);
 
-    await database.db.delete(userFavoriteSeries);
-    await database.db.delete(users);
+    await databaseClient.db.delete(userFavoriteSeries);
+    await databaseClient.db.delete(users);
   });
 
   afterEach(async () => {
-    await database.db.delete(userFavoriteSeries);
-    await database.db.delete(users);
-    await database.close();
+    await databaseClient.db.delete(userFavoriteSeries);
+    await databaseClient.db.delete(users);
+    await databaseClient.close();
   });
 
   describe('execute', () => {

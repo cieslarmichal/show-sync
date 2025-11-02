@@ -13,14 +13,14 @@ import type {
 import type { FavoriteSeries, PreferenceLevel } from '../../domain/types/favoriteSeries.ts';
 
 export class FavoriteSeriesRepositoryImpl implements FavoriteSeriesRepository {
-  private readonly database: DatabaseClient;
+  private readonly databaseClient: DatabaseClient;
 
-  public constructor(database: DatabaseClient) {
-    this.database = database;
+  public constructor(databaseClient: DatabaseClient) {
+    this.databaseClient = databaseClient;
   }
 
   public async create(favoriteSeriesData: CreateFavoriteSeriesData, tx?: Transaction): Promise<FavoriteSeries> {
-    const db = tx ? tx : this.database.db;
+    const db = tx ? tx : this.databaseClient.db;
 
     const [newFavorite] = await db
       .insert(userFavoriteSeries)
@@ -46,7 +46,7 @@ export class FavoriteSeriesRepositoryImpl implements FavoriteSeriesRepository {
       conditions.push(eq(userFavoriteSeries.preferenceLevel, preferenceLevel));
     }
 
-    const [countResult] = await this.database.db
+    const [countResult] = await this.databaseClient.db
       .select({ count: count() })
       .from(userFavoriteSeries)
       .where(and(...conditions));
@@ -66,7 +66,7 @@ export class FavoriteSeriesRepositoryImpl implements FavoriteSeriesRepository {
       conditions.push(eq(userFavoriteSeries.preferenceLevel, preferenceLevel));
     }
 
-    const favorites = await this.database.db
+    const favorites = await this.databaseClient.db
       .select()
       .from(userFavoriteSeries)
       .where(and(...conditions))
@@ -78,7 +78,7 @@ export class FavoriteSeriesRepositoryImpl implements FavoriteSeriesRepository {
   }
 
   public async findOne(userId: string, seriesTmdbId: number, tx?: Transaction): Promise<FavoriteSeries | null> {
-    const db = tx ? tx : this.database.db;
+    const db = tx ? tx : this.databaseClient.db;
 
     const query = db
       .select()
@@ -92,7 +92,7 @@ export class FavoriteSeriesRepositoryImpl implements FavoriteSeriesRepository {
   }
 
   public async delete(userId: string, seriesTmdbId: number, tx?: Transaction): Promise<void> {
-    const db = tx ? tx : this.database.db;
+    const db = tx ? tx : this.databaseClient.db;
 
     await db
       .delete(userFavoriteSeries)
@@ -103,7 +103,7 @@ export class FavoriteSeriesRepositoryImpl implements FavoriteSeriesRepository {
     data: UpdateFavoriteSeriesPreferenceData,
     tx?: Transaction,
   ): Promise<FavoriteSeries> {
-    const db = tx ? tx : this.database.db;
+    const db = tx ? tx : this.databaseClient.db;
 
     const [updated] = await db
       .update(userFavoriteSeries)

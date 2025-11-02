@@ -10,22 +10,22 @@ import { UserRepositoryImpl } from '../../infrastructure/repositories/userReposi
 import { FindUserAction } from './findUserAction.ts';
 
 describe('FindUserAction', () => {
-  let database: DatabaseClient;
+  let databaseClient: DatabaseClient;
   let userRepository: UserRepositoryImpl;
   let findUserAction: FindUserAction;
 
   beforeEach(async () => {
     const config = createConfig();
-    database = new DatabaseClient({ url: config.database.url });
-    userRepository = new UserRepositoryImpl(database);
+    databaseClient = new DatabaseClient({ url: config.database.url });
+    userRepository = new UserRepositoryImpl(databaseClient);
 
     findUserAction = new FindUserAction(userRepository);
 
-    await database.db.delete(users);
+    await databaseClient.db.delete(users);
   });
   afterEach(async () => {
-    await database.db.delete(users);
-    await database.close();
+    await databaseClient.db.delete(users);
+    await databaseClient.close();
   });
 
   describe('execute', () => {

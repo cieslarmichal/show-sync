@@ -8,18 +8,18 @@ import type { IgnoredSeries } from '../../domain/types/ignoredSeries.ts';
 export class AddIgnoredSeriesAction {
   private readonly ignoredSeriesRepository: IgnoredSeriesRepository;
   private readonly favoriteSeriesRepository: FavoriteSeriesRepository;
-  private readonly database: DatabaseClient;
+  private readonly databaseClient: DatabaseClient;
   private readonly loggerService: LoggerService;
 
   public constructor(
     ignoredSeriesRepository: IgnoredSeriesRepository,
     favoriteSeriesRepository: FavoriteSeriesRepository,
-    database: DatabaseClient,
+    databaseClient: DatabaseClient,
     loggerService: LoggerService,
   ) {
     this.ignoredSeriesRepository = ignoredSeriesRepository;
     this.favoriteSeriesRepository = favoriteSeriesRepository;
-    this.database = database;
+    this.databaseClient = databaseClient;
     this.loggerService = loggerService;
   }
 
@@ -35,7 +35,7 @@ export class AddIgnoredSeriesAction {
       });
     }
 
-    const result = await this.database.db.transaction(async (tx) => {
+    const result = await this.databaseClient.db.transaction(async (tx) => {
       const favoriteSeries = await this.favoriteSeriesRepository.findOne(userId, seriesTmdbId, tx);
 
       if (favoriteSeries) {
