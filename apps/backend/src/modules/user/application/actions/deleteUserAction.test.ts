@@ -1,6 +1,7 @@
 import { beforeEach, afterEach, describe, expect, it } from 'vitest';
 
 import { Generator } from '../../../../../tests/generator.ts';
+import { createTestExecutionContext } from '../../../../../tests/helpers/executionContext.ts';
 import { ResourceNotFoundError } from '../../../../common/errors/resourceNotFoundError.ts';
 import type { LoggerService } from '../../../../common/logger/loggerService.ts';
 import { createConfig } from '../../../../core/config.ts';
@@ -44,7 +45,7 @@ describe('DeleteUserAction', () => {
 
       const user = await userRepository.create(userData);
 
-      await deleteUserAction.execute(user.id);
+      await deleteUserAction.execute(user.id, createTestExecutionContext({ userId: user.id }));
 
       const deletedUser = await userRepository.findById(user.id);
       expect(deletedUser).toBeNull();
@@ -53,7 +54,9 @@ describe('DeleteUserAction', () => {
     it('throws ResourceNotFoundError when user does not exist', async () => {
       const nonExistentId = Generator.uuid();
 
-      await expect(deleteUserAction.execute(nonExistentId)).rejects.toThrow(ResourceNotFoundError);
+      await expect(deleteUserAction.execute(nonExistentId, createTestExecutionContext())).rejects.toThrow(
+        ResourceNotFoundError,
+      );
     });
   });
 });

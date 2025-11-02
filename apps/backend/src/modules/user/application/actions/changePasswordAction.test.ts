@@ -1,6 +1,7 @@
 import { beforeEach, afterEach, describe, expect, it } from 'vitest';
 
 import { Generator } from '../../../../../tests/generator.ts';
+import { createTestExecutionContext } from '../../../../../tests/helpers/executionContext.ts';
 import { OperationNotValidError } from '../../../../common/errors/operationNotValidError.ts';
 import { ResourceNotFoundError } from '../../../../common/errors/resourceNotFoundError.ts';
 import type { LoggerService } from '../../../../common/logger/loggerService.ts';
@@ -51,11 +52,14 @@ describe('ChangePasswordAction', () => {
       const hashedPassword = await passwordService.hashPassword(oldPassword);
       const user = await userRepository.create({ ...userData, password: hashedPassword });
 
-      await changePasswordAction.execute({
-        userId: user.id,
-        oldPassword,
-        newPassword,
-      });
+      await changePasswordAction.execute(
+        {
+          userId: user.id,
+          oldPassword,
+          newPassword,
+        },
+        createTestExecutionContext(),
+      );
 
       const updatedUser = await userRepository.findById(user.id);
 
@@ -74,11 +78,14 @@ describe('ChangePasswordAction', () => {
       const nonExistentId = Generator.uuid();
 
       await expect(
-        changePasswordAction.execute({
-          userId: nonExistentId,
-          oldPassword: Generator.password(),
-          newPassword: Generator.password(),
-        }),
+        changePasswordAction.execute(
+          {
+            userId: nonExistentId,
+            oldPassword: Generator.password(),
+            newPassword: Generator.password(),
+          },
+          createTestExecutionContext(),
+        ),
       ).rejects.toThrow(ResourceNotFoundError);
     });
 
@@ -90,11 +97,14 @@ describe('ChangePasswordAction', () => {
       const user = await userRepository.create({ ...userData, password: hashedPassword });
 
       await expect(
-        changePasswordAction.execute({
-          userId: user.id,
-          oldPassword: Generator.password(),
-          newPassword: Generator.password(),
-        }),
+        changePasswordAction.execute(
+          {
+            userId: user.id,
+            oldPassword: Generator.password(),
+            newPassword: Generator.password(),
+          },
+          createTestExecutionContext(),
+        ),
       ).rejects.toThrow(OperationNotValidError);
     });
   });

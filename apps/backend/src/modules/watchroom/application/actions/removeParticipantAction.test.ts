@@ -1,6 +1,7 @@
 import { beforeEach, afterEach, describe, expect, it } from 'vitest';
 
 import { Generator } from '../../../../../tests/generator.ts';
+import { createTestExecutionContext } from '../../../../../tests/helpers/executionContext.ts';
 import { OperationNotValidError } from '../../../../common/errors/operationNotValidError.ts';
 import { ResourceNotFoundError } from '../../../../common/errors/resourceNotFoundError.ts';
 import type { LoggerService } from '../../../../common/logger/loggerService.ts';
@@ -60,22 +61,31 @@ describe('RemoveParticipantAction', () => {
       const participantData = Generator.userData();
       const participant = await userRepository.create(participantData);
 
-      const watchroom = await createWatchroomAction.execute({
-        name: Generator.words(3),
-        description: Generator.sentences(2),
-        ownerId: owner.id,
-      });
+      const watchroom = await createWatchroomAction.execute(
+        {
+          name: Generator.words(3),
+          description: Generator.sentences(2),
+          ownerId: owner.id,
+        },
+        createTestExecutionContext(),
+      );
 
-      await joinWatchroomAction.execute({
-        publicLinkId: watchroom.publicLinkId,
-        userId: participant.id,
-      });
+      await joinWatchroomAction.execute(
+        {
+          publicLinkId: watchroom.publicLinkId,
+          userId: participant.id,
+        },
+        createTestExecutionContext(),
+      );
 
-      await removeParticipantAction.execute({
-        watchroomId: watchroom.id,
-        participantId: participant.id,
-        requesterId: owner.id,
-      });
+      await removeParticipantAction.execute(
+        {
+          watchroomId: watchroom.id,
+          participantId: participant.id,
+          requesterId: owner.id,
+        },
+        createTestExecutionContext(),
+      );
 
       const isParticipant = await watchroomRepository.isParticipant(watchroom.id, participant.id);
       expect(isParticipant).toBe(false);
@@ -88,21 +98,30 @@ describe('RemoveParticipantAction', () => {
       const participantData = Generator.userData();
       const participant = await userRepository.create(participantData);
 
-      const watchroom = await createWatchroomAction.execute({
-        name: Generator.words(3),
-        ownerId: owner.id,
-      });
+      const watchroom = await createWatchroomAction.execute(
+        {
+          name: Generator.words(3),
+          ownerId: owner.id,
+        },
+        createTestExecutionContext(),
+      );
 
-      await joinWatchroomAction.execute({
-        publicLinkId: watchroom.publicLinkId,
-        userId: participant.id,
-      });
+      await joinWatchroomAction.execute(
+        {
+          publicLinkId: watchroom.publicLinkId,
+          userId: participant.id,
+        },
+        createTestExecutionContext(),
+      );
 
-      await removeParticipantAction.execute({
-        watchroomId: watchroom.id,
-        participantId: participant.id,
-        requesterId: owner.id,
-      });
+      await removeParticipantAction.execute(
+        {
+          watchroomId: watchroom.id,
+          participantId: participant.id,
+          requesterId: owner.id,
+        },
+        createTestExecutionContext(),
+      );
 
       const updatedWatchroom = await watchroomRepository.findOne({ id: watchroom.id });
 
@@ -124,11 +143,14 @@ describe('RemoveParticipantAction', () => {
       const nonExistentWatchroomId = Generator.uuid();
 
       await expect(
-        removeParticipantAction.execute({
-          watchroomId: nonExistentWatchroomId,
-          participantId: participant.id,
-          requesterId: owner.id,
-        }),
+        removeParticipantAction.execute(
+          {
+            watchroomId: nonExistentWatchroomId,
+            participantId: participant.id,
+            requesterId: owner.id,
+          },
+          createTestExecutionContext(),
+        ),
       ).rejects.toThrow(ResourceNotFoundError);
     });
 
@@ -142,27 +164,39 @@ describe('RemoveParticipantAction', () => {
       const participant2Data = Generator.userData();
       const participant2 = await userRepository.create(participant2Data);
 
-      const watchroom = await createWatchroomAction.execute({
-        name: Generator.words(3),
-        ownerId: owner.id,
-      });
+      const watchroom = await createWatchroomAction.execute(
+        {
+          name: Generator.words(3),
+          ownerId: owner.id,
+        },
+        createTestExecutionContext(),
+      );
 
-      await joinWatchroomAction.execute({
-        publicLinkId: watchroom.publicLinkId,
-        userId: participant1.id,
-      });
+      await joinWatchroomAction.execute(
+        {
+          publicLinkId: watchroom.publicLinkId,
+          userId: participant1.id,
+        },
+        createTestExecutionContext(),
+      );
 
-      await joinWatchroomAction.execute({
-        publicLinkId: watchroom.publicLinkId,
-        userId: participant2.id,
-      });
+      await joinWatchroomAction.execute(
+        {
+          publicLinkId: watchroom.publicLinkId,
+          userId: participant2.id,
+        },
+        createTestExecutionContext(),
+      );
 
       await expect(
-        removeParticipantAction.execute({
-          watchroomId: watchroom.id,
-          participantId: participant2.id,
-          requesterId: participant1.id,
-        }),
+        removeParticipantAction.execute(
+          {
+            watchroomId: watchroom.id,
+            participantId: participant2.id,
+            requesterId: participant1.id,
+          },
+          createTestExecutionContext(),
+        ),
       ).rejects.toThrow(OperationNotValidError);
     });
 
@@ -170,17 +204,23 @@ describe('RemoveParticipantAction', () => {
       const ownerData = Generator.userData();
       const owner = await userRepository.create(ownerData);
 
-      const watchroom = await createWatchroomAction.execute({
-        name: Generator.words(3),
-        ownerId: owner.id,
-      });
+      const watchroom = await createWatchroomAction.execute(
+        {
+          name: Generator.words(3),
+          ownerId: owner.id,
+        },
+        createTestExecutionContext(),
+      );
 
       await expect(
-        removeParticipantAction.execute({
-          watchroomId: watchroom.id,
-          participantId: owner.id,
-          requesterId: owner.id,
-        }),
+        removeParticipantAction.execute(
+          {
+            watchroomId: watchroom.id,
+            participantId: owner.id,
+            requesterId: owner.id,
+          },
+          createTestExecutionContext(),
+        ),
       ).rejects.toThrow(OperationNotValidError);
     });
 
@@ -191,17 +231,23 @@ describe('RemoveParticipantAction', () => {
       const nonParticipantData = Generator.userData();
       const nonParticipant = await userRepository.create(nonParticipantData);
 
-      const watchroom = await createWatchroomAction.execute({
-        name: Generator.words(3),
-        ownerId: owner.id,
-      });
+      const watchroom = await createWatchroomAction.execute(
+        {
+          name: Generator.words(3),
+          ownerId: owner.id,
+        },
+        createTestExecutionContext(),
+      );
 
       await expect(
-        removeParticipantAction.execute({
-          watchroomId: watchroom.id,
-          participantId: nonParticipant.id,
-          requesterId: owner.id,
-        }),
+        removeParticipantAction.execute(
+          {
+            watchroomId: watchroom.id,
+            participantId: nonParticipant.id,
+            requesterId: owner.id,
+          },
+          createTestExecutionContext(),
+        ),
       ).rejects.toThrow(ResourceNotFoundError);
     });
 
@@ -215,32 +261,47 @@ describe('RemoveParticipantAction', () => {
       const participant2Data = Generator.userData();
       const participant2 = await userRepository.create(participant2Data);
 
-      const watchroom = await createWatchroomAction.execute({
-        name: Generator.words(3),
-        ownerId: owner.id,
-      });
+      const watchroom = await createWatchroomAction.execute(
+        {
+          name: Generator.words(3),
+          ownerId: owner.id,
+        },
+        createTestExecutionContext(),
+      );
 
-      await joinWatchroomAction.execute({
-        publicLinkId: watchroom.publicLinkId,
-        userId: participant1.id,
-      });
+      await joinWatchroomAction.execute(
+        {
+          publicLinkId: watchroom.publicLinkId,
+          userId: participant1.id,
+        },
+        createTestExecutionContext(),
+      );
 
-      await joinWatchroomAction.execute({
-        publicLinkId: watchroom.publicLinkId,
-        userId: participant2.id,
-      });
+      await joinWatchroomAction.execute(
+        {
+          publicLinkId: watchroom.publicLinkId,
+          userId: participant2.id,
+        },
+        createTestExecutionContext(),
+      );
 
-      await removeParticipantAction.execute({
-        watchroomId: watchroom.id,
-        participantId: participant1.id,
-        requesterId: owner.id,
-      });
+      await removeParticipantAction.execute(
+        {
+          watchroomId: watchroom.id,
+          participantId: participant1.id,
+          requesterId: owner.id,
+        },
+        createTestExecutionContext(),
+      );
 
-      await removeParticipantAction.execute({
-        watchroomId: watchroom.id,
-        participantId: participant2.id,
-        requesterId: owner.id,
-      });
+      await removeParticipantAction.execute(
+        {
+          watchroomId: watchroom.id,
+          participantId: participant2.id,
+          requesterId: owner.id,
+        },
+        createTestExecutionContext(),
+      );
 
       const updatedWatchroom = await watchroomRepository.findOne({ id: watchroom.id });
 

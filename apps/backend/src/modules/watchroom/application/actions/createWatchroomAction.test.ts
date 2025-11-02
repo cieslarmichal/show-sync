@@ -1,6 +1,7 @@
 import { beforeEach, afterEach, describe, expect, it } from 'vitest';
 
 import { Generator } from '../../../../../tests/generator.ts';
+import { createTestExecutionContext } from '../../../../../tests/helpers/executionContext.ts';
 import type { LoggerService } from '../../../../common/logger/loggerService.ts';
 import { createConfig } from '../../../../core/config.ts';
 import { DatabaseClient } from '../../../../infrastructure/database/database.ts';
@@ -55,7 +56,7 @@ describe('CreateWatchroomAction', () => {
         ownerId: user.id,
       };
 
-      const result = await createWatchroomAction.execute(watchroomData);
+      const result = await createWatchroomAction.execute(watchroomData, createTestExecutionContext());
 
       expect(result).toBeDefined();
       expect(result.id).toBeDefined();
@@ -80,7 +81,7 @@ describe('CreateWatchroomAction', () => {
         ownerId: user.id,
       };
 
-      const result = await createWatchroomAction.execute(watchroomData);
+      const result = await createWatchroomAction.execute(watchroomData, createTestExecutionContext());
 
       expect(result).toBeDefined();
       expect(result.id).toBeDefined();
@@ -103,7 +104,7 @@ describe('CreateWatchroomAction', () => {
         ownerId: user.id,
       };
 
-      const result = await createWatchroomAction.execute(watchroomData);
+      const result = await createWatchroomAction.execute(watchroomData, createTestExecutionContext());
 
       const isParticipant = await watchroomRepository.isParticipant(result.id, user.id);
       expect(isParticipant).toBe(true);
@@ -123,8 +124,8 @@ describe('CreateWatchroomAction', () => {
         ownerId: user.id,
       };
 
-      const result1 = await createWatchroomAction.execute(watchroomData1);
-      const result2 = await createWatchroomAction.execute(watchroomData2);
+      const result1 = await createWatchroomAction.execute(watchroomData1, createTestExecutionContext());
+      const result2 = await createWatchroomAction.execute(watchroomData2, createTestExecutionContext());
 
       expect(result1.publicLinkId).not.toBe(result2.publicLinkId);
       expect(result1.publicLinkId).toHaveLength(10);

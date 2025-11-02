@@ -1,6 +1,7 @@
 import { beforeEach, afterEach, describe, expect, it } from 'vitest';
 
 import { Generator } from '../../../../../tests/generator.ts';
+import { createTestExecutionContext } from '../../../../../tests/helpers/executionContext.ts';
 import { ResourceAlreadyExistsError } from '../../../../common/errors/resourceAlreadyExistsError.ts';
 import type { LoggerService } from '../../../../common/logger/loggerService.ts';
 import { createConfig } from '../../../../core/config.ts';
@@ -58,7 +59,7 @@ describe('AddIgnoredSeriesAction', () => {
 
       const seriesTmdbId = Generator.number(1, 10000);
 
-      const ignored = await addIgnoredSeriesAction.execute(user.id, seriesTmdbId);
+      const ignored = await addIgnoredSeriesAction.execute(user.id, seriesTmdbId, createTestExecutionContext());
 
       expect(ignored.userId).toBe(user.id);
       expect(ignored.seriesTmdbId).toBe(seriesTmdbId);
@@ -73,7 +74,9 @@ describe('AddIgnoredSeriesAction', () => {
 
       await ignoredSeriesRepository.create({ userId: user.id, seriesTmdbId });
 
-      await expect(addIgnoredSeriesAction.execute(user.id, seriesTmdbId)).rejects.toThrow(ResourceAlreadyExistsError);
+      await expect(addIgnoredSeriesAction.execute(user.id, seriesTmdbId, createTestExecutionContext())).rejects.toThrow(
+        ResourceAlreadyExistsError,
+      );
     });
 
     it('removes series from favorites when adding to ignored list', async () => {
@@ -86,7 +89,7 @@ describe('AddIgnoredSeriesAction', () => {
       const favoriteBefore = await favoriteSeriesRepository.findOne(user.id, seriesTmdbId);
       expect(favoriteBefore).toBeDefined();
 
-      const result = await addIgnoredSeriesAction.execute(user.id, seriesTmdbId);
+      const result = await addIgnoredSeriesAction.execute(user.id, seriesTmdbId, createTestExecutionContext());
 
       expect(result).toBeDefined();
       expect(result.userId).toBe(user.id);

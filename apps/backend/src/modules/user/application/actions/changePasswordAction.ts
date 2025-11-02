@@ -1,6 +1,7 @@
 import { OperationNotValidError } from '../../../../common/errors/operationNotValidError.ts';
 import { ResourceNotFoundError } from '../../../../common/errors/resourceNotFoundError.ts';
 import type { LoggerService } from '../../../../common/logger/loggerService.ts';
+import type { ExecutionContext } from '../../../../common/types/executionContext.ts';
 import type { UserRepository } from '../../domain/repositories/userRepository.ts';
 import type { PasswordService } from '../services/passwordService.ts';
 
@@ -21,11 +22,12 @@ export class ChangePasswordAction {
     this.passwordService = passwordService;
   }
 
-  public async execute(payload: ChangePasswordPayload): Promise<void> {
+  public async execute(payload: ChangePasswordPayload, context: ExecutionContext): Promise<void> {
     const { userId, oldPassword, newPassword } = payload;
 
     this.loggerService.debug({
       message: 'Changing user password...',
+      requestId: context.requestId,
       userId,
     });
 
@@ -53,6 +55,7 @@ export class ChangePasswordAction {
 
     this.loggerService.info({
       message: 'User password changed successfully.',
+      requestId: context.requestId,
       userId,
     });
   }

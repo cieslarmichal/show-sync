@@ -1,6 +1,7 @@
 import { ResourceAlreadyExistsError } from '../../../../common/errors/resourceAlreadyExistsError.ts';
 import { ResourceNotFoundError } from '../../../../common/errors/resourceNotFoundError.ts';
 import type { LoggerService } from '../../../../common/logger/loggerService.ts';
+import type { ExecutionContext } from '../../../../common/types/executionContext.ts';
 import type { WatchroomRepository } from '../../domain/repositories/watchroomRepository.ts';
 import type { Watchroom } from '../../domain/types/watchroom.ts';
 
@@ -18,11 +19,12 @@ export class JoinWatchroomAction {
     this.loggerService = loggerService;
   }
 
-  public async execute(payload: JoinWatchroomActionPayload): Promise<Watchroom> {
+  public async execute(payload: JoinWatchroomActionPayload, context: ExecutionContext): Promise<Watchroom> {
     const { publicLinkId, userId } = payload;
 
     this.loggerService.debug({
       message: 'Joining watchroom...',
+      requestId: context.requestId,
       publicLinkId,
       userId,
     });
@@ -51,6 +53,7 @@ export class JoinWatchroomAction {
 
     this.loggerService.info({
       message: 'Watchroom joined successfully.',
+      requestId: context.requestId,
       watchroomId: watchroom.id,
       userId,
     });

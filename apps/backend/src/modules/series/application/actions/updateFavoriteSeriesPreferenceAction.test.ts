@@ -1,6 +1,7 @@
 import { beforeEach, afterEach, describe, expect, it } from 'vitest';
 
 import { Generator } from '../../../../../tests/generator.ts';
+import { createTestExecutionContext } from '../../../../../tests/helpers/executionContext.ts';
 import { ResourceNotFoundError } from '../../../../common/errors/resourceNotFoundError.ts';
 import type { LoggerService } from '../../../../common/logger/loggerService.ts';
 import { createConfig } from '../../../../core/config.ts';
@@ -58,11 +59,14 @@ describe('UpdateFavoriteSeriesPreferenceAction', () => {
         preferenceLevel: preferenceLevels.like,
       });
 
-      const result = await updateFavoriteSeriesPreferenceAction.execute({
-        userId: user.id,
-        seriesTmdbId,
-        preferenceLevel: preferenceLevels.love,
-      });
+      const result = await updateFavoriteSeriesPreferenceAction.execute(
+        {
+          userId: user.id,
+          seriesTmdbId,
+          preferenceLevel: preferenceLevels.love,
+        },
+        createTestExecutionContext(),
+      );
 
       expect(result).toBeDefined();
       expect(result.userId).toBe(user.id);
@@ -81,11 +85,14 @@ describe('UpdateFavoriteSeriesPreferenceAction', () => {
         preferenceLevel: preferenceLevels.love,
       });
 
-      const result = await updateFavoriteSeriesPreferenceAction.execute({
-        userId: user.id,
-        seriesTmdbId,
-        preferenceLevel: preferenceLevels.like,
-      });
+      const result = await updateFavoriteSeriesPreferenceAction.execute(
+        {
+          userId: user.id,
+          seriesTmdbId,
+          preferenceLevel: preferenceLevels.like,
+        },
+        createTestExecutionContext(),
+      );
 
       expect(result).toBeDefined();
       expect(result.userId).toBe(user.id);
@@ -99,11 +106,14 @@ describe('UpdateFavoriteSeriesPreferenceAction', () => {
       const seriesTmdbId = Generator.number(1, 10000);
 
       await expect(
-        updateFavoriteSeriesPreferenceAction.execute({
-          userId: user.id,
-          seriesTmdbId,
-          preferenceLevel: preferenceLevels.love,
-        }),
+        updateFavoriteSeriesPreferenceAction.execute(
+          {
+            userId: user.id,
+            seriesTmdbId,
+            preferenceLevel: preferenceLevels.love,
+          },
+          createTestExecutionContext(),
+        ),
       ).rejects.toThrow(ResourceNotFoundError);
     });
 
@@ -121,11 +131,14 @@ describe('UpdateFavoriteSeriesPreferenceAction', () => {
       });
 
       await expect(
-        updateFavoriteSeriesPreferenceAction.execute({
-          userId: user2.id,
-          seriesTmdbId,
-          preferenceLevel: preferenceLevels.love,
-        }),
+        updateFavoriteSeriesPreferenceAction.execute(
+          {
+            userId: user2.id,
+            seriesTmdbId,
+            preferenceLevel: preferenceLevels.love,
+          },
+          createTestExecutionContext(),
+        ),
       ).rejects.toThrow(ResourceNotFoundError);
     });
 
@@ -140,11 +153,14 @@ describe('UpdateFavoriteSeriesPreferenceAction', () => {
         preferenceLevel: preferenceLevels.like,
       });
 
-      const result = await updateFavoriteSeriesPreferenceAction.execute({
-        userId: user.id,
-        seriesTmdbId,
-        preferenceLevel: preferenceLevels.like,
-      });
+      const result = await updateFavoriteSeriesPreferenceAction.execute(
+        {
+          userId: user.id,
+          seriesTmdbId,
+          preferenceLevel: preferenceLevels.like,
+        },
+        createTestExecutionContext(),
+      );
 
       expect(result).toBeDefined();
       expect(result.preferenceLevel).toBe(preferenceLevels.like);

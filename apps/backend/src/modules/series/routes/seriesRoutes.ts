@@ -232,7 +232,10 @@ export const seriesRoutes: FastifyPluginAsyncTypebox<{
       const { userId } = request.user;
       const { seriesTmdbId, preferenceLevel } = request.body;
 
-      const favorite = await addFavoriteSeriesAction.execute(userId, seriesTmdbId, preferenceLevel);
+      const favorite = await addFavoriteSeriesAction.execute(userId, seriesTmdbId, preferenceLevel, {
+        requestId: request.id,
+        userId,
+      });
 
       return reply.status(201).send(mapFavoriteSeriesToResponse(favorite));
     },
@@ -256,7 +259,10 @@ export const seriesRoutes: FastifyPluginAsyncTypebox<{
       const { userId } = request.user;
       const { seriesTmdbId } = request.params;
 
-      await removeFavoriteSeriesAction.execute(userId, seriesTmdbId);
+      await removeFavoriteSeriesAction.execute(userId, seriesTmdbId, {
+        requestId: request.id,
+        userId,
+      });
 
       return reply.status(204).send();
     },
@@ -282,11 +288,17 @@ export const seriesRoutes: FastifyPluginAsyncTypebox<{
       const { seriesTmdbId } = request.params;
       const { preferenceLevel } = request.body;
 
-      const updated = await updateFavoriteSeriesPreferenceAction.execute({
-        userId,
-        seriesTmdbId,
-        preferenceLevel,
-      });
+      const updated = await updateFavoriteSeriesPreferenceAction.execute(
+        {
+          userId,
+          seriesTmdbId,
+          preferenceLevel,
+        },
+        {
+          requestId: request.id,
+          userId,
+        },
+      );
 
       return reply.send(mapFavoriteSeriesToResponse(updated));
     },
@@ -341,7 +353,10 @@ export const seriesRoutes: FastifyPluginAsyncTypebox<{
       const { userId } = request.user;
       const { seriesTmdbId } = request.body;
 
-      const ignored = await addIgnoredSeriesAction.execute(userId, seriesTmdbId);
+      const ignored = await addIgnoredSeriesAction.execute(userId, seriesTmdbId, {
+        requestId: request.id,
+        userId,
+      });
 
       return reply.status(201).send(mapIgnoredSeriesToResponse(ignored));
     },
@@ -365,7 +380,10 @@ export const seriesRoutes: FastifyPluginAsyncTypebox<{
       const { userId } = request.user;
       const { seriesTmdbId } = request.params;
 
-      await removeIgnoredSeriesAction.execute(userId, seriesTmdbId);
+      await removeIgnoredSeriesAction.execute(userId, seriesTmdbId, {
+        requestId: request.id,
+        userId,
+      });
 
       return reply.status(204).send();
     },

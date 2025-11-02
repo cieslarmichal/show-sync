@@ -2,6 +2,7 @@ import type { TokenService } from '../../../../common/auth/tokenService.ts';
 import { CryptoService } from '../../../../common/crypto/cryptoService.ts';
 import { UnauthorizedAccessError } from '../../../../common/errors/unathorizedAccessError.ts';
 import type { LoggerService } from '../../../../common/logger/loggerService.ts';
+import type { ExecutionContext } from '../../../../common/types/executionContext.ts';
 import type { Config } from '../../../../core/config.ts';
 import type { DatabaseClient } from '../../../../infrastructure/database/database.ts';
 import type { UserRepository } from '../../domain/repositories/userRepository.ts';
@@ -40,7 +41,7 @@ export class RefreshTokenAction {
     this.databaseClient = databaseClient;
   }
 
-  public async execute(data: RefreshTokenData): Promise<RefreshTokenResult> {
+  public async execute(data: RefreshTokenData, context: ExecutionContext): Promise<RefreshTokenResult> {
     const { refreshToken } = data;
 
     const tokenPayload = this.tokenService.verifyRefreshToken(refreshToken);
@@ -102,6 +103,7 @@ export class RefreshTokenAction {
 
     this.loggerService.info({
       message: 'Tokens refreshed successfully.',
+      requestId: context.requestId,
       userId: user.id,
       email: user.email,
     });

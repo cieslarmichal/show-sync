@@ -1,6 +1,7 @@
 import { beforeEach, afterEach, describe, expect, it } from 'vitest';
 
 import { Generator } from '../../../../../tests/generator.ts';
+import { createTestExecutionContext } from '../../../../../tests/helpers/executionContext.ts';
 import { ResourceNotFoundError } from '../../../../common/errors/resourceNotFoundError.ts';
 import type { LoggerService } from '../../../../common/logger/loggerService.ts';
 import { createConfig } from '../../../../core/config.ts';
@@ -50,7 +51,7 @@ describe('RemoveFavoriteSeriesAction', () => {
 
       await favoriteSeriesRepository.create({ userId: user.id, seriesTmdbId, preferenceLevel: 'like' });
 
-      await removeFavoriteSeriesAction.execute(user.id, seriesTmdbId);
+      await removeFavoriteSeriesAction.execute(user.id, seriesTmdbId, createTestExecutionContext());
 
       const favoriteAfterRemoval = await favoriteSeriesRepository.findOne(user.id, seriesTmdbId);
 
@@ -62,7 +63,9 @@ describe('RemoveFavoriteSeriesAction', () => {
       const user = await userRepository.create(userData);
       const seriesTmdbId = Generator.number(1, 10000);
 
-      await expect(removeFavoriteSeriesAction.execute(user.id, seriesTmdbId)).rejects.toThrow(ResourceNotFoundError);
+      await expect(
+        removeFavoriteSeriesAction.execute(user.id, seriesTmdbId, createTestExecutionContext()),
+      ).rejects.toThrow(ResourceNotFoundError);
     });
   });
 });

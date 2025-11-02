@@ -1,6 +1,7 @@
 import { OperationNotValidError } from '../../../../common/errors/operationNotValidError.ts';
 import { ResourceNotFoundError } from '../../../../common/errors/resourceNotFoundError.ts';
 import type { LoggerService } from '../../../../common/logger/loggerService.ts';
+import type { ExecutionContext } from '../../../../common/types/executionContext.ts';
 import type { WatchroomRepository } from '../../domain/repositories/watchroomRepository.ts';
 
 export interface RemoveParticipantActionPayload {
@@ -18,11 +19,12 @@ export class RemoveParticipantAction {
     this.loggerService = loggerService;
   }
 
-  public async execute(payload: RemoveParticipantActionPayload): Promise<void> {
+  public async execute(payload: RemoveParticipantActionPayload, context: ExecutionContext): Promise<void> {
     const { watchroomId, participantId, requesterId } = payload;
 
     this.loggerService.debug({
       message: 'Removing participant from watchroom...',
+      requestId: context.requestId,
       watchroomId,
       participantId,
       requesterId,
@@ -66,6 +68,7 @@ export class RemoveParticipantAction {
 
     this.loggerService.info({
       message: 'Participant removed from watchroom successfully.',
+      requestId: context.requestId,
       watchroomId,
       participantId,
       requesterId,

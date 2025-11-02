@@ -1,6 +1,7 @@
 import { beforeEach, afterEach, describe, expect, it } from 'vitest';
 
 import { Generator } from '../../../../../tests/generator.ts';
+import { createTestExecutionContext } from '../../../../../tests/helpers/executionContext.ts';
 import { OperationNotValidError } from '../../../../common/errors/operationNotValidError.ts';
 import { ResourceNotFoundError } from '../../../../common/errors/resourceNotFoundError.ts';
 import type { LoggerService } from '../../../../common/logger/loggerService.ts';
@@ -60,21 +61,30 @@ describe('LeaveWatchroomAction', () => {
       const participantData = Generator.userData();
       const participant = await userRepository.create(participantData);
 
-      const watchroom = await createWatchroomAction.execute({
-        name: Generator.words(3),
-        description: Generator.sentences(2),
-        ownerId: owner.id,
-      });
+      const watchroom = await createWatchroomAction.execute(
+        {
+          name: Generator.words(3),
+          description: Generator.sentences(2),
+          ownerId: owner.id,
+        },
+        createTestExecutionContext(),
+      );
 
-      await joinWatchroomAction.execute({
-        publicLinkId: watchroom.publicLinkId,
-        userId: participant.id,
-      });
+      await joinWatchroomAction.execute(
+        {
+          publicLinkId: watchroom.publicLinkId,
+          userId: participant.id,
+        },
+        createTestExecutionContext(),
+      );
 
-      await leaveWatchroomAction.execute({
-        watchroomId: watchroom.id,
-        userId: participant.id,
-      });
+      await leaveWatchroomAction.execute(
+        {
+          watchroomId: watchroom.id,
+          userId: participant.id,
+        },
+        createTestExecutionContext(),
+      );
 
       const isParticipant = await watchroomRepository.isParticipant(watchroom.id, participant.id);
       expect(isParticipant).toBe(false);
@@ -87,20 +97,29 @@ describe('LeaveWatchroomAction', () => {
       const participantData = Generator.userData();
       const participant = await userRepository.create(participantData);
 
-      const watchroom = await createWatchroomAction.execute({
-        name: Generator.words(3),
-        ownerId: owner.id,
-      });
+      const watchroom = await createWatchroomAction.execute(
+        {
+          name: Generator.words(3),
+          ownerId: owner.id,
+        },
+        createTestExecutionContext(),
+      );
 
-      await joinWatchroomAction.execute({
-        publicLinkId: watchroom.publicLinkId,
-        userId: participant.id,
-      });
+      await joinWatchroomAction.execute(
+        {
+          publicLinkId: watchroom.publicLinkId,
+          userId: participant.id,
+        },
+        createTestExecutionContext(),
+      );
 
-      await leaveWatchroomAction.execute({
-        watchroomId: watchroom.id,
-        userId: participant.id,
-      });
+      await leaveWatchroomAction.execute(
+        {
+          watchroomId: watchroom.id,
+          userId: participant.id,
+        },
+        createTestExecutionContext(),
+      );
 
       const updatedWatchroom = await watchroomRepository.findOne({ id: watchroom.id });
 
@@ -119,10 +138,13 @@ describe('LeaveWatchroomAction', () => {
       const nonExistentWatchroomId = Generator.uuid();
 
       await expect(
-        leaveWatchroomAction.execute({
-          watchroomId: nonExistentWatchroomId,
-          userId: participant.id,
-        }),
+        leaveWatchroomAction.execute(
+          {
+            watchroomId: nonExistentWatchroomId,
+            userId: participant.id,
+          },
+          createTestExecutionContext(),
+        ),
       ).rejects.toThrow(ResourceNotFoundError);
     });
 
@@ -130,16 +152,22 @@ describe('LeaveWatchroomAction', () => {
       const ownerData = Generator.userData();
       const owner = await userRepository.create(ownerData);
 
-      const watchroom = await createWatchroomAction.execute({
-        name: Generator.words(3),
-        ownerId: owner.id,
-      });
+      const watchroom = await createWatchroomAction.execute(
+        {
+          name: Generator.words(3),
+          ownerId: owner.id,
+        },
+        createTestExecutionContext(),
+      );
 
       await expect(
-        leaveWatchroomAction.execute({
-          watchroomId: watchroom.id,
-          userId: owner.id,
-        }),
+        leaveWatchroomAction.execute(
+          {
+            watchroomId: watchroom.id,
+            userId: owner.id,
+          },
+          createTestExecutionContext(),
+        ),
       ).rejects.toThrow(OperationNotValidError);
     });
 
@@ -150,16 +178,22 @@ describe('LeaveWatchroomAction', () => {
       const nonParticipantData = Generator.userData();
       const nonParticipant = await userRepository.create(nonParticipantData);
 
-      const watchroom = await createWatchroomAction.execute({
-        name: Generator.words(3),
-        ownerId: owner.id,
-      });
+      const watchroom = await createWatchroomAction.execute(
+        {
+          name: Generator.words(3),
+          ownerId: owner.id,
+        },
+        createTestExecutionContext(),
+      );
 
       await expect(
-        leaveWatchroomAction.execute({
-          watchroomId: watchroom.id,
-          userId: nonParticipant.id,
-        }),
+        leaveWatchroomAction.execute(
+          {
+            watchroomId: watchroom.id,
+            userId: nonParticipant.id,
+          },
+          createTestExecutionContext(),
+        ),
       ).rejects.toThrow(ResourceNotFoundError);
     });
   });

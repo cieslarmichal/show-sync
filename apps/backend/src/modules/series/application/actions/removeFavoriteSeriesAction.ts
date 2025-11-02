@@ -1,5 +1,6 @@
 import { ResourceNotFoundError } from '../../../../common/errors/resourceNotFoundError.ts';
 import type { LoggerService } from '../../../../common/logger/loggerService.ts';
+import type { ExecutionContext } from '../../../../common/types/executionContext.ts';
 import type { FavoriteSeriesRepository } from '../../domain/repositories/favoriteSeriesRepository.ts';
 
 export class RemoveFavoriteSeriesAction {
@@ -11,7 +12,7 @@ export class RemoveFavoriteSeriesAction {
     this.loggerService = loggerService;
   }
 
-  public async execute(userId: string, seriesTmdbId: number): Promise<void> {
+  public async execute(userId: string, seriesTmdbId: number, context: ExecutionContext): Promise<void> {
     const existing = await this.favoriteSeriesRepository.findOne(userId, seriesTmdbId);
 
     if (!existing) {
@@ -27,6 +28,7 @@ export class RemoveFavoriteSeriesAction {
 
     this.loggerService.info({
       message: 'Series removed from favorites',
+      requestId: context.requestId,
       userId,
       seriesTmdbId,
     });

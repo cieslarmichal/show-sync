@@ -1,6 +1,7 @@
 import { beforeEach, afterEach, describe, expect, it } from 'vitest';
 
 import { Generator } from '../../../../../tests/generator.ts';
+import { createTestExecutionContext } from '../../../../../tests/helpers/executionContext.ts';
 import { TokenService } from '../../../../common/auth/tokenService.ts';
 import type { LoggerService } from '../../../../common/logger/loggerService.ts';
 import { createConfig, type Config } from '../../../../core/config.ts';
@@ -67,10 +68,13 @@ describe('LogoutUserAction', () => {
 
       await userRepository.create(userData);
 
-      const loginResult = await loginUserAction.execute({
-        email: userData.email,
-        password,
-      });
+      const loginResult = await loginUserAction.execute(
+        {
+          email: userData.email,
+          password,
+        },
+        createTestExecutionContext(),
+      );
 
       await logoutUserAction.execute({ refreshToken: loginResult.refreshToken });
 

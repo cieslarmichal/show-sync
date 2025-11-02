@@ -1,6 +1,7 @@
 import { beforeEach, afterEach, describe, expect, it } from 'vitest';
 
 import { Generator } from '../../../../../tests/generator.ts';
+import { createTestExecutionContext } from '../../../../../tests/helpers/executionContext.ts';
 import { ResourceAlreadyExistsError } from '../../../../common/errors/resourceAlreadyExistsError.ts';
 import type { LoggerService } from '../../../../common/logger/loggerService.ts';
 import { createConfig } from '../../../../core/config.ts';
@@ -44,7 +45,7 @@ describe('CreateUserAction', () => {
     it('creates a new user successfully', async () => {
       const userData = Generator.userData();
 
-      const result = await createUserAction.execute(userData);
+      const result = await createUserAction.execute(userData, createTestExecutionContext());
 
       expect(result).toBeDefined();
       expect(result.id).toBeDefined();
@@ -61,9 +62,11 @@ describe('CreateUserAction', () => {
       const userData = Generator.userData();
       const newUserData = Generator.userData({ email: userData.email });
 
-      await createUserAction.execute(userData);
+      await createUserAction.execute(userData, createTestExecutionContext());
 
-      await expect(createUserAction.execute(newUserData)).rejects.toThrow(ResourceAlreadyExistsError);
+      await expect(createUserAction.execute(newUserData, createTestExecutionContext())).rejects.toThrow(
+        ResourceAlreadyExistsError,
+      );
     });
   });
 });

@@ -104,11 +104,16 @@ export const userRoutes: FastifyPluginAsyncTypebox<{
       rateLimit: config.rateLimit.auth,
     },
     handler: async (request, reply) => {
-      const user = await createUserAction.execute({
-        name: request.body.name,
-        email: request.body.email,
-        password: request.body.password,
-      });
+      const user = await createUserAction.execute(
+        {
+          name: request.body.name,
+          email: request.body.email,
+          password: request.body.password,
+        },
+        {
+          requestId: request.id,
+        },
+      );
 
       return reply.status(201).send(mapUserToDto(user));
     },
@@ -127,7 +132,12 @@ export const userRoutes: FastifyPluginAsyncTypebox<{
     handler: async (request, reply) => {
       const { email, password } = request.body;
 
-      const result = await loginUserAction.execute({ email, password });
+      const result = await loginUserAction.execute(
+        { email, password },
+        {
+          requestId: request.id,
+        },
+      );
 
       reply.setCookie(refreshTokenCookie.name, result.refreshToken, refreshTokenCookie.config);
 
@@ -180,7 +190,12 @@ export const userRoutes: FastifyPluginAsyncTypebox<{
       // Ensure single-flight per tokenHash
       let promise = inFlightRefreshes.get(tokenHash);
       if (!promise) {
-        promise = refreshTokenAction.execute({ refreshToken });
+        promise = refreshTokenAction.execute(
+          { refreshToken },
+          {
+            requestId: request.id,
+          },
+        );
         inFlightRefreshes.set(tokenHash, promise);
       }
 
@@ -244,7 +259,10 @@ export const userRoutes: FastifyPluginAsyncTypebox<{
 
       const { userId } = request.user;
 
-      await deleteUserAction.execute(userId);
+      await deleteUserAction.execute(userId, {
+        requestId: request.id,
+        userId,
+      });
 
       const refreshToken = request.cookies[refreshTokenCookie.name];
 
@@ -274,7 +292,13 @@ export const userRoutes: FastifyPluginAsyncTypebox<{
       const { userId } = request.user;
       const { oldPassword, newPassword } = request.body;
 
-      await changePasswordAction.execute({ userId, oldPassword, newPassword });
+      await changePasswordAction.execute(
+        { userId, oldPassword, newPassword },
+        {
+          requestId: request.id,
+          userId,
+        },
+      );
 
       return reply.status(204).send();
     },

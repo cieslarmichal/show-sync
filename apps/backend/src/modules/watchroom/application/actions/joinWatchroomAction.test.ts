@@ -1,6 +1,7 @@
 import { beforeEach, afterEach, describe, expect, it } from 'vitest';
 
 import { Generator } from '../../../../../tests/generator.ts';
+import { createTestExecutionContext } from '../../../../../tests/helpers/executionContext.ts';
 import { ResourceAlreadyExistsError } from '../../../../common/errors/resourceAlreadyExistsError.ts';
 import { ResourceNotFoundError } from '../../../../common/errors/resourceNotFoundError.ts';
 import type { LoggerService } from '../../../../common/logger/loggerService.ts';
@@ -57,16 +58,22 @@ describe('JoinWatchroomAction', () => {
       const participantData = Generator.userData();
       const participant = await userRepository.create(participantData);
 
-      const watchroom = await createWatchroomAction.execute({
-        name: Generator.words(3),
-        description: Generator.sentences(2),
-        ownerId: owner.id,
-      });
+      const watchroom = await createWatchroomAction.execute(
+        {
+          name: Generator.words(3),
+          description: Generator.sentences(2),
+          ownerId: owner.id,
+        },
+        createTestExecutionContext(),
+      );
 
-      const result = await joinWatchroomAction.execute({
-        publicLinkId: watchroom.publicLinkId,
-        userId: participant.id,
-      });
+      const result = await joinWatchroomAction.execute(
+        {
+          publicLinkId: watchroom.publicLinkId,
+          userId: participant.id,
+        },
+        createTestExecutionContext(),
+      );
 
       expect(result).toBeDefined();
       expect(result.id).toBe(watchroom.id);
@@ -83,15 +90,21 @@ describe('JoinWatchroomAction', () => {
       const participantData = Generator.userData();
       const participant = await userRepository.create(participantData);
 
-      const watchroom = await createWatchroomAction.execute({
-        name: Generator.words(3),
-        ownerId: owner.id,
-      });
+      const watchroom = await createWatchroomAction.execute(
+        {
+          name: Generator.words(3),
+          ownerId: owner.id,
+        },
+        createTestExecutionContext(),
+      );
 
-      await joinWatchroomAction.execute({
-        publicLinkId: watchroom.publicLinkId,
-        userId: participant.id,
-      });
+      await joinWatchroomAction.execute(
+        {
+          publicLinkId: watchroom.publicLinkId,
+          userId: participant.id,
+        },
+        createTestExecutionContext(),
+      );
 
       const updatedWatchroom = await watchroomRepository.findOne({ id: watchroom.id });
 
@@ -111,10 +124,13 @@ describe('JoinWatchroomAction', () => {
       const nonExistentPublicLinkId = Generator.alphaString(10);
 
       await expect(
-        joinWatchroomAction.execute({
-          publicLinkId: nonExistentPublicLinkId,
-          userId: participant.id,
-        }),
+        joinWatchroomAction.execute(
+          {
+            publicLinkId: nonExistentPublicLinkId,
+            userId: participant.id,
+          },
+          createTestExecutionContext(),
+        ),
       ).rejects.toThrow(ResourceNotFoundError);
     });
 
@@ -125,21 +141,30 @@ describe('JoinWatchroomAction', () => {
       const participantData = Generator.userData();
       const participant = await userRepository.create(participantData);
 
-      const watchroom = await createWatchroomAction.execute({
-        name: Generator.words(3),
-        ownerId: owner.id,
-      });
+      const watchroom = await createWatchroomAction.execute(
+        {
+          name: Generator.words(3),
+          ownerId: owner.id,
+        },
+        createTestExecutionContext(),
+      );
 
-      await joinWatchroomAction.execute({
-        publicLinkId: watchroom.publicLinkId,
-        userId: participant.id,
-      });
-
-      await expect(
-        joinWatchroomAction.execute({
+      await joinWatchroomAction.execute(
+        {
           publicLinkId: watchroom.publicLinkId,
           userId: participant.id,
-        }),
+        },
+        createTestExecutionContext(),
+      );
+
+      await expect(
+        joinWatchroomAction.execute(
+          {
+            publicLinkId: watchroom.publicLinkId,
+            userId: participant.id,
+          },
+          createTestExecutionContext(),
+        ),
       ).rejects.toThrow(ResourceAlreadyExistsError);
     });
 
@@ -147,16 +172,22 @@ describe('JoinWatchroomAction', () => {
       const ownerData = Generator.userData();
       const owner = await userRepository.create(ownerData);
 
-      const watchroom = await createWatchroomAction.execute({
-        name: Generator.words(3),
-        ownerId: owner.id,
-      });
+      const watchroom = await createWatchroomAction.execute(
+        {
+          name: Generator.words(3),
+          ownerId: owner.id,
+        },
+        createTestExecutionContext(),
+      );
 
       await expect(
-        joinWatchroomAction.execute({
-          publicLinkId: watchroom.publicLinkId,
-          userId: owner.id,
-        }),
+        joinWatchroomAction.execute(
+          {
+            publicLinkId: watchroom.publicLinkId,
+            userId: owner.id,
+          },
+          createTestExecutionContext(),
+        ),
       ).rejects.toThrow(ResourceAlreadyExistsError);
     });
   });

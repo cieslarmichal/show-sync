@@ -175,7 +175,7 @@ export default function WatchRoomDetailsPage() {
       fetchRoomDetails(watchroomId);
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Failed to remove participant.';
-      
+
       if (errorMessage.includes('Too many requests') || errorMessage.includes('Rate limit')) {
         toast.error('Rate limit exceeded', {
           description: 'Please wait a moment before trying again.',
@@ -200,7 +200,7 @@ export default function WatchRoomDetailsPage() {
       navigate('/watchrooms');
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Failed to leave the room.';
-      
+
       if (errorMessage.includes('Too many requests') || errorMessage.includes('Rate limit')) {
         toast.error('Rate limit exceeded', {
           description: 'Please wait a moment before trying again.',
@@ -224,7 +224,7 @@ export default function WatchRoomDetailsPage() {
       navigate('/watchrooms');
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Failed to delete room.';
-      
+
       if (errorMessage.includes('Too many requests') || errorMessage.includes('Rate limit')) {
         toast.error('Rate limit exceeded', {
           description: 'Please wait a moment before trying again.',
@@ -295,7 +295,7 @@ export default function WatchRoomDetailsPage() {
     } catch (error) {
       console.error('Failed to generate recommendations:', error);
       const errorMessage = error instanceof Error ? error.message : 'Failed to generate recommendations.';
-      
+
       // Check if it's a rate limit error
       if (errorMessage.includes('Too many requests') || errorMessage.includes('Rate limit')) {
         toast.error('Rate limit exceeded', {
@@ -330,7 +330,7 @@ export default function WatchRoomDetailsPage() {
     } catch (error) {
       console.error('Failed to ignore series:', error);
       const errorMessage = error instanceof Error ? error.message : 'Failed to ignore series';
-      
+
       if (errorMessage.includes('Too many requests') || errorMessage.includes('Rate limit')) {
         toast.error('Rate limit exceeded', {
           description: 'Please wait a moment before trying again.',
@@ -372,7 +372,7 @@ export default function WatchRoomDetailsPage() {
     } catch (error) {
       console.error('Failed to add to favorites:', error);
       const errorMessage = error instanceof Error ? error.message : 'Failed to add to favorites';
-      
+
       if (errorMessage.includes('Too many requests') || errorMessage.includes('Rate limit')) {
         toast.error('Rate limit exceeded', {
           description: 'Please wait a moment before trying again.',
@@ -404,7 +404,7 @@ export default function WatchRoomDetailsPage() {
       }
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Failed to get IMDb link';
-      
+
       if (errorMessage.includes('Too many requests') || errorMessage.includes('Rate limit')) {
         toast.error('Rate limit exceeded', {
           description: 'Please wait a moment before trying again.',

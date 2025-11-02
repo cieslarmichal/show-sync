@@ -1,6 +1,7 @@
 import { OperationNotValidError } from '../../../../common/errors/operationNotValidError.ts';
 import { ResourceNotFoundError } from '../../../../common/errors/resourceNotFoundError.ts';
 import type { LoggerService } from '../../../../common/logger/loggerService.ts';
+import type { ExecutionContext } from '../../../../common/types/executionContext.ts';
 import type { WatchroomRepository } from '../../domain/repositories/watchroomRepository.ts';
 import type { Watchroom } from '../../domain/types/watchroom.ts';
 
@@ -20,11 +21,12 @@ export class UpdateWatchroomAction {
     this.loggerService = loggerService;
   }
 
-  public async execute(payload: UpdateWatchroomActionPayload): Promise<Watchroom> {
+  public async execute(payload: UpdateWatchroomActionPayload, context: ExecutionContext): Promise<Watchroom> {
     const { watchroomId, userId, name, description } = payload;
 
     this.loggerService.debug({
       message: 'Updating watchroom...',
+      requestId: context.requestId,
       watchroomId,
       userId,
       name,
@@ -55,6 +57,7 @@ export class UpdateWatchroomAction {
 
     this.loggerService.info({
       message: 'Watchroom updated successfully.',
+      requestId: context.requestId,
       watchroomId,
       userId,
     });

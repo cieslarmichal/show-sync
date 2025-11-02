@@ -1,5 +1,6 @@
 import { ResourceAlreadyExistsError } from '../../../../common/errors/resourceAlreadyExistsError.ts';
 import type { LoggerService } from '../../../../common/logger/loggerService.ts';
+import type { ExecutionContext } from '../../../../common/types/executionContext.ts';
 import type { DatabaseClient } from '../../../../infrastructure/database/database.ts';
 import type { FavoriteSeriesRepository } from '../../domain/repositories/favoriteSeriesRepository.ts';
 import type { IgnoredSeriesRepository } from '../../domain/repositories/ignoredSeriesRepository.ts';
@@ -23,10 +24,12 @@ export class AddFavoriteSeriesAction {
     this.loggerService = loggerService;
   }
 
+  // TODO: change to payload objects
   public async execute(
     userId: string,
     seriesTmdbId: number,
     preferenceLevel: PreferenceLevel,
+    context: ExecutionContext,
   ): Promise<FavoriteSeries> {
     const existing = await this.favoriteSeriesRepository.findOne(userId, seriesTmdbId);
 
@@ -47,6 +50,7 @@ export class AddFavoriteSeriesAction {
 
         this.loggerService.info({
           message: 'Series removed from ignored list before adding to favorites',
+          requestId: context.requestId,
           userId,
           seriesTmdbId,
         });
@@ -57,6 +61,7 @@ export class AddFavoriteSeriesAction {
 
     this.loggerService.info({
       message: 'Series added to favorites',
+      requestId: context.requestId,
       userId,
       seriesTmdbId,
       preferenceLevel,

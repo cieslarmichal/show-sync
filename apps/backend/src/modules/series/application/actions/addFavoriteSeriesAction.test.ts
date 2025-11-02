@@ -1,6 +1,7 @@
 import { beforeEach, afterEach, describe, expect, it } from 'vitest';
 
 import { Generator } from '../../../../../tests/generator.ts';
+import { createTestExecutionContext } from '../../../../../tests/helpers/executionContext.ts';
 import { ResourceAlreadyExistsError } from '../../../../common/errors/resourceAlreadyExistsError.ts';
 import type { LoggerService } from '../../../../common/logger/loggerService.ts';
 import { createConfig } from '../../../../core/config.ts';
@@ -58,7 +59,7 @@ describe('AddFavoriteSeriesAction', () => {
       const user = await userRepository.create(userData);
       const seriesTmdbId = Generator.number(1, 10000);
 
-      const result = await addFavoriteSeriesAction.execute(user.id, seriesTmdbId, 'like');
+      const result = await addFavoriteSeriesAction.execute(user.id, seriesTmdbId, 'like', createTestExecutionContext());
 
       expect(result).toBeDefined();
       expect(result.id).toBeDefined();
@@ -74,9 +75,9 @@ describe('AddFavoriteSeriesAction', () => {
 
       await favoriteSeriesRepository.create({ userId: user.id, seriesTmdbId, preferenceLevel: 'like' });
 
-      await expect(addFavoriteSeriesAction.execute(user.id, seriesTmdbId, 'like')).rejects.toThrow(
-        ResourceAlreadyExistsError,
-      );
+      await expect(
+        addFavoriteSeriesAction.execute(user.id, seriesTmdbId, 'like', createTestExecutionContext()),
+      ).rejects.toThrow(ResourceAlreadyExistsError);
     });
 
     it('removes series from ignored list when adding to favorites', async () => {
@@ -89,7 +90,7 @@ describe('AddFavoriteSeriesAction', () => {
       const ignoredBefore = await ignoredSeriesRepository.findOne(user.id, seriesTmdbId);
       expect(ignoredBefore).toBeDefined();
 
-      const result = await addFavoriteSeriesAction.execute(user.id, seriesTmdbId, 'like');
+      const result = await addFavoriteSeriesAction.execute(user.id, seriesTmdbId, 'like', createTestExecutionContext());
 
       expect(result).toBeDefined();
       expect(result.userId).toBe(user.id);

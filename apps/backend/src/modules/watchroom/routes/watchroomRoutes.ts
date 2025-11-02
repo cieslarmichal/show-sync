@@ -148,11 +148,17 @@ export const watchroomRoutes: FastifyPluginAsyncTypebox<{
       const { userId } = request.user;
       const { name, description } = request.body;
 
-      const watchroom = await createWatchroomAction.execute({
-        name,
-        description,
-        ownerId: userId,
-      });
+      const watchroom = await createWatchroomAction.execute(
+        {
+          name,
+          description,
+          ownerId: userId,
+        },
+        {
+          requestId: request.id,
+          userId,
+        },
+      );
 
       return reply.status(201).send(mapWatchroomToResponse(watchroom));
     },
@@ -241,10 +247,16 @@ export const watchroomRoutes: FastifyPluginAsyncTypebox<{
       const { userId } = request.user;
       const { publicLinkId } = request.params;
 
-      const watchroom = await joinWatchroomAction.execute({
-        publicLinkId,
-        userId,
-      });
+      const watchroom = await joinWatchroomAction.execute(
+        {
+          publicLinkId,
+          userId,
+        },
+        {
+          requestId: request.id,
+          userId,
+        },
+      );
 
       return reply.status(201).send(mapWatchroomToResponse(watchroom));
     },
@@ -301,12 +313,18 @@ export const watchroomRoutes: FastifyPluginAsyncTypebox<{
       const { userId } = request.user;
       const { name, description } = request.body;
 
-      const watchroom = await updateWatchroomAction.execute({
-        watchroomId,
-        userId,
-        name,
-        description,
-      });
+      const watchroom = await updateWatchroomAction.execute(
+        {
+          watchroomId,
+          userId,
+          name,
+          description,
+        },
+        {
+          requestId: request.id,
+          userId,
+        },
+      );
 
       return reply.send(mapWatchroomToResponse(watchroom));
     },
@@ -332,7 +350,13 @@ export const watchroomRoutes: FastifyPluginAsyncTypebox<{
       const { watchroomId } = request.params;
       const { userId } = request.user;
 
-      await deleteWatchroomAction.execute({ watchroomId, userId });
+      await deleteWatchroomAction.execute(
+        { watchroomId, userId },
+        {
+          requestId: request.id,
+          userId,
+        },
+      );
 
       return reply.status(204).send();
     },
@@ -359,11 +383,17 @@ export const watchroomRoutes: FastifyPluginAsyncTypebox<{
       const requesterId = request.user.userId;
       const { watchroomId, participantId } = request.params;
 
-      await removeParticipantAction.execute({
-        watchroomId,
-        participantId,
-        requesterId,
-      });
+      await removeParticipantAction.execute(
+        {
+          watchroomId,
+          participantId,
+          requesterId,
+        },
+        {
+          requestId: request.id,
+          userId: requesterId,
+        },
+      );
 
       return reply.status(204).send();
     },
@@ -389,10 +419,16 @@ export const watchroomRoutes: FastifyPluginAsyncTypebox<{
       const { userId } = request.user;
       const { watchroomId } = request.params;
 
-      await leaveWatchroomAction.execute({
-        watchroomId,
-        userId,
-      });
+      await leaveWatchroomAction.execute(
+        {
+          watchroomId,
+          userId,
+        },
+        {
+          requestId: request.id,
+          userId,
+        },
+      );
 
       return reply.status(204).send();
     },
@@ -428,14 +464,21 @@ export const watchroomRoutes: FastifyPluginAsyncTypebox<{
 
       // Execute in background and capture requestId
       generateRecommendationsAction
-        .execute({
-          requestId,
-          watchroomId,
-          userId,
-        })
+        .execute(
+          {
+            requestId,
+            watchroomId,
+            userId,
+          },
+          {
+            requestId: request.id,
+            userId,
+          },
+        )
         .catch((error: unknown) => {
           loggerService.error({
             message: 'Failed to generate recommendations in background',
+            requestId: request.id,
             watchroomId,
             userId,
             error: error instanceof Error ? error.message : String(error),

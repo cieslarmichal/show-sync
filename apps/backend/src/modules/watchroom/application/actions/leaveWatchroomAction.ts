@@ -1,6 +1,7 @@
 import { OperationNotValidError } from '../../../../common/errors/operationNotValidError.ts';
 import { ResourceNotFoundError } from '../../../../common/errors/resourceNotFoundError.ts';
 import type { LoggerService } from '../../../../common/logger/loggerService.ts';
+import type { ExecutionContext } from '../../../../common/types/executionContext.ts';
 import type { WatchroomRepository } from '../../domain/repositories/watchroomRepository.ts';
 
 export interface LeaveWatchroomActionPayload {
@@ -17,11 +18,12 @@ export class LeaveWatchroomAction {
     this.loggerService = loggerService;
   }
 
-  public async execute(payload: LeaveWatchroomActionPayload): Promise<void> {
+  public async execute(payload: LeaveWatchroomActionPayload, context: ExecutionContext): Promise<void> {
     const { watchroomId, userId } = payload;
 
     this.loggerService.debug({
       message: 'Leaving watchroom...',
+      requestId: context.requestId,
       watchroomId,
       userId,
     });
@@ -56,6 +58,7 @@ export class LeaveWatchroomAction {
 
     this.loggerService.info({
       message: 'Left watchroom successfully.',
+      requestId: context.requestId,
       watchroomId,
       userId,
     });

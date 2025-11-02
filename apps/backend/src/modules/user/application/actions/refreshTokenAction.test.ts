@@ -1,6 +1,7 @@
 import { beforeEach, afterEach, describe, expect, it } from 'vitest';
 
 import { Generator } from '../../../../../tests/generator.ts';
+import { createTestExecutionContext } from '../../../../../tests/helpers/executionContext.ts';
 import { TokenService } from '../../../../common/auth/tokenService.ts';
 import { UnauthorizedAccessError } from '../../../../common/errors/unathorizedAccessError.ts';
 import type { LoggerService } from '../../../../common/logger/loggerService.ts';
@@ -74,10 +75,13 @@ describe('RefreshTokenAction', () => {
 
       await userRepository.create(userData);
 
-      const loginResult = await loginUserAction.execute({
-        email: userData.email,
-        password,
-      });
+      const loginResult = await loginUserAction.execute(
+        {
+          email: userData.email,
+          password,
+        },
+        createTestExecutionContext(),
+      );
 
       const { sessionId } = tokenService.verifyRefreshToken(loginResult.refreshToken);
       const sessionBefore = await userSessionRepository.findById(sessionId);
@@ -86,7 +90,10 @@ describe('RefreshTokenAction', () => {
       // Wait 1 second to ensure different token generation time
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
-      const result = await refreshTokenAction.execute({ refreshToken: loginResult.refreshToken });
+      const result = await refreshTokenAction.execute(
+        { refreshToken: loginResult.refreshToken },
+        createTestExecutionContext(),
+      );
 
       expect(result.accessToken).toBeDefined();
       expect(result.refreshToken).toBeDefined();
@@ -99,9 +106,9 @@ describe('RefreshTokenAction', () => {
     });
 
     it('throws UnauthorizedAccessError when refresh token is invalid', async () => {
-      await expect(refreshTokenAction.execute({ refreshToken: 'invalid-token' })).rejects.toThrow(
-        UnauthorizedAccessError,
-      );
+      await expect(
+        refreshTokenAction.execute({ refreshToken: 'invalid-token' }, createTestExecutionContext()),
+      ).rejects.toThrow(UnauthorizedAccessError);
     });
   });
 });

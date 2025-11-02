@@ -1,4 +1,5 @@
 import type { LoggerService } from '../../../../common/logger/loggerService.ts';
+import type { ExecutionContext } from '../../../../common/types/executionContext.ts';
 import type { FavoriteSeriesRepository } from '../../domain/repositories/favoriteSeriesRepository.ts';
 import type { FavoriteSeries, PreferenceLevel } from '../../domain/types/favoriteSeries.ts';
 
@@ -17,7 +18,10 @@ export class UpdateFavoriteSeriesPreferenceAction {
     this.loggerService = loggerService;
   }
 
-  public async execute(payload: UpdateFavoriteSeriesPreferencePayload): Promise<FavoriteSeries> {
+  public async execute(
+    payload: UpdateFavoriteSeriesPreferencePayload,
+    context: ExecutionContext,
+  ): Promise<FavoriteSeries> {
     const { userId, seriesTmdbId, preferenceLevel } = payload;
 
     const updated = await this.favoriteSeriesRepository.updatePreferenceLevel({
@@ -28,6 +32,7 @@ export class UpdateFavoriteSeriesPreferenceAction {
 
     this.loggerService.info({
       message: 'Series preference level updated',
+      requestId: context.requestId,
       userId,
       seriesTmdbId,
       preferenceLevel,

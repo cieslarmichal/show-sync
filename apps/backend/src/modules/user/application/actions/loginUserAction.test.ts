@@ -1,6 +1,7 @@
 import { beforeEach, afterEach, describe, expect, it } from 'vitest';
 
 import { Generator } from '../../../../../tests/generator.ts';
+import { createTestExecutionContext } from '../../../../../tests/helpers/executionContext.ts';
 import { TokenService } from '../../../../common/auth/tokenService.ts';
 import { UnauthorizedAccessError } from '../../../../common/errors/unathorizedAccessError.ts';
 import type { LoggerService } from '../../../../common/logger/loggerService.ts';
@@ -63,10 +64,13 @@ describe('LoginUserAction', () => {
 
       const user = await userRepository.create(userData);
 
-      const result = await loginUserAction.execute({
-        email: userData.email,
-        password,
-      });
+      const result = await loginUserAction.execute(
+        {
+          email: userData.email,
+          password,
+        },
+        createTestExecutionContext(),
+      );
 
       expect(result.accessToken).toBeDefined();
       expect(result.refreshToken).toBeDefined();
@@ -82,10 +86,13 @@ describe('LoginUserAction', () => {
 
     it('throws UnauthorizedAccessError when user does not exist', async () => {
       await expect(
-        loginUserAction.execute({
-          email: 'nonexistent@example.com',
-          password: 'anypassword',
-        }),
+        loginUserAction.execute(
+          {
+            email: 'nonexistent@example.com',
+            password: 'anypassword',
+          },
+          createTestExecutionContext(),
+        ),
       ).rejects.toThrow(UnauthorizedAccessError);
     });
 
@@ -95,10 +102,13 @@ describe('LoginUserAction', () => {
       await userRepository.create(userData);
 
       await expect(
-        loginUserAction.execute({
-          email: userData.email,
-          password: 'wrongpassword',
-        }),
+        loginUserAction.execute(
+          {
+            email: userData.email,
+            password: 'wrongpassword',
+          },
+          createTestExecutionContext(),
+        ),
       ).rejects.toThrow(UnauthorizedAccessError);
     });
   });

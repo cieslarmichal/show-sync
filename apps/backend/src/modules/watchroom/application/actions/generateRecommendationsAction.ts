@@ -2,6 +2,7 @@ import { ForbiddenAccessError } from '../../../../common/errors/forbiddenAccessE
 import { ResourceNotFoundError } from '../../../../common/errors/resourceNotFoundError.ts';
 import type { LoggerService } from '../../../../common/logger/loggerService.ts';
 import type { OpenRouterService } from '../../../../common/openRouter/openRouterService.ts';
+import type { ExecutionContext } from '../../../../common/types/executionContext.ts';
 import type { DatabaseClient } from '../../../../infrastructure/database/database.ts';
 import type { FavoriteSeriesRepository } from '../../../series/domain/repositories/favoriteSeriesRepository.ts';
 import type { IgnoredSeriesRepository } from '../../../series/domain/repositories/ignoredSeriesRepository.ts';
@@ -88,13 +89,17 @@ export class GenerateRecommendationsAction {
     this.databaseClient = databaseClient;
   }
 
-  public async execute(payload: GenerateRecommendationsActionPayload): Promise<GenerateRecommendationsActionResult> {
+  public async execute(
+    payload: GenerateRecommendationsActionPayload,
+    context: ExecutionContext,
+  ): Promise<GenerateRecommendationsActionResult> {
     const { watchroomId, userId, requestId } = payload;
 
     this.loggerService.info({
       message: 'Generating recommendations for watchroom',
+      requestId: context.requestId,
       watchroomId,
-      requestId,
+      backgroundRequestId: requestId,
     });
 
     const watchroom = await this.getWatchroom(watchroomId, userId);
@@ -117,8 +122,9 @@ export class GenerateRecommendationsAction {
     if (failedCount > 0) {
       this.loggerService.warn({
         message: 'Some series details could not be fetched from TMDB',
+        requestId: context.requestId,
         watchroomId,
-        requestId,
+        backgroundRequestId: requestId,
         failedCount,
         totalSeries,
       });
@@ -141,8 +147,9 @@ export class GenerateRecommendationsAction {
     if (resolutionResult.failed.length > 0 || resolutionResult.skipped.length > 0) {
       this.loggerService.warn({
         message: 'Some AI recommendations were skipped or failed to be resolved to TMDB series',
+        requestId: context.requestId,
         watchroomId,
-        requestId,
+        backgroundRequestId: requestId,
         aiRecommendationCount: aiRecommendations.length,
         resolvedCount: resolutionResult.resolved.length,
         failedCount: resolutionResult.failed.length,
@@ -167,8 +174,9 @@ export class GenerateRecommendationsAction {
 
     this.loggerService.info({
       message: 'Recommendations generated and saved successfully',
+      requestId: context.requestId,
       watchroomId,
-      requestId,
+      backgroundRequestId: requestId,
       resolvedCount: resolutionResult.resolved.length,
     });
 

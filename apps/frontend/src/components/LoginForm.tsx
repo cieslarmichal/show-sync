@@ -41,7 +41,7 @@ export default function LoginForm() {
       navigate(redirectTo || '/dashboard');
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Invalid email or password';
-      
+
       if (errorMessage.includes('Too many requests') || errorMessage.includes('Rate limit')) {
         form.setError('root', {
           message: 'Too many login attempts. Please wait 10 minutes before trying again.',

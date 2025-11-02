@@ -1,5 +1,6 @@
 import { ResourceNotFoundError } from '../../../../common/errors/resourceNotFoundError.ts';
 import type { LoggerService } from '../../../../common/logger/loggerService.ts';
+import type { ExecutionContext } from '../../../../common/types/executionContext.ts';
 import type { UserRepository } from '../../domain/repositories/userRepository.ts';
 
 export class DeleteUserAction {
@@ -11,9 +12,10 @@ export class DeleteUserAction {
     this.loggerService = loggerService;
   }
 
-  public async execute(id: string): Promise<void> {
+  public async execute(id: string, context: ExecutionContext): Promise<void> {
     this.loggerService.debug({
       message: 'Deleting user...',
+      requestId: context.requestId,
       userId: id,
     });
 
@@ -31,6 +33,7 @@ export class DeleteUserAction {
 
     this.loggerService.info({
       message: 'User deleted successfully.',
+      requestId: context.requestId,
       userId: id,
       email: user.email,
     });

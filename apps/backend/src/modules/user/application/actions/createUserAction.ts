@@ -1,5 +1,6 @@
 import { ResourceAlreadyExistsError } from '../../../../common/errors/resourceAlreadyExistsError.ts';
 import type { LoggerService } from '../../../../common/logger/loggerService.ts';
+import type { ExecutionContext } from '../../../../common/types/executionContext.ts';
 import type { UserRepository } from '../../domain/repositories/userRepository.ts';
 import type { User } from '../../domain/types/user.ts';
 import type { PasswordService } from '../services/passwordService.ts';
@@ -21,13 +22,14 @@ export class CreateUserAction {
     this.passwordService = passwordService;
   }
 
-  public async execute(payload: CreateUserActionPayload): Promise<User> {
+  public async execute(payload: CreateUserActionPayload, context: ExecutionContext): Promise<User> {
     const { name, email: emailRaw, password } = payload;
 
     const email = emailRaw.toLowerCase();
 
     this.loggerService.debug({
       message: 'Creating user...',
+      requestId: context.requestId,
       email,
     });
 
@@ -53,6 +55,7 @@ export class CreateUserAction {
 
     this.loggerService.info({
       message: 'User created successfully.',
+      requestId: context.requestId,
       userId: user.id,
       email: user.email,
     });

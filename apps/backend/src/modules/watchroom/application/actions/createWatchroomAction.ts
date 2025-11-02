@@ -1,6 +1,7 @@
 import { customAlphabet } from 'nanoid';
 
 import type { LoggerService } from '../../../../common/logger/loggerService.ts';
+import type { ExecutionContext } from '../../../../common/types/executionContext.ts';
 import type { WatchroomRepository } from '../../domain/repositories/watchroomRepository.ts';
 import type { Watchroom } from '../../domain/types/watchroom.ts';
 
@@ -21,13 +22,14 @@ export class CreateWatchroomAction {
     this.loggerService = loggerService;
   }
 
-  public async execute(payload: CreateWatchroomActionPayload): Promise<Watchroom> {
+  public async execute(payload: CreateWatchroomActionPayload, context: ExecutionContext): Promise<Watchroom> {
     const { name, description, ownerId } = payload;
 
     const publicLinkId = nanoid();
 
     this.loggerService.debug({
       message: 'Creating watchroom...',
+      requestId: context.requestId,
       name,
       description,
       ownerId,
@@ -43,6 +45,7 @@ export class CreateWatchroomAction {
 
     this.loggerService.info({
       message: 'Watchroom created successfully.',
+      requestId: context.requestId,
       watchroomId: watchroom.id,
       name: watchroom.name,
       description: watchroom.description,
