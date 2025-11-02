@@ -1,7 +1,6 @@
 import fastifyCookie from '@fastify/cookie';
 import fastifyCors from '@fastify/cors';
 import fastifyHelmet from '@fastify/helmet';
-import fastifyMultipart from '@fastify/multipart';
 import fastifyRateLimit from '@fastify/rate-limit';
 import { type TypeBoxTypeProvider } from '@fastify/type-provider-typebox';
 import { fastify, type FastifyInstance } from 'fastify';
@@ -39,7 +38,7 @@ export class HttpServer {
     this.database = database;
 
     this.fastifyServer = fastify({
-      bodyLimit: 10 * 1024 * 1024,
+      bodyLimit: 1024 * 1024,
       logger: false,
     }).withTypeProvider<TypeBoxTypeProvider>();
   }
@@ -57,7 +56,6 @@ export class HttpServer {
       allowedHeaders: ['Content-Type', 'Authorization'],
     });
     await this.fastifyServer.register(fastifyHelmet);
-    await this.fastifyServer.register(fastifyMultipart, { limits: { fileSize: 1024 * 1024 * 1024 * 4 } });
     await this.fastifyServer.register(fastifyRateLimit, { global: false });
 
     this.fastifyServer.addHook('onRequest', (request, _reply, done) => {

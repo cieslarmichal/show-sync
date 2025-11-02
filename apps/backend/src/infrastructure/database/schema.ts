@@ -34,7 +34,7 @@ export const userFavoriteSeries = pgTable(
       .notNull()
       .references(() => users.id, { onDelete: 'cascade' }),
     seriesTmdbId: integer('series_tmdb_id').notNull(),
-    preferenceLevel: varchar('preference_level', { length: 16 }).notNull().default('like'),
+    preferenceLevel: varchar('preference_level', { length: 16 }).notNull(), // 'like' | 'love'
   },
   (table) => [
     index('idx_user_favorite_series_user_id').on(table.userId),
