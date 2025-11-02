@@ -6,10 +6,12 @@ import IgnoredSeriesList from '../components/IgnoredSeriesList.tsx';
 import { getMyFavoriteSeries } from '../api/queries/getMyFavoriteSeries.ts';
 import { addFavoriteSeries } from '../api/queries/addFavoriteSeries.ts';
 import { removeFavoriteSeries } from '../api/queries/removeFavoriteSeries.ts';
+import { updateFavoriteSeriesPreference } from '../api/queries/updateFavoriteSeriesPreference.ts';
 import { getMyIgnoredSeries } from '../api/queries/getMyIgnoredSeries.ts';
 import { addIgnoredSeries } from '../api/queries/addIgnoredSeries.ts';
 import { removeIgnoredSeries } from '../api/queries/removeIgnoredSeries.ts';
-import { Series, FavoriteSeries, IgnoredSeries } from '../api/types/series.ts';
+import { Series, FavoriteSeries, IgnoredSeries, PreferenceLevel } from '../api/types/series.ts';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '../components/ui/Tabs';
 
 export default function SeriesPage() {
   const [profileSeriesIds, setProfileSeriesIds] = useState<Set<number>>(new Set());
@@ -18,6 +20,9 @@ export default function SeriesPage() {
   const [myIgnoredSeries, setMyIgnoredSeries] = useState<IgnoredSeries[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isLoadingIgnored, setIsLoadingIgnored] = useState(true);
+  const [preferenceFilter, setPreferenceFilter] = useState<'all' | PreferenceLevel>('all');
+  const [lovedCount, setLovedCount] = useState(0);
+  const [likedCount, setLikedCount] = useState(0);
 
   useEffect(() => {
     const loadSeries = async () => {
@@ -26,6 +31,12 @@ export default function SeriesPage() {
         const series = response.data;
         setMySeries(series);
         setProfileSeriesIds(new Set(series.map((fav: FavoriteSeries) => fav.seriesTmdbId)));
+
+        // Calculate counts
+        const loved = series.filter((s: FavoriteSeries) => s.preferenceLevel === 'love').length;
+        const liked = series.filter((s: FavoriteSeries) => s.preferenceLevel === 'like').length;
+        setLovedCount(loved);
+        setLikedCount(liked);
       } catch (error) {
         console.error('Failed to load series:', error);
         toast.error('Failed to load your series');
@@ -68,14 +79,15 @@ export default function SeriesPage() {
         setMyIgnoredSeries((prev) => prev.filter((ignored) => ignored.seriesTmdbId !== series.id));
       }
 
-      await addFavoriteSeries(series.id);
+      await addFavoriteSeries(series.id, 'like');
       setProfileSeriesIds((prev) => new Set(prev).add(series.id));
       // Add to series list
       const newSeries: FavoriteSeries = {
         seriesTmdbId: series.id,
-        addedAt: new Date().toISOString(),
+        preferenceLevel: 'like',
       };
       setMySeries((prev) => [...prev, newSeries]);
+      setLikedCount((prev) => prev + 1);
       toast.success(`"${series.name}" added to your favorites!`);
     } catch (error) {
       console.error('Failed to add to favorites:', error);
@@ -85,6 +97,7 @@ export default function SeriesPage() {
 
   const handleRemoveSeries = async (seriesTmdbId: number): Promise<void> => {
     try {
+      const removedSeries = mySeries.find((s) => s.seriesTmdbId === seriesTmdbId);
       await removeFavoriteSeries(seriesTmdbId);
       setProfileSeriesIds((prev) => {
         const newSet = new Set(prev);
@@ -92,10 +105,43 @@ export default function SeriesPage() {
         return newSet;
       });
       setMySeries((prev) => prev.filter((fav) => fav.seriesTmdbId !== seriesTmdbId));
+
+      // Update counts
+      if (removedSeries?.preferenceLevel === 'love') {
+        setLovedCount((prev) => prev - 1);
+      } else {
+        setLikedCount((prev) => prev - 1);
+      }
+
       toast.success('Series removed from your profile');
     } catch (error) {
       console.error('Failed to remove series:', error);
       toast.error('Failed to remove series from your profile');
+    }
+  };
+
+  const handleUpdatePreference = async (seriesTmdbId: number, preferenceLevel: PreferenceLevel): Promise<void> => {
+    try {
+      const oldSeries = mySeries.find((s) => s.seriesTmdbId === seriesTmdbId);
+      const oldLevel = oldSeries?.preferenceLevel;
+
+      await updateFavoriteSeriesPreference(seriesTmdbId, preferenceLevel);
+
+      setMySeries((prev) => prev.map((fav) => (fav.seriesTmdbId === seriesTmdbId ? { ...fav, preferenceLevel } : fav)));
+
+      // Update counts
+      if (oldLevel === 'love' && preferenceLevel === 'like') {
+        setLovedCount((prev) => prev - 1);
+        setLikedCount((prev) => prev + 1);
+      } else if (oldLevel === 'like' && preferenceLevel === 'love') {
+        setLikedCount((prev) => prev - 1);
+        setLovedCount((prev) => prev + 1);
+      }
+
+      toast.success(`Preference updated to ${preferenceLevel === 'love' ? '❤️ Loved' : '👍 Liked'}`);
+    } catch (error) {
+      console.error('Failed to update preference:', error);
+      toast.error('Failed to update preference');
     }
   };
 
@@ -132,7 +178,6 @@ export default function SeriesPage() {
       setIgnoredSeriesIds((prev) => new Set(prev).add(series.id));
       const newIgnored: IgnoredSeries = {
         seriesTmdbId: series.id,
-        ignoredAt: new Date().toISOString(),
       };
       setMyIgnoredSeries((prev) => [...prev, newIgnored]);
       toast.success(`"${series.name}" added to your ignored list`);
@@ -174,11 +219,45 @@ export default function SeriesPage() {
                   Your Favorite Shows ({mySeries.length})
                 </h2>
               </div>
-              <FavoriteSeriesList
-                favorites={mySeries}
-                onRemoveFavorite={handleRemoveSeries}
-                isLoading={isLoading}
-              />
+
+              <Tabs
+                value={preferenceFilter}
+                onValueChange={(value: string) => setPreferenceFilter(value as 'all' | PreferenceLevel)}
+                className="w-full"
+              >
+                <TabsList className="mb-6">
+                  <TabsTrigger value="all">All ({mySeries.length})</TabsTrigger>
+                  <TabsTrigger value="love">❤️ Loved ({lovedCount})</TabsTrigger>
+                  <TabsTrigger value="like">👍 Liked ({likedCount})</TabsTrigger>
+                </TabsList>
+
+                <TabsContent value="all">
+                  <FavoriteSeriesList
+                    favorites={mySeries}
+                    onRemoveFavorite={handleRemoveSeries}
+                    onUpdatePreference={handleUpdatePreference}
+                    isLoading={isLoading}
+                  />
+                </TabsContent>
+
+                <TabsContent value="love">
+                  <FavoriteSeriesList
+                    favorites={mySeries.filter((s) => s.preferenceLevel === 'love')}
+                    onRemoveFavorite={handleRemoveSeries}
+                    onUpdatePreference={handleUpdatePreference}
+                    isLoading={isLoading}
+                  />
+                </TabsContent>
+
+                <TabsContent value="like">
+                  <FavoriteSeriesList
+                    favorites={mySeries.filter((s) => s.preferenceLevel === 'like')}
+                    onRemoveFavorite={handleRemoveSeries}
+                    onUpdatePreference={handleUpdatePreference}
+                    isLoading={isLoading}
+                  />
+                </TabsContent>
+              </Tabs>
             </div>
 
             {/* Ignored Series Section */}

@@ -1,12 +1,12 @@
 import { apiRequest } from '../apiRequest';
 import { FavoriteSeries, PreferenceLevel } from '../types/series';
 
-export const addFavoriteSeries = async (
+export const updateFavoriteSeriesPreference = async (
   seriesTmdbId: number,
   preferenceLevel: PreferenceLevel,
 ): Promise<FavoriteSeries> => {
-  return apiRequest<FavoriteSeries>('/series/favorites', {
-    method: 'POST',
-    body: { seriesTmdbId, preferenceLevel },
+  return apiRequest<FavoriteSeries>(`/series/favorites/${seriesTmdbId}/preference`, {
+    method: 'PATCH',
+    body: { preferenceLevel },
   });
 };

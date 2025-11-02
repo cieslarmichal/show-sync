@@ -63,7 +63,6 @@ describe('AddIgnoredSeriesAction', () => {
       expect(ignored.userId).toBe(user.id);
       expect(ignored.seriesTmdbId).toBe(seriesTmdbId);
       expect(ignored.id).toBeDefined();
-      expect(ignored.ignoredAt).toBeInstanceOf(Date);
     });
 
     it('throws ResourceAlreadyExistsError when series is already ignored', async () => {
@@ -82,22 +81,17 @@ describe('AddIgnoredSeriesAction', () => {
       const user = await userRepository.create(userData);
       const seriesTmdbId = Generator.number(1, 10000);
 
-      // First add to favorites
-      await favoriteSeriesRepository.create({ userId: user.id, seriesTmdbId });
+      await favoriteSeriesRepository.create({ userId: user.id, seriesTmdbId, preferenceLevel: 'like' });
 
-      // Verify it's in favorites
       const favoriteBefore = await favoriteSeriesRepository.findOne(user.id, seriesTmdbId);
       expect(favoriteBefore).toBeDefined();
 
-      // Add to ignored list (should remove from favorites)
       const result = await addIgnoredSeriesAction.execute(user.id, seriesTmdbId);
 
-      // Verify it's in ignored list
       expect(result).toBeDefined();
       expect(result.userId).toBe(user.id);
       expect(result.seriesTmdbId).toBe(seriesTmdbId);
 
-      // Verify it's no longer in favorites
       const favoriteAfter = await favoriteSeriesRepository.findOne(user.id, seriesTmdbId);
       expect(favoriteAfter).toBeNull();
     });

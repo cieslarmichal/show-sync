@@ -13,6 +13,7 @@ import { getSeriesDetails } from '../api/queries/getSeriesDetails';
 
 describe('FavoriteSeriesList', () => {
   const mockOnRemoveFavorite = vi.fn();
+  const mockOnUpdatePreference = vi.fn();
   const mockGetSeriesDetails = vi.mocked(getSeriesDetails);
 
   beforeEach(() => {
@@ -52,8 +53,8 @@ describe('FavoriteSeriesList', () => {
 
   it('should render favorite series with details', async () => {
     const mockFavorites: FavoriteSeries[] = [
-      { seriesTmdbId: 1, addedAt: '2025-01-01' },
-      { seriesTmdbId: 2, addedAt: '2025-01-02' },
+      { seriesTmdbId: 1, preferenceLevel: 'like' },
+      { seriesTmdbId: 2, preferenceLevel: 'love' },
     ];
 
     mockGetSeriesDetails.mockImplementation((tmdbId: number) => {
@@ -111,7 +112,7 @@ describe('FavoriteSeriesList', () => {
   });
 
   it('should render series image with correct src', async () => {
-    const mockFavorites: FavoriteSeries[] = [{ seriesTmdbId: 1, addedAt: '2025-01-01' }];
+    const mockFavorites: FavoriteSeries[] = [{ seriesTmdbId: 1, preferenceLevel: 'like' }];
 
     mockGetSeriesDetails.mockResolvedValue({
       id: 1,
@@ -145,7 +146,7 @@ describe('FavoriteSeriesList', () => {
   });
 
   it('should show "No Image Available" when posterPath is missing', async () => {
-    const mockFavorites: FavoriteSeries[] = [{ seriesTmdbId: 1, addedAt: '2025-01-01' }];
+    const mockFavorites: FavoriteSeries[] = [{ seriesTmdbId: 1, preferenceLevel: 'like' }];
 
     mockGetSeriesDetails.mockResolvedValue({
       id: 1,
@@ -178,7 +179,7 @@ describe('FavoriteSeriesList', () => {
   });
 
   it('should call onRemoveFavorite when remove button is clicked', async () => {
-    const mockFavorites: FavoriteSeries[] = [{ seriesTmdbId: 1, addedAt: '2025-01-01' }];
+    const mockFavorites: FavoriteSeries[] = [{ seriesTmdbId: 1, preferenceLevel: 'like' }];
 
     mockGetSeriesDetails.mockResolvedValue({
       id: 1,
@@ -224,8 +225,8 @@ describe('FavoriteSeriesList', () => {
     const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
 
     const mockFavorites: FavoriteSeries[] = [
-      { seriesTmdbId: 1, addedAt: '2025-01-01' },
-      { seriesTmdbId: 2, addedAt: '2025-01-02' },
+      { seriesTmdbId: 1, preferenceLevel: 'like' },
+      { seriesTmdbId: 2, preferenceLevel: 'love' },
     ];
 
     mockGetSeriesDetails.mockImplementation((tmdbId: number) => {
@@ -275,7 +276,7 @@ describe('FavoriteSeriesList', () => {
   it('should handle error when removing favorite fails', async () => {
     const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
 
-    const mockFavorites: FavoriteSeries[] = [{ seriesTmdbId: 1, addedAt: '2025-01-01' }];
+    const mockFavorites: FavoriteSeries[] = [{ seriesTmdbId: 1, preferenceLevel: 'like' }];
 
     mockGetSeriesDetails.mockResolvedValue({
       id: 1,
@@ -326,7 +327,7 @@ describe('FavoriteSeriesList', () => {
   });
 
   it('should display fallback ID when series details are not loaded yet', () => {
-    const mockFavorites: FavoriteSeries[] = [{ seriesTmdbId: 123, addedAt: '2025-01-01' }];
+    const mockFavorites: FavoriteSeries[] = [{ seriesTmdbId: 123, preferenceLevel: 'like' }];
 
     // Don't mock getSeriesDetails so it won't load immediately
     mockGetSeriesDetails.mockImplementation(() => new Promise(() => {}));
@@ -343,7 +344,7 @@ describe('FavoriteSeriesList', () => {
   });
 
   it('should clear series details when favorites array becomes empty', async () => {
-    const mockFavorites: FavoriteSeries[] = [{ seriesTmdbId: 1, addedAt: '2025-01-01' }];
+    const mockFavorites: FavoriteSeries[] = [{ seriesTmdbId: 1, preferenceLevel: 'like' }];
 
     mockGetSeriesDetails.mockResolvedValue({
       id: 1,
@@ -385,5 +386,225 @@ describe('FavoriteSeriesList', () => {
 
     expect(screen.getByText('No favorite series yet.')).toBeInTheDocument();
     expect(screen.queryByText('Breaking Bad')).not.toBeInTheDocument();
+  });
+
+  it('should render preference toggle when onUpdatePreference is provided', async () => {
+    const mockFavorites: FavoriteSeries[] = [{ seriesTmdbId: 1, preferenceLevel: 'like' }];
+
+    mockGetSeriesDetails.mockResolvedValue({
+      id: 1,
+      name: 'Breaking Bad',
+      posterPath: '/poster1.jpg',
+      overview: 'A chemistry teacher',
+      firstAirDate: '2008-01-20',
+      genres: ['Drama'],
+      numberOfSeasons: 5,
+      numberOfEpisodes: 62,
+      backdropPath: '/backdrop1.jpg',
+      status: 'Ended',
+      voteAverage: 9.5,
+      genreIds: [18],
+      originCountry: ['US'],
+      originalLanguage: 'en',
+    });
+
+    render(
+      <FavoriteSeriesList
+        favorites={mockFavorites}
+        onRemoveFavorite={mockOnRemoveFavorite}
+        onUpdatePreference={mockOnUpdatePreference}
+        isLoading={false}
+      />,
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText('Breaking Bad')).toBeInTheDocument();
+    });
+
+    // Should render the preference toggle button
+    const toggleButton = screen.getByRole('button', { name: /mark as loved/i });
+    expect(toggleButton).toBeInTheDocument();
+  });
+
+  it('should not render preference toggle when onUpdatePreference is not provided', async () => {
+    const mockFavorites: FavoriteSeries[] = [{ seriesTmdbId: 1, preferenceLevel: 'like' }];
+
+    mockGetSeriesDetails.mockResolvedValue({
+      id: 1,
+      name: 'Breaking Bad',
+      posterPath: '/poster1.jpg',
+      overview: 'A chemistry teacher',
+      firstAirDate: '2008-01-20',
+      genres: ['Drama'],
+      numberOfSeasons: 5,
+      numberOfEpisodes: 62,
+      backdropPath: '/backdrop1.jpg',
+      status: 'Ended',
+      voteAverage: 9.5,
+      genreIds: [18],
+      originCountry: ['US'],
+      originalLanguage: 'en',
+    });
+
+    render(
+      <FavoriteSeriesList
+        favorites={mockFavorites}
+        onRemoveFavorite={mockOnRemoveFavorite}
+        isLoading={false}
+      />,
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText('Breaking Bad')).toBeInTheDocument();
+    });
+
+    // Should not render the preference toggle button
+    const toggleButton = screen.queryByRole('button', { name: /mark as loved/i });
+    expect(toggleButton).not.toBeInTheDocument();
+  });
+
+  it('should call onUpdatePreference when preference toggle is clicked', async () => {
+    const mockFavorites: FavoriteSeries[] = [{ seriesTmdbId: 1, preferenceLevel: 'like' }];
+
+    mockGetSeriesDetails.mockResolvedValue({
+      id: 1,
+      name: 'Breaking Bad',
+      posterPath: '/poster1.jpg',
+      overview: 'A chemistry teacher',
+      firstAirDate: '2008-01-20',
+      genres: ['Drama'],
+      numberOfSeasons: 5,
+      numberOfEpisodes: 62,
+      backdropPath: '/backdrop1.jpg',
+      status: 'Ended',
+      voteAverage: 9.5,
+      genreIds: [18],
+      originCountry: ['US'],
+      originalLanguage: 'en',
+    });
+
+    mockOnUpdatePreference.mockResolvedValue(undefined);
+
+    render(
+      <FavoriteSeriesList
+        favorites={mockFavorites}
+        onRemoveFavorite={mockOnRemoveFavorite}
+        onUpdatePreference={mockOnUpdatePreference}
+        isLoading={false}
+      />,
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText('Breaking Bad')).toBeInTheDocument();
+    });
+
+    const toggleButton = screen.getByRole('button', { name: /mark as loved/i });
+    await userEvent.click(toggleButton);
+
+    expect(mockOnUpdatePreference).toHaveBeenCalledWith(1, 'love');
+  });
+
+  it('should handle error when updating preference fails', async () => {
+    const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+
+    const mockFavorites: FavoriteSeries[] = [{ seriesTmdbId: 1, preferenceLevel: 'like' }];
+
+    mockGetSeriesDetails.mockResolvedValue({
+      id: 1,
+      name: 'Breaking Bad',
+      posterPath: '/poster1.jpg',
+      overview: 'A chemistry teacher',
+      firstAirDate: '2008-01-20',
+      genres: ['Drama'],
+      numberOfSeasons: 5,
+      numberOfEpisodes: 62,
+      backdropPath: '/backdrop1.jpg',
+      status: 'Ended',
+      voteAverage: 9.5,
+      genreIds: [18],
+      originCountry: ['US'],
+      originalLanguage: 'en',
+    });
+
+    mockOnUpdatePreference.mockRejectedValue(new Error('Failed to update'));
+
+    render(
+      <FavoriteSeriesList
+        favorites={mockFavorites}
+        onRemoveFavorite={mockOnRemoveFavorite}
+        onUpdatePreference={mockOnUpdatePreference}
+        isLoading={false}
+      />,
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText('Breaking Bad')).toBeInTheDocument();
+    });
+
+    const toggleButton = screen.getByRole('button', { name: /mark as loved/i });
+    await userEvent.click(toggleButton);
+
+    expect(mockOnUpdatePreference).toHaveBeenCalledWith(1, 'love');
+    expect(consoleErrorSpy).toHaveBeenCalled();
+    consoleErrorSpy.mockRestore();
+  });
+
+  it('should disable preference toggle while updating', async () => {
+    const mockFavorites: FavoriteSeries[] = [{ seriesTmdbId: 1, preferenceLevel: 'like' }];
+
+    mockGetSeriesDetails.mockResolvedValue({
+      id: 1,
+      name: 'Breaking Bad',
+      posterPath: '/poster1.jpg',
+      overview: 'A chemistry teacher',
+      firstAirDate: '2008-01-20',
+      genres: ['Drama'],
+      numberOfSeasons: 5,
+      numberOfEpisodes: 62,
+      backdropPath: '/backdrop1.jpg',
+      status: 'Ended',
+      voteAverage: 9.5,
+      genreIds: [18],
+      originCountry: ['US'],
+      originalLanguage: 'en',
+    });
+
+    // Make the update slow so we can check disabled state
+    let resolveUpdate: () => void;
+    const updatePromise = new Promise<void>((resolve) => {
+      resolveUpdate = resolve;
+    });
+    mockOnUpdatePreference.mockReturnValue(updatePromise);
+
+    render(
+      <FavoriteSeriesList
+        favorites={mockFavorites}
+        onRemoveFavorite={mockOnRemoveFavorite}
+        onUpdatePreference={mockOnUpdatePreference}
+        isLoading={false}
+      />,
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText('Breaking Bad')).toBeInTheDocument();
+    });
+
+    const toggleButton = screen.getByRole('button', { name: /mark as loved/i });
+    expect(toggleButton).not.toBeDisabled();
+
+    await userEvent.click(toggleButton);
+
+    // Button should be disabled during update
+    await waitFor(() => {
+      expect(toggleButton).toBeDisabled();
+    });
+
+    // Resolve the update
+    resolveUpdate!();
+
+    // Button should be enabled again
+    await waitFor(() => {
+      expect(toggleButton).not.toBeDisabled();
+    });
   });
 });

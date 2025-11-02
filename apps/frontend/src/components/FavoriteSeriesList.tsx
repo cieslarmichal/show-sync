@@ -1,24 +1,28 @@
 import { useState, useEffect, useRef } from 'react';
 import { X } from 'lucide-react';
 import { getSeriesDetails } from '../api/queries/getSeriesDetails';
-import { FavoriteSeries, SeriesDetails } from '../api/types/series';
+import { FavoriteSeries, SeriesDetails, PreferenceLevel } from '../api/types/series';
 import { Skeleton } from './ui/Skeleton';
 import { Button } from './ui/Button';
 import { Tooltip, TooltipContent, TooltipTrigger } from './ui/Tooltip';
+import { PreferenceToggle } from './PreferenceToggle';
 
 interface FavoriteSeriesListProps {
   favorites: FavoriteSeries[];
   onRemoveFavorite: (seriesTmdbId: number) => void;
+  onUpdatePreference?: (seriesTmdbId: number, preferenceLevel: PreferenceLevel) => Promise<void>;
   isLoading: boolean;
 }
 
 export default function FavoriteSeriesList({
   favorites,
   onRemoveFavorite,
+  onUpdatePreference,
   isLoading: externalLoading,
 }: FavoriteSeriesListProps) {
   const [seriesDetails, setSeriesDetails] = useState<Map<number, SeriesDetails>>(new Map());
   const [removingIds, setRemovingIds] = useState<Set<number>>(new Set());
+  const [updatingIds, setUpdatingIds] = useState<Set<number>>(new Set());
   const timeoutIds = useRef<Map<number, NodeJS.Timeout>>(new Map());
 
   useEffect(() => {
@@ -96,6 +100,24 @@ export default function FavoriteSeriesList({
     }
   };
 
+  const handleUpdatePreference = async (seriesTmdbId: number, preferenceLevel: PreferenceLevel) => {
+    if (!onUpdatePreference) return;
+
+    setUpdatingIds((prev) => new Set(prev).add(seriesTmdbId));
+
+    try {
+      await onUpdatePreference(seriesTmdbId, preferenceLevel);
+    } catch (err) {
+      console.error('Failed to update preference:', err);
+    } finally {
+      setUpdatingIds((prev) => {
+        const newSet = new Set(prev);
+        newSet.delete(seriesTmdbId);
+        return newSet;
+      });
+    }
+  };
+
   if (externalLoading) {
     return (
       <div className="space-y-3">
@@ -127,6 +149,7 @@ export default function FavoriteSeriesList({
             {favorites.map((favorite) => {
               const details = seriesDetails.get(favorite.seriesTmdbId);
               const isRemoving = removingIds.has(favorite.seriesTmdbId);
+              const isUpdating = updatingIds.has(favorite.seriesTmdbId);
 
               return (
                 <div
@@ -148,6 +171,19 @@ export default function FavoriteSeriesList({
                       </div>
                     )}
                     <div className="absolute inset-0 bg-linear-to-t from-black/60 via-black/20 to-transparent opacity-100 group-hover:opacity-100 transition-opacity" />
+
+                    {/* Preference Toggle - Top Left */}
+                    {onUpdatePreference && (
+                      <div className="absolute top-2 left-2 z-10">
+                        <PreferenceToggle
+                          preferenceLevel={favorite.preferenceLevel}
+                          onToggle={(newLevel) => handleUpdatePreference(favorite.seriesTmdbId, newLevel)}
+                          disabled={isUpdating}
+                        />
+                      </div>
+                    )}
+
+                    {/* Remove Button - Top Right */}
                     <Tooltip>
                       <TooltipTrigger asChild>
                         <Button
@@ -162,6 +198,7 @@ export default function FavoriteSeriesList({
                       </TooltipTrigger>
                       <TooltipContent side="bottom">Remove from favorites</TooltipContent>
                     </Tooltip>
+
                     <div className="absolute bottom-0 left-0 right-0 p-2">
                       <h3 className="text-xs font-bold text-white truncate text-center leading-tight">
                         {details?.name || `Series ${favorite.seriesTmdbId}`}

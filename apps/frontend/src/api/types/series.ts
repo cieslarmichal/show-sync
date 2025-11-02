@@ -1,3 +1,10 @@
+export const preferenceLevels = {
+  like: 'like',
+  love: 'love',
+} as const;
+
+export type PreferenceLevel = (typeof preferenceLevels)[keyof typeof preferenceLevels];
+
 export interface Series {
   readonly id: number;
   readonly name: string;
@@ -29,7 +36,7 @@ export interface SeriesSearchResult {
 
 export interface FavoriteSeries {
   readonly seriesTmdbId: number;
-  readonly addedAt: string;
+  readonly preferenceLevel: PreferenceLevel;
 }
 
 export interface FavoriteSeriesList {
@@ -43,7 +50,6 @@ export interface FavoriteSeriesList {
 
 export interface IgnoredSeries {
   readonly seriesTmdbId: number;
-  readonly ignoredAt: string;
 }
 
 export interface IgnoredSeriesList {

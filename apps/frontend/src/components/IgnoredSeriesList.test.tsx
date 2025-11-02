@@ -13,11 +13,9 @@ describe('IgnoredSeriesList', () => {
   const mockIgnoredSeries: IgnoredSeries[] = [
     {
       seriesTmdbId: 1,
-      ignoredAt: '2024-01-01T00:00:00.000Z',
     },
     {
       seriesTmdbId: 2,
-      ignoredAt: '2024-01-02T00:00:00.000Z',
     },
   ];
 

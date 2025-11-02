@@ -97,9 +97,3 @@ export const getRecommendations = async (watchroomId: string): Promise<Recommend
     method: 'GET',
   });
 };
-
-export const deleteRecommendation = async (watchroomId: string, recommendationId: string): Promise<void> => {
-  return apiRequest<void>(`/watchrooms/${watchroomId}/recommendations/${recommendationId}`, {
-    method: 'DELETE',
-  });
-};

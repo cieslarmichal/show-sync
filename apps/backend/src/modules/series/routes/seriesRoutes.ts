@@ -15,6 +15,9 @@ import { GetSeriesExternalIdsAction } from '../application/actions/getSeriesExte
 import { RemoveFavoriteSeriesAction } from '../application/actions/removeFavoriteSeriesAction.ts';
 import { RemoveIgnoredSeriesAction } from '../application/actions/removeIgnoredSeriesAction.ts';
 import { SearchSeriesAction } from '../application/actions/searchSeriesAction.ts';
+import { UpdateFavoriteSeriesPreferenceAction } from '../application/actions/updateFavoriteSeriesPreferenceAction.ts';
+import type { FavoriteSeries } from '../domain/types/favoriteSeries.ts';
+import type { IgnoredSeries } from '../domain/types/ignoredSeries.ts';
 import type { TmdbSeries, TmdbSeriesDetails, TmdbSeriesExternalIds } from '../domain/types/tmdbSeries.ts';
 import { FavoriteSeriesRepositoryImpl } from '../infrastructure/repositories/favoriteSeriesRepositoryImpl.ts';
 import { IgnoredSeriesRepositoryImpl } from '../infrastructure/repositories/ignoredSeriesRepositoryImpl.ts';
@@ -39,6 +42,10 @@ import {
   seriesSearchQuerySchema,
   seriesSearchResultSchema,
   type SeriesExternalIdsDto,
+  updateFavoriteSeriesPreferenceRequestSchema,
+  updateFavoriteSeriesPreferenceParamsSchema,
+  type IgnoredSeriesDto,
+  type FavoriteSeriesDto,
 } from './seriesSchemas.ts';
 
 export const seriesRoutes: FastifyPluginAsyncTypebox<{
@@ -80,6 +87,15 @@ export const seriesRoutes: FastifyPluginAsyncTypebox<{
     twitterId: externalIds.twitterId,
   });
 
+  const mapIgnoredSeriesToResponse = (ignored: IgnoredSeries): IgnoredSeriesDto => ({
+    seriesTmdbId: ignored.seriesTmdbId,
+  });
+
+  const mapFavoriteSeriesToResponse = (favorite: FavoriteSeries): FavoriteSeriesDto => ({
+    seriesTmdbId: favorite.seriesTmdbId,
+    preferenceLevel: favorite.preferenceLevel,
+  });
+
   const tmdbService = new TmdbServiceImpl(config.tmdb.apiKey, config.tmdb.baseUrl);
   const searchSeriesAction = new SearchSeriesAction(tmdbService);
   const getSeriesDetailsAction = new GetSeriesDetailsAction(tmdbService);
@@ -95,6 +111,10 @@ export const seriesRoutes: FastifyPluginAsyncTypebox<{
     loggerService,
   );
   const removeFavoriteSeriesAction = new RemoveFavoriteSeriesAction(favoriteSeriesRepository, loggerService);
+  const updateFavoriteSeriesPreferenceAction = new UpdateFavoriteSeriesPreferenceAction(
+    favoriteSeriesRepository,
+    loggerService,
+  );
   const addIgnoredSeriesAction = new AddIgnoredSeriesAction(
     ignoredSeriesRepository,
     favoriteSeriesRepository,
@@ -179,15 +199,12 @@ export const seriesRoutes: FastifyPluginAsyncTypebox<{
       }
 
       const { userId } = request.user;
-      const { page = 1, pageSize = 20 } = request.query;
+      const { page = 1, pageSize = 20, preferenceLevel } = request.query;
 
-      const { data, total } = await getUserFavoriteSeriesAction.execute({ userId, page, pageSize });
+      const { data, total } = await getUserFavoriteSeriesAction.execute({ userId, page, pageSize, preferenceLevel });
 
       return reply.send({
-        data: data.map((favorite) => ({
-          seriesTmdbId: favorite.seriesTmdbId,
-          addedAt: favorite.addedAt.toISOString(),
-        })),
+        data: data.map(mapFavoriteSeriesToResponse),
         metadata: {
           page,
           pageSize,
@@ -213,14 +230,11 @@ export const seriesRoutes: FastifyPluginAsyncTypebox<{
       }
 
       const { userId } = request.user;
-      const { seriesTmdbId } = request.body;
+      const { seriesTmdbId, preferenceLevel } = request.body;
 
-      const favorite = await addFavoriteSeriesAction.execute(userId, seriesTmdbId);
+      const favorite = await addFavoriteSeriesAction.execute(userId, seriesTmdbId, preferenceLevel);
 
-      return reply.status(201).send({
-        seriesTmdbId: favorite.seriesTmdbId,
-        addedAt: favorite.addedAt.toISOString(),
-      });
+      return reply.status(201).send(mapFavoriteSeriesToResponse(favorite));
     },
   });
 
@@ -248,6 +262,36 @@ export const seriesRoutes: FastifyPluginAsyncTypebox<{
     },
   });
 
+  fastify.patch('/series/favorites/:seriesTmdbId/preference', {
+    schema: {
+      params: updateFavoriteSeriesPreferenceParamsSchema,
+      body: updateFavoriteSeriesPreferenceRequestSchema,
+      response: {
+        200: favoriteSeriesSchema,
+      },
+    },
+    preHandler: [authenticationMiddleware],
+    handler: async (request, reply) => {
+      if (!request.user) {
+        throw new UnauthorizedAccessError({
+          reason: 'User not authenticated',
+        });
+      }
+
+      const { userId } = request.user;
+      const { seriesTmdbId } = request.params;
+      const { preferenceLevel } = request.body;
+
+      const updated = await updateFavoriteSeriesPreferenceAction.execute({
+        userId,
+        seriesTmdbId,
+        preferenceLevel,
+      });
+
+      return reply.send(mapFavoriteSeriesToResponse(updated));
+    },
+  });
+
   fastify.get('/series/ignored', {
     schema: {
       querystring: ignoredSeriesQuerySchema,
@@ -269,10 +313,7 @@ export const seriesRoutes: FastifyPluginAsyncTypebox<{
       const { data, total } = await getUserIgnoredSeriesAction.execute({ userId, page, pageSize });
 
       return reply.send({
-        data: data.map((ignored) => ({
-          seriesTmdbId: ignored.seriesTmdbId,
-          ignoredAt: ignored.ignoredAt.toISOString(),
-        })),
+        data: data.map(mapIgnoredSeriesToResponse),
         metadata: {
           page,
           pageSize,
@@ -302,10 +343,7 @@ export const seriesRoutes: FastifyPluginAsyncTypebox<{
 
       const ignored = await addIgnoredSeriesAction.execute(userId, seriesTmdbId);
 
-      return reply.status(201).send({
-        seriesTmdbId: ignored.seriesTmdbId,
-        ignoredAt: ignored.ignoredAt.toISOString(),
-      });
+      return reply.status(201).send(mapIgnoredSeriesToResponse(ignored));
     },
   });
 

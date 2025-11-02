@@ -41,8 +41,8 @@ describe('GetFavoriteSeriesAction', () => {
       const seriesTmdbId1 = Generator.number(1, 10000);
       const seriesTmdbId2 = Generator.number(10001, 20000);
 
-      await favoriteSeriesRepository.create({ userId: user.id, seriesTmdbId: seriesTmdbId1 });
-      await favoriteSeriesRepository.create({ userId: user.id, seriesTmdbId: seriesTmdbId2 });
+      await favoriteSeriesRepository.create({ userId: user.id, seriesTmdbId: seriesTmdbId1, preferenceLevel: 'like' });
+      await favoriteSeriesRepository.create({ userId: user.id, seriesTmdbId: seriesTmdbId2, preferenceLevel: 'love' });
 
       const result = await getFavoriteSeriesAction.execute({
         userId: user.id,

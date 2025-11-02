@@ -34,11 +34,12 @@ export const userFavoriteSeries = pgTable(
       .notNull()
       .references(() => users.id, { onDelete: 'cascade' }),
     seriesTmdbId: integer('series_tmdb_id').notNull(),
-    addedAt: timestamp('added_at').notNull().defaultNow(),
+    preferenceLevel: varchar('preference_level', { length: 16 }).notNull().default('like'),
   },
   (table) => [
     index('idx_user_favorite_series_user_id').on(table.userId),
     index('idx_user_favorite_series_user_series_tmdb_id').on(table.userId, table.seriesTmdbId),
+    index('idx_user_favorite_series_preference_level').on(table.userId, table.preferenceLevel),
   ],
 );
 
@@ -50,7 +51,6 @@ export const userIgnoredSeries = pgTable(
       .notNull()
       .references(() => users.id, { onDelete: 'cascade' }),
     seriesTmdbId: integer('series_tmdb_id').notNull(),
-    ignoredAt: timestamp('ignored_at').notNull().defaultNow(),
   },
   (table) => [
     index('idx_user_ignored_series_user_id').on(table.userId),

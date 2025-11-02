@@ -151,7 +151,6 @@
     "data": [
       {
         "seriesTmdbId": 1396,
-        "addedAt": "iso-8601-date-string"
       }
     ],
     "metadata": {
@@ -184,7 +183,6 @@
   ```json
   {
     "seriesTmdbId": 1399,
-    "addedAt": "iso-8601-date-string"
   }
   ```
 
@@ -611,4 +609,3 @@ DELETE /watchrooms/:watchroomId/participants/:userId
 POST /watchrooms/:watchroomId/recommendations
 POST /watchrooms/:watchroomId/recommendations/:seriesTmdbId/ignore
 GET /watchrooms/:watchroomId/recommendations
-DELETE /watchrooms/:watchroomId/recommendations/:recommendationId

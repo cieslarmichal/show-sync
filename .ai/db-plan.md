@@ -51,6 +51,7 @@ Tabela łącząca, przechowująca ulubione seriale dla każdego użytkownika.
 - `id` UUID PRIMARY KEY — identyfikator
 - `user_id` UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE — Identyfikator użytkownika
 - `series_tmdb_id` INTEGER NOT NULL — Identyfikator serialu z bazy danych TMDB
+- `preference_level` VARCHAR(16) NOT NULL — Poziom preferencji ("like", "love")
 - PRIMARY KEY (user_id, series_tmdb_id) — Złożony klucz główny zapewniający unikalność pary
 
 **Indeksy:**
@@ -69,7 +70,6 @@ Tabela łącząca, przechowująca seriale ignorowane przez użytkownika. Seriale
 - `id` UUID PRIMARY KEY — Unikalny identyfikator
 - `user_id` UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE — Identyfikator użytkownika
 - `series_tmdb_id` INTEGER NOT NULL — Identyfikator serialu z bazy danych TMDB
-- `ignored_at` TIMESTAMP NOT NULL DEFAULT NOW() — Data i czas dodania serialu do listy ignorowanych
 - UNIQUE (user_id, series_tmdb_id) — Unikalność pary użytkownik-serial
 
 **Indeksy:**

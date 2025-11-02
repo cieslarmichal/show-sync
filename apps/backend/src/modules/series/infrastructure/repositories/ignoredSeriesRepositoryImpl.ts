@@ -84,7 +84,6 @@ export class IgnoredSeriesRepositoryImpl implements IgnoredSeriesRepository {
       id: dbIgnored.id,
       userId: dbIgnored.userId,
       seriesTmdbId: dbIgnored.seriesTmdbId,
-      ignoredAt: dbIgnored.ignoredAt,
     };
 
     return ignored;

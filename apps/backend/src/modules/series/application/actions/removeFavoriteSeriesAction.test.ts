@@ -48,7 +48,7 @@ describe('RemoveFavoriteSeriesAction', () => {
       const user = await userRepository.create(userData);
       const seriesTmdbId = Generator.number(1, 10000);
 
-      await favoriteSeriesRepository.create({ userId: user.id, seriesTmdbId });
+      await favoriteSeriesRepository.create({ userId: user.id, seriesTmdbId, preferenceLevel: 'like' });
 
       await removeFavoriteSeriesAction.execute(user.id, seriesTmdbId);
 

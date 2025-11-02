@@ -1,5 +1,7 @@
 import { Type, type Static } from '@fastify/type-provider-typebox';
 
+export const preferenceLevelSchema = Type.Union([Type.Literal('like'), Type.Literal('love')]);
+
 export const seriesSchema = Type.Object({
   id: Type.Number(),
   name: Type.String(),
@@ -51,7 +53,7 @@ export const seriesParamsSchema = Type.Object({
 
 export const favoriteSeriesSchema = Type.Object({
   seriesTmdbId: Type.Number(),
-  addedAt: Type.String({ format: 'date-time' }),
+  preferenceLevel: preferenceLevelSchema,
 });
 
 export const favoriteSeriesListSchema = Type.Object({
@@ -65,7 +67,6 @@ export const favoriteSeriesListSchema = Type.Object({
 
 export const ignoredSeriesSchema = Type.Object({
   seriesTmdbId: Type.Number(),
-  ignoredAt: Type.String({ format: 'date-time' }),
 });
 
 export const ignoredSeriesListSchema = Type.Object({
@@ -79,15 +80,25 @@ export const ignoredSeriesListSchema = Type.Object({
 
 export const addFavoriteSeriesRequestSchema = Type.Object({
   seriesTmdbId: Type.Number(),
+  preferenceLevel: preferenceLevelSchema,
 });
 
 export const favoriteSeriesParamsSchema = Type.Object({
   seriesTmdbId: Type.Number(),
 });
 
+export const updateFavoriteSeriesPreferenceRequestSchema = Type.Object({
+  preferenceLevel: preferenceLevelSchema,
+});
+
+export const updateFavoriteSeriesPreferenceParamsSchema = Type.Object({
+  seriesTmdbId: Type.Number(),
+});
+
 export const favoriteSeriesQuerySchema = Type.Object({
   page: Type.Optional(Type.Number({ minimum: 1 })),
   pageSize: Type.Optional(Type.Number({ minimum: 1, maximum: 100 })),
+  preferenceLevel: Type.Optional(preferenceLevelSchema),
 });
 
 export const addIgnoredSeriesRequestSchema = Type.Object({
@@ -118,6 +129,8 @@ export type IgnoredSeriesListResponse = Static<typeof ignoredSeriesListSchema>;
 
 export type AddFavoriteSeriesRequest = Static<typeof addFavoriteSeriesRequestSchema>;
 export type FavoriteSeriesParams = Static<typeof favoriteSeriesParamsSchema>;
+export type UpdateFavoriteSeriesPreferenceRequest = Static<typeof updateFavoriteSeriesPreferenceRequestSchema>;
+export type UpdateFavoriteSeriesPreferenceParams = Static<typeof updateFavoriteSeriesPreferenceParamsSchema>;
 export type FavoriteSeriesQuery = Static<typeof favoriteSeriesQuerySchema>;
 export type AddIgnoredSeriesRequest = Static<typeof addIgnoredSeriesRequestSchema>;
 export type IgnoredSeriesParams = Static<typeof ignoredSeriesParamsSchema>;

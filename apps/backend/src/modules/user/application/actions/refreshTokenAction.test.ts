@@ -53,6 +53,7 @@ describe('RefreshTokenAction', () => {
       loggerService,
       tokenService,
       config,
+      database,
     );
 
     await database.db.delete(userSessions);

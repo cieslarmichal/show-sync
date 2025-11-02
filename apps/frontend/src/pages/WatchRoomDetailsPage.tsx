@@ -306,16 +306,14 @@ export default function WatchRoomDetailsPage() {
 
   const handleLikeSeries = async (seriesTmdbId: number, seriesName: string, recommendationId: string) => {
     try {
-      // Start fade-out animation
       setFadingOutCards((prev) => new Set(prev).add(recommendationId));
 
-      await addFavoriteSeries(seriesTmdbId);
+      await addFavoriteSeries(seriesTmdbId, 'like');
       setProfileSeriesIds((prev) => new Set(prev).add(seriesTmdbId));
       toast.success(`"${seriesName}" added to your favorites!`, {
         description: "You won't see this series in future recommendations.",
       });
 
-      // Clear fade-out after animation (card will be hidden via filter)
       setTimeout(() => {
         setFadingOutCards((prev) => {
           const newSet = new Set(prev);
@@ -326,7 +324,6 @@ export default function WatchRoomDetailsPage() {
     } catch (error) {
       console.error('Failed to add to favorites:', error);
       toast.error('Failed to add to favorites');
-      // Remove from fading set if error occurs
       setFadingOutCards((prev) => {
         const newSet = new Set(prev);
         newSet.delete(recommendationId);

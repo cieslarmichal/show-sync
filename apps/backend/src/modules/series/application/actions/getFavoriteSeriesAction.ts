@@ -1,10 +1,11 @@
 import type { FavoriteSeriesRepository } from '../../domain/repositories/favoriteSeriesRepository.ts';
-import type { FavoriteSeries } from '../../domain/types/favoriteSeries.ts';
+import type { FavoriteSeries, PreferenceLevel } from '../../domain/types/favoriteSeries.ts';
 
 export interface GetFavoriteSeriesPayload {
   readonly userId: string;
   readonly page: number;
   readonly pageSize: number;
+  readonly preferenceLevel?: PreferenceLevel | undefined;
 }
 
 export interface GetFavoriteSeriesResult {
@@ -20,11 +21,11 @@ export class GetFavoriteSeriesAction {
   }
 
   public async execute(payload: GetFavoriteSeriesPayload): Promise<GetFavoriteSeriesResult> {
-    const { userId, page, pageSize } = payload;
+    const { userId, preferenceLevel, page, pageSize } = payload;
 
     const [favorites, total] = await Promise.all([
-      this.favoriteSeriesRepository.findMany(userId, page, pageSize),
-      this.favoriteSeriesRepository.count(userId),
+      this.favoriteSeriesRepository.findMany(userId, page, pageSize, preferenceLevel),
+      this.favoriteSeriesRepository.count(userId, preferenceLevel),
     ]);
 
     return {

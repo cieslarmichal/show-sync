@@ -10,14 +10,13 @@ CREATE TABLE "user_favorite_series" (
 	"id" uuid PRIMARY KEY NOT NULL,
 	"user_id" uuid NOT NULL,
 	"series_tmdb_id" integer NOT NULL,
-	"added_at" timestamp DEFAULT now() NOT NULL
+	"preference_level" varchar(16) DEFAULT 'like' NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE "user_ignored_series" (
 	"id" uuid PRIMARY KEY NOT NULL,
 	"user_id" uuid NOT NULL,
-	"series_tmdb_id" integer NOT NULL,
-	"ignored_at" timestamp DEFAULT now() NOT NULL
+	"series_tmdb_id" integer NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE "user_sessions" (
@@ -70,6 +69,7 @@ CREATE INDEX "idx_recommendations_series_tmdb_id" ON "recommendations" USING btr
 CREATE INDEX "idx_recommendations_request_id" ON "recommendations" USING btree ("request_id");--> statement-breakpoint
 CREATE INDEX "idx_user_favorite_series_user_id" ON "user_favorite_series" USING btree ("user_id");--> statement-breakpoint
 CREATE INDEX "idx_user_favorite_series_user_series_tmdb_id" ON "user_favorite_series" USING btree ("user_id","series_tmdb_id");--> statement-breakpoint
+CREATE INDEX "idx_user_favorite_series_preference_level" ON "user_favorite_series" USING btree ("user_id","preference_level");--> statement-breakpoint
 CREATE INDEX "idx_user_ignored_series_user_id" ON "user_ignored_series" USING btree ("user_id");--> statement-breakpoint
 CREATE INDEX "idx_user_ignored_series_user_series_tmdb_id" ON "user_ignored_series" USING btree ("user_id","series_tmdb_id");--> statement-breakpoint
 CREATE INDEX "idx_user_sessions_user_id" ON "user_sessions" USING btree ("user_id");--> statement-breakpoint

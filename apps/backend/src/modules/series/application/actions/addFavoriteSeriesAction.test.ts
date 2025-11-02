@@ -58,13 +58,13 @@ describe('AddFavoriteSeriesAction', () => {
       const user = await userRepository.create(userData);
       const seriesTmdbId = Generator.number(1, 10000);
 
-      const result = await addFavoriteSeriesAction.execute(user.id, seriesTmdbId);
+      const result = await addFavoriteSeriesAction.execute(user.id, seriesTmdbId, 'like');
 
       expect(result).toBeDefined();
       expect(result.id).toBeDefined();
       expect(result.userId).toBe(user.id);
       expect(result.seriesTmdbId).toBe(seriesTmdbId);
-      expect(result.addedAt).toBeDefined();
+      expect(result.preferenceLevel).toBe('like');
     });
 
     it('throws ResourceAlreadyExistsError when series is already in favorites', async () => {
@@ -72,9 +72,11 @@ describe('AddFavoriteSeriesAction', () => {
       const user = await userRepository.create(userData);
       const seriesTmdbId = Generator.number(1, 10000);
 
-      await favoriteSeriesRepository.create({ userId: user.id, seriesTmdbId });
+      await favoriteSeriesRepository.create({ userId: user.id, seriesTmdbId, preferenceLevel: 'like' });
 
-      await expect(addFavoriteSeriesAction.execute(user.id, seriesTmdbId)).rejects.toThrow(ResourceAlreadyExistsError);
+      await expect(addFavoriteSeriesAction.execute(user.id, seriesTmdbId, 'like')).rejects.toThrow(
+        ResourceAlreadyExistsError,
+      );
     });
 
     it('removes series from ignored list when adding to favorites', async () => {
@@ -82,22 +84,17 @@ describe('AddFavoriteSeriesAction', () => {
       const user = await userRepository.create(userData);
       const seriesTmdbId = Generator.number(1, 10000);
 
-      // First add to ignored list
       await ignoredSeriesRepository.create({ userId: user.id, seriesTmdbId });
 
-      // Verify it's in ignored list
       const ignoredBefore = await ignoredSeriesRepository.findOne(user.id, seriesTmdbId);
       expect(ignoredBefore).toBeDefined();
 
-      // Add to favorites (should remove from ignored)
-      const result = await addFavoriteSeriesAction.execute(user.id, seriesTmdbId);
+      const result = await addFavoriteSeriesAction.execute(user.id, seriesTmdbId, 'like');
 
-      // Verify it's in favorites
       expect(result).toBeDefined();
       expect(result.userId).toBe(user.id);
       expect(result.seriesTmdbId).toBe(seriesTmdbId);
 
-      // Verify it's no longer in ignored list
       const ignoredAfter = await ignoredSeriesRepository.findOne(user.id, seriesTmdbId);
       expect(ignoredAfter).toBeNull();
     });

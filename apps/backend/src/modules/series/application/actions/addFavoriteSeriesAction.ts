@@ -3,7 +3,7 @@ import type { LoggerService } from '../../../../common/logger/loggerService.ts';
 import type { DatabaseClient } from '../../../../infrastructure/database/database.ts';
 import type { FavoriteSeriesRepository } from '../../domain/repositories/favoriteSeriesRepository.ts';
 import type { IgnoredSeriesRepository } from '../../domain/repositories/ignoredSeriesRepository.ts';
-import type { FavoriteSeries } from '../../domain/types/favoriteSeries.ts';
+import type { FavoriteSeries, PreferenceLevel } from '../../domain/types/favoriteSeries.ts';
 
 export class AddFavoriteSeriesAction {
   private readonly favoriteSeriesRepository: FavoriteSeriesRepository;
@@ -23,7 +23,11 @@ export class AddFavoriteSeriesAction {
     this.loggerService = loggerService;
   }
 
-  public async execute(userId: string, seriesTmdbId: number): Promise<FavoriteSeries> {
+  public async execute(
+    userId: string,
+    seriesTmdbId: number,
+    preferenceLevel: PreferenceLevel,
+  ): Promise<FavoriteSeries> {
     const existing = await this.favoriteSeriesRepository.findOne(userId, seriesTmdbId);
 
     if (existing) {
@@ -48,13 +52,14 @@ export class AddFavoriteSeriesAction {
         });
       }
 
-      return await this.favoriteSeriesRepository.create({ userId, seriesTmdbId }, tx);
+      return await this.favoriteSeriesRepository.create({ userId, seriesTmdbId, preferenceLevel }, tx);
     });
 
     this.loggerService.info({
       message: 'Series added to favorites',
       userId,
       seriesTmdbId,
+      preferenceLevel,
     });
 
     return favoriteSeries;

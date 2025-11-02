@@ -80,12 +80,15 @@ Your expertise includes:
 
 Core principles:
 1. NEVER recommend series that are already in the user's favorites or ignored lists
-2. Prioritize shows that would appeal to the entire group, not just individual members
-3. Consider both obvious and subtle connections (themes, mood, pacing, character types)
-4. Balance popular acclaimed series with lesser-known quality recommendations
-5. Ensure all recommended titles exist and use their exact TMDB names
+2. PRIORITIZE matching LOVED series (❤️) over LIKED series (👍)
+3. LOVED series represent core preferences - these are the most important signals
+4. LIKED series provide context but shouldn't dominate the recommendation logic
+5. When multiple participants LOVE similar themes/genres, that's your strongest signal
+6. Consider both obvious and subtle connections (themes, mood, pacing, character types)
+7. Balance popular acclaimed series with lesser-known quality recommendations
+8. Ensure all recommended titles exist and use their exact TMDB names
 
-Your recommendations should be thoughtful, well-justified, and demonstrate clear understanding of why each series would resonate with the specific group based on their collective preferences.`;
+Your recommendations should be thoughtful, well-justified, and demonstrate clear understanding of why each series would resonate with the group based on their collective preferences, especially their LOVED series.`;
 
 export class GenerateRecommendationsAction {
   private readonly watchroomRepository: WatchroomRepository;
@@ -144,7 +147,9 @@ export class GenerateRecommendationsAction {
     const participantIgnored = await this.fetchParticipantIgnored(participantIds);
 
     const allIgnoredSeriesIds = [...new Set(participantIgnored.flatMap((p) => p.seriesTmdbIds))];
-    const allSeriesIds = [...new Set(participantFavorites.flatMap((p) => p.seriesTmdbIds))];
+    const allSeriesIds = [
+      ...new Set([...participantFavorites.flatMap((p) => [...p.lovedSeriesIds, ...p.likedSeriesIds])]),
+    ];
 
     const seriesInfoMap = await this.fetchSeriesInfo(allSeriesIds);
 
@@ -211,13 +216,19 @@ export class GenerateRecommendationsAction {
 
   private async fetchParticipantFavorites(
     participantIds: string[],
-  ): Promise<Array<{ participantId: string; seriesTmdbIds: number[] }>> {
+  ): Promise<Array<{ participantId: string; lovedSeriesIds: number[]; likedSeriesIds: number[] }>> {
     return Promise.all(
       participantIds.map(async (participantId) => {
         const favorites = await this.favoriteSeriesRepository.findMany(participantId, 1, 100);
+
+        const lovedSeriesIds = favorites.filter((f) => f.preferenceLevel === 'love').map((f) => f.seriesTmdbId);
+
+        const likedSeriesIds = favorites.filter((f) => f.preferenceLevel === 'like').map((f) => f.seriesTmdbId);
+
         return {
           participantId,
-          seriesTmdbIds: favorites.map((f) => f.seriesTmdbId),
+          lovedSeriesIds,
+          likedSeriesIds,
         };
       }),
     );
@@ -327,7 +338,7 @@ export class GenerateRecommendationsAction {
   }
 
   private async generateAIRecommendations(
-    participantFavorites: Array<{ participantId: string; seriesTmdbIds: number[] }>,
+    participantFavorites: Array<{ participantId: string; lovedSeriesIds: number[]; likedSeriesIds: number[] }>,
     ignoredSeriesIds: number[],
     seriesInfoMap: Map<number, SeriesInfo>,
     watchroomName: string,
@@ -351,13 +362,15 @@ export class GenerateRecommendationsAction {
   }
 
   private buildPromptMessage(
-    participantFavorites: Array<{ participantId: string; seriesTmdbIds: number[] }>,
+    participantFavorites: Array<{ participantId: string; lovedSeriesIds: number[]; likedSeriesIds: number[] }>,
     ignoredSeriesIds: number[],
     seriesInfoMap: Map<number, SeriesInfo>,
     watchroomName: string,
     watchroomDescription: string | undefined,
   ): string {
-    const participantsWithFavorites = participantFavorites.filter((p) => p.seriesTmdbIds.length > 0);
+    const participantsWithFavorites = participantFavorites.filter(
+      (p) => p.lovedSeriesIds.length > 0 || p.likedSeriesIds.length > 0,
+    );
 
     let message = `WATCH ROOM: "${watchroomName}"\n`;
     if (watchroomDescription) {
@@ -366,23 +379,43 @@ export class GenerateRecommendationsAction {
     }
 
     message += `\n---\n`;
-    message += `PARTICIPANTS AND THEIR FAVORITE SERIES:\n`;
-    message += `These series are ALREADY WATCHED or FAVORITES. DO NOT recommend any of these.\n\n`;
+    message += `PARTICIPANTS AND THEIR SERIES PREFERENCES:\n`;
+    message += `These series are ALREADY WATCHED. DO NOT recommend any of these.\n`;
+    message += `Pay special attention to LOVED series - these represent the strongest preferences.\n\n`;
 
     participantsWithFavorites.forEach((participant, index) => {
-      message += `Participant ${(index + 1).toString()}:\n`;
-      participant.seriesTmdbIds.forEach((tmdbId) => {
-        const seriesInfo = seriesInfoMap.get(tmdbId);
-        if (seriesInfo) {
-          const firstOverviewSentence = seriesInfo.overview.split(/[.!?]/)[0];
-          const summary = firstOverviewSentence ? firstOverviewSentence + '.' : '';
+      message += `Participant ${(index + 1).toString()}:\n\n`;
 
-          message += `- ${seriesInfo.name}\n`;
-          message += `  Genres: ${seriesInfo.genres.join(', ')}\n`;
-          message += `  Summary: ${summary}\n`;
-          message += `  Rating: ${seriesInfo.voteAverage.toFixed(1)}/10\n`;
-        }
-      });
+      // Show LOVED series first and prominently
+      if (participant.lovedSeriesIds.length > 0) {
+        message += `  ❤️ LOVED (HIGHEST PRIORITY - Core preferences):\n`;
+        participant.lovedSeriesIds.forEach((tmdbId) => {
+          const seriesInfo = seriesInfoMap.get(tmdbId);
+          if (seriesInfo) {
+            const firstOverviewSentence = seriesInfo.overview.split(/[.!?]/)[0];
+            const summary = firstOverviewSentence ? firstOverviewSentence + '.' : '';
+
+            message += `  - ${seriesInfo.name}\n`;
+            message += `    Genres: ${seriesInfo.genres.join(', ')}\n`;
+            message += `    Summary: ${summary}\n`;
+            message += `    Rating: ${seriesInfo.voteAverage.toFixed(1)}/10\n`;
+          }
+        });
+        message += '\n';
+      }
+
+      // Show LIKED series secondary
+      if (participant.likedSeriesIds.length > 0) {
+        message += `  👍 LIKED (Secondary preferences):\n`;
+        participant.likedSeriesIds.forEach((tmdbId) => {
+          const seriesInfo = seriesInfoMap.get(tmdbId);
+          if (seriesInfo) {
+            message += `  - ${seriesInfo.name} (${seriesInfo.genres.join(', ')})\n`;
+          }
+        });
+        message += '\n';
+      }
+
       message += '\n';
     });
 
@@ -413,6 +446,13 @@ export class GenerateRecommendationsAction {
     message += `4. Focus on finding shows that reflect shared themes, genres, tones, or storytelling styles\n`;
     message += `5. Return the EXACT TITLE of each series as it appears in TMDB (The Movie Database)\n`;
     message += `6. Provide a brief justification for each recommendation explaining why it fits the group's taste\n`;
+    message += `\n`;
+    message += `RECOMMENDATION STRATEGY:\n`;
+    message += `1. PRIORITIZE finding shows similar to ❤️ LOVED series - these are the strongest signals\n`;
+    message += `2. Use 👍 LIKED series as secondary signals to understand broader taste\n`;
+    message += `3. Look for thematic overlaps in LOVED series across participants\n`;
+    message += `4. When multiple participants LOVE similar genres/themes, that's a very strong signal\n`;
+    message += `5. LIKED series help understand edge cases but shouldn't dominate recommendations\n`;
     message += `\n`;
     message += `Remember: The goal is to find NEW series, not to repeat what they already know or dislike.`;
 

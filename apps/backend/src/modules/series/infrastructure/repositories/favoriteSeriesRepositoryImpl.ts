@@ -1,5 +1,6 @@
 import { eq, and, desc, count } from 'drizzle-orm';
 
+import { ResourceNotFoundError } from '../../../../common/errors/resourceNotFoundError.ts';
 import { UuidService } from '../../../../common/uuid/uuidService.ts';
 import type { DatabaseClient } from '../../../../infrastructure/database/database.ts';
 import { userFavoriteSeries } from '../../../../infrastructure/database/schema.ts';
@@ -7,8 +8,9 @@ import type { Transaction } from '../../../../infrastructure/database/transactio
 import type {
   CreateFavoriteSeriesData,
   FavoriteSeriesRepository,
+  UpdateFavoriteSeriesPreferenceData,
 } from '../../domain/repositories/favoriteSeriesRepository.ts';
-import type { FavoriteSeries } from '../../domain/types/favoriteSeries.ts';
+import type { FavoriteSeries, PreferenceLevel } from '../../domain/types/favoriteSeries.ts';
 
 export class FavoriteSeriesRepositoryImpl implements FavoriteSeriesRepository {
   private readonly database: DatabaseClient;
@@ -26,6 +28,7 @@ export class FavoriteSeriesRepositoryImpl implements FavoriteSeriesRepository {
         id: UuidService.generateUuid(),
         userId: favoriteSeriesData.userId,
         seriesTmdbId: favoriteSeriesData.seriesTmdbId,
+        preferenceLevel: favoriteSeriesData.preferenceLevel,
       })
       .returning();
 
@@ -36,20 +39,37 @@ export class FavoriteSeriesRepositoryImpl implements FavoriteSeriesRepository {
     return this.mapToFavoriteSeries(newFavorite);
   }
 
-  public async count(userId: string): Promise<number> {
+  public async count(userId: string, preferenceLevel?: PreferenceLevel): Promise<number> {
+    const conditions = [eq(userFavoriteSeries.userId, userId)];
+
+    if (preferenceLevel !== undefined) {
+      conditions.push(eq(userFavoriteSeries.preferenceLevel, preferenceLevel));
+    }
+
     const [countResult] = await this.database.db
       .select({ count: count() })
       .from(userFavoriteSeries)
-      .where(eq(userFavoriteSeries.userId, userId));
+      .where(and(...conditions));
 
     return countResult?.count ?? 0;
   }
 
-  public async findMany(userId: string, page: number, pageSize: number): Promise<FavoriteSeries[]> {
+  public async findMany(
+    userId: string,
+    page: number,
+    pageSize: number,
+    preferenceLevel?: PreferenceLevel,
+  ): Promise<FavoriteSeries[]> {
+    const conditions = [eq(userFavoriteSeries.userId, userId)];
+
+    if (preferenceLevel !== undefined) {
+      conditions.push(eq(userFavoriteSeries.preferenceLevel, preferenceLevel));
+    }
+
     const favorites = await this.database.db
       .select()
       .from(userFavoriteSeries)
-      .where(eq(userFavoriteSeries.userId, userId))
+      .where(and(...conditions))
       .orderBy(desc(userFavoriteSeries.id))
       .limit(pageSize)
       .offset((page - 1) * pageSize);
@@ -79,12 +99,35 @@ export class FavoriteSeriesRepositoryImpl implements FavoriteSeriesRepository {
       .where(and(eq(userFavoriteSeries.userId, userId), eq(userFavoriteSeries.seriesTmdbId, seriesTmdbId)));
   }
 
+  public async updatePreferenceLevel(
+    data: UpdateFavoriteSeriesPreferenceData,
+    tx?: Transaction,
+  ): Promise<FavoriteSeries> {
+    const db = tx ? tx : this.database.db;
+
+    const [updated] = await db
+      .update(userFavoriteSeries)
+      .set({ preferenceLevel: data.preferenceLevel })
+      .where(and(eq(userFavoriteSeries.userId, data.userId), eq(userFavoriteSeries.seriesTmdbId, data.seriesTmdbId)))
+      .returning();
+
+    if (!updated) {
+      throw new ResourceNotFoundError({
+        resource: 'Favorite Series',
+        userId: data.userId,
+        seriesTmdbId: data.seriesTmdbId.toString(),
+      });
+    }
+
+    return this.mapToFavoriteSeries(updated);
+  }
+
   private readonly mapToFavoriteSeries = (dbFavorite: typeof userFavoriteSeries.$inferSelect): FavoriteSeries => {
     const favorite: FavoriteSeries = {
       id: dbFavorite.id,
       userId: dbFavorite.userId,
       seriesTmdbId: dbFavorite.seriesTmdbId,
-      addedAt: dbFavorite.addedAt,
+      preferenceLevel: dbFavorite.preferenceLevel as PreferenceLevel,
     };
 
     return favorite;

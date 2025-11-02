@@ -13,7 +13,6 @@ import { IgnoredSeriesRepositoryImpl } from '../../series/infrastructure/reposit
 import { TmdbServiceImpl } from '../../series/infrastructure/services/tmdbServiceImpl.ts';
 import { CheckRecommendationStatusAction } from '../application/actions/checkRecommendationStatusAction.ts';
 import { CreateWatchroomAction } from '../application/actions/createWatchroomAction.ts';
-import { DeleteRecommendationAction } from '../application/actions/deleteRecommendationAction.ts';
 import { DeleteWatchroomAction } from '../application/actions/deleteWatchroomAction.ts';
 import { FindPublicWatchroomDetailsAction } from '../application/actions/findPublicWatchroomDetailsAction.ts';
 import { FindRecommendationsAction } from '../application/actions/findRecommendationsAction.ts';
@@ -87,11 +86,6 @@ export const watchroomRoutes: FastifyPluginAsyncTypebox<{
     loggerService,
   );
   const findRecommendationsAction = new FindRecommendationsAction(watchroomRepository, recommendationRepository);
-  const deleteRecommendationAction = new DeleteRecommendationAction(
-    watchroomRepository,
-    recommendationRepository,
-    loggerService,
-  );
   const checkRecommendationStatusAction = new CheckRecommendationStatusAction(
     watchroomRepository,
     recommendationRepository,
@@ -503,37 +497,6 @@ export const watchroomRoutes: FastifyPluginAsyncTypebox<{
       });
 
       return reply.send(recommendations.map(mapRecommendationToResponse));
-    },
-  });
-
-  fastify.delete('/watchrooms/:watchroomId/recommendations/:recommendationId', {
-    schema: {
-      params: Type.Object({
-        watchroomId: Type.String({ format: 'uuid' }),
-        recommendationId: Type.String({ format: 'uuid' }),
-      }),
-      response: {
-        204: Type.Null(),
-      },
-    },
-    preHandler: [authenticationMiddleware],
-    handler: async (request, reply) => {
-      if (!request.user) {
-        throw new UnauthorizedAccessError({
-          reason: 'User not authenticated',
-        });
-      }
-
-      const { userId } = request.user;
-      const { watchroomId, recommendationId } = request.params;
-
-      await deleteRecommendationAction.execute({
-        recommendationId,
-        watchroomId,
-        userId,
-      });
-
-      return reply.status(204).send();
     },
   });
 };
