@@ -38,12 +38,19 @@ export default function LoginForm() {
     try {
       await loginUser({ email: values.email, password: values.password });
 
-      // Redirect to the intended page or dashboard
       navigate(redirectTo || '/dashboard');
-    } catch {
-      form.setError('root', {
-        message: 'Invalid email or password',
-      });
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Invalid email or password';
+      
+      if (errorMessage.includes('Too many requests') || errorMessage.includes('Rate limit')) {
+        form.setError('root', {
+          message: 'Too many login attempts. Please wait 10 minutes before trying again.',
+        });
+      } else {
+        form.setError('root', {
+          message: 'Invalid email or password',
+        });
+      }
     }
   }
 

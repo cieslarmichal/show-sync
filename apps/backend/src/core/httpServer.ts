@@ -3,7 +3,7 @@ import fastifyCors from '@fastify/cors';
 import fastifyHelmet from '@fastify/helmet';
 import fastifyRateLimit from '@fastify/rate-limit';
 import { type TypeBoxTypeProvider } from '@fastify/type-provider-typebox';
-import { fastify, type FastifyInstance } from 'fastify';
+import { fastify, type FastifyInstance, type FastifyRequest } from 'fastify';
 import type { FastifySchemaValidationError } from 'fastify/types/schema.js';
 
 import { TokenService } from '../common/auth/tokenService.ts';
@@ -69,60 +69,61 @@ export class HttpServer {
     });
 
     await this.fastifyServer.register(fastifyHelmet, {
-      // no need to load any external resources
       contentSecurityPolicy: false,
-
-      // Cross-Origin Resource Policy
       crossOriginResourcePolicy: { policy: 'same-origin' },
       crossOriginOpenerPolicy: { policy: 'same-origin' },
-      crossOriginEmbedderPolicy: false, // not needed for API without frontend
-
-      // 🔐 Force HTTPS (HSTS)
-      strictTransportSecurity: {
-        maxAge: 63072000, // 2 years
-        includeSubDomains: true,
-        preload: true,
-      },
-
-      // API should not reveal referrer info
+      crossOriginEmbedderPolicy: false,
       referrerPolicy: { policy: 'no-referrer' },
-
-      // security headers
-      xContentTypeOptions: true, // blocks MIME sniffing
-      xFrameOptions: { action: 'deny' }, // no iframes
-      xPermittedCrossDomainPolicies: { permittedPolicies: 'none' }, // disables Flash/Silverlight
-      xDownloadOptions: true, // IE-download protection
-      xDnsPrefetchControl: { allow: false }, // blocks DNS-prefetch
-
-      // hide X-Powered-By header
+      xContentTypeOptions: true,
+      xFrameOptions: { action: 'deny' },
+      xPermittedCrossDomainPolicies: { permittedPolicies: 'none' },
+      xDownloadOptions: true,
+      xDnsPrefetchControl: { allow: false },
       hidePoweredBy: true,
     });
 
-    await this.fastifyServer.register(fastifyRateLimit, { global: false });
+    await this.fastifyServer.register(fastifyRateLimit, {
+      global: true,
+      max: this.config.rateLimit.global.max,
+      timeWindow: this.config.rateLimit.global.timeWindow,
+      cache: 10000,
+      skipOnError: false,
+      keyGenerator: (request) => request.ip,
+    });
+
+    const skipRequestLog = (request: FastifyRequest): boolean => {
+      const isOptions = request.method === 'OPTIONS';
+      const isHealth = request.url.includes('/health');
+      return isOptions || isHealth;
+    };
 
     this.fastifyServer.addHook('onRequest', (request, reply, done) => {
+      if (skipRequestLog(request)) {
+        done();
+        return;
+      }
+
       const requestId = UuidService.generateUuid();
       request.id = requestId;
       reply.header('X-Request-ID', requestId);
 
       this.activeConnections++;
 
-      if (!request.url.includes('/health')) {
-        this.loggerService.info({
-          message: 'Incoming request...',
-          requestId,
-          req: {
-            url: request.url,
-            ip: request.ip,
-          },
-        });
-      }
+      this.loggerService.info({
+        message: 'Incoming request...',
+        requestId,
+        req: {
+          url: request.url,
+          ip: request.ip,
+        },
+      });
+
       done();
     });
 
     // Content-Type validation for non-GET requests
     this.fastifyServer.addHook('onRequest', (request, reply, done) => {
-      const unsafeMethods = ['POST', 'PUT', 'DELETE', 'PATCH'];
+      const unsafeMethods = ['POST', 'PATCH'];
 
       const cookieOnlyEndpoints = ['/users/refresh-token', '/users/logout'];
 
@@ -153,15 +154,19 @@ export class HttpServer {
     });
 
     this.fastifyServer.addHook('onSend', (request, reply, _payload, done) => {
-      if (!request.url.includes('/health')) {
-        this.loggerService.info({
-          message: 'Request completed.',
-          requestId: request.id,
-          method: request.method,
-          url: request.url,
-          statusCode: reply.statusCode,
-        });
+      if (skipRequestLog(request)) {
+        done();
+        return;
       }
+
+      this.loggerService.info({
+        message: 'Request completed.',
+        requestId: request.id,
+        method: request.method,
+        url: request.url,
+        statusCode: reply.statusCode,
+      });
+
       done();
     });
 

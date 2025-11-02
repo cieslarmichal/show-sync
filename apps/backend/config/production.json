@@ -1,8 +1,16 @@
 {
   "rateLimit": {
+    "global": {
+      "max": 100,
+      "timeWindow": 60000
+    },
     "auth": {
       "max": 6,
       "timeWindow": 600000
+    },
+    "ai": {
+      "max": 3,
+      "timeWindow": 60000
     }
   },
   "logLevel": "info"

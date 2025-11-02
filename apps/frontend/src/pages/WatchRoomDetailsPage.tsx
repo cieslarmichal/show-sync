@@ -173,8 +173,16 @@ export default function WatchRoomDetailsPage() {
       toast.success('Participant removed successfully!');
       setConfirmRemoveDialog({ open: false });
       fetchRoomDetails(watchroomId);
-    } catch {
-      toast.error('Failed to remove participant.');
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Failed to remove participant.';
+      
+      if (errorMessage.includes('Too many requests') || errorMessage.includes('Rate limit')) {
+        toast.error('Rate limit exceeded', {
+          description: 'Please wait a moment before trying again.',
+        });
+      } else {
+        toast.error('Failed to remove participant.');
+      }
     } finally {
       setIsProcessing(false);
     }
@@ -190,8 +198,16 @@ export default function WatchRoomDetailsPage() {
       await leaveWatchroom(watchroomId);
       toast.success('You have left the room.');
       navigate('/watchrooms');
-    } catch {
-      toast.error('Failed to leave the room.');
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Failed to leave the room.';
+      
+      if (errorMessage.includes('Too many requests') || errorMessage.includes('Rate limit')) {
+        toast.error('Rate limit exceeded', {
+          description: 'Please wait a moment before trying again.',
+        });
+      } else {
+        toast.error('Failed to leave the room.');
+      }
       setIsProcessing(false);
     }
   };
@@ -206,8 +222,16 @@ export default function WatchRoomDetailsPage() {
       await deleteWatchroom(watchroomId);
       toast.success('Watch room deleted successfully!');
       navigate('/watchrooms');
-    } catch {
-      toast.error('Failed to delete room.');
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Failed to delete room.';
+      
+      if (errorMessage.includes('Too many requests') || errorMessage.includes('Rate limit')) {
+        toast.error('Rate limit exceeded', {
+          description: 'Please wait a moment before trying again.',
+        });
+      } else {
+        toast.error('Failed to delete room.');
+      }
       setIsProcessing(false);
       setConfirmDeleteDialog(false);
     }
@@ -270,7 +294,16 @@ export default function WatchRoomDetailsPage() {
       setTimeout(() => pollForStatus(), pollInterval);
     } catch (error) {
       console.error('Failed to generate recommendations:', error);
-      toast.error('Failed to generate recommendations.');
+      const errorMessage = error instanceof Error ? error.message : 'Failed to generate recommendations.';
+      
+      // Check if it's a rate limit error
+      if (errorMessage.includes('Too many requests') || errorMessage.includes('Rate limit')) {
+        toast.error('Rate limit exceeded', {
+          description: 'You can generate recommendations up to 5 times per minute. Please wait a moment and try again.',
+        });
+      } else {
+        toast.error('Failed to generate recommendations.');
+      }
       setIsGenerating(false);
     }
   };
@@ -296,7 +329,15 @@ export default function WatchRoomDetailsPage() {
       }, 300);
     } catch (error) {
       console.error('Failed to ignore series:', error);
-      toast.error('Failed to ignore series');
+      const errorMessage = error instanceof Error ? error.message : 'Failed to ignore series';
+      
+      if (errorMessage.includes('Too many requests') || errorMessage.includes('Rate limit')) {
+        toast.error('Rate limit exceeded', {
+          description: 'Please wait a moment before trying again.',
+        });
+      } else {
+        toast.error('Failed to ignore series');
+      }
       // Remove from fading set if error occurs
       setFadingOutCards((prev) => {
         const newSet = new Set(prev);
@@ -330,7 +371,15 @@ export default function WatchRoomDetailsPage() {
       }, 300);
     } catch (error) {
       console.error('Failed to add to favorites:', error);
-      toast.error('Failed to add to favorites');
+      const errorMessage = error instanceof Error ? error.message : 'Failed to add to favorites';
+      
+      if (errorMessage.includes('Too many requests') || errorMessage.includes('Rate limit')) {
+        toast.error('Rate limit exceeded', {
+          description: 'Please wait a moment before trying again.',
+        });
+      } else {
+        toast.error('Failed to add to favorites');
+      }
       setFadingOutCards((prev) => {
         const newSet = new Set(prev);
         newSet.delete(recommendationId);
@@ -353,8 +402,16 @@ export default function WatchRoomDetailsPage() {
       } else {
         toast.error('IMDb ID not available for this series');
       }
-    } catch {
-      toast.error('Failed to get IMDb link');
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Failed to get IMDb link';
+      
+      if (errorMessage.includes('Too many requests') || errorMessage.includes('Rate limit')) {
+        toast.error('Rate limit exceeded', {
+          description: 'Please wait a moment before trying again.',
+        });
+      } else {
+        toast.error('Failed to get IMDb link');
+      }
     }
   };
 

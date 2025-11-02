@@ -29,7 +29,15 @@ const configSchema = Type.Object({
     port: Type.Number({ minimum: 1, maximum: 65535 }),
   }),
   rateLimit: Type.Object({
+    global: Type.Object({
+      max: Type.Number({ minimum: 1 }),
+      timeWindow: Type.Number({ minimum: 1000 }),
+    }),
     auth: Type.Object({
+      max: Type.Number({ minimum: 1 }),
+      timeWindow: Type.Number({ minimum: 1000 }),
+    }),
+    ai: Type.Object({
       max: Type.Number({ minimum: 1 }),
       timeWindow: Type.Number({ minimum: 1000 }),
     }),

@@ -87,6 +87,10 @@ export const apiRequest = async <T>(endpoint: string, options: ApiRequestConfig)
   }
 
   if (!response.ok) {
+    if (response.status === 429) {
+      const errorData = await response.json().catch(() => ({ message: 'Rate limit exceeded' }));
+      throw new Error(errorData.message || 'Too many requests. Please try again later.');
+    }
     throw new Error(`HTTP ${response.status}: ${response.statusText}`);
   }
 

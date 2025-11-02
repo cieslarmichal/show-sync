@@ -6,9 +6,17 @@
     "secret": "12345678901a"
   },
   "rateLimit": {
+    "global": {
+      "max": 10000,
+      "timeWindow": 60000
+    },
     "auth": {
       "max": 1000,
       "timeWindow": 600000
+    },
+    "ai": {
+      "max": 1000,
+      "timeWindow": 60000
     }
   },
   "token": {

@@ -13,9 +13,17 @@
     "port": 5000
   },
   "rateLimit": {
+    "global": {
+      "max": 100,
+      "timeWindow": 60000
+    },
     "auth": {
       "max": 10,
       "timeWindow": 600000
+    },
+    "ai": {
+      "max": 5,
+      "timeWindow": 60000
     }
   },
   "token": {
