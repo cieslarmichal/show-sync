@@ -1,5 +1,5 @@
 {
-  "id": "ff20f53c-c375-497d-880e-b786984f7a4f",
+  "id": "cd3191a3-70b8-4c2e-b8fc-2143a861e807",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -45,21 +45,6 @@
           "columns": [
             {
               "expression": "watchroom_id",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        },
-        "idx_recommendations_series_tmdb_id": {
-          "name": "idx_recommendations_series_tmdb_id",
-          "columns": [
-            {
-              "expression": "series_tmdb_id",
               "isExpression": false,
               "asc": true,
               "nulls": "last"
@@ -133,8 +118,7 @@
           "name": "preference_level",
           "type": "varchar(16)",
           "primaryKey": false,
-          "notNull": true,
-          "default": "'like'"
+          "notNull": true
         }
       },
       "indexes": {
@@ -212,7 +196,16 @@
         }
       },
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
+      "uniqueConstraints": {
+        "uq_user_favorite_series_user_series": {
+          "name": "uq_user_favorite_series_user_series",
+          "nullsNotDistinct": false,
+          "columns": [
+            "user_id",
+            "series_tmdb_id"
+          ]
+        }
+      },
       "policies": {},
       "checkConstraints": {},
       "isRLSEnabled": false
@@ -294,7 +287,16 @@
         }
       },
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
+      "uniqueConstraints": {
+        "uq_user_ignored_series_user_series": {
+          "name": "uq_user_ignored_series_user_series",
+          "nullsNotDistinct": false,
+          "columns": [
+            "user_id",
+            "series_tmdb_id"
+          ]
+        }
+      },
       "policies": {},
       "checkConstraints": {},
       "isRLSEnabled": false
@@ -565,7 +567,16 @@
         }
       },
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
+      "uniqueConstraints": {
+        "uq_watchroom_participants": {
+          "name": "uq_watchroom_participants",
+          "nullsNotDistinct": false,
+          "columns": [
+            "watchroom_id",
+            "user_id"
+          ]
+        }
+      },
       "policies": {},
       "checkConstraints": {},
       "isRLSEnabled": false

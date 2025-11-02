@@ -1,4 +1,4 @@
-import { index, integer, pgTable, text, timestamp, uuid, varchar } from 'drizzle-orm/pg-core';
+import { index, integer, pgTable, text, timestamp, unique, uuid, varchar } from 'drizzle-orm/pg-core';
 
 export const users = pgTable('users', {
   id: uuid('id').primaryKey(),
@@ -40,6 +40,7 @@ export const userFavoriteSeries = pgTable(
     index('idx_user_favorite_series_user_id').on(table.userId),
     index('idx_user_favorite_series_user_series_tmdb_id').on(table.userId, table.seriesTmdbId),
     index('idx_user_favorite_series_preference_level').on(table.userId, table.preferenceLevel),
+    unique('uq_user_favorite_series_user_series').on(table.userId, table.seriesTmdbId),
   ],
 );
 
@@ -55,6 +56,7 @@ export const userIgnoredSeries = pgTable(
   (table) => [
     index('idx_user_ignored_series_user_id').on(table.userId),
     index('idx_user_ignored_series_user_series_tmdb_id').on(table.userId, table.seriesTmdbId),
+    unique('uq_user_ignored_series_user_series').on(table.userId, table.seriesTmdbId),
   ],
 );
 
@@ -88,6 +90,7 @@ export const watchroomParticipants = pgTable(
     index('idx_watchroom_participants_watchroom_id').on(table.watchroomId),
     index('idx_watchroom_participants_user_id').on(table.userId),
     index('idx_watchroom_participants_watchroom_user').on(table.watchroomId, table.userId),
+    unique('uq_watchroom_participants').on(table.watchroomId, table.userId),
   ],
 );
 
@@ -104,7 +107,6 @@ export const recommendations = pgTable(
   },
   (table) => [
     index('idx_recommendations_watchroom_id').on(table.watchroomId),
-    index('idx_recommendations_series_tmdb_id').on(table.seriesTmdbId),
     index('idx_recommendations_request_id').on(table.requestId),
   ],
 );
