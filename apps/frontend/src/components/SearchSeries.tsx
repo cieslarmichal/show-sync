@@ -172,44 +172,83 @@ export default function SearchSeries({
                 </div>
                 <div className="shrink-0 w-full sm:w-auto mt-4 sm:mt-0 sm:ml-4">
                   <div className="flex gap-2">
+                    {/* Love Button - Primary Action */}
                     <Button
                       size="sm"
-                      className="flex-1 sm:flex-none shadow-sm hover:shadow-md hover:scale-105 active:scale-95 transition-all"
-                      onClick={() => {
-                        onAddToProfile(series, 'like');
-                        setQuery('');
-                      }}
-                      disabled={profileSeriesIds.has(series.id)}
-                      variant={profileSeriesIds.has(series.id) ? 'secondary' : 'default'}
-                    >
-                      <ThumbsUp className="w-4 h-4 mr-1" />
-                      Like
-                    </Button>
-                    <Button
-                      size="sm"
-                      className="flex-1 sm:flex-none shadow-sm hover:shadow-md hover:scale-105 active:scale-95 transition-all bg-pink-600 hover:bg-pink-700 text-white"
+                      variant="outline"
+                      className={`flex-1 sm:flex-none min-h-11 shadow-sm hover:shadow-md active:scale-95 transition-all duration-300 group ${
+                        profileSeriesIds.has(series.id)
+                          ? 'bg-linear-to-br from-pink-400 to-pink-500 text-white border-pink-400 hover:from-pink-500 hover:to-pink-600'
+                          : 'bg-pink-50 border-pink-200 hover:bg-pink-100 hover:border-pink-400 dark:bg-pink-950/20 dark:border-pink-900/50 dark:hover:bg-pink-900/30 dark:hover:border-pink-700'
+                      }`}
                       onClick={() => {
                         onAddToProfile(series, 'love');
                         setQuery('');
                       }}
                       disabled={profileSeriesIds.has(series.id)}
-                      variant={profileSeriesIds.has(series.id) ? 'secondary' : 'default'}
+                      aria-label="Mark as loved"
+                      aria-pressed={profileSeriesIds.has(series.id)}
                     >
-                      <Heart className="w-4 h-4 mr-1" />
+                      <Heart
+                        className={`w-4 h-4 mr-1.5 transition-all duration-300 text-pink-500 dark:text-pink-400 ${
+                          profileSeriesIds.has(series.id)
+                            ? 'fill-current text-white!'
+                            : 'group-hover:scale-110 group-hover:text-pink-600 dark:group-hover:text-pink-300'
+                        }`}
+                      />
                       Love
                     </Button>
+
+                    {/* Like Button - Secondary Action */}
                     <Button
                       size="sm"
-                      variant={ignoredSeriesIds?.has(series.id) ? 'secondary' : 'outline'}
-                      className="flex-1 sm:flex-none hover:bg-destructive/10 hover:text-destructive hover:border-destructive/50 hover:scale-105 active:scale-95 transition-all"
+                      variant="outline"
+                      className={`flex-1 sm:flex-none min-h-11 shadow-sm hover:shadow-md active:scale-95 transition-all duration-300 group ${
+                        profileSeriesIds.has(series.id)
+                          ? 'bg-linear-to-br from-sky-400 to-sky-500 text-white border-sky-400 hover:from-sky-500 hover:to-sky-600'
+                          : 'bg-sky-50 border-sky-200 hover:bg-sky-100 hover:border-sky-400 dark:bg-sky-950/20 dark:border-sky-900/50 dark:hover:bg-sky-900/30 dark:hover:border-sky-700'
+                      }`}
+                      onClick={() => {
+                        onAddToProfile(series, 'like');
+                        setQuery('');
+                      }}
+                      disabled={profileSeriesIds.has(series.id)}
+                      aria-label="Mark as liked"
+                      aria-pressed={profileSeriesIds.has(series.id)}
+                    >
+                      <ThumbsUp
+                        className={`w-4 h-4 mr-1.5 transition-all duration-300 text-sky-500 dark:text-sky-400 ${
+                          profileSeriesIds.has(series.id)
+                            ? 'text-white!'
+                            : 'group-hover:scale-110 group-hover:text-sky-600 dark:group-hover:text-sky-300'
+                        }`}
+                      />
+                      Like
+                    </Button>
+
+                    {/* Skip Button - Neutral Action */}
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className={`flex-1 sm:flex-none min-h-11 shadow-sm hover:shadow-md active:scale-95 transition-all duration-300 group ${
+                        ignoredSeriesIds?.has(series.id)
+                          ? 'bg-muted text-muted-foreground border-muted-foreground/50'
+                          : 'bg-muted/30 hover:bg-muted/60 hover:border-muted-foreground/40'
+                      }`}
                       onClick={() => {
                         onAddToIgnored(series);
                         setQuery('');
                       }}
                       disabled={ignoredSeriesIds?.has(series.id)}
+                      aria-label="Mark as not interested"
+                      aria-pressed={ignoredSeriesIds?.has(series.id)}
                     >
-                      <EyeOff className="w-4 h-4 mr-1" />
-                      {ignoredSeriesIds?.has(series.id) ? 'Ignored' : 'Not Interested'}
+                      <EyeOff
+                        className={`w-4 h-4 mr-1.5 transition-all duration-300 ${
+                          ignoredSeriesIds?.has(series.id) ? 'opacity-50' : ''
+                        }`}
+                      />
+                      {ignoredSeriesIds?.has(series.id) ? 'Skipped' : 'Skip'}
                     </Button>
                   </div>
                 </div>

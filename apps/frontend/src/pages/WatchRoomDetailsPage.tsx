@@ -655,7 +655,7 @@ export default function WatchRoomDetailsPage() {
                       <span>Love the shows you enjoy</span>
                       <span className="text-muted-foreground/50">•</span>
                       <EyeOff className="w-4 h-4 text-muted-foreground" />
-                      <span>Mark as Not Interested to exclude them from AI recommendations</span>
+                      <span>Skip to exclude them from AI recommendations</span>
                     </p>
                   </div>
 
@@ -821,34 +821,15 @@ export default function WatchRoomDetailsPage() {
 
                                 {/* Action Buttons */}
                                 <div className="flex gap-2">
+                                  {/* Love Button - Primary Action */}
                                   <Button
-                                    variant={
-                                      profileSeriesIds.has(recommendation.seriesTmdbId) ? 'secondary' : 'default'
-                                    }
                                     size="sm"
-                                    onClick={() =>
-                                      handleLikeSeries(
-                                        recommendation.seriesTmdbId,
-                                        recommendation.seriesDetails?.name || 'this series',
-                                        recommendation.id,
-                                        'like',
-                                      )
-                                    }
-                                    disabled={
-                                      profileSeriesIds.has(recommendation.seriesTmdbId) ||
-                                      ignoredSeriesIds.has(recommendation.seriesTmdbId) ||
-                                      isFadingOut
-                                    }
-                                    className="shadow-sm hover:shadow-md hover:scale-105 active:scale-95 transition-all"
-                                  >
-                                    <ThumbsUp className="w-4 h-4 mr-2" />
-                                    Like
-                                  </Button>
-                                  <Button
-                                    variant={
-                                      profileSeriesIds.has(recommendation.seriesTmdbId) ? 'secondary' : 'default'
-                                    }
-                                    size="sm"
+                                    variant="outline"
+                                    className={`flex-1 min-h-11 shadow-sm hover:shadow-md active:scale-95 transition-all duration-300 group ${
+                                      profileSeriesIds.has(recommendation.seriesTmdbId)
+                                        ? 'bg-linear-to-br from-pink-400 to-pink-500 text-white border-pink-400 hover:from-pink-500 hover:to-pink-600'
+                                        : 'bg-pink-50 border-pink-200 hover:bg-pink-100 hover:border-pink-400 dark:bg-pink-950/20 dark:border-pink-900/50 dark:hover:bg-pink-900/30 dark:hover:border-pink-700'
+                                    }`}
                                     onClick={() =>
                                       handleLikeSeries(
                                         recommendation.seriesTmdbId,
@@ -862,14 +843,63 @@ export default function WatchRoomDetailsPage() {
                                       ignoredSeriesIds.has(recommendation.seriesTmdbId) ||
                                       isFadingOut
                                     }
-                                    className="shadow-sm hover:shadow-md hover:scale-105 active:scale-95 transition-all bg-pink-600 hover:bg-pink-700 text-white disabled:bg-pink-600/50"
+                                    aria-label="Mark as loved"
+                                    aria-pressed={profileSeriesIds.has(recommendation.seriesTmdbId)}
                                   >
-                                    <Heart className="w-4 h-4 mr-2" />
+                                    <Heart
+                                      className={`w-4 h-4 mr-1.5 transition-all duration-300 text-pink-500 dark:text-pink-400 ${
+                                        profileSeriesIds.has(recommendation.seriesTmdbId)
+                                          ? 'fill-current text-white!'
+                                          : 'group-hover:scale-110 group-hover:text-pink-600 dark:group-hover:text-pink-300'
+                                      }`}
+                                    />
                                     Love
                                   </Button>
+
+                                  {/* Like Button - Secondary Action */}
                                   <Button
-                                    variant="outline"
                                     size="sm"
+                                    variant="outline"
+                                    className={`flex-1 min-h-11 shadow-sm hover:shadow-md active:scale-95 transition-all duration-300 group ${
+                                      profileSeriesIds.has(recommendation.seriesTmdbId)
+                                        ? 'bg-linear-to-br from-sky-400 to-sky-500 text-white border-sky-400 hover:from-sky-500 hover:to-sky-600'
+                                        : 'bg-sky-50 border-sky-200 hover:bg-sky-100 hover:border-sky-400 dark:bg-sky-950/20 dark:border-sky-900/50 dark:hover:bg-sky-900/30 dark:hover:border-sky-700'
+                                    }`}
+                                    onClick={() =>
+                                      handleLikeSeries(
+                                        recommendation.seriesTmdbId,
+                                        recommendation.seriesDetails?.name || 'this series',
+                                        recommendation.id,
+                                        'like',
+                                      )
+                                    }
+                                    disabled={
+                                      profileSeriesIds.has(recommendation.seriesTmdbId) ||
+                                      ignoredSeriesIds.has(recommendation.seriesTmdbId) ||
+                                      isFadingOut
+                                    }
+                                    aria-label="Mark as liked"
+                                    aria-pressed={profileSeriesIds.has(recommendation.seriesTmdbId)}
+                                  >
+                                    <ThumbsUp
+                                      className={`w-4 h-4 mr-1.5 transition-all duration-300 text-sky-500 dark:text-sky-400 ${
+                                        profileSeriesIds.has(recommendation.seriesTmdbId)
+                                          ? 'text-white!'
+                                          : 'group-hover:scale-110 group-hover:text-sky-600 dark:group-hover:text-sky-300'
+                                      }`}
+                                    />
+                                    Like
+                                  </Button>
+
+                                  {/* Skip Button - Neutral Action */}
+                                  <Button
+                                    size="sm"
+                                    variant="outline"
+                                    className={`flex-1 min-h-11 shadow-sm hover:shadow-md active:scale-95 transition-all duration-300 group ${
+                                      ignoredSeriesIds.has(recommendation.seriesTmdbId)
+                                        ? 'bg-muted text-muted-foreground border-muted-foreground/50'
+                                        : 'bg-muted/30 hover:bg-muted/60 hover:border-muted-foreground/40'
+                                    }`}
                                     onClick={() =>
                                       handleIgnoreSeries(
                                         recommendation.seriesTmdbId,
@@ -882,10 +912,15 @@ export default function WatchRoomDetailsPage() {
                                       profileSeriesIds.has(recommendation.seriesTmdbId) ||
                                       isFadingOut
                                     }
-                                    className="hover:bg-destructive/10 hover:text-destructive hover:border-destructive/50 hover:scale-105 active:scale-95 transition-all"
+                                    aria-label="Mark as not interested"
+                                    aria-pressed={ignoredSeriesIds.has(recommendation.seriesTmdbId)}
                                   >
-                                    <EyeOff className="w-4 h-4 mr-2" />
-                                    {ignoredSeriesIds.has(recommendation.seriesTmdbId) ? 'Ignored' : 'Not Interested'}
+                                    <EyeOff
+                                      className={`w-4 h-4 mr-1.5 transition-all duration-300 ${
+                                        ignoredSeriesIds.has(recommendation.seriesTmdbId) ? 'opacity-50' : ''
+                                      }`}
+                                    />
+                                    {ignoredSeriesIds.has(recommendation.seriesTmdbId) ? 'Skipped' : 'Skip'}
                                   </Button>
                                 </div>
                               </div>

@@ -202,7 +202,7 @@ describe('SearchSeries', () => {
 
     await waitFor(
       () => {
-        const likeButton = screen.getByRole('button', { name: /^like$/i });
+        const likeButton = screen.getByRole('button', { name: /mark as liked/i });
         expect(likeButton).toBeDisabled();
       },
       { timeout: 1000 },
@@ -227,7 +227,7 @@ describe('SearchSeries', () => {
 
     await waitFor(
       () => {
-        const likeButton = screen.getByRole('button', { name: /^like$/i });
+        const likeButton = screen.getByRole('button', { name: /mark as liked/i });
         expect(likeButton).toBeDisabled();
       },
       { timeout: 1000 },
@@ -352,8 +352,8 @@ describe('SearchSeries', () => {
       { timeout: 1000 },
     );
 
-    const notInterestedButton = screen.getAllByRole('button', { name: /^not interested$/i })[0];
-    await user.click(notInterestedButton);
+    const skipButton = screen.getAllByRole('button', { name: /^mark as not interested$/i })[0];
+    await user.click(skipButton);
 
     expect(mockOnAddToIgnored).toHaveBeenCalledTimes(1);
     expect(mockOnAddToIgnored).toHaveBeenCalledWith(
@@ -385,8 +385,8 @@ describe('SearchSeries', () => {
       { timeout: 1000 },
     );
 
-    const notInterestedButton = screen.getAllByRole('button', { name: /^not interested$/i })[0];
-    await user.click(notInterestedButton);
+    const skipButton = screen.getAllByRole('button', { name: /^mark as not interested$/i })[0];
+    await user.click(skipButton);
 
     await waitFor(() => {
       expect(searchInput).toHaveValue('');
@@ -411,7 +411,7 @@ describe('SearchSeries', () => {
 
     await waitFor(
       () => {
-        expect(screen.getByRole('button', { name: /ignored/i })).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: /skipped/i })).toBeInTheDocument();
       },
       { timeout: 1000 },
     );
@@ -435,8 +435,8 @@ describe('SearchSeries', () => {
 
     await waitFor(
       () => {
-        const ignoredButton = screen.getByRole('button', { name: /ignored/i });
-        expect(ignoredButton).toBeDisabled();
+        const skippedButton = screen.getByRole('button', { name: /skipped/i });
+        expect(skippedButton).toBeDisabled();
       },
       { timeout: 1000 },
     );
