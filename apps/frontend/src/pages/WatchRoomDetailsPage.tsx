@@ -41,6 +41,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../co
 import { Button } from '../components/ui/Button.tsx';
 import { Badge } from '../components/ui/Badge.tsx';
 import { Skeleton } from '../components/ui/Skeleton.tsx';
+import { Tooltip, TooltipContent, TooltipTrigger } from '../components/ui/Tooltip.tsx';
 import { EditWatchRoomModal } from '../components/EditWatchRoomModal.tsx';
 import {
   Dialog,
@@ -514,20 +515,27 @@ export default function WatchRoomDetailsPage() {
                       </div>
                     </div>
                     {isOwner && participant.id !== userData?.id && (
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() =>
-                          setConfirmRemoveDialog({
-                            open: true,
-                            participantId: participant.id,
-                            participantName: participant.name,
-                          })
-                        }
-                        className="h-10 w-10 hover:bg-destructive/10 hover:text-destructive rounded-lg opacity-0 group-hover:opacity-100 transition-opacity"
-                      >
-                        <UserMinus className="w-4 h-4" />
-                      </Button>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() =>
+                              setConfirmRemoveDialog({
+                                open: true,
+                                participantId: participant.id,
+                                participantName: participant.name,
+                              })
+                            }
+                            className="h-10 w-10 hover:bg-destructive/10 hover:text-destructive rounded-lg opacity-0 group-hover:opacity-100 transition-opacity"
+                          >
+                            <UserMinus className="w-4 h-4" />
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent side="bottom">
+                          <p>Remove {participant.name} from room</p>
+                        </TooltipContent>
+                      </Tooltip>
                     )}
                   </div>
                 ))}
@@ -572,7 +580,7 @@ export default function WatchRoomDetailsPage() {
                 {isOwner && (
                   <Button
                     onClick={handleGenerateRecommendations}
-                    // disabled={isGenerating || room.participants.length < 2}
+                    disabled={isGenerating}
                     className="sm:self-start shadow-md hover:shadow-lg transition-all disabled:opacity-50"
                     data-testid="generate-recommendations-button"
                   >
