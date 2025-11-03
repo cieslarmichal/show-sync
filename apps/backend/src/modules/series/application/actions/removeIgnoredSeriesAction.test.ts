@@ -52,7 +52,7 @@ describe('RemoveIgnoredSeriesAction', () => {
 
       await ignoredSeriesRepository.create({ userId: user.id, seriesTmdbId });
 
-      await removeIgnoredSeriesAction.execute(user.id, seriesTmdbId, createTestExecutionContext());
+      await removeIgnoredSeriesAction.execute({ userId: user.id, seriesTmdbId }, createTestExecutionContext());
 
       const ignored = await ignoredSeriesRepository.findOne(user.id, seriesTmdbId);
 
@@ -66,7 +66,7 @@ describe('RemoveIgnoredSeriesAction', () => {
       const seriesTmdbId = Generator.number(1, 10000);
 
       await expect(
-        removeIgnoredSeriesAction.execute(user.id, seriesTmdbId, createTestExecutionContext()),
+        removeIgnoredSeriesAction.execute({ userId: user.id, seriesTmdbId }, createTestExecutionContext()),
       ).rejects.toThrow(ResourceNotFoundError);
     });
   });

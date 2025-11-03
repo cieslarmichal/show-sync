@@ -59,7 +59,10 @@ describe('AddFavoriteSeriesAction', () => {
       const user = await userRepository.create(userData);
       const seriesTmdbId = Generator.number(1, 10000);
 
-      const result = await addFavoriteSeriesAction.execute(user.id, seriesTmdbId, 'like', createTestExecutionContext());
+      const result = await addFavoriteSeriesAction.execute(
+        { userId: user.id, seriesTmdbId, preferenceLevel: 'like' },
+        createTestExecutionContext(),
+      );
 
       expect(result).toBeDefined();
       expect(result.id).toBeDefined();
@@ -76,7 +79,10 @@ describe('AddFavoriteSeriesAction', () => {
       await favoriteSeriesRepository.create({ userId: user.id, seriesTmdbId, preferenceLevel: 'like' });
 
       await expect(
-        addFavoriteSeriesAction.execute(user.id, seriesTmdbId, 'like', createTestExecutionContext()),
+        addFavoriteSeriesAction.execute(
+          { userId: user.id, seriesTmdbId, preferenceLevel: 'like' },
+          createTestExecutionContext(),
+        ),
       ).rejects.toThrow(ResourceAlreadyExistsError);
     });
 
@@ -90,7 +96,10 @@ describe('AddFavoriteSeriesAction', () => {
       const ignoredBefore = await ignoredSeriesRepository.findOne(user.id, seriesTmdbId);
       expect(ignoredBefore).toBeDefined();
 
-      const result = await addFavoriteSeriesAction.execute(user.id, seriesTmdbId, 'like', createTestExecutionContext());
+      const result = await addFavoriteSeriesAction.execute(
+        { userId: user.id, seriesTmdbId, preferenceLevel: 'like' },
+        createTestExecutionContext(),
+      );
 
       expect(result).toBeDefined();
       expect(result.userId).toBe(user.id);

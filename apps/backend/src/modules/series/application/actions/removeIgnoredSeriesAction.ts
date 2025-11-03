@@ -3,6 +3,11 @@ import type { LoggerService } from '../../../../common/logger/loggerService.ts';
 import type { ExecutionContext } from '../../../../common/types/executionContext.ts';
 import type { IgnoredSeriesRepository } from '../../domain/repositories/ignoredSeriesRepository.ts';
 
+interface RemoveIgnoredSeriesPayload {
+  readonly userId: string;
+  readonly seriesTmdbId: number;
+}
+
 export class RemoveIgnoredSeriesAction {
   private readonly ignoredSeriesRepository: IgnoredSeriesRepository;
   private readonly loggerService: LoggerService;
@@ -12,7 +17,9 @@ export class RemoveIgnoredSeriesAction {
     this.loggerService = loggerService;
   }
 
-  public async execute(userId: string, seriesTmdbId: number, context: ExecutionContext): Promise<void> {
+  public async execute(payload: RemoveIgnoredSeriesPayload, context: ExecutionContext): Promise<void> {
+    const { userId, seriesTmdbId } = payload;
+
     const existing = await this.ignoredSeriesRepository.findOne(userId, seriesTmdbId);
 
     if (!existing) {
@@ -27,6 +34,7 @@ export class RemoveIgnoredSeriesAction {
 
     this.loggerService.info({
       message: 'Series removed from ignored list',
+      event: 'series.ignored.removed',
       requestId: context.requestId,
       userId,
       seriesTmdbId,

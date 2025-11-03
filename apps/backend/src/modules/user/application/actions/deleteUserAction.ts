@@ -14,7 +14,8 @@ export class DeleteUserAction {
 
   public async execute(id: string, context: ExecutionContext): Promise<void> {
     this.loggerService.debug({
-      message: 'Deleting user...',
+      message: 'Deleting user',
+      event: 'user.delete.start',
       requestId: context.requestId,
       userId: id,
     });
@@ -32,7 +33,8 @@ export class DeleteUserAction {
     await this.userRepository.delete(id);
 
     this.loggerService.info({
-      message: 'User deleted successfully.',
+      message: 'User deleted successfully',
+      event: 'user.delete.success',
       requestId: context.requestId,
       userId: id,
       email: user.email,

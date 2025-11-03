@@ -51,7 +51,7 @@ describe('RemoveFavoriteSeriesAction', () => {
 
       await favoriteSeriesRepository.create({ userId: user.id, seriesTmdbId, preferenceLevel: 'like' });
 
-      await removeFavoriteSeriesAction.execute(user.id, seriesTmdbId, createTestExecutionContext());
+      await removeFavoriteSeriesAction.execute({ userId: user.id, seriesTmdbId }, createTestExecutionContext());
 
       const favoriteAfterRemoval = await favoriteSeriesRepository.findOne(user.id, seriesTmdbId);
 
@@ -64,7 +64,7 @@ describe('RemoveFavoriteSeriesAction', () => {
       const seriesTmdbId = Generator.number(1, 10000);
 
       await expect(
-        removeFavoriteSeriesAction.execute(user.id, seriesTmdbId, createTestExecutionContext()),
+        removeFavoriteSeriesAction.execute({ userId: user.id, seriesTmdbId }, createTestExecutionContext()),
       ).rejects.toThrow(ResourceNotFoundError);
     });
   });

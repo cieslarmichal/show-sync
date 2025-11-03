@@ -23,7 +23,8 @@ export class JoinWatchroomAction {
     const { publicLinkId, userId } = payload;
 
     this.loggerService.debug({
-      message: 'Joining watchroom...',
+      message: 'Joining watchroom',
+      event: 'watchroom.join.start',
       requestId: context.requestId,
       publicLinkId,
       userId,
@@ -52,7 +53,8 @@ export class JoinWatchroomAction {
     await this.watchroomRepository.addParticipant(watchroom.id, userId);
 
     this.loggerService.info({
-      message: 'Watchroom joined successfully.',
+      message: 'Watchroom joined successfully',
+      event: 'watchroom.join.success',
       requestId: context.requestId,
       watchroomId: watchroom.id,
       userId,

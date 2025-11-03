@@ -28,7 +28,8 @@ export class CreateWatchroomAction {
     const publicLinkId = nanoid();
 
     this.loggerService.debug({
-      message: 'Creating watchroom...',
+      message: 'Creating watchroom',
+      event: 'watchroom.create.start',
       requestId: context.requestId,
       name,
       description,
@@ -44,7 +45,8 @@ export class CreateWatchroomAction {
     });
 
     this.loggerService.info({
-      message: 'Watchroom created successfully.',
+      message: 'Watchroom created successfully',
+      event: 'watchroom.create.success',
       requestId: context.requestId,
       watchroomId: watchroom.id,
       name: watchroom.name,

@@ -43,7 +43,8 @@ export class LoginUserAction {
     const normalizedEmail = loginData.email.toLowerCase();
 
     this.loggerService.debug({
-      message: 'Starting user login...',
+      message: 'Starting user login',
+      event: 'user.login.start',
       requestId: context.requestId,
       email: normalizedEmail,
     });
@@ -78,6 +79,7 @@ export class LoginUserAction {
 
     this.loggerService.info({
       message: 'User logged in successfully',
+      event: 'user.login.success',
       requestId: context.requestId,
       userId: user.id,
       email: user.email,

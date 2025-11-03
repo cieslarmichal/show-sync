@@ -32,6 +32,7 @@ export class UpdateFavoriteSeriesPreferenceAction {
 
     this.loggerService.info({
       message: 'Series preference level updated',
+      event: 'series.favorite.preference.updated',
       requestId: context.requestId,
       userId,
       seriesTmdbId,

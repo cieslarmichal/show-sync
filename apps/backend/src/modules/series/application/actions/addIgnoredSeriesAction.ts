@@ -6,6 +6,11 @@ import type { FavoriteSeriesRepository } from '../../domain/repositories/favorit
 import type { IgnoredSeriesRepository } from '../../domain/repositories/ignoredSeriesRepository.ts';
 import type { IgnoredSeries } from '../../domain/types/ignoredSeries.ts';
 
+interface AddIgnoredSeriesPayload {
+  readonly userId: string;
+  readonly seriesTmdbId: number;
+}
+
 export class AddIgnoredSeriesAction {
   private readonly ignoredSeriesRepository: IgnoredSeriesRepository;
   private readonly favoriteSeriesRepository: FavoriteSeriesRepository;
@@ -24,7 +29,9 @@ export class AddIgnoredSeriesAction {
     this.loggerService = loggerService;
   }
 
-  public async execute(userId: string, seriesTmdbId: number, context: ExecutionContext): Promise<IgnoredSeries> {
+  public async execute(payload: AddIgnoredSeriesPayload, context: ExecutionContext): Promise<IgnoredSeries> {
+    const { userId, seriesTmdbId } = payload;
+
     const existing = await this.ignoredSeriesRepository.findOne(userId, seriesTmdbId);
 
     if (existing) {
@@ -44,6 +51,7 @@ export class AddIgnoredSeriesAction {
 
         this.loggerService.info({
           message: 'Series removed from favorites before adding to ignored list',
+          event: 'series.favorite.removed',
           requestId: context.requestId,
           userId,
           seriesTmdbId,
@@ -55,6 +63,7 @@ export class AddIgnoredSeriesAction {
 
     this.loggerService.info({
       message: 'Series added to ignored list',
+      event: 'series.ignored.added',
       requestId: context.requestId,
       userId,
       seriesTmdbId,

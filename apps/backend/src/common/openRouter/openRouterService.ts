@@ -41,6 +41,7 @@ export class OpenRouterService {
 
     this.logger.debug({
       message: 'Sending request to OpenRouter API',
+      event: 'openRouter.request.start',
       model: this.config.model,
       userMessageLength: userMessage.length,
       systemMessageLength: systemMessage.length,
@@ -54,8 +55,9 @@ export class OpenRouterService {
       const response = await this.executeRequestWithRetry(payload);
       const duration = Date.now() - startTime;
 
-      this.logger.info({
+      this.logger.debug({
         message: 'OpenRouter API request successful',
+        event: 'openRouter.request.success',
         duration,
         model: this.config.model,
         promptTokens: response.usage.prompt_tokens,
@@ -72,16 +74,15 @@ export class OpenRouterService {
       if (error instanceof ExternalServiceError) {
         this.logger.error({
           message: 'OpenRouter API request failed',
+          event: 'openRouter.request.error',
           duration,
           reason: error.context['reason'],
           service: error.context.service,
         });
       } else {
         this.logger.error({
-          message:
-            error instanceof Error
-              ? 'Unexpected error during OpenRouter API request'
-              : 'Unknown error during OpenRouter API request',
+          message: 'OpenRouter API request failed with unexpected error',
+          event: 'openRouter.request.error',
           duration,
           error: error instanceof Error ? error.message : String(error),
           ...(error instanceof Error && error.stack && { stack: error.stack }),
@@ -125,14 +126,11 @@ export class OpenRouterService {
         },
       };
 
-      this.logger.debug({
-        message: 'Response formatted successfully',
-      });
-
       return result;
     } catch (error) {
       this.logger.error({
-        message: 'Failed to parse response',
+        message: 'Failed to parse response from OpenRouter API',
+        event: 'openRouter.response.parse_error',
         error: error instanceof Error ? error.message : 'Unknown error',
         content: messageContent,
       });
@@ -187,7 +185,8 @@ export class OpenRouterService {
 
         if (!isRetryable || attempt === this.config.maxRetries) {
           this.logger.error({
-            message: 'Request failed after retries',
+            message: 'OpenRouter API request failed after retries',
+            event: 'openRouter.request.retry_failed',
             attempt,
             maxRetries: this.config.maxRetries,
             isRetryable,
@@ -199,7 +198,8 @@ export class OpenRouterService {
         const delayMs = this.calculateRetryDelay(attempt);
 
         this.logger.warn({
-          message: 'Request failed, retrying...',
+          message: 'Retrying OpenRouter API request due to error',
+          event: 'openRouter.request.retry',
           attempt,
           maxRetries: this.config.maxRetries,
           delayMs,

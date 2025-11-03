@@ -22,7 +22,8 @@ export class LeaveWatchroomAction {
     const { watchroomId, userId } = payload;
 
     this.loggerService.debug({
-      message: 'Leaving watchroom...',
+      message: 'Leaving watchroom',
+      event: 'watchroom.leave.start',
       requestId: context.requestId,
       watchroomId,
       userId,
@@ -57,7 +58,8 @@ export class LeaveWatchroomAction {
     await this.watchroomRepository.removeParticipant(watchroomId, userId);
 
     this.loggerService.info({
-      message: 'Left watchroom successfully.',
+      message: 'Left watchroom successfully',
+      event: 'watchroom.leave.success',
       requestId: context.requestId,
       watchroomId,
       userId,

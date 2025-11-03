@@ -3,6 +3,11 @@ import type { LoggerService } from '../../../../common/logger/loggerService.ts';
 import type { ExecutionContext } from '../../../../common/types/executionContext.ts';
 import type { FavoriteSeriesRepository } from '../../domain/repositories/favoriteSeriesRepository.ts';
 
+interface RemoveFavoriteSeriesPayload {
+  readonly userId: string;
+  readonly seriesTmdbId: number;
+}
+
 export class RemoveFavoriteSeriesAction {
   private readonly favoriteSeriesRepository: FavoriteSeriesRepository;
   private readonly loggerService: LoggerService;
@@ -12,7 +17,9 @@ export class RemoveFavoriteSeriesAction {
     this.loggerService = loggerService;
   }
 
-  public async execute(userId: string, seriesTmdbId: number, context: ExecutionContext): Promise<void> {
+  public async execute(payload: RemoveFavoriteSeriesPayload, context: ExecutionContext): Promise<void> {
+    const { userId, seriesTmdbId } = payload;
+
     const existing = await this.favoriteSeriesRepository.findOne(userId, seriesTmdbId);
 
     if (!existing) {
@@ -28,6 +35,7 @@ export class RemoveFavoriteSeriesAction {
 
     this.loggerService.info({
       message: 'Series removed from favorites',
+      event: 'series.favorite.removed',
       requestId: context.requestId,
       userId,
       seriesTmdbId,

@@ -44,7 +44,7 @@
 
 - Framework: **Vitest**
 - Zakres: Logika biznesowa, serwisy, helpery, walidacja
-- Mockowanie: Zewnętrzne zależności (database, external APIs, services)
+- Mockowanie: Zewnętrzne zależności (databaseClient, external APIs, services)
 - Wykorzystanie: `createTestContext()`, `Generator` class, `vi.mock()`
 
 **Frontend:**

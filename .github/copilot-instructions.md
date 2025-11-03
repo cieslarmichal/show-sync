@@ -76,7 +76,6 @@ This is a monorepo using npm workspaces with Turborepo. The project consists of 
 ### Error Handling
 
 - Use custom error classes extending `BaseError` with context
-- Implement centralized error serialization with `serializeError()`
 - Use specific error types:
   - `InputNotValidError` - for validation failures
   - `ResourceNotFoundError` - for missing resources

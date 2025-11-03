@@ -22,7 +22,8 @@ export class DeleteWatchroomAction {
     const { watchroomId, userId } = payload;
 
     this.loggerService.debug({
-      message: 'Deleting watchroom...',
+      message: 'Deleting watchroom',
+      event: 'watchroom.delete.start',
       requestId: context.requestId,
       watchroomId,
       userId,
@@ -48,7 +49,8 @@ export class DeleteWatchroomAction {
     await this.watchroomRepository.delete(watchroomId);
 
     this.loggerService.info({
-      message: 'Watchroom deleted successfully.',
+      message: 'Watchroom deleted successfully',
+      event: 'watchroom.delete.success',
       requestId: context.requestId,
       watchroomId,
       userId,

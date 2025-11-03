@@ -109,13 +109,13 @@ export class HttpServer {
 
       this.activeConnections++;
 
-      this.loggerService.info({
-        message: 'Incoming request...',
-        requestId,
-        req: {
-          url: request.url,
-          ip: request.ip,
-        },
+      this.loggerService.debug({
+        message: 'Incoming HTTP request',
+        event: 'http.request.start',
+        requestId: request.id,
+        method: request.method,
+        url: request.url,
+        ip: request.ip,
       });
 
       done();
@@ -136,6 +136,7 @@ export class HttpServer {
         if (!contentType || !contentType.includes('application/json')) {
           this.loggerService.warn({
             message: 'Invalid Content-Type for unsafe operation',
+            event: 'http.request.invalid_content_type',
             requestId: request.id,
             method: request.method,
             contentType: contentType || 'missing',
@@ -159,12 +160,16 @@ export class HttpServer {
         return;
       }
 
-      this.loggerService.info({
+      const level = reply.statusCode >= 500 ? 'error' : reply.statusCode >= 400 ? 'warn' : 'debug';
+
+      this.loggerService[level]({
         message: 'Request completed.',
+        event: 'http.request.end',
         requestId: request.id,
         method: request.method,
         url: request.url,
         statusCode: reply.statusCode,
+        userId: request.user?.userId,
       });
 
       done();
@@ -190,7 +195,10 @@ export class HttpServer {
         } catch (error) {
           this.loggerService.warn({
             message: 'Input sanitization failed',
+            event: 'http.request.input_sanitization_failed',
             requestId: request.id,
+            method: request.method,
+            url: request.url,
             error: error instanceof Error ? error.message : 'Unknown error',
           });
 
@@ -206,18 +214,18 @@ export class HttpServer {
 
     await this.fastifyServer.listen({ port, host });
 
-    this.loggerService.info({ message: 'HTTP server started.', port, host });
+    this.loggerService.info({ message: 'HTTP server started', port, host });
   }
 
   public async stop(): Promise<void> {
     if (this.isShuttingDown) {
-      this.loggerService.warn({ message: 'HTTP server is already shutting down, ignoring stop request...' });
+      this.loggerService.warn({ message: 'HTTP server is already shutting down' });
       return;
     }
 
     this.isShuttingDown = true;
 
-    this.loggerService.info({ message: 'Stopping HTTP server...' });
+    this.loggerService.info({ message: 'Stopping HTTP server' });
 
     // Stop accepting new connections
     this.fastifyServer.server.unref();
@@ -228,7 +236,7 @@ export class HttpServer {
 
     while (this.activeConnections > 0 && Date.now() - shutdownStart < shutdownTimeout) {
       this.loggerService.info({
-        message: 'Waiting for active connections to finish...',
+        message: 'Waiting for active connections to finish',
         activeConnections: this.activeConnections,
       });
       await new Promise((resolve) => setTimeout(resolve, 1000));
@@ -243,7 +251,7 @@ export class HttpServer {
 
     await this.fastifyServer.close();
 
-    this.loggerService.info({ message: 'HTTP server stopped.' });
+    this.loggerService.info({ message: 'HTTP server stopped' });
   }
 
   private setupErrorHandler(): void {
@@ -260,13 +268,13 @@ export class HttpServer {
       const requestId = request.id;
 
       if (error instanceof TypeError) {
-        const serializedError = serializeError(error, true);
-
         this.loggerService.error({
-          message: 'HTTP request error - TypeError',
+          message: 'HTTP request type error',
+          event: 'http.request.error',
           requestId,
-          error: serializedError,
-          endpoint: `${request.method} ${request.url}`,
+          method: request.method,
+          url: request.url,
+          err: error,
         });
 
         return reply.status(httpStatusCodes.internalServerError).send({
@@ -278,10 +286,12 @@ export class HttpServer {
       if ('statusCode' in error && error.statusCode === 429) {
         this.loggerService.warn({
           message: 'Rate limit exceeded',
+          event: 'http.request.rate_limited',
           requestId,
-          endpoint: `${request.method} ${request.url}`,
+          method: request.method,
+          url: request.url,
           ip: request.ip,
-          error: error.message,
+          err: error,
         });
 
         return reply.status(429).send({
@@ -290,16 +300,16 @@ export class HttpServer {
         });
       }
 
-      const serializedError = serializeError(error);
-
       this.loggerService.error({
         message: 'HTTP request error',
+        event: 'http.request.error',
         requestId,
-        error: serializedError,
-        endpoint: `${request.method} ${request.url}`,
+        method: request.method,
+        url: request.url,
+        err: error,
       });
 
-      const responseError = this.sanitizeErrorResponse(serializedError);
+      const responseError = this.sanitizeErrorResponse(error);
 
       if (error instanceof InputNotValidError) {
         return reply.status(httpStatusCodes.badRequest).send(responseError);
@@ -320,8 +330,10 @@ export class HttpServer {
       if (error instanceof UnauthorizedAccessError) {
         this.loggerService.warn({
           message: 'Unauthorized access attempt',
+          event: 'http.request.error',
           requestId,
-          endpoint: `${request.method} ${request.url}`,
+          method: request.method,
+          url: request.url,
           ip: request.ip,
         });
 
@@ -331,8 +343,10 @@ export class HttpServer {
       if (error instanceof ForbiddenAccessError) {
         this.loggerService.warn({
           message: 'Forbidden access attempt',
+          event: 'http.request.error',
           requestId,
-          endpoint: `${request.method} ${request.url}`,
+          method: request.method,
+          url: request.url,
           ip: request.ip,
         });
 
@@ -350,7 +364,8 @@ export class HttpServer {
     });
   }
 
-  private sanitizeErrorResponse(error: Record<string, unknown>): Record<string, unknown> {
+  private sanitizeErrorResponse(errorRaw: Error): Record<string, unknown> {
+    const error = serializeError(errorRaw);
     const allowedFields = ['name', 'message'];
     const sanitized: Record<string, unknown> = {};
 

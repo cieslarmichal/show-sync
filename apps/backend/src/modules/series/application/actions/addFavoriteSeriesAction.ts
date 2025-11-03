@@ -6,6 +6,12 @@ import type { FavoriteSeriesRepository } from '../../domain/repositories/favorit
 import type { IgnoredSeriesRepository } from '../../domain/repositories/ignoredSeriesRepository.ts';
 import type { FavoriteSeries, PreferenceLevel } from '../../domain/types/favoriteSeries.ts';
 
+interface AddFavoriteSeriesPayload {
+  readonly userId: string;
+  readonly seriesTmdbId: number;
+  readonly preferenceLevel: PreferenceLevel;
+}
+
 export class AddFavoriteSeriesAction {
   private readonly favoriteSeriesRepository: FavoriteSeriesRepository;
   private readonly ignoredSeriesRepository: IgnoredSeriesRepository;
@@ -24,13 +30,9 @@ export class AddFavoriteSeriesAction {
     this.loggerService = loggerService;
   }
 
-  // TODO: change to payload objects
-  public async execute(
-    userId: string,
-    seriesTmdbId: number,
-    preferenceLevel: PreferenceLevel,
-    context: ExecutionContext,
-  ): Promise<FavoriteSeries> {
+  public async execute(payload: AddFavoriteSeriesPayload, context: ExecutionContext): Promise<FavoriteSeries> {
+    const { userId, seriesTmdbId, preferenceLevel } = payload;
+
     const existing = await this.favoriteSeriesRepository.findOne(userId, seriesTmdbId);
 
     if (existing) {
@@ -50,6 +52,7 @@ export class AddFavoriteSeriesAction {
 
         this.loggerService.info({
           message: 'Series removed from ignored list before adding to favorites',
+          event: 'series.ignored.removed',
           requestId: context.requestId,
           userId,
           seriesTmdbId,
@@ -61,6 +64,7 @@ export class AddFavoriteSeriesAction {
 
     this.loggerService.info({
       message: 'Series added to favorites',
+      event: 'series.favorite.added',
       requestId: context.requestId,
       userId,
       seriesTmdbId,

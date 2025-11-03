@@ -23,7 +23,8 @@ export class RemoveParticipantAction {
     const { watchroomId, participantId, requesterId } = payload;
 
     this.loggerService.debug({
-      message: 'Removing participant from watchroom...',
+      message: 'Removing participant from watchroom',
+      event: 'watchroom.participant.remove.start',
       requestId: context.requestId,
       watchroomId,
       participantId,
@@ -67,7 +68,8 @@ export class RemoveParticipantAction {
     await this.watchroomRepository.removeParticipant(watchroomId, participantId);
 
     this.loggerService.info({
-      message: 'Participant removed from watchroom successfully.',
+      message: 'Participant removed from watchroom successfully',
+      event: 'watchroom.participant.remove.success',
       requestId: context.requestId,
       watchroomId,
       participantId,

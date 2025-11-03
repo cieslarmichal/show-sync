@@ -26,7 +26,8 @@ export class ChangePasswordAction {
     const { userId, oldPassword, newPassword } = payload;
 
     this.loggerService.debug({
-      message: 'Changing user password...',
+      message: 'Changing user password',
+      event: 'user.password.change.start',
       requestId: context.requestId,
       userId,
     });
@@ -54,7 +55,8 @@ export class ChangePasswordAction {
     await this.userRepository.updatePassword(userId, hashedPassword);
 
     this.loggerService.info({
-      message: 'User password changed successfully.',
+      message: 'User password changed successfully',
+      event: 'user.password.change.success',
       requestId: context.requestId,
       userId,
     });

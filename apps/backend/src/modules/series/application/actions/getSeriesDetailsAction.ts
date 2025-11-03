@@ -1,6 +1,10 @@
 import type { TmdbService } from '../../domain/services/tmdbService.ts';
 import type { TmdbSeriesDetails } from '../../domain/types/tmdbSeries.ts';
 
+interface GetSeriesDetailsPayload {
+  readonly seriesTmdbId: number;
+}
+
 export class GetSeriesDetailsAction {
   private readonly tmdbService: TmdbService;
 
@@ -8,7 +12,9 @@ export class GetSeriesDetailsAction {
     this.tmdbService = tmdbService;
   }
 
-  public async execute(seriesTmdbId: number): Promise<TmdbSeriesDetails> {
+  public async execute(payload: GetSeriesDetailsPayload): Promise<TmdbSeriesDetails> {
+    const { seriesTmdbId } = payload;
+
     const details = await this.tmdbService.getSeriesDetails(seriesTmdbId);
 
     return details;

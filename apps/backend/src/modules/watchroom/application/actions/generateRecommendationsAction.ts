@@ -97,6 +97,7 @@ export class GenerateRecommendationsAction {
 
     this.loggerService.info({
       message: 'Generating recommendations for watchroom',
+      event: 'watchroom.recommendations.generate.start',
       requestId: context.requestId,
       watchroomId,
       backgroundRequestId: requestId,
@@ -122,6 +123,7 @@ export class GenerateRecommendationsAction {
     if (failedCount > 0) {
       this.loggerService.warn({
         message: 'Some series details could not be fetched from TMDB',
+        event: 'watchroom.recommendations.tmdb.fetch.partial_failure',
         requestId: context.requestId,
         watchroomId,
         backgroundRequestId: requestId,
@@ -147,6 +149,7 @@ export class GenerateRecommendationsAction {
     if (resolutionResult.failed.length > 0 || resolutionResult.skipped.length > 0) {
       this.loggerService.warn({
         message: 'Some AI recommendations were skipped or failed to be resolved to TMDB series',
+        event: 'watchroom.recommendations.resolution.partial_failure',
         requestId: context.requestId,
         watchroomId,
         backgroundRequestId: requestId,
@@ -174,6 +177,7 @@ export class GenerateRecommendationsAction {
 
     this.loggerService.info({
       message: 'Recommendations generated and saved successfully',
+      event: 'watchroom.recommendations.generate.success',
       requestId: context.requestId,
       watchroomId,
       backgroundRequestId: requestId,

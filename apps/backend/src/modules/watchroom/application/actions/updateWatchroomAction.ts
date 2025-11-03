@@ -26,6 +26,7 @@ export class UpdateWatchroomAction {
 
     this.loggerService.debug({
       message: 'Updating watchroom...',
+      event: 'watchroom.update.start',
       requestId: context.requestId,
       watchroomId,
       userId,
@@ -57,6 +58,7 @@ export class UpdateWatchroomAction {
 
     this.loggerService.info({
       message: 'Watchroom updated successfully.',
+      event: 'watchroom.update.success',
       requestId: context.requestId,
       watchroomId,
       userId,
