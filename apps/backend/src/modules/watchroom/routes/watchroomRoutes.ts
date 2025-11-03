@@ -223,7 +223,11 @@ export const watchroomRoutes: FastifyPluginAsyncTypebox<{
 
       const watchroom = await findPublicWatchroomDetailsAction.execute(publicLinkId);
 
-      return reply.send(mapWatchroomToResponse(watchroom));
+      const responseData = mapWatchroomToResponse(watchroom);
+
+      reply.header('Cache-Control', 'public, max-age=60, must-revalidate');
+
+      return reply.send(responseData);
     },
   });
 

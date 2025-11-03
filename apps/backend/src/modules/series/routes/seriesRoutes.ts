@@ -138,14 +138,18 @@ export const seriesRoutes: FastifyPluginAsyncTypebox<{
 
       const result = await searchSeriesAction.execute({ query, page });
 
-      return reply.send({
+      const responseData = {
         data: result.results.map(mapSeriesToResponse),
         metadata: {
           page: result.page,
           pageSize: 20,
           total: result.totalResults,
         },
-      });
+      };
+
+      reply.header('Cache-Control', 'public, max-age=1800, must-revalidate');
+
+      return reply.send(responseData);
     },
   });
 
@@ -162,7 +166,11 @@ export const seriesRoutes: FastifyPluginAsyncTypebox<{
 
       const details = await getSeriesDetailsAction.execute({ seriesTmdbId });
 
-      return reply.send(mapSeriesDetailsToResponse(details));
+      const responseData = mapSeriesDetailsToResponse(details);
+
+      reply.header('Cache-Control', 'public, max-age=86400, must-revalidate');
+
+      return reply.send(responseData);
     },
   });
 
@@ -179,7 +187,11 @@ export const seriesRoutes: FastifyPluginAsyncTypebox<{
 
       const externalIds = await getSeriesExternalIdsAction.execute({ seriesTmdbId });
 
-      return reply.send(mapSeriesExternalIdsToResponse(externalIds));
+      const responseData = mapSeriesExternalIdsToResponse(externalIds);
+
+      reply.header('Cache-Control', 'public, max-age=604800, must-revalidate');
+
+      return reply.send(responseData);
     },
   });
 
