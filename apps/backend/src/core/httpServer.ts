@@ -454,7 +454,50 @@ export class HttpServer {
     });
 
     this.fastifyServer.get('/health', async (_request, reply) => {
-      reply.send({ healthy: true });
+      const checks: Record<string, { status: 'healthy' | 'unhealthy'; latencyMs?: number; error?: string }> = {};
+
+      try {
+        const dbStart = Date.now();
+        await this.databaseClient.db.execute('SELECT 1');
+        checks['database'] = { status: 'healthy', latencyMs: Date.now() - dbStart };
+      } catch (error) {
+        checks['database'] = {
+          status: 'unhealthy',
+          error: error instanceof Error ? error.message : 'Unknown error',
+        };
+      }
+
+      try {
+        const tmdbStart = Date.now();
+        const response = await fetch(`${this.config.tmdb.baseUrl}/configuration?api_key=${this.config.tmdb.apiKey}`);
+        if (!response.ok) {
+          throw new Error(`TMDB API returned status ${String(response.status)}`);
+        }
+        checks['tmdb'] = { status: 'healthy', latencyMs: Date.now() - tmdbStart };
+      } catch (error) {
+        checks['tmdb'] = {
+          status: 'unhealthy',
+          error: error instanceof Error ? error.message : 'Unknown error',
+        };
+      }
+
+      const allHealthy = Object.values(checks).every((check) => check.status === 'healthy');
+      const statusCode = allHealthy ? httpStatusCodes.ok : httpStatusCodes.internalServerError;
+
+      const response = {
+        status: allHealthy ? 'healthy' : 'unhealthy',
+        checks,
+      };
+
+      if (!allHealthy) {
+        this.loggerService.warn({
+          message: 'Health check failed',
+          event: 'http.health_check.failed',
+          checks,
+        });
+      }
+
+      return reply.status(statusCode).send(response);
     });
   }
 }
