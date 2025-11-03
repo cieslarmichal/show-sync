@@ -248,11 +248,10 @@ export default function WatchRoomDetailsPage() {
     try {
       setIsGenerating(true);
 
-      // Start generation and get requestId
-      const { requestId, message } = await generateRecommendations(watchroomId);
+      const { recommendationRequestId } = await generateRecommendations(watchroomId);
 
       toast.success('Generating recommendations...', {
-        description: message,
+        description: 'Recommendation generation started. Results will be available shortly.',
       });
 
       // Poll for status using requestId every 2 seconds, max 30 attempts (60 seconds total)
@@ -264,7 +263,7 @@ export default function WatchRoomDetailsPage() {
         attempts++;
 
         try {
-          const statusResult = await checkRecommendationStatus(watchroomId, requestId);
+          const statusResult = await checkRecommendationStatus(watchroomId, recommendationRequestId);
 
           if (statusResult.status === 'completed') {
             // Fetch the actual recommendations with series details

@@ -4,7 +4,7 @@ import type { RecommendationRepository } from '../../domain/repositories/recomme
 import type { WatchroomRepository } from '../../domain/repositories/watchroomRepository.ts';
 
 export interface CheckRecommendationStatusActionPayload {
-  readonly requestId: string;
+  readonly recommendationRequestId: string;
   readonly watchroomId: string;
   readonly userId: string;
 }
@@ -26,7 +26,7 @@ export class CheckRecommendationStatusAction {
   public async execute(
     payload: CheckRecommendationStatusActionPayload,
   ): Promise<CheckRecommendationStatusActionResult> {
-    const { requestId, watchroomId, userId } = payload;
+    const { recommendationRequestId, watchroomId, userId } = payload;
 
     const watchroom = await this.watchroomRepository.findOne({ id: watchroomId });
 
@@ -45,7 +45,7 @@ export class CheckRecommendationStatusAction {
       });
     }
 
-    const recommendations = await this.recommendationRepository.findByRequestId(requestId);
+    const recommendations = await this.recommendationRepository.findByRequestId(recommendationRequestId);
 
     return {
       status: recommendations.length > 0 ? 'completed' : 'pending',

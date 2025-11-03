@@ -74,18 +74,18 @@ export const updateWatchroom = async (
   });
 };
 
-export const generateRecommendations = async (watchroomId: string): Promise<{ requestId: string; message: string }> => {
-  return apiRequest<{ requestId: string; message: string }>(`/watchrooms/${watchroomId}/recommendations`, {
+export const generateRecommendations = async (watchroomId: string): Promise<{ recommendationRequestId: string }> => {
+  return apiRequest<{ recommendationRequestId: string }>(`/watchrooms/${watchroomId}/recommendations`, {
     method: 'POST',
   });
 };
 
 export const checkRecommendationStatus = async (
   watchroomId: string,
-  requestId: string,
+  recommendationRequestId: string,
 ): Promise<{ status: 'pending' | 'completed'; count: number }> => {
   return apiRequest<{ status: 'pending' | 'completed'; count: number }>(
-    `/watchrooms/${watchroomId}/recommendations/status/${requestId}`,
+    `/watchrooms/${watchroomId}/recommendations/status/${recommendationRequestId}`,
     {
       method: 'GET',
     },

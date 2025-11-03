@@ -17,11 +17,7 @@ import type { SeriesNameResolver } from '../services/seriesNameResolver.ts';
 export interface GenerateRecommendationsActionPayload {
   readonly watchroomId: string;
   readonly userId: string;
-  readonly requestId: string;
-}
-
-export interface GenerateRecommendationsActionResult {
-  readonly requestId: string;
+  readonly recommendationRequestId: string;
 }
 
 interface AIRecommendation {
@@ -89,18 +85,15 @@ export class GenerateRecommendationsAction {
     this.databaseClient = databaseClient;
   }
 
-  public async execute(
-    payload: GenerateRecommendationsActionPayload,
-    context: ExecutionContext,
-  ): Promise<GenerateRecommendationsActionResult> {
-    const { watchroomId, userId, requestId } = payload;
+  public async execute(payload: GenerateRecommendationsActionPayload, context: ExecutionContext): Promise<void> {
+    const { watchroomId, userId, recommendationRequestId } = payload;
 
     this.loggerService.info({
       message: 'Generating recommendations for watchroom',
       event: 'watchroom.recommendations.generate.start',
       requestId: context.requestId,
       watchroomId,
-      backgroundRequestId: requestId,
+      recommendationRequestId,
     });
 
     const watchroom = await this.getWatchroom(watchroomId, userId);
@@ -126,7 +119,7 @@ export class GenerateRecommendationsAction {
         event: 'watchroom.recommendations.tmdb.fetch.partial_failure',
         requestId: context.requestId,
         watchroomId,
-        backgroundRequestId: requestId,
+        recommendationRequestId,
         failedCount,
         totalSeries,
       });
@@ -152,7 +145,7 @@ export class GenerateRecommendationsAction {
         event: 'watchroom.recommendations.resolution.partial_failure',
         requestId: context.requestId,
         watchroomId,
-        backgroundRequestId: requestId,
+        recommendationRequestId,
         aiRecommendationCount: aiRecommendations.length,
         resolvedCount: resolutionResult.resolved.length,
         failedCount: resolutionResult.failed.length,
@@ -167,7 +160,7 @@ export class GenerateRecommendationsAction {
       await this.recommendationRepository.create(
         resolutionResult.resolved.map((r) => ({
           watchroomId,
-          requestId,
+          requestId: recommendationRequestId,
           seriesTmdbId: r.seriesTmdbId,
           justification: r.justification,
         })),
@@ -180,11 +173,9 @@ export class GenerateRecommendationsAction {
       event: 'watchroom.recommendations.generate.success',
       requestId: context.requestId,
       watchroomId,
-      backgroundRequestId: requestId,
+      recommendationRequestId,
       resolvedCount: resolutionResult.resolved.length,
     });
-
-    return { requestId };
   }
 
   private async getWatchroom(watchroomId: string, userId: string): Promise<Watchroom> {

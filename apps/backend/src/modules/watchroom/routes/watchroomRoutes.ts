@@ -445,8 +445,7 @@ export const watchroomRoutes: FastifyPluginAsyncTypebox<{
       }),
       response: {
         202: Type.Object({
-          requestId: Type.String({ format: 'uuid' }),
-          message: Type.String(),
+          recommendationRequestId: Type.String({ format: 'uuid' }),
         }),
       },
     },
@@ -464,13 +463,12 @@ export const watchroomRoutes: FastifyPluginAsyncTypebox<{
       const { userId } = request.user;
       const { watchroomId } = request.params;
 
-      const requestId = UuidService.generateUuid();
+      const recommendationRequestId = UuidService.generateUuid();
 
-      // Execute in background and capture requestId
       generateRecommendationsAction
         .execute(
           {
-            requestId,
+            recommendationRequestId,
             watchroomId,
             userId,
           },
@@ -490,17 +488,16 @@ export const watchroomRoutes: FastifyPluginAsyncTypebox<{
         });
 
       return reply.status(202).send({
-        requestId,
-        message: 'Recommendation generation started. Results will be available shortly.',
+        recommendationRequestId,
       });
     },
   });
 
-  fastify.get('/watchrooms/:watchroomId/recommendations/status/:requestId', {
+  fastify.get('/watchrooms/:watchroomId/recommendations/status/:recommendationRequestId', {
     schema: {
       params: Type.Object({
         watchroomId: Type.String({ format: 'uuid' }),
-        requestId: Type.String({ format: 'uuid' }),
+        recommendationRequestId: Type.String({ format: 'uuid' }),
       }),
       response: {
         200: Type.Object({
@@ -518,10 +515,10 @@ export const watchroomRoutes: FastifyPluginAsyncTypebox<{
       }
 
       const { userId } = request.user;
-      const { watchroomId, requestId } = request.params;
+      const { watchroomId, recommendationRequestId } = request.params;
 
       const status = await checkRecommendationStatusAction.execute({
-        requestId,
+        recommendationRequestId,
         watchroomId,
         userId,
       });
