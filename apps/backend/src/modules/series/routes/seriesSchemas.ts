@@ -114,6 +114,14 @@ export const ignoredSeriesQuerySchema = Type.Object({
   pageSize: Type.Optional(Type.Number({ minimum: 1, maximum: 100 })),
 });
 
+export const batchSeriesDetailsQuerySchema = Type.Object({
+  ids: Type.String({ minLength: 1 }),
+});
+
+export const batchSeriesDetailsResponseSchema = Type.Object({
+  data: Type.Array(seriesDetailsSchema),
+});
+
 export type SeriesDto = Static<typeof seriesSchema>;
 export type SeriesDetailsDto = Static<typeof seriesDetailsSchema>;
 export type SeriesExternalIdsDto = Static<typeof seriesExternalIdsSchema>;
@@ -135,3 +143,5 @@ export type FavoriteSeriesQuery = Static<typeof favoriteSeriesQuerySchema>;
 export type AddIgnoredSeriesRequest = Static<typeof addIgnoredSeriesRequestSchema>;
 export type IgnoredSeriesParams = Static<typeof ignoredSeriesParamsSchema>;
 export type IgnoredSeriesQuery = Static<typeof ignoredSeriesQuerySchema>;
+export type BatchSeriesDetailsQuery = Static<typeof batchSeriesDetailsQuerySchema>;
+export type BatchSeriesDetailsResponse = Static<typeof batchSeriesDetailsResponseSchema>;

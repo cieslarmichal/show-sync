@@ -96,7 +96,7 @@ describe('SearchSeries', () => {
     );
   });
 
-  it('should show "Like" and "Not Interested" buttons for each result', async () => {
+  it('should show "Like" and "Skip" buttons for each result', async () => {
     const user = userEvent.setup();
     await renderWithProviders(
       <SearchSeries
@@ -113,7 +113,7 @@ describe('SearchSeries', () => {
     await waitFor(
       () => {
         const likeButtons = screen.getAllByRole('button', { name: /^like$/i });
-        const notInterestedButtons = screen.getAllByRole('button', { name: /^not interested$/i });
+        const notInterestedButtons = screen.getAllByRole('button', { name: /^skip$/i });
         expect(likeButtons.length).toBeGreaterThan(0);
         expect(notInterestedButtons.length).toBeGreaterThan(0);
       },

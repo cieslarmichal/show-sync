@@ -2,6 +2,7 @@ import { Type, type FastifyPluginAsyncTypebox } from '@fastify/type-provider-typ
 
 import { createAuthenticationMiddleware } from '../../../common/auth/authMiddleware.ts';
 import type { TokenService } from '../../../common/auth/tokenService.ts';
+import { InputNotValidError } from '../../../common/errors/inputNotValidError.ts';
 import { UnauthorizedAccessError } from '../../../common/errors/unathorizedAccessError.ts';
 import type { LoggerService } from '../../../common/logger/loggerService.ts';
 import type { Config } from '../../../core/config.ts';
@@ -10,7 +11,7 @@ import { AddFavoriteSeriesAction } from '../application/actions/addFavoriteSerie
 import { AddIgnoredSeriesAction } from '../application/actions/addIgnoredSeriesAction.ts';
 import { GetFavoriteSeriesAction } from '../application/actions/getFavoriteSeriesAction.ts';
 import { GetIgnoredSeriesAction } from '../application/actions/getIgnoredSeriesAction.ts';
-import { GetSeriesDetailsAction } from '../application/actions/getSeriesDetailsAction.ts';
+import { GetSeriesDetailsBatchAction } from '../application/actions/getSeriesDetailsBatchAction.ts';
 import { GetSeriesExternalIdsAction } from '../application/actions/getSeriesExternalIdsAction.ts';
 import { RemoveFavoriteSeriesAction } from '../application/actions/removeFavoriteSeriesAction.ts';
 import { RemoveIgnoredSeriesAction } from '../application/actions/removeIgnoredSeriesAction.ts';
@@ -26,6 +27,8 @@ import { TmdbServiceImpl } from '../infrastructure/services/tmdbServiceImpl.ts';
 import {
   addFavoriteSeriesRequestSchema,
   addIgnoredSeriesRequestSchema,
+  batchSeriesDetailsQuerySchema,
+  batchSeriesDetailsResponseSchema,
   favoriteSeriesListSchema,
   favoriteSeriesParamsSchema,
   favoriteSeriesQuerySchema,
@@ -36,7 +39,6 @@ import {
   ignoredSeriesSchema,
   type SeriesDto,
   type SeriesDetailsDto,
-  seriesDetailsSchema,
   seriesExternalIdsSchema,
   seriesParamsSchema,
   seriesSearchQuerySchema,
@@ -98,7 +100,7 @@ export const seriesRoutes: FastifyPluginAsyncTypebox<{
 
   const tmdbService = new TmdbServiceImpl(config.tmdb.apiKey, config.tmdb.baseUrl);
   const searchSeriesAction = new SearchSeriesAction(tmdbService);
-  const getSeriesDetailsAction = new GetSeriesDetailsAction(tmdbService);
+  const getSeriesDetailsBatchAction = new GetSeriesDetailsBatchAction(tmdbService);
   const getSeriesExternalIdsAction = new GetSeriesExternalIdsAction(tmdbService);
   const favoriteSeriesRepository = new FavoriteSeriesRepositoryImpl(databaseClient);
   const getUserFavoriteSeriesAction = new GetFavoriteSeriesAction(favoriteSeriesRepository);
@@ -153,27 +155,6 @@ export const seriesRoutes: FastifyPluginAsyncTypebox<{
     },
   });
 
-  fastify.get('/series/:seriesTmdbId', {
-    schema: {
-      params: seriesParamsSchema,
-      response: {
-        200: seriesDetailsSchema,
-      },
-    },
-    preHandler: [authenticationMiddleware],
-    handler: async (request, reply) => {
-      const { seriesTmdbId } = request.params;
-
-      const details = await getSeriesDetailsAction.execute({ seriesTmdbId });
-
-      const responseData = mapSeriesDetailsToResponse(details);
-
-      reply.header('Cache-Control', 'public, max-age=86400, must-revalidate');
-
-      return reply.send(responseData);
-    },
-  });
-
   fastify.get('/series/:seriesTmdbId/external-ids', {
     schema: {
       params: seriesParamsSchema,
@@ -192,6 +173,39 @@ export const seriesRoutes: FastifyPluginAsyncTypebox<{
       reply.header('Cache-Control', 'public, max-age=604800, must-revalidate');
 
       return reply.send(responseData);
+    },
+  });
+
+  fastify.get('/series/batch/details', {
+    schema: {
+      querystring: batchSeriesDetailsQuerySchema,
+      response: {
+        200: batchSeriesDetailsResponseSchema,
+      },
+    },
+    preHandler: [authenticationMiddleware],
+    handler: async (request, reply) => {
+      const { ids } = request.query;
+
+      const seriesIds = ids
+        .split(',')
+        .map((id) => Number.parseInt(id.trim(), 10))
+        .filter((id) => !Number.isNaN(id) && id > 0);
+
+      if (seriesIds.length === 0 || seriesIds.length > 20) {
+        throw new InputNotValidError({
+          reason: 'Invalid series IDs. Must provide between 1 and 20 valid IDs.',
+          value: ids,
+        });
+      }
+
+      const results = await getSeriesDetailsBatchAction.execute({ seriesIds });
+
+      const responseData = results.map(mapSeriesDetailsToResponse);
+
+      reply.header('Cache-Control', 'public, max-age=86400, must-revalidate');
+
+      return reply.send({ data: responseData });
     },
   });
 

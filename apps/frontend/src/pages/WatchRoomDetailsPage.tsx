@@ -28,7 +28,7 @@ import {
   checkRecommendationStatus,
   getRecommendations,
 } from '../api/queries/watchroom.ts';
-import { getSeriesDetails } from '../api/queries/getSeriesDetails.ts';
+import { getSeriesDetailsBatch } from '../api/queries/getSeriesDetailsBatch.ts';
 import { getSeriesExternalIds } from '../api/queries/getSeriesExternalIds.ts';
 import { addIgnoredSeries } from '../api/queries/addIgnoredSeries.ts';
 import { getMyIgnoredSeries } from '../api/queries/getMyIgnoredSeries.ts';
@@ -96,18 +96,21 @@ export default function WatchRoomDetailsPage() {
       setIsLoadingRecommendations(true);
       const fetchedRecommendations = await getRecommendations(id);
 
-      // Fetch series details for each recommendation
-      const recommendationsWithDetails = await Promise.all(
-        fetchedRecommendations.map(async (rec) => {
-          try {
-            const seriesDetails = await getSeriesDetails(rec.seriesTmdbId);
-            return { ...rec, seriesDetails };
-          } catch {
-            // If fetching series details fails, return recommendation without details
-            return rec;
-          }
-        }),
-      );
+      if (fetchedRecommendations.length === 0) {
+        setRecommendations([]);
+        return;
+      }
+
+      const seriesIds = fetchedRecommendations.map((rec) => rec.seriesTmdbId);
+
+      const batchDetails = await getSeriesDetailsBatch(seriesIds);
+
+      const detailsMap = new Map(batchDetails.map((details) => [details.id, details]));
+
+      const recommendationsWithDetails = fetchedRecommendations.map((rec) => ({
+        ...rec,
+        seriesDetails: detailsMap.get(rec.seriesTmdbId),
+      }));
 
       setRecommendations(recommendationsWithDetails);
     } catch {

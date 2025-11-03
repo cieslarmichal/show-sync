@@ -120,7 +120,7 @@ export default function IgnoredSeriesList({
         <div className="text-center py-8 text-muted-foreground">
           <p>No ignored series yet.</p>
           <p className="text-sm mt-1">
-            Series you mark as "Not Interested" will appear here and be excluded from AI recommendations.
+            Series you "Skip" will appear here and will be excluded from AI recommendations.
           </p>
         </div>
       ) : (

@@ -64,7 +64,7 @@ describe('IgnoredSeriesList', () => {
 
     expect(screen.getByText('No ignored series yet.')).toBeInTheDocument();
     expect(
-      screen.getByText('Series you mark as "Not Interested" will appear here and be excluded from AI recommendations.'),
+      screen.getByText('Series you "Skip" will appear here and will be excluded from AI recommendations.'),
     ).toBeInTheDocument();
   });
 

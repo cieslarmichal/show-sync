@@ -121,39 +121,6 @@ export class HttpServer {
       done();
     });
 
-    // Content-Type validation for non-GET requests
-    this.fastifyServer.addHook('onRequest', (request, reply, done) => {
-      const unsafeMethods = ['POST', 'PATCH'];
-
-      const cookieOnlyEndpoints = ['/users/refresh-token', '/users/logout'];
-
-      if (
-        unsafeMethods.includes(request.method) &&
-        !cookieOnlyEndpoints.some((endpoint) => request.url.includes(endpoint))
-      ) {
-        const contentType = request.headers['content-type'];
-
-        if (!contentType || !contentType.includes('application/json')) {
-          this.loggerService.warn({
-            message: 'Invalid Content-Type for unsafe operation',
-            event: 'http.request.invalid_content_type',
-            requestId: request.id,
-            method: request.method,
-            contentType: contentType || 'missing',
-          });
-
-          reply.status(httpStatusCodes.badRequest).send({
-            name: 'InputNotValidError',
-            message: 'Content-Type must be application/json for this operation',
-          });
-
-          return;
-        }
-      }
-
-      done();
-    });
-
     this.fastifyServer.addHook('onSend', (request, reply, _payload, done) => {
       if (skipRequestLog(request)) {
         done();

@@ -1,4 +1,4 @@
-import { eq } from 'drizzle-orm';
+import { eq, desc } from 'drizzle-orm';
 
 import { UuidService } from '../../../../common/uuid/uuidService.ts';
 import type { DatabaseClient } from '../../../../infrastructure/database/database.ts';
@@ -33,7 +33,8 @@ export class RecommendationRepositoryImpl implements RecommendationRepository {
     const recommendationsData = await this.databaseClient.db
       .select()
       .from(recommendations)
-      .where(eq(recommendations.watchroomId, watchroomId));
+      .where(eq(recommendations.watchroomId, watchroomId))
+      .orderBy(desc(recommendations.seriesTmdbId));
 
     return recommendationsData.map((r) => this.mapToRecommendation(r));
   }
@@ -42,7 +43,8 @@ export class RecommendationRepositoryImpl implements RecommendationRepository {
     const recommendationsData = await this.databaseClient.db
       .select()
       .from(recommendations)
-      .where(eq(recommendations.requestId, requestId));
+      .where(eq(recommendations.requestId, requestId))
+      .orderBy(desc(recommendations.seriesTmdbId));
 
     return recommendationsData.map((r) => this.mapToRecommendation(r));
   }
