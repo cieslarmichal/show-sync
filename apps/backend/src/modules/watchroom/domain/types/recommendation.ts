@@ -1,7 +1,6 @@
 export interface Recommendation {
-  id: string;
-  watchroomId: string;
-  requestId: string;
-  seriesTmdbId: number;
-  justification: string;
+  readonly id: string;
+  readonly recommendationRequestId: string;
+  readonly seriesTmdbId: number;
+  readonly justification: string;
 }

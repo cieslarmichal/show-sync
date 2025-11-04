@@ -1,4 +1,4 @@
-import { eq, desc } from 'drizzle-orm';
+import { eq } from 'drizzle-orm';
 
 import { UuidService } from '../../../../common/uuid/uuidService.ts';
 import type { DatabaseClient } from '../../../../infrastructure/database/database.ts';
@@ -20,8 +20,7 @@ export class RecommendationRepositoryImpl implements RecommendationRepository {
   public async create(data: CreateRecommendationData[], tx: Transaction): Promise<void> {
     const values = data.map((item) => ({
       id: UuidService.generateUuid(),
-      watchroomId: item.watchroomId,
-      requestId: item.requestId,
+      recommendationRequestId: item.recommendationRequestId,
       seriesTmdbId: item.seriesTmdbId,
       justification: item.justification,
     }));
@@ -29,22 +28,11 @@ export class RecommendationRepositoryImpl implements RecommendationRepository {
     await tx.insert(recommendations).values(values);
   }
 
-  public async findByWatchroomId(watchroomId: string): Promise<Recommendation[]> {
+  public async findByRecommendationRequestId(recommendationRequestId: string): Promise<Recommendation[]> {
     const recommendationsData = await this.databaseClient.db
       .select()
       .from(recommendations)
-      .where(eq(recommendations.watchroomId, watchroomId))
-      .orderBy(desc(recommendations.seriesTmdbId));
-
-    return recommendationsData.map((r) => this.mapToRecommendation(r));
-  }
-
-  public async findByRequestId(requestId: string): Promise<Recommendation[]> {
-    const recommendationsData = await this.databaseClient.db
-      .select()
-      .from(recommendations)
-      .where(eq(recommendations.requestId, requestId))
-      .orderBy(desc(recommendations.seriesTmdbId));
+      .where(eq(recommendations.recommendationRequestId, recommendationRequestId));
 
     return recommendationsData.map((r) => this.mapToRecommendation(r));
   }
@@ -63,15 +51,10 @@ export class RecommendationRepositoryImpl implements RecommendationRepository {
     return this.mapToRecommendation(recommendation);
   }
 
-  public async deleteAllByWatchroomId(watchroomId: string, tx: Transaction): Promise<void> {
-    await tx.delete(recommendations).where(eq(recommendations.watchroomId, watchroomId));
-  }
-
   private mapToRecommendation(row: typeof recommendations.$inferSelect): Recommendation {
     return {
       id: row.id,
-      watchroomId: row.watchroomId,
-      requestId: row.requestId,
+      recommendationRequestId: row.recommendationRequestId,
       seriesTmdbId: row.seriesTmdbId,
       justification: row.justification,
     };

@@ -83,8 +83,8 @@ export const generateRecommendations = async (watchroomId: string): Promise<{ re
 export const checkRecommendationStatus = async (
   watchroomId: string,
   recommendationRequestId: string,
-): Promise<{ status: 'pending' | 'completed'; count: number }> => {
-  return apiRequest<{ status: 'pending' | 'completed'; count: number }>(
+): Promise<{ status: 'pending' | 'completed' | 'failed' }> => {
+  return apiRequest<{ status: 'pending' | 'completed' | 'failed' }>(
     `/watchrooms/${watchroomId}/recommendations/status/${recommendationRequestId}`,
     {
       method: 'GET',

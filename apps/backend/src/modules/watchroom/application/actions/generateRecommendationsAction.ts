@@ -8,6 +8,7 @@ import type { FavoriteSeriesRepository } from '../../../series/domain/repositori
 import type { IgnoredSeriesRepository } from '../../../series/domain/repositories/ignoredSeriesRepository.ts';
 import type { TmdbService } from '../../../series/domain/services/tmdbService.ts';
 import type { RecommendationRepository } from '../../domain/repositories/recommendationRepository.ts';
+import type { RecommendationRequestRepository } from '../../domain/repositories/recommendationRequestRepository.ts';
 import type { WatchroomRepository } from '../../domain/repositories/watchroomRepository.ts';
 import type { Watchroom } from '../../domain/types/watchroom.ts';
 import { RECOMMENDATIONS_RESPONSE_FORMAT, RECOMMENDATIONS_SYSTEM_MESSAGE } from '../recommendationConfig.ts';
@@ -52,6 +53,7 @@ interface ParticipantIgnored {
 export class GenerateRecommendationsAction {
   private readonly watchroomRepository: WatchroomRepository;
   private readonly recommendationRepository: RecommendationRepository;
+  private readonly recommendationRequestRepository: RecommendationRequestRepository;
   private readonly favoriteSeriesRepository: FavoriteSeriesRepository;
   private readonly ignoredSeriesRepository: IgnoredSeriesRepository;
   private readonly tmdbService: TmdbService;
@@ -64,6 +66,7 @@ export class GenerateRecommendationsAction {
   public constructor(
     watchroomRepository: WatchroomRepository,
     recommendationRepository: RecommendationRepository,
+    recommendationRequestRepository: RecommendationRequestRepository,
     favoriteSeriesRepository: FavoriteSeriesRepository,
     ignoredSeriesRepository: IgnoredSeriesRepository,
     tmdbService: TmdbService,
@@ -75,6 +78,7 @@ export class GenerateRecommendationsAction {
   ) {
     this.watchroomRepository = watchroomRepository;
     this.recommendationRepository = recommendationRepository;
+    this.recommendationRequestRepository = recommendationRequestRepository;
     this.favoriteSeriesRepository = favoriteSeriesRepository;
     this.ignoredSeriesRepository = ignoredSeriesRepository;
     this.tmdbService = tmdbService;
@@ -96,86 +100,104 @@ export class GenerateRecommendationsAction {
       recommendationRequestId,
     });
 
-    const watchroom = await this.getWatchroom(watchroomId, userId);
-    const participantIds = [watchroom.ownerId, ...watchroom.participants.map((p) => p.id)];
+    try {
+      const watchroom = await this.getWatchroom(watchroomId, userId);
+      const participantIds = [watchroom.ownerId, ...watchroom.participants.map((p) => p.id)];
 
-    const [participantFavorites, participantIgnored] = await Promise.all([
-      this.fetchParticipantFavorites(participantIds),
-      this.fetchParticipantIgnored(participantIds),
-    ]);
+      const [participantFavorites, participantIgnored] = await Promise.all([
+        this.fetchParticipantFavorites(participantIds),
+        this.fetchParticipantIgnored(participantIds),
+      ]);
 
-    const allIgnoredSeriesIds = [...new Set(participantIgnored.flatMap((p) => p.seriesTmdbIds))];
-    const allFavoriteSeriesIds = [
-      ...new Set(participantFavorites.flatMap((p) => [...p.lovedSeriesIds, ...p.likedSeriesIds])),
-    ];
+      const allIgnoredSeriesIds = [...new Set(participantIgnored.flatMap((p) => p.seriesTmdbIds))];
+      const allFavoriteSeriesIds = [
+        ...new Set(participantFavorites.flatMap((p) => [...p.lovedSeriesIds, ...p.likedSeriesIds])),
+      ];
 
-    const seriesInfoMap = await this.fetchSeriesInfo([...allFavoriteSeriesIds, ...allIgnoredSeriesIds]);
+      const seriesInfoMap = await this.fetchSeriesInfo([...allFavoriteSeriesIds, ...allIgnoredSeriesIds]);
 
-    const totalSeries = allFavoriteSeriesIds.length + allIgnoredSeriesIds.length;
-    const failedCount = totalSeries - seriesInfoMap.size;
-    if (failedCount > 0) {
-      this.loggerService.warn({
-        message: 'Some series details could not be fetched from TMDB',
-        event: 'watchroom.recommendations.tmdb.fetch.partial_failure',
-        requestId: context.requestId,
-        watchroomId,
-        recommendationRequestId,
-        failedCount,
-        totalSeries,
-      });
-    }
-
-    const aiRecommendations = await this.generateAIRecommendations(
-      participantFavorites,
-      allIgnoredSeriesIds,
-      seriesInfoMap,
-      watchroom.name,
-      watchroom.description,
-    );
-
-    const resolutionResult = await this.seriesResolver.resolve(
-      aiRecommendations,
-      allFavoriteSeriesIds,
-      allIgnoredSeriesIds,
-    );
-
-    if (resolutionResult.failed.length > 0 || resolutionResult.skipped.length > 0) {
-      this.loggerService.warn({
-        message: 'Some AI recommendations were skipped or failed to be resolved to TMDB series',
-        event: 'watchroom.recommendations.resolution.partial_failure',
-        requestId: context.requestId,
-        watchroomId,
-        recommendationRequestId,
-        aiRecommendationCount: aiRecommendations.length,
-        resolvedCount: resolutionResult.resolved.length,
-        failedCount: resolutionResult.failed.length,
-        failedTitles: resolutionResult.failed,
-        skippedCount: resolutionResult.skipped.length,
-        skippedTitles: resolutionResult.skipped,
-      });
-    }
-
-    await this.databaseClient.db.transaction(async (tx) => {
-      await this.recommendationRepository.deleteAllByWatchroomId(watchroomId, tx);
-      await this.recommendationRepository.create(
-        resolutionResult.resolved.map((r) => ({
+      const totalSeries = allFavoriteSeriesIds.length + allIgnoredSeriesIds.length;
+      const failedCount = totalSeries - seriesInfoMap.size;
+      if (failedCount > 0) {
+        this.loggerService.warn({
+          message: 'Some series details could not be fetched from TMDB',
+          event: 'watchroom.recommendations.tmdb.fetch.partial_failure',
+          requestId: context.requestId,
           watchroomId,
-          requestId: recommendationRequestId,
-          seriesTmdbId: r.seriesTmdbId,
-          justification: r.justification,
-        })),
-        tx,
-      );
-    });
+          recommendationRequestId,
+          failedCount,
+          totalSeries,
+        });
+      }
 
-    this.loggerService.info({
-      message: 'Recommendations generated and saved successfully',
-      event: 'watchroom.recommendations.generate.success',
-      requestId: context.requestId,
-      watchroomId,
-      recommendationRequestId,
-      resolvedCount: resolutionResult.resolved.length,
-    });
+      const aiRecommendations = await this.generateAIRecommendations(
+        participantFavorites,
+        allIgnoredSeriesIds,
+        seriesInfoMap,
+        watchroom.name,
+        watchroom.description,
+      );
+
+      const resolutionResult = await this.seriesResolver.resolve(
+        aiRecommendations,
+        allFavoriteSeriesIds,
+        allIgnoredSeriesIds,
+      );
+
+      if (resolutionResult.failed.length > 0 || resolutionResult.skipped.length > 0) {
+        this.loggerService.warn({
+          message: 'Some AI recommendations were skipped or failed to be resolved to TMDB series',
+          event: 'watchroom.recommendations.resolution.partial_failure',
+          requestId: context.requestId,
+          watchroomId,
+          recommendationRequestId,
+          aiRecommendationCount: aiRecommendations.length,
+          resolvedCount: resolutionResult.resolved.length,
+          failedCount: resolutionResult.failed.length,
+          failedTitles: resolutionResult.failed,
+          skippedCount: resolutionResult.skipped.length,
+          skippedTitles: resolutionResult.skipped,
+        });
+      }
+
+      await this.databaseClient.db.transaction(async (tx) => {
+        await this.recommendationRepository.create(
+          resolutionResult.resolved.map((r) => ({
+            recommendationRequestId,
+            seriesTmdbId: r.seriesTmdbId,
+            justification: r.justification,
+          })),
+          tx,
+        );
+
+        await this.recommendationRequestRepository.updateStatus(recommendationRequestId, 'completed', tx);
+      });
+
+      this.loggerService.info({
+        message: 'Recommendations generated and saved successfully',
+        event: 'watchroom.recommendations.generate.success',
+        requestId: context.requestId,
+        watchroomId,
+        recommendationRequestId,
+        resolvedCount: resolutionResult.resolved.length,
+      });
+    } catch (error: unknown) {
+      this.loggerService.error({
+        message: 'Failed to generate recommendations',
+        event: 'watchroom.recommendations.generate.error',
+        requestId: context.requestId,
+        watchroomId,
+        recommendationRequestId,
+        error: error instanceof Error ? error.message : String(error),
+      });
+
+      // Update status to failed
+      await this.databaseClient.db.transaction(async (tx) => {
+        await this.recommendationRequestRepository.updateStatus(recommendationRequestId, 'failed', tx);
+      });
+
+      throw error;
+    }
   }
 
   private async getWatchroom(watchroomId: string, userId: string): Promise<Watchroom> {

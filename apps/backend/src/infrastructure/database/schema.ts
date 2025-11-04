@@ -1,4 +1,4 @@
-import { index, integer, pgTable, text, timestamp, unique, uuid, varchar } from 'drizzle-orm/pg-core';
+import { boolean, index, integer, pgTable, text, timestamp, unique, uuid, varchar } from 'drizzle-orm/pg-core';
 
 export const users = pgTable('users', {
   id: uuid('id').primaryKey(),
@@ -94,20 +94,57 @@ export const watchroomParticipants = pgTable(
   ],
 );
 
-export const recommendations = pgTable(
-  'recommendations',
+export const recommendationRequests = pgTable(
+  'recommendation_requests',
   {
     id: uuid('id').primaryKey(),
     watchroomId: uuid('watchroom_id')
       .notNull()
       .references(() => watchrooms.id, { onDelete: 'cascade' }),
-    requestId: uuid('request_id').notNull(),
+    status: varchar('status', { length: 16 }).notNull(), // 'pending' | 'completed' | 'failed'
+    createdAt: timestamp('created_at').notNull().defaultNow(),
+  },
+  (table) => [
+    index('idx_recommendation_requests_watchroom_id').on(table.watchroomId),
+    index('idx_recommendation_requests_status').on(table.status),
+  ],
+);
+
+export const recommendations = pgTable(
+  'recommendations',
+  {
+    id: uuid('id').primaryKey(),
+    recommendationRequestId: uuid('recommendation_request_id')
+      .notNull()
+      .references(() => recommendationRequests.id, { onDelete: 'cascade' }),
     seriesTmdbId: integer('series_tmdb_id').notNull(),
     justification: text('justification').notNull(),
     createdAt: timestamp('created_at').notNull().defaultNow(),
   },
   (table) => [
-    index('idx_recommendations_watchroom_id').on(table.watchroomId),
-    index('idx_recommendations_request_id').on(table.requestId),
+    index('idx_recommendations_recommendation_request_id').on(table.recommendationRequestId),
+    index('idx_recommendations_series_tmdb_id').on(table.seriesTmdbId),
+  ],
+);
+
+export const recommendationFeedback = pgTable(
+  'recommendation_feedback',
+  {
+    id: uuid('id').primaryKey(),
+    recommendationRequestId: uuid('recommendation_request_id')
+      .notNull()
+      .references(() => recommendationRequests.id, { onDelete: 'cascade' }),
+    userId: uuid('user_id')
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' }),
+    rating: integer('rating').notNull(),
+    foundSomething: boolean('found_something').notNull(),
+    comment: text('comment'),
+    createdAt: timestamp('created_at').notNull().defaultNow(),
+  },
+  (table) => [
+    index('idx_recommendation_feedback_recommendation_request_id').on(table.recommendationRequestId),
+    index('idx_recommendation_feedback_user_id').on(table.userId),
+    unique('uq_recommendation_feedback_request_user').on(table.recommendationRequestId, table.userId),
   ],
 );

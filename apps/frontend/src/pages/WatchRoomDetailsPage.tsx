@@ -43,6 +43,7 @@ import { Badge } from '../components/ui/Badge.tsx';
 import { Skeleton } from '../components/ui/Skeleton.tsx';
 import { Tooltip, TooltipContent, TooltipTrigger } from '../components/ui/Tooltip.tsx';
 import { EditWatchRoomModal } from '../components/EditWatchRoomModal.tsx';
+import { RecommendationFeedbackForm } from '../components/RecommendationFeedbackForm.tsx';
 import {
   Dialog,
   DialogContent,
@@ -98,7 +99,7 @@ export default function WatchRoomDetailsPage() {
 
       if (fetchedRecommendations.length === 0) {
         setRecommendations([]);
-        return;
+        return fetchedRecommendations;
       }
 
       const seriesIds = fetchedRecommendations.map((rec) => rec.seriesTmdbId);
@@ -113,9 +114,11 @@ export default function WatchRoomDetailsPage() {
       }));
 
       setRecommendations(recommendationsWithDetails);
+      return fetchedRecommendations;
     } catch {
       // Silently fail - recommendations might not exist yet
       setRecommendations([]);
+      return [];
     } finally {
       setIsLoadingRecommendations(false);
     }
@@ -267,10 +270,18 @@ export default function WatchRoomDetailsPage() {
 
           if (statusResult.status === 'completed') {
             // Fetch the actual recommendations with series details
-            await fetchRecommendations(watchroomId);
+            const fetchedRecommendations = await fetchRecommendations(watchroomId);
 
             toast.success('Recommendations ready!', {
-              description: `Found ${statusResult.count} series for your group.`,
+              description: `Found ${fetchedRecommendations.length} series for your group.`,
+            });
+            setIsGenerating(false);
+            return;
+          }
+
+          if (statusResult.status === 'failed') {
+            toast.error('Failed to generate recommendations', {
+              description: 'Something went wrong. Please try again.',
             });
             setIsGenerating(false);
             return;
@@ -996,6 +1007,16 @@ export default function WatchRoomDetailsPage() {
                         );
                       })}
                   </div>
+
+                  {/* Feedback Form */}
+                  {recommendations.length > 0 && recommendations[0]?.requestId && watchroomId && (
+                    <div className="mt-8">
+                      <RecommendationFeedbackForm
+                        watchroomId={watchroomId}
+                        recommendationRequestId={recommendations[0].requestId}
+                      />
+                    </div>
+                  )}
                 </div>
               )}
             </CardContent>

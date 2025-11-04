@@ -2,16 +2,13 @@ import type { Transaction } from '../../../../infrastructure/database/transactio
 import type { Recommendation } from '../types/recommendation.ts';
 
 export interface CreateRecommendationData {
-  watchroomId: string;
-  requestId: string;
+  recommendationRequestId: string;
   seriesTmdbId: number;
   justification: string;
 }
 
 export interface RecommendationRepository {
   create(data: CreateRecommendationData[], tx: Transaction): Promise<void>;
-  findByWatchroomId(watchroomId: string): Promise<Recommendation[]>;
-  findByRequestId(requestId: string): Promise<Recommendation[]>;
-  deleteAllByWatchroomId(watchroomId: string, tx: Transaction): Promise<void>;
+  findByRecommendationRequestId(recommendationRequestId: string): Promise<Recommendation[]>;
   findOne(recommendationId: string): Promise<Recommendation | null>;
 }
