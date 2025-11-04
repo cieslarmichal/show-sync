@@ -191,10 +191,7 @@ export class GenerateRecommendationsAction {
         error: error instanceof Error ? error.message : String(error),
       });
 
-      // Update status to failed
-      await this.databaseClient.db.transaction(async (tx) => {
-        await this.recommendationRequestRepository.updateStatus(recommendationRequestId, 'failed', tx);
-      });
+      await this.recommendationRequestRepository.updateStatus(recommendationRequestId, 'failed');
 
       throw error;
     }
