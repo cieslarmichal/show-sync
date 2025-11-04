@@ -3,9 +3,9 @@ import { ResourceAlreadyExistsError } from '../../../../common/errors/resourceAl
 import { ResourceNotFoundError } from '../../../../common/errors/resourceNotFoundError.ts';
 import type { LoggerService } from '../../../../common/logger/loggerService.ts';
 import type { ExecutionContext } from '../../../../common/types/executionContext.ts';
+import type { WatchroomRepository } from '../../../watchroom/domain/repositories/watchroomRepository.ts';
 import type { RecommendationFeedbackRepository } from '../../domain/repositories/recommendationFeedbackRepository.ts';
 import type { RecommendationRequestRepository } from '../../domain/repositories/recommendationRequestRepository.ts';
-import type { WatchroomRepository } from '../../domain/repositories/watchroomRepository.ts';
 import type { RecommendationFeedback } from '../../domain/types/recommendationFeedback.ts';
 
 export interface SubmitRecommendationFeedbackActionPayload {

@@ -4,43 +4,21 @@ import { createAuthenticationMiddleware } from '../../../common/auth/authMiddlew
 import type { TokenService } from '../../../common/auth/tokenService.ts';
 import { UnauthorizedAccessError } from '../../../common/errors/unathorizedAccessError.ts';
 import type { LoggerService } from '../../../common/logger/loggerService.ts';
-import type { OpenRouterService } from '../../../common/openRouter/openRouterService.ts';
-import type { Config } from '../../../core/config.ts';
 import type { DatabaseClient } from '../../../infrastructure/database/database.ts';
-import { FavoriteSeriesRepositoryImpl } from '../../series/infrastructure/repositories/favoriteSeriesRepositoryImpl.ts';
-import { IgnoredSeriesRepositoryImpl } from '../../series/infrastructure/repositories/ignoredSeriesRepositoryImpl.ts';
-import { TmdbServiceImpl } from '../../series/infrastructure/services/tmdbServiceImpl.ts';
-import { CheckRecommendationRequestStatusAction } from '../application/actions/checkRecommendationRequestStatusAction.ts';
-import { CreateRecommendationRequestAction } from '../application/actions/createRecommendationRequestAction.ts';
 import { CreateWatchroomAction } from '../application/actions/createWatchroomAction.ts';
 import { DeleteWatchroomAction } from '../application/actions/deleteWatchroomAction.ts';
 import { FindPublicWatchroomDetailsAction } from '../application/actions/findPublicWatchroomDetailsAction.ts';
-import { FindRecommendationsAction } from '../application/actions/findRecommendationsAction.ts';
 import { FindUserWatchroomsAction } from '../application/actions/findUserWatchroomsAction.ts';
 import { FindWatchroomDetailsAction } from '../application/actions/findWatchroomDetailsAction.ts';
-import { GenerateRecommendationsAction } from '../application/actions/generateRecommendationsAction.ts';
 import { JoinWatchroomAction } from '../application/actions/joinWatchroomAction.ts';
 import { LeaveWatchroomAction } from '../application/actions/leaveWatchroomAction.ts';
 import { RemoveParticipantAction } from '../application/actions/removeParticipantAction.ts';
-import { SubmitRecommendationFeedbackAction } from '../application/actions/submitRecommendationFeedbackAction.ts';
 import { UpdateWatchroomAction } from '../application/actions/updateWatchroomAction.ts';
-import { RecommendationPromptBuilder } from '../application/services/recommendationPromptBuilder.ts';
-import { SeriesNameResolver } from '../application/services/seriesNameResolver.ts';
-import type { Recommendation } from '../domain/types/recommendation.ts';
 import type { Watchroom } from '../domain/types/watchroom.ts';
-import { RecommendationFeedbackRepositoryImpl } from '../infrastructure/repositories/recommendationFeedbackRepositoryImpl.ts';
-import { RecommendationRepositoryImpl } from '../infrastructure/repositories/recommendationRepositoryImpl.ts';
-import { RecommendationRequestRepositoryImpl } from '../infrastructure/repositories/recommendationRequestRepositoryImpl.ts';
 import { WatchroomRepositoryImpl } from '../infrastructure/repositories/watchroomRepositoryImpl.ts';
 
 const watchroomNameSchema = Type.String({ minLength: 1, maxLength: 64 });
 const watchroomDescriptionSchema = Type.String({ maxLength: 256 });
-
-const recommendationSchema = Type.Object({
-  id: Type.String({ format: 'uuid' }),
-  seriesTmdbId: Type.Integer(),
-  justification: Type.String(),
-});
 
 const watchroomSchema = Type.Object({
   id: Type.String({ format: 'uuid' }),
@@ -61,18 +39,10 @@ export const watchroomRoutes: FastifyPluginAsyncTypebox<{
   databaseClient: DatabaseClient;
   tokenService: TokenService;
   loggerService: LoggerService;
-  openRouterService: OpenRouterService;
-  config: Config;
 }> = async function (fastify, opts) {
-  const { databaseClient, tokenService, loggerService, openRouterService, config } = opts;
+  const { databaseClient, tokenService, loggerService } = opts;
 
   const watchroomRepository = new WatchroomRepositoryImpl(databaseClient);
-  const recommendationRepository = new RecommendationRepositoryImpl(databaseClient);
-  const recommendationRequestRepository = new RecommendationRequestRepositoryImpl(databaseClient);
-  const recommendationFeedbackRepository = new RecommendationFeedbackRepositoryImpl(databaseClient);
-  const favoriteSeriesRepository = new FavoriteSeriesRepositoryImpl(databaseClient);
-  const ignoredSeriesRepository = new IgnoredSeriesRepositoryImpl(databaseClient);
-  const tmdbService = new TmdbServiceImpl(config.tmdb.apiKey, config.tmdb.baseUrl);
 
   const createWatchroomAction = new CreateWatchroomAction(watchroomRepository, loggerService);
   const findUserWatchroomsAction = new FindUserWatchroomsAction(watchroomRepository);
@@ -83,43 +53,6 @@ export const watchroomRoutes: FastifyPluginAsyncTypebox<{
   const deleteWatchroomAction = new DeleteWatchroomAction(watchroomRepository, loggerService);
   const removeParticipantAction = new RemoveParticipantAction(watchroomRepository, loggerService);
   const leaveWatchroomAction = new LeaveWatchroomAction(watchroomRepository, loggerService);
-
-  const recommendationPromptBuilder = new RecommendationPromptBuilder();
-  const seriesNameResolver = new SeriesNameResolver(tmdbService);
-
-  const createRecommendationRequestAction = new CreateRecommendationRequestAction(
-    watchroomRepository,
-    recommendationRequestRepository,
-    loggerService,
-  );
-  const generateRecommendationsAction = new GenerateRecommendationsAction(
-    watchroomRepository,
-    recommendationRepository,
-    recommendationRequestRepository,
-    favoriteSeriesRepository,
-    ignoredSeriesRepository,
-    tmdbService,
-    openRouterService,
-    loggerService,
-    recommendationPromptBuilder,
-    seriesNameResolver,
-    databaseClient,
-  );
-  const findRecommendationsAction = new FindRecommendationsAction(
-    watchroomRepository,
-    recommendationRepository,
-    recommendationRequestRepository,
-  );
-  const checkRecommendationStatusAction = new CheckRecommendationRequestStatusAction(
-    watchroomRepository,
-    recommendationRequestRepository,
-  );
-  const submitRecommendationGroupFeedbackAction = new SubmitRecommendationFeedbackAction(
-    watchroomRepository,
-    recommendationRequestRepository,
-    recommendationFeedbackRepository,
-    loggerService,
-  );
 
   const authenticationMiddleware = createAuthenticationMiddleware(tokenService);
 
@@ -138,14 +71,6 @@ export const watchroomRoutes: FastifyPluginAsyncTypebox<{
     }
 
     return response;
-  };
-
-  const mapRecommendationToResponse = (recommendation: Recommendation): Static<typeof recommendationSchema> => {
-    return {
-      id: recommendation.id,
-      seriesTmdbId: recommendation.seriesTmdbId,
-      justification: recommendation.justification,
-    };
   };
 
   fastify.post('/watchrooms', {
@@ -456,192 +381,6 @@ export const watchroomRoutes: FastifyPluginAsyncTypebox<{
       );
 
       return reply.status(204).send();
-    },
-  });
-
-  fastify.post('/watchrooms/:watchroomId/recommendations', {
-    schema: {
-      params: Type.Object({
-        watchroomId: Type.String({ format: 'uuid' }),
-      }),
-      response: {
-        202: Type.Object({
-          recommendationRequestId: Type.String({ format: 'uuid' }),
-        }),
-      },
-    },
-    config: {
-      rateLimit: config.rateLimit.recommendations,
-    },
-    preHandler: [authenticationMiddleware],
-    handler: async (request, reply) => {
-      if (!request.user) {
-        throw new UnauthorizedAccessError({
-          reason: 'User not authenticated',
-        });
-      }
-
-      const { userId } = request.user;
-      const { watchroomId } = request.params;
-
-      // First, create the recommendation request and get its ID
-      const { recommendationRequestId } = await createRecommendationRequestAction.execute(
-        {
-          watchroomId,
-          userId,
-        },
-        {
-          requestId: request.id,
-        },
-      );
-
-      // Then, trigger the async generation process
-      generateRecommendationsAction
-        .execute(
-          {
-            recommendationRequestId,
-            watchroomId,
-            userId,
-          },
-          {
-            requestId: request.id,
-            userId,
-          },
-        )
-        .catch((error: unknown) => {
-          loggerService.error({
-            message: 'Failed to generate recommendations in background',
-            event: 'watchroom.recommendations.generate.background_error',
-            requestId: request.id,
-            watchroomId,
-            recommendationRequestId,
-            userId,
-            error: error instanceof Error ? error.message : String(error),
-          });
-        });
-
-      return reply.status(202).send({
-        recommendationRequestId,
-      });
-    },
-  });
-
-  fastify.get('/watchrooms/:watchroomId/recommendations/status/:recommendationRequestId', {
-    schema: {
-      params: Type.Object({
-        watchroomId: Type.String({ format: 'uuid' }),
-        recommendationRequestId: Type.String({ format: 'uuid' }),
-      }),
-      response: {
-        200: Type.Object({
-          status: Type.Union([Type.Literal('pending'), Type.Literal('completed'), Type.Literal('failed')]),
-        }),
-      },
-    },
-    preHandler: [authenticationMiddleware],
-    handler: async (request, reply) => {
-      if (!request.user) {
-        throw new UnauthorizedAccessError({
-          reason: 'User not authenticated',
-        });
-      }
-
-      const { userId } = request.user;
-      const { watchroomId, recommendationRequestId } = request.params;
-
-      const status = await checkRecommendationStatusAction.execute({
-        recommendationRequestId,
-        watchroomId,
-        userId,
-      });
-
-      return reply.send(status);
-    },
-  });
-
-  fastify.get('/watchrooms/:watchroomId/recommendations', {
-    schema: {
-      params: Type.Object({
-        watchroomId: Type.String({ format: 'uuid' }),
-      }),
-      response: {
-        200: Type.Array(recommendationSchema),
-      },
-    },
-    preHandler: [authenticationMiddleware],
-    handler: async (request, reply) => {
-      if (!request.user) {
-        throw new UnauthorizedAccessError({
-          reason: 'User not authenticated',
-        });
-      }
-
-      const { userId } = request.user;
-      const { watchroomId } = request.params;
-
-      const recommendations = await findRecommendationsAction.execute({
-        watchroomId,
-        userId,
-      });
-
-      return reply.send(recommendations.map(mapRecommendationToResponse));
-    },
-  });
-
-  fastify.post('/watchrooms/:watchroomId/recommendations/feedback', {
-    schema: {
-      params: Type.Object({
-        watchroomId: Type.String({ format: 'uuid' }),
-      }),
-      body: Type.Object({
-        recommendationRequestId: Type.String({ format: 'uuid' }),
-        rating: Type.Integer({ minimum: 1, maximum: 5 }),
-        foundSomething: Type.Boolean(),
-        comment: Type.Optional(Type.String({ maxLength: 1000 })),
-      }),
-      response: {
-        201: Type.Object({
-          id: Type.String({ format: 'uuid' }),
-          recommendationRequestId: Type.String({ format: 'uuid' }),
-          rating: Type.Integer(),
-          foundSomething: Type.Boolean(),
-          createdAt: Type.String({ format: 'date-time' }),
-        }),
-      },
-    },
-    preHandler: [authenticationMiddleware],
-    handler: async (request, reply) => {
-      if (!request.user) {
-        throw new UnauthorizedAccessError({
-          reason: 'User not authenticated',
-        });
-      }
-
-      const { userId } = request.user;
-      const { watchroomId } = request.params;
-      const { recommendationRequestId, rating, foundSomething, comment } = request.body;
-
-      const feedback = await submitRecommendationGroupFeedbackAction.execute(
-        {
-          recommendationRequestId,
-          watchroomId,
-          userId,
-          rating,
-          foundSomething,
-          comment: comment ?? null,
-        },
-        {
-          requestId: request.id,
-        },
-      );
-
-      return reply.status(201).send({
-        id: feedback.id,
-        recommendationRequestId: feedback.recommendationRequestId,
-        rating: feedback.rating,
-        foundSomething: feedback.foundSomething,
-        createdAt: feedback.createdAt.toISOString(),
-      });
     },
   });
 };

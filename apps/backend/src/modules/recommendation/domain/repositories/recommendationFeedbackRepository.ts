@@ -1,4 +1,4 @@
-import type { RecommendationFeedback } from '../types/recommendationFeedback.ts';
+import { type RecommendationFeedback } from '../types/recommendationFeedback.ts';
 
 export interface CreateRecommendationFeedbackData {
   recommendationRequestId: string;

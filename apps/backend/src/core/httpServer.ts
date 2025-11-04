@@ -20,6 +20,7 @@ import { type LoggerService } from '../common/logger/loggerService.ts';
 import { OpenRouterService } from '../common/openRouter/openRouterService.ts';
 import { UuidService } from '../common/uuid/uuidService.ts';
 import type { DatabaseClient } from '../infrastructure/database/database.ts';
+import { recommendationRoutes } from '../modules/recommendation/routes/recommendationRoutes.ts';
 import { seriesRoutes } from '../modules/series/routes/seriesRoutes.ts';
 import { userRoutes } from '../modules/user/routes/userRoutes.ts';
 import { watchroomRoutes } from '../modules/watchroom/routes/watchroomRoutes.ts';
@@ -414,6 +415,12 @@ export class HttpServer {
     });
 
     await this.fastifyServer.register(watchroomRoutes, {
+      databaseClient: this.databaseClient,
+      tokenService,
+      loggerService: this.loggerService,
+    });
+
+    await this.fastifyServer.register(recommendationRoutes, {
       databaseClient: this.databaseClient,
       tokenService,
       loggerService: this.loggerService,

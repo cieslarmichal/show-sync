@@ -7,10 +7,10 @@ import type { DatabaseClient } from '../../../../infrastructure/database/databas
 import type { FavoriteSeriesRepository } from '../../../series/domain/repositories/favoriteSeriesRepository.ts';
 import type { IgnoredSeriesRepository } from '../../../series/domain/repositories/ignoredSeriesRepository.ts';
 import type { TmdbService } from '../../../series/domain/services/tmdbService.ts';
+import type { WatchroomRepository } from '../../../watchroom/domain/repositories/watchroomRepository.ts';
+import type { Watchroom } from '../../../watchroom/domain/types/watchroom.ts';
 import type { RecommendationRepository } from '../../domain/repositories/recommendationRepository.ts';
 import type { RecommendationRequestRepository } from '../../domain/repositories/recommendationRequestRepository.ts';
-import type { WatchroomRepository } from '../../domain/repositories/watchroomRepository.ts';
-import type { Watchroom } from '../../domain/types/watchroom.ts';
 import { RECOMMENDATIONS_RESPONSE_FORMAT, RECOMMENDATIONS_SYSTEM_MESSAGE } from '../recommendationConfig.ts';
 import type { RecommendationPromptBuilder } from '../services/recommendationPromptBuilder.ts';
 import type { SeriesNameResolver } from '../services/seriesNameResolver.ts';

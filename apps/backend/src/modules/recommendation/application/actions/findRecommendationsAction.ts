@@ -1,8 +1,8 @@
 import { ForbiddenAccessError } from '../../../../common/errors/forbiddenAccessError.ts';
 import { ResourceNotFoundError } from '../../../../common/errors/resourceNotFoundError.ts';
+import type { WatchroomRepository } from '../../../watchroom/domain/repositories/watchroomRepository.ts';
 import type { RecommendationRepository } from '../../domain/repositories/recommendationRepository.ts';
 import type { RecommendationRequestRepository } from '../../domain/repositories/recommendationRequestRepository.ts';
-import type { WatchroomRepository } from '../../domain/repositories/watchroomRepository.ts';
 import type { Recommendation } from '../../domain/types/recommendation.ts';
 
 export interface FindRecommendationsActionPayload {
