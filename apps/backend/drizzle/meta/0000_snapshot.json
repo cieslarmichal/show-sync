@@ -1,11 +1,134 @@
 {
-  "id": "cd3191a3-70b8-4c2e-b8fc-2143a861e807",
+  "id": "55c9a4f3-c1c9-4637-b27a-cacf57d00d6a",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
-    "public.recommendations": {
-      "name": "recommendations",
+    "public.recommendation_feedback": {
+      "name": "recommendation_feedback",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "recommendation_request_id": {
+          "name": "recommendation_request_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "rating": {
+          "name": "rating",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "found_something": {
+          "name": "found_something",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "comment": {
+          "name": "comment",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "idx_recommendation_feedback_recommendation_request_id": {
+          "name": "idx_recommendation_feedback_recommendation_request_id",
+          "columns": [
+            {
+              "expression": "recommendation_request_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "idx_recommendation_feedback_user_id": {
+          "name": "idx_recommendation_feedback_user_id",
+          "columns": [
+            {
+              "expression": "user_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "recommendation_feedback_recommendation_request_id_recommendation_requests_id_fk": {
+          "name": "recommendation_feedback_recommendation_request_id_recommendation_requests_id_fk",
+          "tableFrom": "recommendation_feedback",
+          "tableTo": "recommendation_requests",
+          "columnsFrom": [
+            "recommendation_request_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "recommendation_feedback_user_id_users_id_fk": {
+          "name": "recommendation_feedback_user_id_users_id_fk",
+          "tableFrom": "recommendation_feedback",
+          "tableTo": "users",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "uq_recommendation_feedback_request_user": {
+          "name": "uq_recommendation_feedback_request_user",
+          "nullsNotDistinct": false,
+          "columns": [
+            "recommendation_request_id",
+            "user_id"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.recommendation_requests": {
+      "name": "recommendation_requests",
       "schema": "",
       "columns": {
         "id": {
@@ -20,8 +143,85 @@
           "primaryKey": false,
           "notNull": true
         },
-        "request_id": {
-          "name": "request_id",
+        "status": {
+          "name": "status",
+          "type": "varchar(16)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "idx_recommendation_requests_watchroom_id": {
+          "name": "idx_recommendation_requests_watchroom_id",
+          "columns": [
+            {
+              "expression": "watchroom_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "idx_recommendation_requests_status": {
+          "name": "idx_recommendation_requests_status",
+          "columns": [
+            {
+              "expression": "status",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "recommendation_requests_watchroom_id_watchrooms_id_fk": {
+          "name": "recommendation_requests_watchroom_id_watchrooms_id_fk",
+          "tableFrom": "recommendation_requests",
+          "tableTo": "watchrooms",
+          "columnsFrom": [
+            "watchroom_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.recommendations": {
+      "name": "recommendations",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "recommendation_request_id": {
+          "name": "recommendation_request_id",
           "type": "uuid",
           "primaryKey": false,
           "notNull": true
@@ -37,14 +237,21 @@
           "type": "text",
           "primaryKey": false,
           "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
         }
       },
       "indexes": {
-        "idx_recommendations_watchroom_id": {
-          "name": "idx_recommendations_watchroom_id",
+        "idx_recommendations_recommendation_request_id": {
+          "name": "idx_recommendations_recommendation_request_id",
           "columns": [
             {
-              "expression": "watchroom_id",
+              "expression": "recommendation_request_id",
               "isExpression": false,
               "asc": true,
               "nulls": "last"
@@ -55,11 +262,11 @@
           "method": "btree",
           "with": {}
         },
-        "idx_recommendations_request_id": {
-          "name": "idx_recommendations_request_id",
+        "idx_recommendations_series_tmdb_id": {
+          "name": "idx_recommendations_series_tmdb_id",
           "columns": [
             {
-              "expression": "request_id",
+              "expression": "series_tmdb_id",
               "isExpression": false,
               "asc": true,
               "nulls": "last"
@@ -72,12 +279,12 @@
         }
       },
       "foreignKeys": {
-        "recommendations_watchroom_id_watchrooms_id_fk": {
-          "name": "recommendations_watchroom_id_watchrooms_id_fk",
+        "recommendations_recommendation_request_id_recommendation_requests_id_fk": {
+          "name": "recommendations_recommendation_request_id_recommendation_requests_id_fk",
           "tableFrom": "recommendations",
-          "tableTo": "watchrooms",
+          "tableTo": "recommendation_requests",
           "columnsFrom": [
-            "watchroom_id"
+            "recommendation_request_id"
           ],
           "columnsTo": [
             "id"
