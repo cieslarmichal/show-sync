@@ -104,6 +104,7 @@ export const recommendations = pgTable(
     requestId: uuid('request_id').notNull(),
     seriesTmdbId: integer('series_tmdb_id').notNull(),
     justification: text('justification').notNull(),
+    createdAt: timestamp('created_at').notNull().defaultNow(),
   },
   (table) => [
     index('idx_recommendations_watchroom_id').on(table.watchroomId),

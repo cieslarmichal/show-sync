@@ -450,7 +450,7 @@ export const watchroomRoutes: FastifyPluginAsyncTypebox<{
       },
     },
     config: {
-      rateLimit: config.rateLimit.ai,
+      rateLimit: config.rateLimit.recommendations,
     },
     preHandler: [authenticationMiddleware],
     handler: async (request, reply) => {

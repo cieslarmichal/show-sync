@@ -33,11 +33,35 @@ const configSchema = Type.Object({
       max: Type.Number({ minimum: 1 }),
       timeWindow: Type.Number({ minimum: 1000 }),
     }),
-    auth: Type.Object({
+    register: Type.Object({
       max: Type.Number({ minimum: 1 }),
       timeWindow: Type.Number({ minimum: 1000 }),
     }),
-    ai: Type.Object({
+    login: Type.Object({
+      max: Type.Number({ minimum: 1 }),
+      timeWindow: Type.Number({ minimum: 1000 }),
+    }),
+    logout: Type.Object({
+      max: Type.Number({ minimum: 1 }),
+      timeWindow: Type.Number({ minimum: 1000 }),
+    }),
+    refreshToken: Type.Object({
+      max: Type.Number({ minimum: 1 }),
+      timeWindow: Type.Number({ minimum: 1000 }),
+    }),
+    profile: Type.Object({
+      max: Type.Number({ minimum: 1 }),
+      timeWindow: Type.Number({ minimum: 1000 }),
+    }),
+    passwordChange: Type.Object({
+      max: Type.Number({ minimum: 1 }),
+      timeWindow: Type.Number({ minimum: 1000 }),
+    }),
+    accountDeletion: Type.Object({
+      max: Type.Number({ minimum: 1 }),
+      timeWindow: Type.Number({ minimum: 1000 }),
+    }),
+    recommendations: Type.Object({
       max: Type.Number({ minimum: 1 }),
       timeWindow: Type.Number({ minimum: 1000 }),
     }),

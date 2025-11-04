@@ -101,7 +101,7 @@ export const userRoutes: FastifyPluginAsyncTypebox<{
       },
     },
     config: {
-      rateLimit: config.rateLimit.auth,
+      rateLimit: config.rateLimit.register,
     },
     handler: async (request, reply) => {
       const user = await createUserAction.execute(
@@ -127,7 +127,7 @@ export const userRoutes: FastifyPluginAsyncTypebox<{
       },
     },
     config: {
-      rateLimit: config.rateLimit.auth,
+      rateLimit: config.rateLimit.login,
     },
     handler: async (request, reply) => {
       const { email, password } = request.body;
@@ -151,6 +151,9 @@ export const userRoutes: FastifyPluginAsyncTypebox<{
         204: Type.Null(),
       },
     },
+    config: {
+      rateLimit: config.rateLimit.logout,
+    },
     handler: async (request, reply) => {
       const refreshToken = request.cookies[refreshTokenCookie.name];
 
@@ -167,6 +170,9 @@ export const userRoutes: FastifyPluginAsyncTypebox<{
       response: {
         200: Type.Object({ accessToken: Type.String() }),
       },
+    },
+    config: {
+      rateLimit: config.rateLimit.refreshToken,
     },
     handler: async (request, reply) => {
       const refreshToken = request.cookies[refreshTokenCookie.name];
@@ -227,6 +233,9 @@ export const userRoutes: FastifyPluginAsyncTypebox<{
         200: userSchema,
       },
     },
+    config: {
+      rateLimit: config.rateLimit.profile,
+    },
     preHandler: [authenticationMiddleware],
     handler: async (request, reply) => {
       if (!request.user) {
@@ -248,6 +257,9 @@ export const userRoutes: FastifyPluginAsyncTypebox<{
       response: {
         204: Type.Null(),
       },
+    },
+    config: {
+      rateLimit: config.rateLimit.accountDeletion,
     },
     preHandler: [authenticationMiddleware],
     handler: async (request, reply) => {
@@ -280,6 +292,9 @@ export const userRoutes: FastifyPluginAsyncTypebox<{
       response: {
         204: Type.Null(),
       },
+    },
+    config: {
+      rateLimit: config.rateLimit.passwordChange,
     },
     preHandler: [authenticationMiddleware],
     handler: async (request, reply) => {

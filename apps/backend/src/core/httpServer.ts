@@ -30,6 +30,7 @@ const maxObjectDepth = 10;
 const maxStringLength = 10000;
 const maxBodySize = 512 * 1024; // 512KB
 
+// TODO: add CSRF protection
 export class HttpServer {
   public readonly fastifyServer: FastifyInstance;
   private readonly loggerService: LoggerService;
