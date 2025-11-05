@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { toast } from 'sonner';
 import { Heart, ThumbsUp } from 'lucide-react';
 import SearchSeries from '../components/SearchSeries.tsx';
@@ -13,8 +13,10 @@ import { addIgnoredSeries } from '../api/queries/addIgnoredSeries.ts';
 import { removeIgnoredSeries } from '../api/queries/removeIgnoredSeries.ts';
 import { Series, FavoriteSeries, IgnoredSeries, PreferenceLevel } from '../api/types/series.ts';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '../components/ui/Tabs';
+import { SeriesContext } from '../context/SeriesContext';
 
 export default function SeriesPage() {
+  const { refreshCounts } = useContext(SeriesContext);
   const [profileSeriesIds, setProfileSeriesIds] = useState<Set<number>>(new Set());
   const [ignoredSeriesIds, setIgnoredSeriesIds] = useState<Set<number>>(new Set());
   const [mySeries, setMySeries] = useState<FavoriteSeries[]>([]);
@@ -93,6 +95,7 @@ export default function SeriesPage() {
       } else {
         setLikedCount((prev) => prev + 1);
       }
+      await refreshCounts(); // Sync with context
       toast.success(`"${series.name}" added to your favorites!`);
     } catch (error) {
       console.error('Failed to add to favorites:', error);
@@ -118,6 +121,7 @@ export default function SeriesPage() {
         setLikedCount((prev) => prev - 1);
       }
 
+      await refreshCounts(); // Sync with context
       toast.success('Series removed from your profile');
     } catch (error) {
       console.error('Failed to remove series:', error);
@@ -143,6 +147,7 @@ export default function SeriesPage() {
         setLovedCount((prev) => prev + 1);
       }
 
+      await refreshCounts(); // Sync with context
       toast.success(`Preference updated to ${preferenceLevel === 'love' ? '❤️ Loved' : '👍 Liked'}`);
     } catch (error) {
       console.error('Failed to update preference:', error);

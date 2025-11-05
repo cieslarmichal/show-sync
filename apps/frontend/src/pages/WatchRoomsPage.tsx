@@ -81,7 +81,7 @@ export default function WatchRoomsPage() {
             <div>
               <h1 className="text-3xl font-bold tracking-tight">Watch Rooms</h1>
               <p className="text-muted-foreground mt-1.5">
-                Create rooms and invite friends to get AI-powered series recommendations
+                Create rooms to get AI-powered series recommendations - invite friends or binge alone!
               </p>
             </div>
             <CreateWatchRoomModal
@@ -110,7 +110,7 @@ export default function WatchRoomsPage() {
                 <Tv className="w-16 h-16 text-muted-foreground/40 mx-auto mb-4" />
                 <h3 className="text-lg font-semibold text-foreground mb-2">No watch rooms yet</h3>
                 <p className="text-sm text-muted-foreground max-w-md mx-auto mb-6">
-                  Create your first room to start getting AI-powered group recommendations!
+                  Create your first room to start getting AI-powered recommendations - with friends or solo!
                 </p>
                 <CreateWatchRoomModal
                   onRoomCreated={fetchRooms}

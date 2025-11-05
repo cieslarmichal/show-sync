@@ -1,6 +1,7 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { StrictMode } from 'react';
 import { AuthContextProvider } from './context/AuthContextProvider.tsx';
+import { SeriesContextProvider } from './context/SeriesContextProvider.tsx';
 
 import Root from './pages/Root';
 import { CookiesProvider } from 'react-cookie';
@@ -90,9 +91,11 @@ function App() {
     <StrictMode>
       <CookiesProvider>
         <AuthContextProvider>
-          <TooltipProvider>
-            <RouterProvider router={router} />
-          </TooltipProvider>
+          <SeriesContextProvider>
+            <TooltipProvider>
+              <RouterProvider router={router} />
+            </TooltipProvider>
+          </SeriesContextProvider>
         </AuthContextProvider>
       </CookiesProvider>
     </StrictMode>

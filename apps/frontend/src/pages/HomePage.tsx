@@ -66,8 +66,8 @@ export default function HomePage() {
                       <Tv className="h-8 w-8 text-primary" />
                     </div>
                   </div>
-                  <h3 className="text-xl font-semibold">2. Create a Room</h3>
-                  <p className="text-muted-foreground">Start a watch room and invite your friends to join.</p>
+                  <h3 className="text-xl font-semibold">2. Create a Watch Room</h3>
+                  <p className="text-muted-foreground">Create a watch room - invite friends or binge solo!</p>
                 </div>
                 <div className="space-y-4">
                   <div className="flex justify-center">
@@ -76,9 +76,7 @@ export default function HomePage() {
                     </div>
                   </div>
                   <h3 className="text-xl font-semibold">3. Get Matches</h3>
-                  <p className="text-muted-foreground">
-                    Our AI analyzes everyone's taste and suggests the perfect show.
-                  </p>
+                  <p className="text-muted-foreground">Our AI analyzes your taste to suggest the perfect TV series.</p>
                 </div>
               </div>
             </div>
@@ -98,7 +96,7 @@ export default function HomePage() {
                     <div>
                       <h3 className="text-lg font-semibold">AI-Powered Recommendations</h3>
                       <p className="text-muted-foreground mt-1">
-                        Leverage the power of AI to get unbiased recommendations based on your group's unique taste.
+                        Leverage the power of AI to get unbiased recommendations based on your taste (or your group's).
                       </p>
                     </div>
                   </div>
@@ -109,9 +107,10 @@ export default function HomePage() {
                       <Users className="h-6 w-6 text-primary" />
                     </div>
                     <div>
-                      <h3 className="text-lg font-semibold">Seamless Group Collaboration</h3>
+                      <h3 className="text-lg font-semibold">Solo or Social</h3>
                       <p className="text-muted-foreground mt-1">
-                        Easily invite friends and combine your taste profiles to find the perfect match for everyone.
+                        Get personalized recommendations for yourself, or invite friends to find the perfect match for
+                        everyone.
                       </p>
                     </div>
                   </div>
