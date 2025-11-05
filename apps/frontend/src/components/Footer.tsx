@@ -18,9 +18,11 @@ export default function Footer() {
               to="/"
               className="flex items-center gap-3 mb-4 group"
             >
-              <div className="h-8 w-8 bg-foreground rounded-md flex items-center justify-center transition-transform group-hover:scale-105">
-                <span className="text-background font-bold text-sm">SM</span>
-              </div>
+              <img 
+                src="/logo.svg" 
+                alt="10x Series Matcher Logo" 
+                className="h-8 w-8 transition-transform group-hover:scale-105"
+              />
               <h2 className="text-lg font-semibold tracking-tight">10x Series Matcher</h2>
             </Link>
             <p className="text-sm text-muted-foreground">
