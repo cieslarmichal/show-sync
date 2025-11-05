@@ -31,7 +31,7 @@ export default function DashboardPage() {
 
   const canCreateRoom = favoritesCount >= MINIMUM_FAVORITE_SERIES;
   const disabledReason = !canCreateRoom
-    ? `You need to rate at least ${MINIMUM_FAVORITE_SERIES} shows before creating a watch room.`
+    ? `You need to rate at least ${MINIMUM_FAVORITE_SERIES} series before creating a watch room.`
     : undefined;
 
   if (!userDataInitialized) {
@@ -59,7 +59,7 @@ export default function DashboardPage() {
                 Never argue about what to watch again
               </h1>
               <p className="text-xl sm:text-2xl text-muted-foreground font-light tracking-tight max-w-4xl mx-auto">
-                Rate your favorite shows, create watch rooms, and let AI find the perfect series for your group
+                Rate your favorite series, create watch rooms, and let AI find the perfect series for your group
               </p>
             </div>
 
@@ -95,7 +95,7 @@ export default function DashboardPage() {
                   </div>
                   <div className="text-sm text-muted-foreground pt-2">
                     <p>
-                      Rate at least <strong>10 shows</strong> to unlock the full potential of our AI recommendations.
+                      Rate at least <strong>10 series</strong> to unlock the full potential of our AI recommendations.
                     </p>
                   </div>
                 </CardContent>
@@ -104,9 +104,9 @@ export default function DashboardPage() {
                     className="w-full"
                     size="lg"
                     onClick={() => navigate('/series')}
-                    data-testid="rate-more-shows-button"
+                    data-testid="rate-more-series-button"
                   >
-                    Rate More Shows
+                    Rate More Series
                   </Button>
                 </CardFooter>
               </Card>
@@ -142,7 +142,7 @@ export default function DashboardPage() {
                     <li className="flex items-start gap-2">
                       <span className="font-bold text-primary">3.</span>
                       <span>
-                        <strong>Get AI matches</strong> based on everyone's favorite shows.
+                        <strong>Get AI matches</strong> based on everyone's favorite series.
                       </span>
                     </li>
                   </ul>

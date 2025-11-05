@@ -128,25 +128,27 @@ export class RecommendationPromptBuilder {
   }
 
   private buildTaskSection(): string {
-    return `TASK:\n` +
+    return (
+      `TASK:\n` +
       `Recommend 5-10 BRAND NEW TV series that this group would likely enjoy watching together.\n` +
       `\n` +
       `CRITICAL REQUIREMENTS:\n` +
       `1. Do NOT include ANY series from the "FAVORITE SERIES" lists above\n` +
       `2. Do NOT include ANY series from the "NOT INTERESTED" list above\n` +
       `3. Only recommend series that are DIFFERENT from those already listed\n` +
-      `4. Focus on finding shows that reflect shared themes, genres, tones, or storytelling styles\n` +
+      `4. Focus on finding series that reflect shared themes, genres, tones, or storytelling styles\n` +
       `5. Return the EXACT TITLE of each series as it appears in TMDB (The Movie Database)\n` +
       `6. Provide a brief justification for each recommendation explaining why it fits the group's taste\n` +
       `\n` +
       `RECOMMENDATION STRATEGY:\n` +
-      `1. PRIORITIZE finding shows similar to ❤️ LOVED series - these are the strongest signals\n` +
+      `1. PRIORITIZE finding series similar to ❤️ LOVED series - these are the strongest signals\n` +
       `2. Use 👍 LIKED series as secondary signals to understand broader taste\n` +
       `3. Look for thematic overlaps in LOVED series across participants\n` +
       `4. When multiple participants LOVE similar genres/themes, that's a very strong signal\n` +
       `5. LIKED series help understand edge cases but shouldn't dominate recommendations\n` +
       `\n` +
-      `Remember: The goal is to find NEW series, not to repeat what they already know or dislike.`;
+      `Remember: The goal is to find NEW series, not to repeat what they already know or dislike.`
+    );
   }
 
   private extractFirstSentence(text: string): string {

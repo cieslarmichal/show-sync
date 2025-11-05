@@ -75,7 +75,7 @@ export const updateWatchroom = async (
 };
 
 export const generateRecommendations = async (watchroomId: string): Promise<{ recommendationRequestId: string }> => {
-  return apiRequest<{ recommendationRequestId: string }>(`/watchrooms/${watchroomId}/recommendations`, {
+  return apiRequest<{ recommendationRequestId: string }>(`/watchrooms/${watchroomId}/recommendations/generate`, {
     method: 'POST',
   });
 };

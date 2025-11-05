@@ -18,8 +18,8 @@ export class SeriesPageModel extends BasePageModel {
     this.pageTitle = page.getByRole('heading', { name: /my series/i });
     this.searchInput = page.getByPlaceholder(/search for tv series/i);
     this.searchResults = page.getByTestId('search-results');
-    this.favoritesSection = page.getByRole('heading', { name: /your favorite shows/i });
-    this.ignoredSection = page.getByRole('heading', { name: /ignored shows/i });
+    this.favoritesSection = page.getByRole('heading', { name: /your favorite series/i });
+    this.ignoredSection = page.getByRole('heading', { name: /ignored series/i });
     this.filterTabAll = page.getByRole('tab', { name: /all \(/i });
     this.filterTabLoved = page.getByRole('tab', { name: /❤️ loved \(/i });
     this.filterTabLiked = page.getByRole('tab', { name: /👍 liked \(/i });

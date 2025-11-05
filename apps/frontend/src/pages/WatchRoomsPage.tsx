@@ -59,7 +59,7 @@ export default function WatchRoomsPage() {
 
   const canCreateRoom = favoriteSeriesCount >= MINIMUM_FAVORITE_SERIES;
   const disabledReason = !canCreateRoom
-    ? `You need to rate at least ${MINIMUM_FAVORITE_SERIES} shows before creating a watch room.`
+    ? `You need to rate at least ${MINIMUM_FAVORITE_SERIES} series before creating a watch room.`
     : undefined;
 
   const handleCopyLink = (publicLinkId: string) => {

@@ -1,10 +1,10 @@
 import { useState, useEffect, useRef } from 'react';
 import { X } from 'lucide-react';
-import { getSeriesDetails } from '../api/queries/getSeriesDetails';
 import { IgnoredSeries, SeriesDetails } from '../api/types/series';
 import { Skeleton } from './ui/Skeleton';
 import { Button } from './ui/Button';
 import { Tooltip, TooltipContent, TooltipTrigger } from './ui/Tooltip';
+import { getSeriesDetailsBatch } from '../api/queries/getSeriesDetailsBatch';
 
 interface IgnoredSeriesListProps {
   ignoredSeries: IgnoredSeries[];
@@ -28,26 +28,18 @@ export default function IgnoredSeriesList({
         return;
       }
 
-      // Load series details for each ignored series
-      const detailsPromises = ignoredSeries.map(async (ignored: IgnoredSeries) => {
-        try {
-          const details = await getSeriesDetails(ignored.seriesTmdbId);
-          return { id: ignored.seriesTmdbId, details };
-        } catch (err) {
-          console.error(`Failed to load details for series ${ignored.seriesTmdbId}:`, err);
-          return null;
-        }
-      });
+      const seriesDetailsBatchResults = await getSeriesDetailsBatch(
+        ignoredSeries.map((ignored) => ignored.seriesTmdbId),
+      );
 
-      const detailsResults = await Promise.all(detailsPromises);
-      const detailsMap = new Map<number, SeriesDetails>();
-      detailsResults.forEach((result: { id: number; details: SeriesDetails } | null) => {
+      const seriesDetailsMap = new Map<number, SeriesDetails>();
+      seriesDetailsBatchResults.forEach((result) => {
         if (result) {
-          detailsMap.set(result.id, result.details);
+          seriesDetailsMap.set(result.id, result);
         }
       });
 
-      setSeriesDetails(detailsMap);
+      setSeriesDetails(seriesDetailsMap);
     };
 
     loadSeriesDetails();

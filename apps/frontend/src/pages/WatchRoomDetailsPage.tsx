@@ -730,7 +730,7 @@ export default function WatchRoomDetailsPage() {
                       <ThumbsUp className="w-4 h-4 text-primary" />
                       <span>Like or</span>
                       <Heart className="w-4 h-4 text-red-600" />
-                      <span>Love the shows you enjoy</span>
+                      <span>Love the series you enjoy</span>
                       <span className="text-muted-foreground/50">•</span>
                       <EyeOff className="w-4 h-4 text-muted-foreground" />
                       <span>Skip to exclude them from AI recommendations</span>

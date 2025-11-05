@@ -14,7 +14,7 @@ export class DashboardPageModel extends BasePageModel {
   }
 
   get addSeriesButton() {
-    return this.page.getByTestId('rate-more-shows-button');
+    return this.page.getByTestId('rate-more-series-button');
   }
 
   get seriesList() {

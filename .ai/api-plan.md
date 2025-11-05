@@ -77,8 +77,8 @@
 #### Refresh access token
 
 - **Method**: `POST`
-- **Path**: `/users/refresh`
-- **Description**: Issues a new access token using a valid refresh token (sent via secure, HTTP-only cookie).
+- **Path**: `/users/refresh-token`
+- **Description**: Issues a new access token using a valid refresh token (sent via secure, HTTP-only cookie). Implements token rotation for enhanced security.
 - **Response Body**:
 
   ```json
@@ -89,6 +89,32 @@
 
 - **Success Codes**: `200 OK`
 - **Error Codes**: `401 Unauthorized` (Invalid or expired refresh token)
+
+#### Change password
+
+- **Method**: `PATCH`
+- **Path**: `/users/me/password`
+- **Description**: Changes the password for the currently authenticated user.
+- **Authentication**: Required.
+- **Request Body**:
+
+  ```json
+  {
+    "currentPassword": "old-password",
+    "newPassword": "new-strong-password"
+  }
+  ```
+
+- **Response Body**:
+
+  ```json
+  {
+    "message": "Password changed successfully"
+  }
+  ```
+
+- **Success Codes**: `200 OK`
+- **Error Codes**: `400 Bad Request` (Invalid input), `401 Unauthorized`, `403 Forbidden` (Current password incorrect)
 
 #### Log out a user
 
@@ -199,6 +225,34 @@
   - `seriesTmdbId` (integer): The TMDB ID of the series to remove.
 - **Success Codes**: `204 No Content`
 - **Error Codes**: `401 Unauthorized`, `404 Not Found` (Series not in favorites)
+
+#### Update favorite series preference
+
+- **Method**: `PATCH`
+- **Path**: `/series/favorites/:seriesTmdbId/preference`
+- **Description**: Updates the preference level (like/love) for a series in the user's favorites.
+- **Authentication**: Required.
+- **URL Parameters**:
+  - `seriesTmdbId` (integer): The TMDB ID of the series to update.
+- **Request Body**:
+
+  ```json
+  {
+    "preferenceLevel": "love"
+  }
+  ```
+
+- **Response Body**:
+
+  ```json
+  {
+    "seriesTmdbId": 1399,
+    "preferenceLevel": "love"
+  }
+  ```
+
+- **Success Codes**: `200 OK`
+- **Error Codes**: `400 Bad Request` (Invalid preference level), `401 Unauthorized`, `404 Not Found` (Series not in favorites)
 
 #### Get ignored series
 
@@ -333,6 +387,44 @@
 
 - **Success Codes**: `200 OK`
 - **Error Codes**: `401 Unauthorized`, `404 Not Found` (Series not found), `502 Bad Gateway` (TMDB API error)
+
+#### Get series batch details
+
+- **Method**: `GET`
+- **Path**: `/series/batch/details`
+- **Description**: Retrieves detailed information about multiple TV series from TMDB in a single request.
+- **Authentication**: Required.
+- **Query Parameters**:
+  - `ids` (string, required): Comma-separated list of TMDB IDs (e.g., "1399,1402,456").
+- **Response Body**:
+
+  ```json
+  {
+    "data": [
+      {
+        "id": 1399,
+        "name": "Game of Thrones",
+        "posterPath": "/u3bZgnGQ9T01sWNhyveQz0wz0IL.jpg",
+        "overview": "Seven noble families fight...",
+        "firstAirDate": "2011-04-17",
+        "genres": ["Sci-Fi & Fantasy", "Drama"],
+        "voteAverage": 8.4
+      },
+      {
+        "id": 1402,
+        "name": "The Walking Dead",
+        "posterPath": "/xf9wuDcqlUPWABZNeDKPbZUjWx0.jpg",
+        "overview": "Sheriff Deputy Rick Grimes...",
+        "firstAirDate": "2010-10-31",
+        "genres": ["Action & Adventure", "Drama"],
+        "voteAverage": 8.1
+      }
+    ]
+  }
+  ```
+
+- **Success Codes**: `200 OK`
+- **Error Codes**: `400 Bad Request` (Invalid IDs), `401 Unauthorized`, `502 Bad Gateway` (TMDB API error)
 
 #### Get series external IDs
 
@@ -511,21 +603,37 @@
 - **Success Codes**: `200 OK`
 - **Error Codes**: `400 Bad Request`, `401 Unauthorized`, `403 Forbidden`, `404 Not Found`
 
-#### Leave a watchroom
+#### Delete a watchroom
 
 - **Method**: `DELETE`
-- **Path**: `/watchrooms/:watchroomId/participants/me`
-- **Description**: Removes the currently authenticated user from a watchroom.
-- **Authentication**: Required. User must be a participant.
+- **Path**: `/watchrooms/:watchroomId`
+- **Description**: Deletes a watchroom. Only the owner can delete their watchroom.
+- **Authentication**: Required. User must be the owner.
+- **URL Parameters**:
+  - `watchroomId` (string): The UUID of the watchroom to delete.
 - **Success Codes**: `204 No Content`
-- **Error Codes**: `401 Unauthorized`, `403 Forbidden` (Cannot leave if owner), `404 Not Found`
+- **Error Codes**: `401 Unauthorized`, `403 Forbidden` (Not the owner), `404 Not Found`
+
+#### Leave a watchroom
+
+- **Method**: `POST`
+- **Path**: `/watchrooms/:watchroomId/leave`
+- **Description**: Allows the currently authenticated user to leave a watchroom they are participating in.
+- **Authentication**: Required. User must be a participant.
+- **URL Parameters**:
+  - `watchroomId` (string): The UUID of the watchroom to leave.
+- **Success Codes**: `204 No Content`
+- **Error Codes**: `401 Unauthorized`, `403 Forbidden` (Not a participant or is the owner), `404 Not Found`
 
 #### Remove a participant from a watchroom
 
 - **Method**: `DELETE`
-- **Path**: `/watchrooms/:watchroomId/participants/:userId`
+- **Path**: `/watchrooms/:watchroomId/participants/:participantId`
 - **Description**: Removes a participant from a watchroom.
 - **Authentication**: Required. User must be the owner.
+- **URL Parameters**:
+  - `watchroomId` (string): The UUID of the watchroom.
+  - `participantId` (string): The UUID of the participant to remove.
 - **Success Codes**: `204 No Content`
 - **Error Codes**: `401 Unauthorized`, `403 Forbidden` (Not the owner), `404 Not Found`
 
@@ -536,39 +644,104 @@
 #### Generate recommendations
 
 - **Method**: `POST`
-- **Path**: `/watchrooms/:watchroomId/recommendations`
-- **Description**: Triggers the AI to generate new recommendations for the watchroom based on the participants' favorite series and excluding ignored series. This action can only be performed by the watchroom owner.
+- **Path**: `/watchrooms/:watchroomId/recommendations/generate`
+- **Description**: Triggers the AI to generate new recommendations for the watchroom based on the participants' favorite series (prioritizing "love" preferences) and excluding ignored series. This action creates a new recommendation request and starts an asynchronous generation process. Can only be performed by the watchroom owner.
 - **Authentication**: Required. User must be the owner.
+- **URL Parameters**:
+  - `watchroomId` (string): The UUID of the watchroom.
 - **Request Body**: (Empty)
 - **Response Body**:
 
   ```json
   {
-    "message": "Recommendation generation started. Results will be available shortly."
+    "recommendationRequestId": "uuid-v7-string"
   }
   ```
 
 - **Success Codes**: `202 Accepted`
-- **Error Codes**: `401 Unauthorized`, `403 Forbidden` (Not the owner), `404 Not Found`, `409 Conflict` (Generation already in progress)
+- **Error Codes**: `400 Bad Request`, `401 Unauthorized`, `403 Forbidden` (Not the owner), `404 Not Found`
 
-#### Ignore a recommendation
+#### Check recommendation request status
 
-- **Method**: `POST`
-- **Path**: `/watchrooms/:watchroomId/recommendations/:seriesTmdbId/ignore`
-- **Description**: Marks a series as ignored for the current user. The series will be added to the user's personal list of ignored series and will not appear in future recommendations.
+- **Method**: `GET`
+- **Path**: `/watchrooms/:watchroomId/recommendations/status/:recommendationRequestId`
+- **Description**: Checks the status of a recommendation generation request. Returns 'pending', 'completed', or 'failed'.
 - **Authentication**: Required. User must be a participant.
 - **URL Parameters**:
-  - `seriesTmdbId` (integer): The TMDB ID of the series to ignore.
+  - `watchroomId` (string): The UUID of the watchroom.
+  - `recommendationRequestId` (string): The UUID of the recommendation request.
 - **Response Body**:
 
   ```json
   {
-    "message": "Series added to your ignored list."
+    "status": "completed"
+  }
+  ```
+
+- **Success Codes**: `200 OK`
+- **Error Codes**: `401 Unauthorized`, `403 Forbidden` (Not a participant), `404 Not Found`
+
+#### Get recommendations
+
+- **Method**: `GET`
+- **Path**: `/watchrooms/:watchroomId/recommendations`
+- **Description**: Retrieves the recommendations for the latest completed recommendation request in the watchroom.
+- **Authentication**: Required. User must be a participant.
+- **URL Parameters**:
+  - `watchroomId` (string): The UUID of the watchroom.
+- **Response Body**:
+
+  ```json
+  [
+    {
+      "id": "uuid-v7-string",
+      "seriesTmdbId": 1399,
+      "justification": "Based on your group's love for complex political dramas and fantasy elements, Game of Thrones offers..."
+    },
+    {
+      "id": "uuid-v7-string",
+      "seriesTmdbId": 1402,
+      "justification": "For fans of intense survival scenarios and character-driven narratives..."
+    }
+  ]
+  ```
+
+- **Success Codes**: `200 OK`
+- **Error Codes**: `401 Unauthorized`, `403 Forbidden` (Not a participant), `404 Not Found`
+
+#### Submit recommendation feedback
+
+- **Method**: `POST`
+- **Path**: `/watchrooms/:watchroomId/recommendations/feedback`
+- **Description**: Allows a participant to submit feedback on a recommendation request, including a rating (1-5), whether they found something to watch, and an optional comment. Each user can only submit one feedback per recommendation request.
+- **Authentication**: Required. User must be a participant.
+- **URL Parameters**:
+  - `watchroomId` (string): The UUID of the watchroom.
+- **Request Body**:
+
+  ```json
+  {
+    "recommendationRequestId": "uuid-v7-string",
+    "rating": 4,
+    "foundSomething": true,
+    "comment": "Great recommendations! We decided to watch the first one."
+  }
+  ```
+
+- **Response Body**:
+
+  ```json
+  {
+    "id": "uuid-v7-string",
+    "recommendationRequestId": "uuid-v7-string",
+    "rating": 4,
+    "foundSomething": true,
+    "createdAt": "iso-8601-date-string"
   }
   ```
 
 - **Success Codes**: `201 Created`
-- **Error Codes**: `401 Unauthorized`, `403 Forbidden` (Not a participant), `404 Not Found`, `409 Conflict` (Series already ignored)
+- **Error Codes**: `400 Bad Request` (Invalid input), `401 Unauthorized`, `403 Forbidden` (Not a participant), `404 Not Found`, `409 Conflict` (Feedback already submitted)
 
 ## Implementation plan
 
@@ -577,10 +750,11 @@ This module handles everything related to user accounts and authentication.
 Endpoints:
 POST /users/register
 POST /users/login
-POST /users/refresh
+POST /users/refresh-token
 POST /users/logout
 GET /users/me
 DELETE /users/me
+PATCH /users/me/password
 
 2. Series Module
 This module handles all operations related to series including favorites, ignored series, and acts as a proxy to the external TMDB API.
@@ -588,9 +762,11 @@ Endpoints:
 GET /series/search
 GET /series/:seriesTmdbId
 GET /series/:seriesTmdbId/external-ids
+GET /series/batch/details
 GET /series/favorites
 POST /series/favorites
 DELETE /series/favorites/:seriesTmdbId
+PATCH /series/favorites/:seriesTmdbId/preference
 GET /series/ignored
 POST /series/ignored
 DELETE /series/ignored/:seriesTmdbId
@@ -604,8 +780,14 @@ GET /watchrooms/by-link/:publicLinkId
 POST /watchrooms/by-link/:publicLinkId/participants
 GET /watchrooms/:watchroomId
 PATCH /watchrooms/:watchroomId
-DELETE /watchrooms/:watchroomId/participants/me
-DELETE /watchrooms/:watchroomId/participants/:userId
-POST /watchrooms/:watchroomId/recommendations
-POST /watchrooms/:watchroomId/recommendations/:seriesTmdbId/ignore
+DELETE /watchrooms/:watchroomId
+DELETE /watchrooms/:watchroomId/participants/:participantId
+POST /watchrooms/:watchroomId/leave
+
+4. Recommendation Module
+This module handles the asynchronous generation of AI-powered recommendations, status checking, and feedback collection.
+Endpoints:
+POST /watchrooms/:watchroomId/recommendations/generate
+GET /watchrooms/:watchroomId/recommendations/status/:recommendationRequestId
 GET /watchrooms/:watchroomId/recommendations
+POST /watchrooms/:watchroomId/recommendations/feedback

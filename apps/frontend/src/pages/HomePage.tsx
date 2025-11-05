@@ -20,7 +20,7 @@ export default function HomePage() {
                 Never argue about what to watch again
               </h1>
               <p className="text-lg sm:text-xl text-muted-foreground font-light tracking-tight max-w-4xl mx-auto mb-10">
-                Find the perfect TV series for you and your friends. Rate your favorite shows, create watch rooms, and
+                Find the perfect TV series for you and your friends. Rate your favorite series, create watch rooms, and
                 let our AI find the perfect match for your group.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
@@ -58,7 +58,7 @@ export default function HomePage() {
                     </div>
                   </div>
                   <h3 className="text-xl font-semibold">1. Build Your Profile</h3>
-                  <p className="text-muted-foreground">Rate your favorite TV shows to create a taste profile.</p>
+                  <p className="text-muted-foreground">Rate your favorite TV series to create a taste profile.</p>
                 </div>
                 <div className="space-y-4">
                   <div className="flex justify-center">

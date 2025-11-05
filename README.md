@@ -2,7 +2,7 @@
 
 ## Project Description
 
-10x Series Matcher helps groups pick a TV series to watch together. It uses everyone's favorite shows to recommend a perfect match, ending the endless scrolling and debates.
+10x Series Matcher helps groups pick a TV series to watch together. It uses everyone's favorite series to recommend a perfect match, ending the endless scrolling and debates.
 
 ## Table of Contents
 

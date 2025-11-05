@@ -1,11 +1,11 @@
 import { useState, useEffect, useRef } from 'react';
 import { X } from 'lucide-react';
-import { getSeriesDetails } from '../api/queries/getSeriesDetails';
 import { FavoriteSeries, SeriesDetails, PreferenceLevel } from '../api/types/series';
 import { Skeleton } from './ui/Skeleton';
 import { Button } from './ui/Button';
 import { Tooltip, TooltipContent, TooltipTrigger } from './ui/Tooltip';
 import { PreferenceToggle } from './PreferenceToggle';
+import { getSeriesDetailsBatch } from '../api/queries/getSeriesDetailsBatch';
 
 interface FavoriteSeriesListProps {
   favorites: FavoriteSeries[];
@@ -36,26 +36,16 @@ export default function FavoriteSeriesList({
         return;
       }
 
-      // Load series details for each favorite
-      const detailsPromises = favorites.map(async (favorite: FavoriteSeries) => {
-        try {
-          const details = await getSeriesDetails(favorite.seriesTmdbId);
-          return { id: favorite.seriesTmdbId, details };
-        } catch (err) {
-          console.error(`Failed to load details for series ${favorite.seriesTmdbId}:`, err);
-          return null;
-        }
-      });
+      const seriesDetailsBatchResults = await getSeriesDetailsBatch(favorites.map((favorite) => favorite.seriesTmdbId));
 
-      const detailsResults = await Promise.all(detailsPromises);
-      const detailsMap = new Map<number, SeriesDetails>();
-      detailsResults.forEach((result: { id: number; details: SeriesDetails } | null) => {
+      const seriesDetailsMap = new Map<number, SeriesDetails>();
+      seriesDetailsBatchResults.forEach((result) => {
         if (result) {
-          detailsMap.set(result.id, result.details);
+          seriesDetailsMap.set(result.id, result);
         }
       });
 
-      setSeriesDetails(detailsMap);
+      setSeriesDetails(seriesDetailsMap);
     };
 
     loadSeriesDetails();

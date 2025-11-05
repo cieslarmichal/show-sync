@@ -37,9 +37,21 @@ describe('RecommendationPromptBuilder', () => {
   describe('build', () => {
     it('builds a complete prompt with all sections', () => {
       const seriesInfoMap = new Map([
-        [1, createSeriesInfo(1, 'Breaking Bad', 'A high school chemistry teacher turns to cooking meth.', ['Drama', 'Crime'], 9.5)],
+        [
+          1,
+          createSeriesInfo(
+            1,
+            'Breaking Bad',
+            'A high school chemistry teacher turns to cooking meth.',
+            ['Drama', 'Crime'],
+            9.5,
+          ),
+        ],
         [2, createSeriesInfo(2, 'Better Call Saul', 'The story of lawyer Jimmy McGill.', ['Drama', 'Crime'], 8.9)],
-        [3, createSeriesInfo(3, 'The Wire', 'Baltimore drug scene from multiple perspectives.', ['Drama', 'Crime'], 9.3)],
+        [
+          3,
+          createSeriesInfo(3, 'The Wire', 'Baltimore drug scene from multiple perspectives.', ['Drama', 'Crime'], 9.3),
+        ],
         [4, createSeriesInfo(4, 'Game of Thrones', 'Noble families vie for control.', ['Fantasy', 'Drama'], 9.2)],
       ]);
 
@@ -82,7 +94,16 @@ describe('RecommendationPromptBuilder', () => {
 
     it('builds prompt without description when not provided', () => {
       const seriesInfoMap = new Map([
-        [1, createSeriesInfo(1, 'Breaking Bad', 'A high school chemistry teacher turns to cooking meth.', ['Drama', 'Crime'], 9.5)],
+        [
+          1,
+          createSeriesInfo(
+            1,
+            'Breaking Bad',
+            'A high school chemistry teacher turns to cooking meth.',
+            ['Drama', 'Crime'],
+            9.5,
+          ),
+        ],
       ]);
 
       const participantFavorites = [
@@ -93,13 +114,7 @@ describe('RecommendationPromptBuilder', () => {
         },
       ];
 
-      const result = promptBuilder.build(
-        participantFavorites,
-        [],
-        seriesInfoMap,
-        'Test Room',
-        undefined,
-      );
+      const result = promptBuilder.build(participantFavorites, [], seriesInfoMap, 'Test Room', undefined);
 
       expect(result).toContain('WATCH ROOM: "Test Room"');
       expect(result).not.toContain('Description:');
@@ -108,13 +123,16 @@ describe('RecommendationPromptBuilder', () => {
 
     it('includes loved series with full details', () => {
       const seriesInfoMap = new Map([
-        [1, createSeriesInfo(
+        [
           1,
-          'Breaking Bad',
-          'A high school chemistry teacher turns to cooking meth. He partners with a former student.',
-          ['Drama', 'Crime', 'Thriller'],
-          9.5,
-        )],
+          createSeriesInfo(
+            1,
+            'Breaking Bad',
+            'A high school chemistry teacher turns to cooking meth. He partners with a former student.',
+            ['Drama', 'Crime', 'Thriller'],
+            9.5,
+          ),
+        ],
       ]);
 
       const participantFavorites = [
@@ -125,13 +143,7 @@ describe('RecommendationPromptBuilder', () => {
         },
       ];
 
-      const result = promptBuilder.build(
-        participantFavorites,
-        [],
-        seriesInfoMap,
-        'Test Room',
-        undefined,
-      );
+      const result = promptBuilder.build(participantFavorites, [], seriesInfoMap, 'Test Room', undefined);
 
       expect(result).toContain('❤️ LOVED (HIGHEST PRIORITY - Core preferences):');
       expect(result).toContain('- Breaking Bad');
@@ -154,13 +166,7 @@ describe('RecommendationPromptBuilder', () => {
         },
       ];
 
-      const result = promptBuilder.build(
-        participantFavorites,
-        [],
-        seriesInfoMap,
-        'Test Room',
-        undefined,
-      );
+      const result = promptBuilder.build(participantFavorites, [], seriesInfoMap, 'Test Room', undefined);
 
       expect(result).toContain('👍 LIKED (Secondary preferences):');
       expect(result).toContain('- The Office (Comedy)');
@@ -189,13 +195,7 @@ describe('RecommendationPromptBuilder', () => {
         },
       ];
 
-      const result = promptBuilder.build(
-        participantFavorites,
-        [],
-        seriesInfoMap,
-        'Test Room',
-        undefined,
-      );
+      const result = promptBuilder.build(participantFavorites, [], seriesInfoMap, 'Test Room', undefined);
 
       expect(result).toContain('Participant 1:');
       expect(result).toContain('Breaking Bad');
@@ -227,13 +227,7 @@ describe('RecommendationPromptBuilder', () => {
         },
       ];
 
-      const result = promptBuilder.build(
-        participantFavorites,
-        [],
-        seriesInfoMap,
-        'Test Room',
-        undefined,
-      );
+      const result = promptBuilder.build(participantFavorites, [], seriesInfoMap, 'Test Room', undefined);
 
       expect(result).toContain('Participant 1:');
       expect(result).not.toContain('Participant 2:');
@@ -257,13 +251,7 @@ describe('RecommendationPromptBuilder', () => {
 
       const ignoredSeriesIds = [2, 3];
 
-      const result = promptBuilder.build(
-        participantFavorites,
-        ignoredSeriesIds,
-        seriesInfoMap,
-        'Test Room',
-        undefined,
-      );
+      const result = promptBuilder.build(participantFavorites, ignoredSeriesIds, seriesInfoMap, 'Test Room', undefined);
 
       expect(result).toContain('SERIES MARKED AS NOT INTERESTED:');
       expect(result).toContain('These series are explicitly NOT wanted');
@@ -283,13 +271,7 @@ describe('RecommendationPromptBuilder', () => {
         },
       ];
 
-      const result = promptBuilder.build(
-        participantFavorites,
-        [],
-        seriesInfoMap,
-        'Test Room',
-        undefined,
-      );
+      const result = promptBuilder.build(participantFavorites, [], seriesInfoMap, 'Test Room', undefined);
 
       expect(result).not.toContain('SERIES MARKED AS NOT INTERESTED:');
     });
@@ -309,13 +291,7 @@ describe('RecommendationPromptBuilder', () => {
 
       const ignoredSeriesIds = [999, 888]; // Series not in map
 
-      const result = promptBuilder.build(
-        participantFavorites,
-        ignoredSeriesIds,
-        seriesInfoMap,
-        'Test Room',
-        undefined,
-      );
+      const result = promptBuilder.build(participantFavorites, ignoredSeriesIds, seriesInfoMap, 'Test Room', undefined);
 
       expect(result).not.toContain('SERIES MARKED AS NOT INTERESTED:');
     });
@@ -333,13 +309,7 @@ describe('RecommendationPromptBuilder', () => {
         },
       ];
 
-      const result = promptBuilder.build(
-        participantFavorites,
-        [],
-        seriesInfoMap,
-        'Test Room',
-        undefined,
-      );
+      const result = promptBuilder.build(participantFavorites, [], seriesInfoMap, 'Test Room', undefined);
 
       expect(result).toContain('TASK:');
       expect(result).toContain('Recommend 5-10 BRAND NEW TV series');
@@ -347,18 +317,21 @@ describe('RecommendationPromptBuilder', () => {
       expect(result).toContain('Do NOT include ANY series from the "FAVORITE SERIES" lists');
       expect(result).toContain('Do NOT include ANY series from the "NOT INTERESTED" list');
       expect(result).toContain('RECOMMENDATION STRATEGY:');
-      expect(result).toContain('PRIORITIZE finding shows similar to ❤️ LOVED series');
+      expect(result).toContain('PRIORITIZE finding series similar to ❤️ LOVED series');
     });
 
     it('extracts first sentence from series overview', () => {
       const seriesInfoMap = new Map([
-        [1, createSeriesInfo(
+        [
           1,
-          'Breaking Bad',
-          'First sentence here. Second sentence here. Third sentence here.',
-          ['Drama'],
-          9.5,
-        )],
+          createSeriesInfo(
+            1,
+            'Breaking Bad',
+            'First sentence here. Second sentence here. Third sentence here.',
+            ['Drama'],
+            9.5,
+          ),
+        ],
       ]);
 
       const participantFavorites = [
@@ -369,13 +342,7 @@ describe('RecommendationPromptBuilder', () => {
         },
       ];
 
-      const result = promptBuilder.build(
-        participantFavorites,
-        [],
-        seriesInfoMap,
-        'Test Room',
-        undefined,
-      );
+      const result = promptBuilder.build(participantFavorites, [], seriesInfoMap, 'Test Room', undefined);
 
       expect(result).toContain('Summary: First sentence here.');
       expect(result).not.toContain('Second sentence here');
@@ -384,13 +351,7 @@ describe('RecommendationPromptBuilder', () => {
 
     it('handles overview with exclamation mark as sentence ending', () => {
       const seriesInfoMap = new Map([
-        [1, createSeriesInfo(
-          1,
-          'Breaking Bad',
-          'Exciting first sentence! Another sentence here.',
-          ['Drama'],
-          9.5,
-        )],
+        [1, createSeriesInfo(1, 'Breaking Bad', 'Exciting first sentence! Another sentence here.', ['Drama'], 9.5)],
       ]);
 
       const participantFavorites = [
@@ -401,13 +362,7 @@ describe('RecommendationPromptBuilder', () => {
         },
       ];
 
-      const result = promptBuilder.build(
-        participantFavorites,
-        [],
-        seriesInfoMap,
-        'Test Room',
-        undefined,
-      );
+      const result = promptBuilder.build(participantFavorites, [], seriesInfoMap, 'Test Room', undefined);
 
       expect(result).toContain('Summary: Exciting first sentence.');
       expect(result).not.toContain('Another sentence here');
@@ -415,13 +370,7 @@ describe('RecommendationPromptBuilder', () => {
 
     it('handles overview with question mark as sentence ending', () => {
       const seriesInfoMap = new Map([
-        [1, createSeriesInfo(
-          1,
-          'Breaking Bad',
-          'What will happen? We shall see.',
-          ['Drama'],
-          9.5,
-        )],
+        [1, createSeriesInfo(1, 'Breaking Bad', 'What will happen? We shall see.', ['Drama'], 9.5)],
       ]);
 
       const participantFavorites = [
@@ -432,22 +381,14 @@ describe('RecommendationPromptBuilder', () => {
         },
       ];
 
-      const result = promptBuilder.build(
-        participantFavorites,
-        [],
-        seriesInfoMap,
-        'Test Room',
-        undefined,
-      );
+      const result = promptBuilder.build(participantFavorites, [], seriesInfoMap, 'Test Room', undefined);
 
       expect(result).toContain('Summary: What will happen.');
       expect(result).not.toContain('We shall see');
     });
 
     it('handles empty overview gracefully', () => {
-      const seriesInfoMap = new Map([
-        [1, createSeriesInfo(1, 'Breaking Bad', '', ['Drama'], 9.5)],
-      ]);
+      const seriesInfoMap = new Map([[1, createSeriesInfo(1, 'Breaking Bad', '', ['Drama'], 9.5)]]);
 
       const participantFavorites = [
         {
@@ -457,13 +398,7 @@ describe('RecommendationPromptBuilder', () => {
         },
       ];
 
-      const result = promptBuilder.build(
-        participantFavorites,
-        [],
-        seriesInfoMap,
-        'Test Room',
-        undefined,
-      );
+      const result = promptBuilder.build(participantFavorites, [], seriesInfoMap, 'Test Room', undefined);
 
       // When overview is empty, the summary will be just empty
       expect(result).toContain('Summary:');
@@ -484,13 +419,7 @@ describe('RecommendationPromptBuilder', () => {
         },
       ];
 
-      const result = promptBuilder.build(
-        participantFavorites,
-        [],
-        seriesInfoMap,
-        'Test Room',
-        undefined,
-      );
+      const result = promptBuilder.build(participantFavorites, [], seriesInfoMap, 'Test Room', undefined);
 
       expect(result).toContain('Rating: 9.5/10');
       expect(result).toContain('Rating: 8.0/10');
@@ -498,9 +427,7 @@ describe('RecommendationPromptBuilder', () => {
     });
 
     it('handles participant with only loved series', () => {
-      const seriesInfoMap = new Map([
-        [1, createSeriesInfo(1, 'Breaking Bad', 'Great show.', ['Drama'], 9.5)],
-      ]);
+      const seriesInfoMap = new Map([[1, createSeriesInfo(1, 'Breaking Bad', 'Great show.', ['Drama'], 9.5)]]);
 
       const participantFavorites = [
         {
@@ -510,22 +437,14 @@ describe('RecommendationPromptBuilder', () => {
         },
       ];
 
-      const result = promptBuilder.build(
-        participantFavorites,
-        [],
-        seriesInfoMap,
-        'Test Room',
-        undefined,
-      );
+      const result = promptBuilder.build(participantFavorites, [], seriesInfoMap, 'Test Room', undefined);
 
       expect(result).toContain('❤️ LOVED (HIGHEST PRIORITY - Core preferences):');
       expect(result).not.toContain('👍 LIKED (Secondary preferences):');
     });
 
     it('handles participant with only liked series', () => {
-      const seriesInfoMap = new Map([
-        [1, createSeriesInfo(1, 'The Office', 'Comedy show.', ['Comedy'], 8.9)],
-      ]);
+      const seriesInfoMap = new Map([[1, createSeriesInfo(1, 'The Office', 'Comedy show.', ['Comedy'], 8.9)]]);
 
       const participantFavorites = [
         {
@@ -535,22 +454,14 @@ describe('RecommendationPromptBuilder', () => {
         },
       ];
 
-      const result = promptBuilder.build(
-        participantFavorites,
-        [],
-        seriesInfoMap,
-        'Test Room',
-        undefined,
-      );
+      const result = promptBuilder.build(participantFavorites, [], seriesInfoMap, 'Test Room', undefined);
 
       expect(result).not.toContain('❤️ LOVED (HIGHEST PRIORITY - Core preferences):');
       expect(result).toContain('👍 LIKED (Secondary preferences):');
     });
 
     it('skips series info that is not found in map', () => {
-      const seriesInfoMap = new Map([
-        [1, createSeriesInfo(1, 'Breaking Bad', 'Great show.', ['Drama'], 9.5)],
-      ]);
+      const seriesInfoMap = new Map([[1, createSeriesInfo(1, 'Breaking Bad', 'Great show.', ['Drama'], 9.5)]]);
 
       const participantFavorites = [
         {
@@ -560,13 +471,7 @@ describe('RecommendationPromptBuilder', () => {
         },
       ];
 
-      const result = promptBuilder.build(
-        participantFavorites,
-        [],
-        seriesInfoMap,
-        'Test Room',
-        undefined,
-      );
+      const result = promptBuilder.build(participantFavorites, [], seriesInfoMap, 'Test Room', undefined);
 
       expect(result).toContain('Breaking Bad');
       expect(result).not.toContain('999');
@@ -587,13 +492,7 @@ describe('RecommendationPromptBuilder', () => {
         },
       ];
 
-      const result = promptBuilder.build(
-        participantFavorites,
-        [2],
-        seriesInfoMap,
-        'Test Room',
-        'A description',
-      );
+      const result = promptBuilder.build(participantFavorites, [2], seriesInfoMap, 'Test Room', 'A description');
 
       const watchRoomIndex = result.indexOf('WATCH ROOM:');
       const participantsIndex = result.indexOf('PARTICIPANTS AND THEIR SERIES PREFERENCES:');

@@ -204,7 +204,7 @@ export default function SeriesPage() {
             <div className="text-center">
               <h1 className="text-4xl sm:text-5xl font-bold tracking-tight text-foreground">My Series</h1>
               <p className="text-xl text-muted-foreground mt-3 max-w-2xl mx-auto">
-                Build your taste profile by adding shows you love. The more you add, the better your group
+                Build your taste profile by adding series you love. The more you add, the better your group
                 recommendations will be.
               </p>
             </div>
@@ -221,7 +221,7 @@ export default function SeriesPage() {
             <div>
               <div className="flex items-center gap-3 mb-6">
                 <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground">
-                  Your Favorite Shows ({mySeries.length})
+                  Your Favorite Series ({mySeries.length})
                 </h2>
               </div>
 
@@ -290,11 +290,11 @@ export default function SeriesPage() {
             <div>
               <div className="flex items-center gap-3 mb-6">
                 <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground">
-                  Ignored Shows ({myIgnoredSeries.length})
+                  Ignored Series ({myIgnoredSeries.length})
                 </h2>
               </div>
               <p className="text-sm text-muted-foreground mb-4">
-                These shows won't appear in your watch room recommendations. You can remove them anytime to reconsider.
+                These series won't appear in your watch room recommendations. You can remove them anytime to reconsider.
               </p>
               <IgnoredSeriesList
                 ignoredSeries={myIgnoredSeries}

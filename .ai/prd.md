@@ -28,7 +28,8 @@ Grupy osób często napotykają trudności przy wspólnej decyzji, co obejrzeć.
 - FR-02: Budowanie profilu preferencji
   - Funkcjonalność wyszukiwania seriali w oparciu o integrację z API TMDB.
   - Możliwość dodawania i usuwania seriali z osobistej listy "ulubionych".
-  - Możliwość oznaczania seriali jako "zignorowane" podczas przeglądania rekomendacji.
+  - Możliwość oznaczania seriali jako "like" (lubię) lub "love" (uwielbiam) z możliwością zmiany poziomu preferencji.
+  - Możliwość oznaczania seriali jako "zignorowane" - seriale dodawane do listy ignorowanych nie będą pojawiać się w przyszłych rekomendacjach.
 - FR-03: Zarządzanie sesjami ("pokojami")
   - Możliwość utworzenia nowego "pokoju oglądania" przez zalogowanego użytkownika.
   - Automatyczne generowanie unikalnego, publicznego linku do pokoju.
@@ -36,14 +37,23 @@ Grupy osób często napotykają trudności przy wspólnej decyzji, co obejrzeć.
   - Możliwość dołączenia do istniejącego pokoju za pomocą udostępnionego linku.
 - FR-05: Silnik rekomendacji
   - Integracja z API OpenAI w celu analizy list ulubionych seriali wszystkich uczestników sesji.
-  - System przesyła do API połączone dane, a w odpowiedzi otrzymuje listę rekomendacji wraz z uzasadnieniem.
+  - System priorytetyzuje seriale oznaczone jako "love" (uwielbiam) nad "like" (lubię) podczas generowania rekomendacji.
+  - Generowanie rekomendacji odbywa się asynchronicznie - użytkownik otrzymuje natychmiastowe potwierdzenie rozpoczęcia procesu.
+  - Możliwość sprawdzenia statusu generowania (oczekujące/ukończone/nieudane).
+  - System przesyła do API połączone dane o preferencjach, a w odpowiedzi otrzymuje listę rekomendacji wraz z uzasadnieniem.
 - FR-06: Wyświetlanie wyników
-  - Interfejs prezentujący listę 3-5 polecanych seriali.
+  - Interfejs prezentujący listę 5-10 polecanych seriali z najnowszego ukończonego żądania rekomendacji.
   - Każda propozycja zawiera tytuł, plakat, krótki opis (z TMDB) oraz wygenerowane przez AI uzasadnienie dopasowania do gustu grupy.
-  - Możliwość oznaczenia rekomendacji jako "nie interesuje mnie", co dodaje serial do osobistej listy ignorowanych użytkownika.
-- FR-07: Filtrowanie rekomendacji
+  - Możliwość dodania dowolnego serialu do osobistej listy ignorowanych (nie tylko z rekomendacji).
+- FR-07: System opinii
+  - Po przeglądnięciu rekomendacji, uczestnicy mogą zostawić opinię na temat jakości rekomendacji.
+  - Opinia zawiera: ocenę w skali 1-5, informację czy znaleziono coś do obejrzenia, oraz opcjonalny komentarz.
+  - Każdy uczestnik może zostawić tylko jedną opinię na dane żądanie rekomendacji.
+- FR-08: Filtrowanie rekomendacji
   - Seriale oznaczone jako "zignorowane" przez któregokolwiek uczestnika pokoju nie będą uwzględniane w przyszłych rekomendacjach dla tego pokoju.
-  - Każdy użytkownik buduje własną listę ignorowanych seriali, która jest używana globalnie we wszystkich pokojach, w których uczestniczy.
+  - Każdy użytkownik buduje własną globalną listę ignorowanych seriali, która jest używana we wszystkich pokojach, w których uczestniczy.
+- FR-09: Zarządzanie hasłem
+  - Zalogowany użytkownik może zmienić swoje hasło, podając aktualne hasło i nowe hasło.
 
 ## 4. Granice produktu
 
@@ -52,17 +62,19 @@ Grupy osób często napotykają trudności przy wspólnej decyzji, co obejrzeć.
 - Aplikacja będzie dostępna wyłącznie jako aplikacja webowa.
 - Rekomendacje będą dotyczyć tylko i wyłącznie seriali.
 - Dostęp do aplikacji będzie w pełni darmowy.
-- Podstawowy cykl życia "pokoju": link jest trwały i nie wygasa. Rekomendacje są generowane na żądanie przez założyciela pokoju.
+- Podstawowy cykl życia "pokoju": link jest trwały i nie wygasa. Rekomendacje są generowane asynchronicznie na żądanie przez założyciela pokoju.
 - Użytkownik dołączający do sesji musi założyć konto, aby dodać swoje preferencje.
+- System sesji używa tokenów JWT z mechanizmem rotacji dla zwiększonego bezpieczeństwa.
 
 ### Poza zakresem (MVP)
 
 - Natywne aplikacje mobilne (iOS, Android).
 - Rekomendacje dla filmów.
 - Systemy subskrypcji lub inne formy monetyzacji.
-- Historia poprzednich sesji i rekomendacji.
-- Mechanizm zbierania informacji zwrotnej na temat trafności rekomendacji (np. przyciski "Podoba nam się", "Obejrzeliśmy to").
-- Możliwość filtrowania wyników (np. po gatunku, platformie streamingowej).
+- Historia poprzednich sesji i rekomendacji (tylko najnowsze rekomendacje są widoczne).
+- Przeglądanie zebranych opinii przez właściciela pokoju (dane są zbierane, ale nie ma interfejsu do ich przeglądania).
+- Możliwość filtrowania wyników rekomendacji (np. po gatunku, platformie streamingowej).
+- Edycja lub usuwanie złożonej opinii.
 
 ## 5. Historyjki użytkowników
 
@@ -103,18 +115,28 @@ Grupy osób często napotykają trudności przy wspólnej decyzji, co obejrzeć.
 
 - ID: US-005
 - Tytuł: Dodawanie serialu do listy ulubionych
-- Opis: Jako zalogowany użytkownik, chcę móc dodać wyszukany serial do mojej listy ulubionych, aby system poznał mój gust.
+- Opis: Jako zalogowany użytkownik, chcę móc dodać wyszukany serial do mojej listy ulubionych z określonym poziomem preferencji, aby system lepiej poznał mój gust.
 - Kryteria akceptacji:
-  - Przy każdym wyniku wyszukiwania znajduje się przycisk "Dodaj".
-  - Po kliknięciu przycisku serial zostaje dodany do listy ulubionych użytkownika.
-  - Dodany serial natychmiast pojawia się na liście ulubionych na stronie profilu.
+  - Przy każdym wyniku wyszukiwania znajduje się przycisk "Dodaj do ulubionych".
+  - Po kliknięciu przycisku użytkownik może wybrać poziom preferencji: "like" (lubię) lub "love" (uwielbiam).
+  - Serial zostaje dodany do listy ulubionych z wybranym poziomem.
+  - Dodany serial natychmiast pojawia się na liście ulubionych na stronie profilu z odpowiednią oznaczeniem (np. ❤️ dla "love", 👍 dla "like").
 
 - ID: US-006
 - Tytuł: Przeglądanie listy ulubionych seriali
-- Opis: Jako zalogowany użytkownik, chcę widzieć listę moich ulubionych seriali, aby zarządzać swoimi preferencjami.
+- Opis: Jako zalogowany użytkownik, chcę widzieć listę moich ulubionych seriali z poziomami preferencji, aby zarządzać swoimi gustami.
 - Kryteria akceptacji:
   - Na stronie profilu wyświetlana jest galeria plakatów wszystkich seriali dodanych przez użytkownika.
+  - Seriale są pogrupowane lub oznaczone według poziomu preferencji ("love" i "like").
   - Lista jest widoczna i czytelna.
+
+- ID: US-006a
+- Tytuł: Zmiana poziomu preferencji serialu
+- Opis: Jako zalogowany użytkownik, chcę móc zmienić poziom preferencji dla serialu w mojej liście ulubionych, jeśli zmienią się moje odczucia.
+- Kryteria akceptacji:
+  - Przy każdym serialu na liście ulubionych znajduje się opcja zmiany poziomu preferencji.
+  - Mogę zmienić serial z "like" na "love" i odwrotnie.
+  - Zmiana jest natychmiast widoczna na liście.
 
 - ID: US-007
 - Tytuł: Usuwanie serialu z listy ulubionych
@@ -128,8 +150,25 @@ Grupy osób często napotykają trudności przy wspólnej decyzji, co obejrzeć.
 - Opis: Jako zalogowany użytkownik, chcę móc zobaczyć listę seriali, które oznaczyłem jako "nie interesuje mnie", aby w razie potrzeby móc zmienić zdanie.
 - Kryteria akceptacji:
   - Na stronie profilu znajduje się sekcja "Ignorowane seriale".
-  - Lista wyświetla wszystkie seriale, które użytkownik zignorował w różnych pokojach.
+  - Lista wyświetla wszystkie seriale, które użytkownik dodał do ignorowanych.
   - Przy każdym serialu znajduje się przycisk "Usuń z ignorowanych".
+
+- ID: US-007b
+- Tytuł: Dodawanie serialu do ignorowanych
+- Opis: Jako zalogowany użytkownik, chcę móc oznaczyć dowolny serial jako ignorowany, aby nie pojawiał się w moich przyszłych rekomendacjach.
+- Kryteria akceptacji:
+  - Mogę dodać serial do listy ignorowanych z dowolnego miejsca w aplikacji (nie tylko z rekomendacji).
+  - Serial dodany do ignorowanych nie będzie już pojawiać się w rekomendacjach dla żadnego pokoju, w którym uczestniczę.
+  - Wyświetlany jest komunikat potwierdzający dodanie do ignorowanych.
+
+- ID: US-007c
+- Tytuł: Zmiana hasła
+- Opis: Jako zalogowany użytkownik, chcę móc zmienić swoje hasło, aby zachować bezpieczeństwo konta.
+- Kryteria akceptacji:
+  - W ustawieniach profilu znajduje się opcja "Zmień hasło".
+  - Formularz wymaga podania aktualnego hasła i dwukrotnego wpisania nowego hasła.
+  - System weryfikuje poprawność aktualnego hasła przed zapisaniem zmian.
+  - Po pomyślnej zmianie hasła wyświetlany jest komunikat potwierdzający.
 
 ### Sesje i rekomendacje
 
