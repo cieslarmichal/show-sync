@@ -11,9 +11,9 @@ export function HeaderLogo() {
         to={userData ? '/dashboard' : '/'}
         className="flex items-center gap-2 group"
       >
-        <img 
-          src="/logo.svg" 
-          alt="10x Series Matcher Logo" 
+        <img
+          src="/logo.svg"
+          alt="10x Series Matcher Logo"
           className="h-8 w-8 transition-transform group-hover:scale-105"
         />
         <h2 className="text-lg font-semibold tracking-tight">10x Series Matcher</h2>

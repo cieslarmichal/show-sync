@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { Button } from '../components/ui/Button';
 import { Card } from '../components/ui/Card';
-import { Heart, Users, BrainCircuit, PartyPopper } from 'lucide-react';
+import { Heart, BrainCircuit, PartyPopper, Tv, Users } from 'lucide-react';
 
 export default function HomePage() {
   const navigate = useNavigate();
@@ -63,7 +63,7 @@ export default function HomePage() {
                 <div className="space-y-4">
                   <div className="flex justify-center">
                     <div className="p-4 bg-primary/10 rounded-full">
-                      <Users className="h-8 w-8 text-primary" />
+                      <Tv className="h-8 w-8 text-primary" />
                     </div>
                   </div>
                   <h3 className="text-xl font-semibold">2. Create a Room</h3>

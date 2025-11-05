@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from '../components/ui/Button.tsx';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '../components/ui/Card.tsx';
 import { Badge } from '../components/ui/Badge.tsx';
-import { Users, Copy, ExternalLink, ChevronLeft, ChevronRight, Calendar } from 'lucide-react';
+import { Users, Copy, ExternalLink, ChevronLeft, ChevronRight, Calendar, Tv } from 'lucide-react';
 import { toast } from 'sonner';
 import { getMyWatchrooms } from '../api/queries/watchroom.ts';
 import type { Watchroom } from '../api/types/watchroom.ts';
@@ -96,7 +96,7 @@ export default function WatchRoomsPage() {
             <div className="flex items-center justify-center py-20">
               <div className="text-center space-y-4">
                 <div className="w-16 h-16 rounded-full bg-linear-to-br from-primary/20 to-primary/5 mx-auto flex items-center justify-center animate-pulse">
-                  <Users className="w-8 h-8 text-primary" />
+                  <Tv className="w-8 h-8 text-primary" />
                 </div>
                 <p className="text-muted-foreground font-medium">Loading your rooms...</p>
               </div>
@@ -107,7 +107,7 @@ export default function WatchRoomsPage() {
           {!isLoading && rooms.length === 0 && (
             <Card className="border-2 border-dashed">
               <CardContent className="text-center py-16 px-6">
-                <Users className="w-16 h-16 text-muted-foreground/40 mx-auto mb-4" />
+                <Tv className="w-16 h-16 text-muted-foreground/40 mx-auto mb-4" />
                 <h3 className="text-lg font-semibold text-foreground mb-2">No watch rooms yet</h3>
                 <p className="text-sm text-muted-foreground max-w-md mx-auto mb-6">
                   Create your first room to start getting AI-powered group recommendations!

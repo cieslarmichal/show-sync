@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { User, LogOut, Heart, Users } from 'lucide-react';
+import { User, LogOut, Heart, Tv } from 'lucide-react';
 import { Menubar, MenubarContent, MenubarItem, MenubarMenu, MenubarTrigger } from '@/components/ui/Menubar';
 
 interface UserMenuProps {
@@ -34,7 +34,7 @@ export function UserMenu({ initial, size = 'large' }: UserMenuProps) {
             onClick={() => navigate('/watchrooms')}
             className="hover:text-primary cursor-pointer flex items-center gap-2"
           >
-            <Users className="h-4 w-4" />
+            <Tv className="h-4 w-4" />
             My Watch Rooms
           </MenubarItem>
           <MenubarItem

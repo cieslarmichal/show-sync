@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { useContext } from 'react';
 import { AuthContext } from '../context/AuthContext';
-import { Mail, Phone, MapPin, Heart, Users, User } from 'lucide-react';
+import { Mail, Phone, MapPin, Heart, Tv, User } from 'lucide-react';
 
 export default function Footer() {
   const { userData } = useContext(AuthContext);
@@ -18,9 +18,9 @@ export default function Footer() {
               to="/"
               className="flex items-center gap-3 mb-4 group"
             >
-              <img 
-                src="/logo.svg" 
-                alt="10x Series Matcher Logo" 
+              <img
+                src="/logo.svg"
+                alt="10x Series Matcher Logo"
                 className="h-8 w-8 transition-transform group-hover:scale-105"
               />
               <h2 className="text-lg font-semibold tracking-tight">10x Series Matcher</h2>
@@ -45,7 +45,7 @@ export default function Footer() {
                   </Link>
                 </div>
                 <div className="flex items-center gap-3 text-muted-foreground">
-                  <Users className="h-4 w-4" />
+                  <Tv className="h-4 w-4" />
                   <Link
                     to="/watchrooms"
                     className="hover:text-foreground transition-colors"

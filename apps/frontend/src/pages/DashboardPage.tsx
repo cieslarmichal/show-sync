@@ -5,7 +5,7 @@ import { getMyFavoriteSeries } from '../api/queries/getMyFavoriteSeries';
 import { Button } from '../components/ui/Button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '../components/ui/Card';
 import { Tooltip, TooltipTrigger, TooltipContent } from '../components/ui/Tooltip';
-import { Heart, Users } from 'lucide-react';
+import { Heart, Tv } from 'lucide-react';
 
 export default function DashboardPage() {
   const { userData, userDataInitialized } = useContext(AuthContext);
@@ -116,7 +116,7 @@ export default function DashboardPage() {
                 <CardHeader>
                   <div className="flex items-center gap-4">
                     <div className="p-3 bg-primary/10 rounded-full">
-                      <Users className="h-6 w-6 text-primary" />
+                      <Tv className="h-6 w-6 text-primary" />
                     </div>
                     <div>
                       <CardTitle className="text-xl">Create a Watch Room</CardTitle>
