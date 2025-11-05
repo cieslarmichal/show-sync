@@ -25,6 +25,7 @@ import { RecommendationRequestRepositoryImpl } from '../infrastructure/repositor
 
 const recommendationSchema = Type.Object({
   id: Type.String({ format: 'uuid' }),
+  requestId: Type.String({ format: 'uuid' }),
   seriesTmdbId: Type.Integer(),
   justification: Type.String(),
 });
@@ -88,6 +89,7 @@ export const recommendationRoutes: FastifyPluginAsyncTypebox<{
   const mapRecommendationToResponse = (recommendation: Recommendation): Static<typeof recommendationSchema> => {
     return {
       id: recommendation.id,
+      requestId: recommendation.recommendationRequestId,
       seriesTmdbId: recommendation.seriesTmdbId,
       justification: recommendation.justification,
     };

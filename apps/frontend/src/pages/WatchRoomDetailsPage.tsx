@@ -1009,7 +1009,7 @@ export default function WatchRoomDetailsPage() {
                   </div>
 
                   {/* Feedback Form */}
-                  {recommendations.length > 0 && recommendations[0]?.requestId && watchroomId && (
+                  {recommendations.length > 0 && watchroomId && recommendations[0]?.requestId && (
                     <div className="mt-8">
                       <RecommendationFeedbackForm
                         watchroomId={watchroomId}

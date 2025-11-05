@@ -1,5 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
+import { useForm, useWatch } from 'react-hook-form';
 import { useState } from 'react';
 import { z } from 'zod';
 import { Star, CheckCircle2 } from 'lucide-react';
@@ -40,7 +40,16 @@ export function RecommendationFeedbackForm({ watchroomId, recommendationRequestI
     },
   });
 
-  const rating = form.watch('rating');
+  const rating = useWatch({
+    control: form.control,
+    name: 'rating',
+    defaultValue: 0,
+  });
+
+  const foundSomething = useWatch({
+    control: form.control,
+    name: 'foundSomething',
+  });
 
   async function onSubmit(values: FormValues) {
     try {
@@ -66,9 +75,9 @@ export function RecommendationFeedbackForm({ watchroomId, recommendationRequestI
   if (submitted) {
     return (
       <Card className="bg-green-50 dark:bg-green-950/20 border-green-200 dark:border-green-900">
-        <CardContent className="flex items-center gap-3 pt-6">
-          <CheckCircle2 className="w-5 h-5 text-green-600 dark:text-green-400" />
-          <p className="text-green-800 dark:text-green-300 font-medium">Thanks for your feedback!</p>
+        <CardContent className="flex items-center gap-3">
+          <CheckCircle2 className="w-4 h-4 text-green-600 dark:text-green-400" />
+          <p className="text-green-800 dark:text-green-300 font-medium">Thank you for your feedback!</p>
         </CardContent>
       </Card>
     );
@@ -99,7 +108,7 @@ export function RecommendationFeedbackForm({ watchroomId, recommendationRequestI
                         <button
                           key={star}
                           type="button"
-                          className="focus:outline-none focus:ring-2 focus:ring-primary rounded"
+                          className="focus:outline-none focus:ring-2 focus:ring-primary rounded cursor-pointer"
                           onClick={() => field.onChange(star)}
                           onMouseEnter={() => setHoveredStar(star)}
                           onMouseLeave={() => setHoveredStar(null)}
@@ -183,7 +192,7 @@ export function RecommendationFeedbackForm({ watchroomId, recommendationRequestI
 
             <Button
               type="submit"
-              disabled={form.formState.isSubmitting || !rating || !form.watch('foundSomething')}
+              disabled={form.formState.isSubmitting || !rating || !foundSomething}
               className="w-full"
             >
               {form.formState.isSubmitting ? 'Submitting...' : 'Submit Feedback'}
