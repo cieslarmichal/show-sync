@@ -1,8 +1,8 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, useWatch } from 'react-hook-form';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { z } from 'zod';
-import { Star, CheckCircle2 } from 'lucide-react';
+import { Star } from 'lucide-react';
 import { toast } from 'sonner';
 
 import { Button } from '@/components/ui/Button';
@@ -12,6 +12,7 @@ import { Textarea } from '@/components/ui/Textarea';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/RadioGroup';
 import { Label } from '@/components/ui/Label';
 import { submitRecommendationFeedback } from '../api/queries/submitRecommendationFeedback';
+import { checkRecommendationFeedback } from '../api/queries/checkRecommendationFeedback';
 
 const formSchema = z.object({
   rating: z.number().min(1).max(5),
@@ -27,8 +28,9 @@ interface RecommendationFeedbackFormProps {
 }
 
 export function RecommendationFeedbackForm({ watchroomId, recommendationRequestId }: RecommendationFeedbackFormProps) {
-  const [submitted, setSubmitted] = useState(false);
   const [hoveredStar, setHoveredStar] = useState<number | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [feedbackExists, setFeedbackExists] = useState(false);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -51,6 +53,21 @@ export function RecommendationFeedbackForm({ watchroomId, recommendationRequestI
     name: 'foundSomething',
   });
 
+  useEffect(() => {
+    const checkFeedback = async () => {
+      try {
+        const result = await checkRecommendationFeedback(watchroomId, recommendationRequestId);
+        setFeedbackExists(result.exists);
+      } catch (error) {
+        console.error('Failed to check feedback status:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    checkFeedback();
+  }, [watchroomId, recommendationRequestId]);
+
   async function onSubmit(values: FormValues) {
     try {
       await submitRecommendationFeedback(watchroomId, {
@@ -60,27 +77,25 @@ export function RecommendationFeedbackForm({ watchroomId, recommendationRequestI
         comment: values.comment || undefined,
       });
 
-      setSubmitted(true);
+      setFeedbackExists(true);
       toast.success('Thank you for your feedback!');
     } catch (error: unknown) {
       if (error instanceof Error && 'status' in error && (error as { status: number }).status === 409) {
         toast.error('You have already submitted feedback for these recommendations.');
-        setSubmitted(true);
+        setFeedbackExists(true);
       } else {
         toast.error('Failed to submit feedback. Please try again.');
       }
     }
   }
 
-  if (submitted) {
-    return (
-      <Card className="bg-green-50 dark:bg-green-950/20 border-green-200 dark:border-green-900">
-        <CardContent className="flex items-center gap-3">
-          <CheckCircle2 className="w-4 h-4 text-green-600 dark:text-green-400" />
-          <p className="text-green-800 dark:text-green-300 font-medium">Thank you for your feedback!</p>
-        </CardContent>
-      </Card>
-    );
+  // Don't render if feedback already exists
+  if (isLoading) {
+    return null;
+  }
+
+  if (feedbackExists) {
+    return null;
   }
 
   return (

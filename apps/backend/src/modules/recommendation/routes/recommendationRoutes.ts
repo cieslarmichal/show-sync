@@ -11,6 +11,7 @@ import { FavoriteSeriesRepositoryImpl } from '../../series/infrastructure/reposi
 import { IgnoredSeriesRepositoryImpl } from '../../series/infrastructure/repositories/ignoredSeriesRepositoryImpl.ts';
 import { TmdbServiceImpl } from '../../series/infrastructure/services/tmdbServiceImpl.ts';
 import { WatchroomRepositoryImpl } from '../../watchroom/infrastructure/repositories/watchroomRepositoryImpl.ts';
+import { CheckRecommendationFeedbackExistsAction } from '../application/actions/checkRecommendationFeedbackExistsAction.ts';
 import { CheckRecommendationRequestStatusAction } from '../application/actions/checkRecommendationRequestStatusAction.ts';
 import { CreateRecommendationRequestAction } from '../application/actions/createRecommendationRequestAction.ts';
 import { FindRecommendationsAction } from '../application/actions/findRecommendationsAction.ts';
@@ -76,6 +77,11 @@ export const recommendationRoutes: FastifyPluginAsyncTypebox<{
   const checkRecommendationStatusAction = new CheckRecommendationRequestStatusAction(
     watchroomRepository,
     recommendationRequestRepository,
+  );
+  const checkRecommendationFeedbackExistsAction = new CheckRecommendationFeedbackExistsAction(
+    watchroomRepository,
+    recommendationRequestRepository,
+    recommendationFeedbackRepository,
   );
   const submitRecommendationFeedbackAction = new SubmitRecommendationFeedbackAction(
     watchroomRepository,
@@ -220,6 +226,39 @@ export const recommendationRoutes: FastifyPluginAsyncTypebox<{
       });
 
       return reply.send(recommendations.map(mapRecommendationToResponse));
+    },
+  });
+
+  fastify.get('/watchrooms/:watchroomId/recommendations/:recommendationRequestId/feedback', {
+    schema: {
+      params: Type.Object({
+        watchroomId: Type.String({ format: 'uuid' }),
+        recommendationRequestId: Type.String({ format: 'uuid' }),
+      }),
+      response: {
+        200: Type.Object({
+          exists: Type.Boolean(),
+        }),
+      },
+    },
+    preHandler: [authenticationMiddleware],
+    handler: async (request, reply) => {
+      if (!request.user) {
+        throw new UnauthorizedAccessError({
+          reason: 'User not authenticated',
+        });
+      }
+
+      const { userId } = request.user;
+      const { watchroomId, recommendationRequestId } = request.params;
+
+      const result = await checkRecommendationFeedbackExistsAction.execute({
+        recommendationRequestId,
+        watchroomId,
+        userId,
+      });
+
+      return reply.send(result);
     },
   });
 
