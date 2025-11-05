@@ -9,7 +9,8 @@ import { getMyWatchrooms } from '../api/queries/watchroom.ts';
 import type { Watchroom } from '../api/types/watchroom.ts';
 import { CreateWatchRoomModal } from '../components/CreateWatchRoomModal.tsx';
 import { AuthContext } from '../context/AuthContext.tsx';
-import { getMyFavoriteSeries } from '../api/queries/getMyFavoriteSeries.ts';
+import { SERIES_THRESHOLDS } from '../config/seriesThresholds.ts';
+import { SeriesContext } from '../context/SeriesContext.tsx';
 
 export default function WatchRoomsPage() {
   const [rooms, setRooms] = useState<Watchroom[]>([]);
@@ -17,12 +18,10 @@ export default function WatchRoomsPage() {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
   const [total, setTotal] = useState(0);
-  const [favoriteSeriesCount, setFavoriteSeriesCount] = useState<number>(0);
   const pageSize = 20;
   const navigate = useNavigate();
   const { userData } = useContext(AuthContext);
-
-  const MINIMUM_FAVORITE_SERIES = 5;
+  const { lovedCount, totalCount } = useContext(SeriesContext);
 
   const fetchRooms = async () => {
     try {
@@ -38,28 +37,15 @@ export default function WatchRoomsPage() {
     }
   };
 
-  const fetchFavoriteSeriesCount = async () => {
-    try {
-      const response = await getMyFavoriteSeries(1, 1);
-      setFavoriteSeriesCount(response.metadata.total);
-    } catch {
-      // Silent failure - user can still see rooms, just can't create new ones
-      setFavoriteSeriesCount(0);
-    }
-  };
-
-  useEffect(() => {
-    fetchFavoriteSeriesCount();
-  }, []);
-
   useEffect(() => {
     fetchRooms();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page]);
 
-  const canCreateRoom = favoriteSeriesCount >= MINIMUM_FAVORITE_SERIES;
+  const canCreateRoom =
+    totalCount >= SERIES_THRESHOLDS.MIN_TOTAL_FOR_ROOM && lovedCount >= SERIES_THRESHOLDS.MIN_LOVED_FOR_ROOM;
   const disabledReason = !canCreateRoom
-    ? `You need to rate at least ${MINIMUM_FAVORITE_SERIES} series before creating a watch room.`
+    ? `You need at least ${SERIES_THRESHOLDS.MIN_TOTAL_FOR_ROOM} rated series and ${SERIES_THRESHOLDS.MIN_LOVED_FOR_ROOM} loved series to create a watch room.`
     : undefined;
 
   const handleCopyLink = (publicLinkId: string) => {

@@ -14,6 +14,7 @@ import {
 } from '../components/ui/Dialog';
 import { Skeleton } from '../components/ui/Skeleton';
 import { Heart, Tv, Check, Lock } from 'lucide-react';
+import { SERIES_THRESHOLDS } from '../config/seriesThresholds';
 
 export default function DashboardPage() {
   const { userDataInitialized } = useContext(AuthContext);
@@ -21,12 +22,12 @@ export default function DashboardPage() {
   const navigate = useNavigate();
   const [lockedDialogOpen, setLockedDialogOpen] = useState(false);
 
-  const MINIMUM_FAVORITE_SERIES = 5;
+  const canCreateRoom =
+    totalCount >= SERIES_THRESHOLDS.MIN_TOTAL_FOR_ROOM && lovedCount >= SERIES_THRESHOLDS.MIN_LOVED_FOR_ROOM;
 
-  const canCreateRoom = totalCount >= MINIMUM_FAVORITE_SERIES;
   // Derived values used for display
-  // TODO: Consider reading thresholds from config to keep UX in sync with backend
-  const toReachTen = Math.max(10 - totalCount, 0);
+  const toReachGoodAccuracy = Math.max(SERIES_THRESHOLDS.GOOD_ACCURACY - totalCount, 0);
+  const toReachMaxAccuracy = Math.max(SERIES_THRESHOLDS.MAX_ACCURACY - totalCount, 0);
 
   // Lightweight, card-level skeletons while data initializes (keeps layout stable)
   const renderSkeletons = () => (
@@ -125,7 +126,7 @@ export default function DashboardPage() {
                         <div className="flex items-center justify-between">
                           <div className="text-sm font-semibold text-foreground">Taste profile progress</div>
                           <div className="text-sm font-bold text-primary">
-                            {totalCount}/10
+                            {totalCount}/{SERIES_THRESHOLDS.MAX_ACCURACY}
                           </div>
                         </div>
                         <div
@@ -133,27 +134,37 @@ export default function DashboardPage() {
                           role="progressbar"
                           aria-label="Taste profile progress"
                           aria-valuemin={0}
-                          aria-valuemax={10}
+                          aria-valuemax={SERIES_THRESHOLDS.MAX_ACCURACY}
                           aria-valuenow={totalCount}
                         >
                           <div
                             className={`h-3 rounded-full transition-all duration-500 motion-reduce:transition-none ${
-                              totalCount < 5
+                              totalCount < SERIES_THRESHOLDS.GOOD_ACCURACY
                                 ? 'bg-linear-to-r from-amber-500 to-amber-400'
-                                : 'bg-linear-to-r from-emerald-500 to-emerald-400'
+                                : totalCount < SERIES_THRESHOLDS.MAX_ACCURACY
+                                  ? 'bg-linear-to-r from-blue-500 to-blue-400'
+                                  : 'bg-linear-to-r from-emerald-500 to-emerald-400'
                             }`}
-                            style={{ width: `${Math.min((totalCount / 10) * 100, 100)}%` }}
+                            style={{
+                              width: `${Math.min((totalCount / SERIES_THRESHOLDS.MAX_ACCURACY) * 100, 100)}%`,
+                            }}
                           />
                         </div>
                         <div className="flex items-center justify-center gap-1.5">
-                          {totalCount < 10 ? (
+                          {totalCount < SERIES_THRESHOLDS.GOOD_ACCURACY ? (
                             <span className="text-xs text-muted-foreground">
-                              {toReachTen} more to unlock max accuracy
+                              {toReachGoodAccuracy} more for good accuracy
+                            </span>
+                          ) : totalCount < SERIES_THRESHOLDS.MAX_ACCURACY ? (
+                            <span className="text-xs text-blue-600 dark:text-blue-400 font-medium flex items-center gap-1">
+                              <Check className="w-3 h-3" />
+                              Good accuracy • {toReachMaxAccuracy} more for max
                             </span>
                           ) : (
                             <span className="text-xs text-emerald-600 dark:text-emerald-400 font-medium flex items-center gap-1">
                               <Check className="w-3 h-3" />
                               Max accuracy unlocked
+                              {totalCount > SERIES_THRESHOLDS.MAX_ACCURACY && ` • +${totalCount - SERIES_THRESHOLDS.MAX_ACCURACY} bonus`}
                             </span>
                           )}
                         </div>
@@ -166,20 +177,27 @@ export default function DashboardPage() {
                           <div className="flex items-center gap-3 p-2 rounded-lg bg-muted/30">
                             <div
                               className={`shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${
-                                lovedCount >= 2
+                                lovedCount >= SERIES_THRESHOLDS.MIN_LOVED_SETUP
                                   ? 'bg-emerald-500 text-white'
                                   : 'bg-background text-muted-foreground border-2 border-border'
                               }`}
                             >
-                              {lovedCount >= 2 ? <Check className="w-3.5 h-3.5" /> : '1'}
+                              {lovedCount >= SERIES_THRESHOLDS.MIN_LOVED_SETUP ? (
+                                <Check className="w-3.5 h-3.5" />
+                              ) : (
+                                '1'
+                              )}
                             </div>
                             <div className="flex-1">
-                              <div className="text-sm font-medium text-foreground">Love 2 series</div>
+                              <div className="text-sm font-medium text-foreground">
+                                Love {SERIES_THRESHOLDS.MIN_LOVED_SETUP} series
+                              </div>
                               <div className="text-xs text-muted-foreground">
-                                {Math.min(lovedCount, 2)}/2 completed
+                                {Math.min(lovedCount, SERIES_THRESHOLDS.MIN_LOVED_SETUP)}/
+                                {SERIES_THRESHOLDS.MIN_LOVED_SETUP} completed
                               </div>
                             </div>
-                            {lovedCount >= 2 && (
+                            {lovedCount >= SERIES_THRESHOLDS.MIN_LOVED_SETUP && (
                               <span className="text-emerald-600 dark:text-emerald-400 text-xs font-medium">
                                 Done!
                               </span>
@@ -189,20 +207,27 @@ export default function DashboardPage() {
                           <div className="flex items-center gap-3 p-2 rounded-lg bg-muted/30">
                             <div
                               className={`shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${
-                                likedCount >= 5
+                                likedCount >= SERIES_THRESHOLDS.MIN_LIKED_SETUP
                                   ? 'bg-emerald-500 text-white'
                                   : 'bg-background text-muted-foreground border-2 border-border'
                               }`}
                             >
-                              {likedCount >= 5 ? <Check className="w-3.5 h-3.5" /> : '2'}
+                              {likedCount >= SERIES_THRESHOLDS.MIN_LIKED_SETUP ? (
+                                <Check className="w-3.5 h-3.5" />
+                              ) : (
+                                '2'
+                              )}
                             </div>
                             <div className="flex-1">
-                              <div className="text-sm font-medium text-foreground">Like 5 series</div>
+                              <div className="text-sm font-medium text-foreground">
+                                Like {SERIES_THRESHOLDS.MIN_LIKED_SETUP} series
+                              </div>
                               <div className="text-xs text-muted-foreground">
-                                {Math.min(likedCount, 5)}/5 completed
+                                {Math.min(likedCount, SERIES_THRESHOLDS.MIN_LIKED_SETUP)}/
+                                {SERIES_THRESHOLDS.MIN_LIKED_SETUP} completed
                               </div>
                             </div>
-                            {likedCount >= 5 && (
+                            {likedCount >= SERIES_THRESHOLDS.MIN_LIKED_SETUP && (
                               <span className="text-emerald-600 dark:text-emerald-400 text-xs font-medium">
                                 Done!
                               </span>
@@ -354,38 +379,44 @@ export default function DashboardPage() {
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Unlock Watch Rooms</DialogTitle>
-            <DialogDescription>Rate a few more series to get group recommendations.</DialogDescription>
+            <DialogDescription>Complete these requirements to create watch rooms and get recommendations.</DialogDescription>
           </DialogHeader>
           <div className="space-y-3">
             <div className="flex items-center gap-2 text-sm">
               <span
                 className={`shrink-0 w-5 h-5 rounded-full flex items-center justify-center text-xs ${
-                  lovedCount >= 2 ? 'bg-emerald-500 text-white' : 'bg-muted text-muted-foreground border border-border'
+                  lovedCount >= SERIES_THRESHOLDS.MIN_LOVED_FOR_ROOM
+                    ? 'bg-emerald-500 text-white'
+                    : 'bg-muted text-muted-foreground border border-border'
                 }`}
               >
-                {lovedCount >= 2 ? <Check className="w-3 h-3" /> : '1'}
+                {lovedCount >= SERIES_THRESHOLDS.MIN_LOVED_FOR_ROOM ? <Check className="w-3 h-3" /> : '1'}
               </span>
-              <span>Love 2 series ({Math.min(lovedCount, 2)}/2)</span>
+              <span>
+                Love {SERIES_THRESHOLDS.MIN_LOVED_FOR_ROOM} series (
+                {Math.min(lovedCount, SERIES_THRESHOLDS.MIN_LOVED_FOR_ROOM)}/{SERIES_THRESHOLDS.MIN_LOVED_FOR_ROOM})
+              </span>
             </div>
             <div className="flex items-center gap-2 text-sm">
               <span
                 className={`shrink-0 w-5 h-5 rounded-full flex items-center justify-center text-xs ${
-                  likedCount >= 5 ? 'bg-emerald-500 text-white' : 'bg-muted text-muted-foreground border border-border'
+                  totalCount >= SERIES_THRESHOLDS.MIN_TOTAL_FOR_ROOM
+                    ? 'bg-emerald-500 text-white'
+                    : 'bg-muted text-muted-foreground border border-border'
                 }`}
               >
-                {likedCount >= 5 ? <Check className="w-3 h-3" /> : '2'}
+                {totalCount >= SERIES_THRESHOLDS.MIN_TOTAL_FOR_ROOM ? <Check className="w-3 h-3" /> : '2'}
               </span>
-              <span>Like 5 series ({Math.min(likedCount, 5)}/5)</span>
+              <span>
+                Rate {SERIES_THRESHOLDS.MIN_TOTAL_FOR_ROOM} total series (
+                {Math.min(totalCount, SERIES_THRESHOLDS.MIN_TOTAL_FOR_ROOM)}/{SERIES_THRESHOLDS.MIN_TOTAL_FOR_ROOM})
+              </span>
             </div>
-            <div className="flex items-center gap-2 text-sm">
-              <span
-                className={`shrink-0 w-5 h-5 rounded-full flex items-center justify-center text-xs ${
-                  totalCount >= 10 ? 'bg-emerald-500 text-white' : 'bg-muted text-muted-foreground border border-border'
-                }`}
-              >
-                {totalCount >= 10 ? <Check className="w-3 h-3" /> : '3'}
-              </span>
-              <span>Rate 10 total ({Math.min(totalCount, 10)}/10)</span>
+            <div className="pt-2 border-t border-border">
+              <p className="text-xs text-muted-foreground">
+                💡 For better recommendations, aim for {SERIES_THRESHOLDS.GOOD_ACCURACY}+ rated series with{' '}
+                {SERIES_THRESHOLDS.MIN_LOVED_SETUP} loved!
+              </p>
             </div>
           </div>
           <DialogFooter className="sm:justify-between">
