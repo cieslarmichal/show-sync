@@ -134,9 +134,9 @@ describe('Header', () => {
     await user.click(avatars[0]);
 
     await waitFor(() => {
-      expect(screen.getByText('My Series')).toBeInTheDocument();
-      expect(screen.getByText('My Watch Rooms')).toBeInTheDocument();
-      expect(screen.getByText('My Profile')).toBeInTheDocument();
+      expect(screen.getByText('Series')).toBeInTheDocument();
+      expect(screen.getByText('Watch Rooms')).toBeInTheDocument();
+      expect(screen.getByText('Profile')).toBeInTheDocument();
       expect(screen.getByText('Log out')).toBeInTheDocument();
     });
   });
@@ -155,10 +155,10 @@ describe('Header', () => {
     await user.click(avatars[0]);
 
     await waitFor(() => {
-      expect(screen.getByText('My Series')).toBeInTheDocument();
+      expect(screen.getByText('Series')).toBeInTheDocument();
     });
 
-    const mySeriesItem = screen.getByText('My Series');
+    const mySeriesItem = screen.getByText('Series');
     await user.click(mySeriesItem);
 
     expect(mockNavigate).toHaveBeenCalledWith('/series');
@@ -178,10 +178,10 @@ describe('Header', () => {
     await user.click(avatars[0]);
 
     await waitFor(() => {
-      expect(screen.getByText('My Watch Rooms')).toBeInTheDocument();
+      expect(screen.getByText('Watch Rooms')).toBeInTheDocument();
     });
 
-    const watchRoomsItem = screen.getByText('My Watch Rooms');
+    const watchRoomsItem = screen.getByText('Watch Rooms');
     await user.click(watchRoomsItem);
 
     expect(mockNavigate).toHaveBeenCalledWith('/watchrooms');
@@ -201,10 +201,10 @@ describe('Header', () => {
     await user.click(avatars[0]);
 
     await waitFor(() => {
-      expect(screen.getByText('My Profile')).toBeInTheDocument();
+      expect(screen.getByText('Profile')).toBeInTheDocument();
     });
 
-    const profileItem = screen.getByText('My Profile');
+    const profileItem = screen.getByText('Profile');
     await user.click(profileItem);
 
     expect(mockNavigate).toHaveBeenCalledWith('/my-profile');

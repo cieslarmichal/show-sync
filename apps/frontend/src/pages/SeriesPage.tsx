@@ -202,7 +202,7 @@ export default function SeriesPage() {
           <div className="space-y-12">
             {/* Header */}
             <div className="text-center">
-              <h1 className="text-4xl sm:text-5xl font-bold tracking-tight text-foreground">My Series</h1>
+              <h1 className="text-4xl sm:text-5xl font-bold tracking-tight text-foreground">Series</h1>
               <p className="text-xl text-muted-foreground mt-3 max-w-2xl mx-auto">
                 Build your taste profile by adding series you love. The more you add, the better your group
                 recommendations will be.
@@ -217,11 +217,11 @@ export default function SeriesPage() {
               ignoredSeriesIds={ignoredSeriesIds}
             />
 
-            {/* My Series Section */}
+            {/* Series Section */}
             <div>
               <div className="flex items-center gap-3 mb-6">
                 <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground">
-                  Your Favorite Series ({mySeries.length})
+                  Favorite Series ({mySeries.length})
                 </h2>
               </div>
 

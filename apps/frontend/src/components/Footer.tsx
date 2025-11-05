@@ -41,7 +41,7 @@ export default function Footer() {
                     to="/series"
                     className="hover:text-foreground transition-colors"
                   >
-                    My Series
+                    Series
                   </Link>
                 </div>
                 <div className="flex items-center gap-3 text-muted-foreground">
@@ -50,7 +50,7 @@ export default function Footer() {
                     to="/watchrooms"
                     className="hover:text-foreground transition-colors"
                   >
-                    My Watch Rooms
+                    Watch Rooms
                   </Link>
                 </div>
                 <div className="flex items-center gap-3 text-muted-foreground">
@@ -59,7 +59,7 @@ export default function Footer() {
                     to="/my-profile"
                     className="hover:text-foreground transition-colors"
                   >
-                    My Profile
+                    Profile
                   </Link>
                 </div>
               </div>

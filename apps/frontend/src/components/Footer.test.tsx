@@ -85,19 +85,19 @@ describe('Footer', () => {
     renderFooter(userData);
 
     expect(screen.getByText('Your Account')).toBeInTheDocument();
-    expect(screen.getByText('My Series')).toBeInTheDocument();
-    expect(screen.getByText('My Watch Rooms')).toBeInTheDocument();
+    expect(screen.getByText('Series')).toBeInTheDocument();
+    expect(screen.getByText('Watch Rooms')).toBeInTheDocument();
   });
 
   it('should not show user account section when not authenticated', () => {
     renderFooter(null);
 
     expect(screen.queryByText('Your Account')).not.toBeInTheDocument();
-    expect(screen.queryByText('My Series')).not.toBeInTheDocument();
-    expect(screen.queryByText('My Watch Rooms')).not.toBeInTheDocument();
+    expect(screen.queryByText('Series')).not.toBeInTheDocument();
+    expect(screen.queryByText('Watch Rooms')).not.toBeInTheDocument();
   });
 
-  it('should render My Series link when authenticated', () => {
+  it('should render Series link when authenticated', () => {
     const userData: User = {
       id: '123',
       email: 'test@example.com',
@@ -106,11 +106,11 @@ describe('Footer', () => {
     };
     renderFooter(userData);
 
-    const mySeriesLink = screen.getByText('My Series');
+    const mySeriesLink = screen.getByText('Series');
     expect(mySeriesLink.closest('a')).toHaveAttribute('href', '/series');
   });
 
-  it('should render My Watch Rooms link when authenticated', () => {
+  it('should render Watch Rooms link when authenticated', () => {
     const userData: User = {
       id: '123',
       email: 'test@example.com',
@@ -119,7 +119,7 @@ describe('Footer', () => {
     };
     renderFooter(userData);
 
-    const watchRoomsLink = screen.getByText('My Watch Rooms');
+    const watchRoomsLink = screen.getByText('Watch Rooms');
     expect(watchRoomsLink.closest('a')).toHaveAttribute('href', '/watchrooms');
   });
 

@@ -28,21 +28,21 @@ export function UserMenu({ initial, size = 'large' }: UserMenuProps) {
             className="pt-2 hover:text-primary cursor-pointer flex items-center gap-2"
           >
             <Heart className="h-4 w-4" />
-            My Series
+            Series
           </MenubarItem>
           <MenubarItem
             onClick={() => navigate('/watchrooms')}
             className="hover:text-primary cursor-pointer flex items-center gap-2"
           >
             <Tv className="h-4 w-4" />
-            My Watch Rooms
+            Watch Rooms
           </MenubarItem>
           <MenubarItem
             onClick={() => navigate('/my-profile')}
             className="hover:text-primary cursor-pointer flex items-center gap-2"
           >
             <User className="h-4 w-4" />
-            My Profile
+            Profile
           </MenubarItem>
           <MenubarItem
             onClick={() => navigate('/logout')}
