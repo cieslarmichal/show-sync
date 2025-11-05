@@ -142,7 +142,7 @@ export default function DashboardPage() {
                               totalCount < SERIES_THRESHOLDS.GOOD_ACCURACY
                                 ? 'bg-linear-to-r from-amber-500 to-amber-400'
                                 : totalCount < SERIES_THRESHOLDS.MAX_ACCURACY
-                                  ? 'bg-linear-to-r from-blue-500 to-blue-400'
+                                  ? 'bg-linear-to-r from-violet-500 to-purple-400'
                                   : 'bg-linear-to-r from-emerald-500 to-emerald-400'
                             }`}
                             style={{
@@ -156,7 +156,7 @@ export default function DashboardPage() {
                               {toReachGoodAccuracy} more for good accuracy
                             </span>
                           ) : totalCount < SERIES_THRESHOLDS.MAX_ACCURACY ? (
-                            <span className="text-xs text-blue-600 dark:text-blue-400 font-medium flex items-center gap-1">
+                            <span className="text-xs text-violet-600 dark:text-violet-400 font-medium flex items-center gap-1">
                               <Check className="w-3 h-3" />
                               Good accuracy • {toReachMaxAccuracy} more for max
                             </span>
@@ -164,7 +164,8 @@ export default function DashboardPage() {
                             <span className="text-xs text-emerald-600 dark:text-emerald-400 font-medium flex items-center gap-1">
                               <Check className="w-3 h-3" />
                               Max accuracy unlocked
-                              {totalCount > SERIES_THRESHOLDS.MAX_ACCURACY && ` • +${totalCount - SERIES_THRESHOLDS.MAX_ACCURACY} bonus`}
+                              {totalCount > SERIES_THRESHOLDS.MAX_ACCURACY &&
+                                ` • +${totalCount - SERIES_THRESHOLDS.MAX_ACCURACY} bonus`}
                             </span>
                           )}
                         </div>
@@ -198,9 +199,7 @@ export default function DashboardPage() {
                               </div>
                             </div>
                             {lovedCount >= SERIES_THRESHOLDS.MIN_LOVED_SETUP && (
-                              <span className="text-emerald-600 dark:text-emerald-400 text-xs font-medium">
-                                Done!
-                              </span>
+                              <span className="text-emerald-600 dark:text-emerald-400 text-xs font-medium">Done!</span>
                             )}
                           </div>
 
@@ -228,9 +227,7 @@ export default function DashboardPage() {
                               </div>
                             </div>
                             {likedCount >= SERIES_THRESHOLDS.MIN_LIKED_SETUP && (
-                              <span className="text-emerald-600 dark:text-emerald-400 text-xs font-medium">
-                                Done!
-                              </span>
+                              <span className="text-emerald-600 dark:text-emerald-400 text-xs font-medium">Done!</span>
                             )}
                           </div>
                         </div>
@@ -379,7 +376,9 @@ export default function DashboardPage() {
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Unlock Watch Rooms</DialogTitle>
-            <DialogDescription>Complete these requirements to create watch rooms and get recommendations.</DialogDescription>
+            <DialogDescription>
+              Complete these requirements to create watch rooms and get recommendations.
+            </DialogDescription>
           </DialogHeader>
           <div className="space-y-3">
             <div className="flex items-center gap-2 text-sm">

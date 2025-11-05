@@ -15,7 +15,7 @@ export const SERIES_THRESHOLDS = {
 
   // Setup requirements (shown in onboarding flow)
   MIN_LOVED_SETUP: 3, // Required loved series
-  MIN_LIKED_SETUP: 8, // Required liked series
+  MIN_LIKED_SETUP: 5, // Required liked series
 } as const;
 
 export type SeriesThresholds = typeof SERIES_THRESHOLDS;
