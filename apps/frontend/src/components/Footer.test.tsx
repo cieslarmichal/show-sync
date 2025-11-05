@@ -28,7 +28,7 @@ describe('Footer', () => {
     renderFooter();
 
     expect(screen.getByText('10x Series Matcher')).toBeInTheDocument();
-    expect(screen.getByText('SM')).toBeInTheDocument();
+    expect(screen.getByAltText('10x Series Matcher Logo')).toBeInTheDocument();
   });
 
   it('should render app description', () => {

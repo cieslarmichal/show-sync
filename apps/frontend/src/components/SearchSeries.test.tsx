@@ -112,8 +112,8 @@ describe('SearchSeries', () => {
 
     await waitFor(
       () => {
-        const likeButtons = screen.getAllByRole('button', { name: /^like$/i });
-        const notInterestedButtons = screen.getAllByRole('button', { name: /^skip$/i });
+        const likeButtons = screen.getAllByRole('button', { name: /mark as liked/i });
+        const notInterestedButtons = screen.getAllByRole('button', { name: /mark as not interested/i });
         expect(likeButtons.length).toBeGreaterThan(0);
         expect(notInterestedButtons.length).toBeGreaterThan(0);
       },
@@ -142,7 +142,7 @@ describe('SearchSeries', () => {
       { timeout: 1000 },
     );
 
-    const likeButton = screen.getAllByRole('button', { name: /^like$/i })[0];
+    const likeButton = screen.getAllByRole('button', { name: /mark as liked/i })[0];
     await user.click(likeButton);
 
     expect(mockOnAddToProfile).toHaveBeenCalledTimes(1);
@@ -176,7 +176,7 @@ describe('SearchSeries', () => {
       { timeout: 1000 },
     );
 
-    const likeButton = screen.getAllByRole('button', { name: /^like$/i })[0];
+    const likeButton = screen.getAllByRole('button', { name: /mark as liked/i })[0];
     await user.click(likeButton);
 
     await waitFor(() => {
@@ -393,7 +393,7 @@ describe('SearchSeries', () => {
     });
   });
 
-  it('should show "Ignored" for series already ignored', async () => {
+  it('should show "Skipped" for series already ignored', async () => {
     const ignoredWithSeries = new Set<number>([1396]);
     const user = userEvent.setup();
 
@@ -411,7 +411,7 @@ describe('SearchSeries', () => {
 
     await waitFor(
       () => {
-        expect(screen.getByRole('button', { name: /skipped/i })).toBeInTheDocument();
+        expect(screen.getByText('Skipped')).toBeInTheDocument();
       },
       { timeout: 1000 },
     );
@@ -435,7 +435,7 @@ describe('SearchSeries', () => {
 
     await waitFor(
       () => {
-        const skippedButton = screen.getByRole('button', { name: /skipped/i });
+        const skippedButton = screen.getByRole('button', { name: /mark as not interested/i });
         expect(skippedButton).toBeDisabled();
       },
       { timeout: 1000 },

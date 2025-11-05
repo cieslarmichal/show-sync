@@ -261,11 +261,11 @@ export default function DashboardPage() {
                         </div>
                       </div>
                     </CardHeader>
-                    <CardContent className="grow space-y-6">
+                    <CardContent className="grow space-y-6 mt-1">
                       {/* Desktop: keep expanded */}
-                      <div className="space-y-3 hidden sm:block">
+                      <div className="space-y-4 hidden sm:block">
                         <p className="text-sm font-medium text-foreground">How it works:</p>
-                        <ul className="space-y-3 text-sm text-muted-foreground">
+                        <ul className="space-y-4 text-sm text-muted-foreground">
                           <li className="flex items-start gap-3">
                             <span className="shrink-0 flex items-center justify-center w-6 h-6 rounded-full bg-primary/10 text-primary font-bold text-xs">
                               1

@@ -3,11 +3,11 @@ import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import IgnoredSeriesList from './IgnoredSeriesList';
 import { IgnoredSeries } from '../api/types/series';
-import * as getSeriesDetailsModule from '../api/queries/getSeriesDetails';
+import * as getSeriesDetailsBatchModule from '../api/queries/getSeriesDetailsBatch';
 
-vi.mock('../api/queries/getSeriesDetails');
+vi.mock('../api/queries/getSeriesDetailsBatch');
 
-const mockGetSeriesDetails = vi.spyOn(getSeriesDetailsModule, 'getSeriesDetails');
+const mockGetSeriesDetailsBatch = vi.spyOn(getSeriesDetailsBatchModule, 'getSeriesDetailsBatch');
 
 describe('IgnoredSeriesList', () => {
   const mockIgnoredSeries: IgnoredSeries[] = [
@@ -23,22 +23,40 @@ describe('IgnoredSeriesList', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-    mockGetSeriesDetails.mockImplementation(async (id: number) => ({
-      id,
-      name: `Series ${id}`,
-      posterPath: `/poster${id}.jpg`,
-      backdropPath: null,
-      overview: 'Test overview',
-      firstAirDate: '2024-01-01',
-      genres: ['Drama'],
-      numberOfSeasons: 1,
-      numberOfEpisodes: 10,
-      status: 'Returning Series',
-      voteAverage: 8.5,
-      genreIds: [18],
-      originCountry: ['US'],
-      originalLanguage: 'en',
-    }));
+    mockGetSeriesDetailsBatch.mockResolvedValue([
+      {
+        id: 1,
+        name: 'Breaking Bad',
+        posterPath: '/poster1.jpg',
+        backdropPath: null,
+        overview: 'Test overview',
+        firstAirDate: '2024-01-01',
+        genres: ['Drama'],
+        numberOfSeasons: 1,
+        numberOfEpisodes: 10,
+        status: 'Returning Series',
+        voteAverage: 8.5,
+        genreIds: [18],
+        originCountry: ['US'],
+        originalLanguage: 'en',
+      },
+      {
+        id: 2,
+        name: 'Game of Thrones',
+        posterPath: '/poster2.jpg',
+        backdropPath: null,
+        overview: 'Test overview',
+        firstAirDate: '2024-01-01',
+        genres: ['Drama'],
+        numberOfSeasons: 1,
+        numberOfEpisodes: 10,
+        status: 'Returning Series',
+        voteAverage: 8.5,
+        genreIds: [18],
+        originCountry: ['US'],
+        originalLanguage: 'en',
+      },
+    ]);
   });
 
   it('should render loading state', () => {
@@ -78,13 +96,12 @@ describe('IgnoredSeriesList', () => {
     );
 
     await waitFor(() => {
-      expect(screen.getByText('Series 1')).toBeInTheDocument();
-      expect(screen.getByText('Series 2')).toBeInTheDocument();
+      expect(screen.getByText('Breaking Bad')).toBeInTheDocument();
+      expect(screen.getByText('Game of Thrones')).toBeInTheDocument();
     });
 
-    expect(mockGetSeriesDetails).toHaveBeenCalledTimes(2);
-    expect(mockGetSeriesDetails).toHaveBeenCalledWith(1);
-    expect(mockGetSeriesDetails).toHaveBeenCalledWith(2);
+    expect(mockGetSeriesDetailsBatch).toHaveBeenCalledTimes(1);
+    expect(mockGetSeriesDetailsBatch).toHaveBeenCalledWith([1, 2]);
   });
 
   it('should call onRemoveIgnored when remove button is clicked', async () => {
@@ -99,7 +116,7 @@ describe('IgnoredSeriesList', () => {
     );
 
     await waitFor(() => {
-      expect(screen.getByText('Series 1')).toBeInTheDocument();
+      expect(screen.getByText('Breaking Bad')).toBeInTheDocument();
     });
 
     const removeButtons = screen.getAllByRole('button', { name: /remove.*from ignored list/i });
@@ -118,15 +135,16 @@ describe('IgnoredSeriesList', () => {
     );
 
     await waitFor(() => {
-      expect(screen.getByAltText('Series 1 poster')).toBeInTheDocument();
+      expect(screen.getByAltText('Breaking Bad poster')).toBeInTheDocument();
     });
 
-    const poster = screen.getByAltText('Series 1 poster');
+    const poster = screen.getByAltText('Breaking Bad poster');
     expect(poster).toHaveClass('opacity-60', 'grayscale');
   });
 
   it('should handle series details fetch error gracefully', async () => {
-    mockGetSeriesDetails.mockRejectedValueOnce(new Error('Failed to fetch'));
+    // Return array with one null result (failed fetch)
+    mockGetSeriesDetailsBatch.mockResolvedValueOnce([]);
 
     render(
       <IgnoredSeriesList
@@ -137,6 +155,7 @@ describe('IgnoredSeriesList', () => {
     );
 
     await waitFor(() => {
+      // Should show fallback name with series ID
       expect(screen.getByText('Series 1')).toBeInTheDocument();
     });
 

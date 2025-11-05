@@ -13,7 +13,7 @@ describe('PreferenceToggle', () => {
       />,
     );
 
-    const button = screen.getByRole('button', { name: /mark as loved/i });
+    const button = screen.getByRole('button', { name: /like.*click to set to loved/i });
     expect(button).toBeInTheDocument();
   });
 
@@ -26,7 +26,7 @@ describe('PreferenceToggle', () => {
       />,
     );
 
-    const button = screen.getByRole('button', { name: /mark as liked/i });
+    const button = screen.getByRole('button', { name: /loved.*click to set to like/i });
     expect(button).toBeInTheDocument();
   });
 
@@ -41,7 +41,7 @@ describe('PreferenceToggle', () => {
       />,
     );
 
-    const button = screen.getByRole('button', { name: /mark as loved/i });
+    const button = screen.getByRole('button', { name: /like.*click to set to loved/i });
     await user.click(button);
 
     expect(onToggle).toHaveBeenCalledWith('love');
@@ -59,7 +59,7 @@ describe('PreferenceToggle', () => {
       />,
     );
 
-    const button = screen.getByRole('button', { name: /mark as liked/i });
+    const button = screen.getByRole('button', { name: /loved.*click to set to like/i });
     await user.click(button);
 
     expect(onToggle).toHaveBeenCalledWith('like');
@@ -77,7 +77,7 @@ describe('PreferenceToggle', () => {
       />,
     );
 
-    const button = screen.getByRole('button', { name: /mark as loved/i });
+    const button = screen.getByRole('button', { name: /like.*click to set to loved/i });
     expect(button).toBeDisabled();
   });
 
@@ -93,7 +93,7 @@ describe('PreferenceToggle', () => {
       />,
     );
 
-    const button = screen.getByRole('button', { name: /mark as loved/i });
+    const button = screen.getByRole('button', { name: /like.*click to set to loved/i });
     await user.click(button);
 
     expect(onToggle).not.toHaveBeenCalled();
@@ -110,11 +110,11 @@ describe('PreferenceToggle', () => {
       />,
     );
 
-    const button = screen.getByRole('button', { name: /mark as loved/i });
+    const button = screen.getByRole('button', { name: /like.*click to set to loved/i });
     await user.hover(button);
 
     // Tooltip should appear with text about changing preference (use queryAllByText to handle duplicates)
-    const tooltips = await screen.findAllByText(/liked.*click to change to love/i);
+    const tooltips = await screen.findAllByText(/like.*click to set to loved/i);
     expect(tooltips.length).toBeGreaterThan(0);
   });
 });

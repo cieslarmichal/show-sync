@@ -131,6 +131,68 @@ export const handlers = [
     });
   }),
 
+  http.get(`${API_BASE_URL}/series/batch/details`, ({ request }) => {
+    const url = new URL(request.url);
+    const idsParam = url.searchParams.get('ids');
+    const ids = idsParam ? idsParam.split(',').map((id) => parseInt(id, 10)) : [];
+
+    const seriesMap: Record<number, unknown> = {
+      1: {
+        id: 1,
+        name: 'Breaking Bad',
+        posterPath: '/poster1.jpg',
+        overview: 'A chemistry teacher turned meth producer',
+        firstAirDate: '2008-01-20',
+        genres: ['Drama', 'Crime'],
+        numberOfSeasons: 5,
+        numberOfEpisodes: 62,
+        backdropPath: '/backdrop1.jpg',
+        status: 'Ended',
+        voteAverage: 9.5,
+        genreIds: [18, 80],
+        originCountry: ['US'],
+        originalLanguage: 'en',
+      },
+      2: {
+        id: 2,
+        name: 'Game of Thrones',
+        posterPath: '/poster2.jpg',
+        overview: 'Epic fantasy series',
+        firstAirDate: '2011-04-17',
+        genres: ['Fantasy', 'Drama'],
+        numberOfSeasons: 8,
+        numberOfEpisodes: 73,
+        backdropPath: '/backdrop2.jpg',
+        status: 'Ended',
+        voteAverage: 9.2,
+        genreIds: [10765, 18],
+        originCountry: ['US'],
+        originalLanguage: 'en',
+      },
+    };
+
+    const seriesDetails = ids.map((id) => seriesMap[id] || {
+      id,
+      name: `Series ${id}`,
+      posterPath: `/poster${id}.jpg`,
+      overview: 'Test overview',
+      firstAirDate: '2024-01-01',
+      genres: ['Drama'],
+      numberOfSeasons: 1,
+      numberOfEpisodes: 10,
+      backdropPath: null,
+      status: 'Returning Series',
+      voteAverage: 8.5,
+      genreIds: [18],
+      originCountry: ['US'],
+      originalLanguage: 'en',
+    });
+
+    return HttpResponse.json({
+      data: seriesDetails,
+    });
+  }),
+
   // WatchRoom endpoints
   http.post(`${API_BASE_URL}/watchrooms`, async ({ request }) => {
     const body = (await request.json()) as { name: string; description?: string };

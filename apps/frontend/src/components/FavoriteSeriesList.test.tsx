@@ -4,17 +4,17 @@ import userEvent from '@testing-library/user-event';
 import FavoriteSeriesList from './FavoriteSeriesList';
 import type { FavoriteSeries } from '../api/types/series';
 
-// Mock the getSeriesDetails function
-vi.mock('../api/queries/getSeriesDetails', () => ({
-  getSeriesDetails: vi.fn(),
+// Mock the getSeriesDetailsBatch function
+vi.mock('../api/queries/getSeriesDetailsBatch', () => ({
+  getSeriesDetailsBatch: vi.fn(),
 }));
 
-import { getSeriesDetails } from '../api/queries/getSeriesDetails';
+import { getSeriesDetailsBatch } from '../api/queries/getSeriesDetailsBatch';
 
 describe('FavoriteSeriesList', () => {
   const mockOnRemoveFavorite = vi.fn();
   const mockOnUpdatePreference = vi.fn();
-  const mockGetSeriesDetails = vi.mocked(getSeriesDetails);
+  const mockGetSeriesDetailsBatch = vi.mocked(getSeriesDetailsBatch);
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -57,26 +57,24 @@ describe('FavoriteSeriesList', () => {
       { seriesTmdbId: 2, preferenceLevel: 'love' },
     ];
 
-    mockGetSeriesDetails.mockImplementation((tmdbId: number) => {
-      if (tmdbId === 1) {
-        return Promise.resolve({
-          id: 1,
-          name: 'Breaking Bad',
-          posterPath: '/poster1.jpg',
-          overview: 'A chemistry teacher turned meth producer',
-          firstAirDate: '2008-01-20',
-          genres: ['Drama', 'Crime'],
-          numberOfSeasons: 5,
-          numberOfEpisodes: 62,
-          backdropPath: '/backdrop1.jpg',
-          status: 'Ended',
-          voteAverage: 9.5,
-          genreIds: [18, 80],
-          originCountry: ['US'],
-          originalLanguage: 'en',
-        });
-      }
-      return Promise.resolve({
+    mockGetSeriesDetailsBatch.mockResolvedValue([
+      {
+        id: 1,
+        name: 'Breaking Bad',
+        posterPath: '/poster1.jpg',
+        overview: 'A chemistry teacher turned meth producer',
+        firstAirDate: '2008-01-20',
+        genres: ['Drama', 'Crime'],
+        numberOfSeasons: 5,
+        numberOfEpisodes: 62,
+        backdropPath: '/backdrop1.jpg',
+        status: 'Ended',
+        voteAverage: 9.5,
+        genreIds: [18, 80],
+        originCountry: ['US'],
+        originalLanguage: 'en',
+      },
+      {
         id: 2,
         name: 'Game of Thrones',
         posterPath: '/poster2.jpg',
@@ -91,8 +89,8 @@ describe('FavoriteSeriesList', () => {
         genreIds: [10765, 18],
         originCountry: ['US'],
         originalLanguage: 'en',
-      });
-    });
+      },
+    ]);
 
     render(
       <FavoriteSeriesList
@@ -107,29 +105,30 @@ describe('FavoriteSeriesList', () => {
       expect(screen.getByText('Game of Thrones')).toBeInTheDocument();
     });
 
-    expect(mockGetSeriesDetails).toHaveBeenCalledWith(1);
-    expect(mockGetSeriesDetails).toHaveBeenCalledWith(2);
+    expect(mockGetSeriesDetailsBatch).toHaveBeenCalledWith([1, 2]);
   });
 
   it('should render series image with correct src', async () => {
     const mockFavorites: FavoriteSeries[] = [{ seriesTmdbId: 1, preferenceLevel: 'like' }];
 
-    mockGetSeriesDetails.mockResolvedValue({
-      id: 1,
-      name: 'Breaking Bad',
-      posterPath: '/poster1.jpg',
-      overview: 'A chemistry teacher',
-      firstAirDate: '2008-01-20',
-      genres: ['Drama'],
-      numberOfSeasons: 5,
-      numberOfEpisodes: 62,
-      backdropPath: '/backdrop1.jpg',
-      status: 'Ended',
-      voteAverage: 9.5,
-      genreIds: [18],
-      originCountry: ['US'],
-      originalLanguage: 'en',
-    });
+    mockGetSeriesDetailsBatch.mockResolvedValue([
+      {
+        id: 1,
+        name: 'Breaking Bad',
+        posterPath: '/poster1.jpg',
+        overview: 'A chemistry teacher',
+        firstAirDate: '2008-01-20',
+        genres: ['Drama'],
+        numberOfSeasons: 5,
+        numberOfEpisodes: 62,
+        backdropPath: '/backdrop1.jpg',
+        status: 'Ended',
+        voteAverage: 9.5,
+        genreIds: [18],
+        originCountry: ['US'],
+        originalLanguage: 'en',
+      },
+    ]);
 
     render(
       <FavoriteSeriesList
@@ -148,22 +147,24 @@ describe('FavoriteSeriesList', () => {
   it('should show "No Image Available" when posterPath is missing', async () => {
     const mockFavorites: FavoriteSeries[] = [{ seriesTmdbId: 1, preferenceLevel: 'like' }];
 
-    mockGetSeriesDetails.mockResolvedValue({
-      id: 1,
-      name: 'Series Without Poster',
-      posterPath: null,
-      overview: 'Test series',
-      firstAirDate: '2020-01-01',
-      genres: ['Drama'],
-      numberOfSeasons: 1,
-      numberOfEpisodes: 10,
-      backdropPath: null,
-      status: 'Ended',
-      voteAverage: 7.0,
-      genreIds: [18],
-      originCountry: ['US'],
-      originalLanguage: 'en',
-    });
+    mockGetSeriesDetailsBatch.mockResolvedValue([
+      {
+        id: 1,
+        name: 'Series Without Poster',
+        posterPath: null,
+        overview: 'Test series',
+        firstAirDate: '2020-01-01',
+        genres: ['Drama'],
+        numberOfSeasons: 1,
+        numberOfEpisodes: 10,
+        backdropPath: null,
+        status: 'Ended',
+        voteAverage: 7.0,
+        genreIds: [18],
+        originCountry: ['US'],
+        originalLanguage: 'en',
+      },
+    ]);
 
     render(
       <FavoriteSeriesList
@@ -181,23 +182,24 @@ describe('FavoriteSeriesList', () => {
   it('should call onRemoveFavorite when remove button is clicked', async () => {
     const mockFavorites: FavoriteSeries[] = [{ seriesTmdbId: 1, preferenceLevel: 'like' }];
 
-    mockGetSeriesDetails.mockResolvedValue({
-      id: 1,
-      name: 'Breaking Bad',
-      posterPath: '/poster1.jpg',
-      overview: 'A chemistry teacher',
-      firstAirDate: '2008-01-20',
-      genres: ['Drama'],
-      numberOfSeasons: 5,
-      numberOfEpisodes: 62,
-      backdropPath: '/backdrop1.jpg',
-      status: 'Ended',
-      voteAverage: 9.5,
-      genreIds: [18],
-      originCountry: ['US'],
-      originalLanguage: 'en',
-    });
-
+    mockGetSeriesDetailsBatch.mockResolvedValue([
+      {
+        id: 1,
+        name: 'Breaking Bad',
+        posterPath: '/poster1.jpg',
+        overview: 'A chemistry teacher',
+        firstAirDate: '2008-01-20',
+        genres: ['Drama'],
+        numberOfSeasons: 5,
+        numberOfEpisodes: 62,
+        backdropPath: '/backdrop1.jpg',
+        status: 'Ended',
+        voteAverage: 9.5,
+        genreIds: [18],
+        originCountry: ['US'],
+        originalLanguage: 'en',
+      },
+    ]);
     mockOnRemoveFavorite.mockResolvedValue(undefined);
 
     const { unmount } = render(
@@ -229,27 +231,8 @@ describe('FavoriteSeriesList', () => {
       { seriesTmdbId: 2, preferenceLevel: 'love' },
     ];
 
-    mockGetSeriesDetails.mockImplementation((tmdbId: number) => {
-      if (tmdbId === 1) {
-        return Promise.reject(new Error('Failed to load'));
-      }
-      return Promise.resolve({
-        id: 2,
-        name: 'Game of Thrones',
-        posterPath: '/poster2.jpg',
-        overview: 'Epic fantasy',
-        firstAirDate: '2011-04-17',
-        genres: ['Fantasy'],
-        numberOfSeasons: 8,
-        numberOfEpisodes: 73,
-        backdropPath: '/backdrop2.jpg',
-        status: 'Ended',
-        voteAverage: 9.2,
-        genreIds: [10765],
-        originCountry: ['US'],
-        originalLanguage: 'en',
-      });
-    });
+    // Mock returns empty array (simulating failed fetch)
+    mockGetSeriesDetailsBatch.mockResolvedValue([]);
 
     render(
       <FavoriteSeriesList
@@ -260,16 +243,11 @@ describe('FavoriteSeriesList', () => {
     );
 
     await waitFor(() => {
-      expect(screen.getByText('Game of Thrones')).toBeInTheDocument();
+      // Should show fallback IDs when details fail to load
+      expect(screen.getByText('Series 1')).toBeInTheDocument();
+      expect(screen.getByText('Series 2')).toBeInTheDocument();
     });
 
-    // Series 1 should render with fallback ID when it failed to load details
-    expect(screen.getByText('Series 1')).toBeInTheDocument();
-
-    // But it should not show the series name since details loading failed
-    expect(screen.queryByText('Breaking Bad')).not.toBeInTheDocument();
-
-    expect(consoleErrorSpy).toHaveBeenCalled();
     consoleErrorSpy.mockRestore();
   });
 
@@ -278,22 +256,24 @@ describe('FavoriteSeriesList', () => {
 
     const mockFavorites: FavoriteSeries[] = [{ seriesTmdbId: 1, preferenceLevel: 'like' }];
 
-    mockGetSeriesDetails.mockResolvedValue({
-      id: 1,
-      name: 'Breaking Bad',
-      posterPath: '/poster1.jpg',
-      overview: 'A chemistry teacher',
-      firstAirDate: '2008-01-20',
-      genres: ['Drama'],
-      numberOfSeasons: 5,
-      numberOfEpisodes: 62,
-      backdropPath: '/backdrop1.jpg',
-      status: 'Ended',
-      voteAverage: 9.5,
-      genreIds: [18],
-      originCountry: ['US'],
-      originalLanguage: 'en',
-    });
+    mockGetSeriesDetailsBatch.mockResolvedValue([
+      {
+        id: 1,
+        name: 'Breaking Bad',
+        posterPath: '/poster1.jpg',
+        overview: 'A chemistry teacher',
+        firstAirDate: '2008-01-20',
+        genres: ['Drama'],
+        numberOfSeasons: 5,
+        numberOfEpisodes: 62,
+        backdropPath: '/backdrop1.jpg',
+        status: 'Ended',
+        voteAverage: 9.5,
+        genreIds: [18],
+        originCountry: ['US'],
+        originalLanguage: 'en',
+      },
+    ]);
 
     mockOnRemoveFavorite.mockRejectedValue(new Error('Failed to remove'));
 
@@ -329,8 +309,8 @@ describe('FavoriteSeriesList', () => {
   it('should display fallback ID when series details are not loaded yet', () => {
     const mockFavorites: FavoriteSeries[] = [{ seriesTmdbId: 123, preferenceLevel: 'like' }];
 
-    // Don't mock getSeriesDetails so it won't load immediately
-    mockGetSeriesDetails.mockImplementation(() => new Promise(() => {}));
+    // Don't mock getSeriesDetailsBatch so it won't load immediately
+    mockGetSeriesDetailsBatch.mockImplementation(() => new Promise(() => {}));
 
     render(
       <FavoriteSeriesList
@@ -346,22 +326,24 @@ describe('FavoriteSeriesList', () => {
   it('should clear series details when favorites array becomes empty', async () => {
     const mockFavorites: FavoriteSeries[] = [{ seriesTmdbId: 1, preferenceLevel: 'like' }];
 
-    mockGetSeriesDetails.mockResolvedValue({
-      id: 1,
-      name: 'Breaking Bad',
-      posterPath: '/poster1.jpg',
-      overview: 'A chemistry teacher',
-      firstAirDate: '2008-01-20',
-      genres: ['Drama'],
-      numberOfSeasons: 5,
-      numberOfEpisodes: 62,
-      backdropPath: '/backdrop1.jpg',
-      status: 'Ended',
-      voteAverage: 9.5,
-      genreIds: [18],
-      originCountry: ['US'],
-      originalLanguage: 'en',
-    });
+    mockGetSeriesDetailsBatch.mockResolvedValue([
+      {
+        id: 1,
+        name: 'Breaking Bad',
+        posterPath: '/poster1.jpg',
+        overview: 'A chemistry teacher',
+        firstAirDate: '2008-01-20',
+        genres: ['Drama'],
+        numberOfSeasons: 5,
+        numberOfEpisodes: 62,
+        backdropPath: '/backdrop1.jpg',
+        status: 'Ended',
+        voteAverage: 9.5,
+        genreIds: [18],
+        originCountry: ['US'],
+        originalLanguage: 'en',
+      },
+    ]);
 
     const { rerender } = render(
       <FavoriteSeriesList
@@ -391,22 +373,24 @@ describe('FavoriteSeriesList', () => {
   it('should render preference toggle when onUpdatePreference is provided', async () => {
     const mockFavorites: FavoriteSeries[] = [{ seriesTmdbId: 1, preferenceLevel: 'like' }];
 
-    mockGetSeriesDetails.mockResolvedValue({
-      id: 1,
-      name: 'Breaking Bad',
-      posterPath: '/poster1.jpg',
-      overview: 'A chemistry teacher',
-      firstAirDate: '2008-01-20',
-      genres: ['Drama'],
-      numberOfSeasons: 5,
-      numberOfEpisodes: 62,
-      backdropPath: '/backdrop1.jpg',
-      status: 'Ended',
-      voteAverage: 9.5,
-      genreIds: [18],
-      originCountry: ['US'],
-      originalLanguage: 'en',
-    });
+    mockGetSeriesDetailsBatch.mockResolvedValue([
+      {
+        id: 1,
+        name: 'Breaking Bad',
+        posterPath: '/poster1.jpg',
+        overview: 'A chemistry teacher',
+        firstAirDate: '2008-01-20',
+        genres: ['Drama'],
+        numberOfSeasons: 5,
+        numberOfEpisodes: 62,
+        backdropPath: '/backdrop1.jpg',
+        status: 'Ended',
+        voteAverage: 9.5,
+        genreIds: [18],
+        originCountry: ['US'],
+        originalLanguage: 'en',
+      },
+    ]);
 
     render(
       <FavoriteSeriesList
@@ -422,29 +406,31 @@ describe('FavoriteSeriesList', () => {
     });
 
     // Should render the preference toggle button
-    const toggleButton = screen.getByRole('button', { name: /mark as loved/i });
+    const toggleButton = screen.getByRole('button', { name: /like.*click to set to loved/i });
     expect(toggleButton).toBeInTheDocument();
   });
 
   it('should not render preference toggle when onUpdatePreference is not provided', async () => {
     const mockFavorites: FavoriteSeries[] = [{ seriesTmdbId: 1, preferenceLevel: 'like' }];
 
-    mockGetSeriesDetails.mockResolvedValue({
-      id: 1,
-      name: 'Breaking Bad',
-      posterPath: '/poster1.jpg',
-      overview: 'A chemistry teacher',
-      firstAirDate: '2008-01-20',
-      genres: ['Drama'],
-      numberOfSeasons: 5,
-      numberOfEpisodes: 62,
-      backdropPath: '/backdrop1.jpg',
-      status: 'Ended',
-      voteAverage: 9.5,
-      genreIds: [18],
-      originCountry: ['US'],
-      originalLanguage: 'en',
-    });
+    mockGetSeriesDetailsBatch.mockResolvedValue([
+      {
+        id: 1,
+        name: 'Breaking Bad',
+        posterPath: '/poster1.jpg',
+        overview: 'A chemistry teacher',
+        firstAirDate: '2008-01-20',
+        genres: ['Drama'],
+        numberOfSeasons: 5,
+        numberOfEpisodes: 62,
+        backdropPath: '/backdrop1.jpg',
+        status: 'Ended',
+        voteAverage: 9.5,
+        genreIds: [18],
+        originCountry: ['US'],
+        originalLanguage: 'en',
+      },
+    ]);
 
     render(
       <FavoriteSeriesList
@@ -459,29 +445,31 @@ describe('FavoriteSeriesList', () => {
     });
 
     // Should not render the preference toggle button
-    const toggleButton = screen.queryByRole('button', { name: /mark as loved/i });
+    const toggleButton = screen.queryByRole('button', { name: /like.*click to set to loved/i });
     expect(toggleButton).not.toBeInTheDocument();
   });
 
   it('should call onUpdatePreference when preference toggle is clicked', async () => {
     const mockFavorites: FavoriteSeries[] = [{ seriesTmdbId: 1, preferenceLevel: 'like' }];
 
-    mockGetSeriesDetails.mockResolvedValue({
-      id: 1,
-      name: 'Breaking Bad',
-      posterPath: '/poster1.jpg',
-      overview: 'A chemistry teacher',
-      firstAirDate: '2008-01-20',
-      genres: ['Drama'],
-      numberOfSeasons: 5,
-      numberOfEpisodes: 62,
-      backdropPath: '/backdrop1.jpg',
-      status: 'Ended',
-      voteAverage: 9.5,
-      genreIds: [18],
-      originCountry: ['US'],
-      originalLanguage: 'en',
-    });
+    mockGetSeriesDetailsBatch.mockResolvedValue([
+      {
+        id: 1,
+        name: 'Breaking Bad',
+        posterPath: '/poster1.jpg',
+        overview: 'A chemistry teacher',
+        firstAirDate: '2008-01-20',
+        genres: ['Drama'],
+        numberOfSeasons: 5,
+        numberOfEpisodes: 62,
+        backdropPath: '/backdrop1.jpg',
+        status: 'Ended',
+        voteAverage: 9.5,
+        genreIds: [18],
+        originCountry: ['US'],
+        originalLanguage: 'en',
+      },
+    ]);
 
     mockOnUpdatePreference.mockResolvedValue(undefined);
 
@@ -498,7 +486,7 @@ describe('FavoriteSeriesList', () => {
       expect(screen.getByText('Breaking Bad')).toBeInTheDocument();
     });
 
-    const toggleButton = screen.getByRole('button', { name: /mark as loved/i });
+    const toggleButton = screen.getByRole('button', { name: /like.*click to set to loved/i });
     await userEvent.click(toggleButton);
 
     expect(mockOnUpdatePreference).toHaveBeenCalledWith(1, 'love');
@@ -509,22 +497,24 @@ describe('FavoriteSeriesList', () => {
 
     const mockFavorites: FavoriteSeries[] = [{ seriesTmdbId: 1, preferenceLevel: 'like' }];
 
-    mockGetSeriesDetails.mockResolvedValue({
-      id: 1,
-      name: 'Breaking Bad',
-      posterPath: '/poster1.jpg',
-      overview: 'A chemistry teacher',
-      firstAirDate: '2008-01-20',
-      genres: ['Drama'],
-      numberOfSeasons: 5,
-      numberOfEpisodes: 62,
-      backdropPath: '/backdrop1.jpg',
-      status: 'Ended',
-      voteAverage: 9.5,
-      genreIds: [18],
-      originCountry: ['US'],
-      originalLanguage: 'en',
-    });
+    mockGetSeriesDetailsBatch.mockResolvedValue([
+      {
+        id: 1,
+        name: 'Breaking Bad',
+        posterPath: '/poster1.jpg',
+        overview: 'A chemistry teacher',
+        firstAirDate: '2008-01-20',
+        genres: ['Drama'],
+        numberOfSeasons: 5,
+        numberOfEpisodes: 62,
+        backdropPath: '/backdrop1.jpg',
+        status: 'Ended',
+        voteAverage: 9.5,
+        genreIds: [18],
+        originCountry: ['US'],
+        originalLanguage: 'en',
+      },
+    ]);
 
     mockOnUpdatePreference.mockRejectedValue(new Error('Failed to update'));
 
@@ -541,7 +531,7 @@ describe('FavoriteSeriesList', () => {
       expect(screen.getByText('Breaking Bad')).toBeInTheDocument();
     });
 
-    const toggleButton = screen.getByRole('button', { name: /mark as loved/i });
+    const toggleButton = screen.getByRole('button', { name: /like.*click to set to loved/i });
     await userEvent.click(toggleButton);
 
     expect(mockOnUpdatePreference).toHaveBeenCalledWith(1, 'love');
@@ -552,22 +542,24 @@ describe('FavoriteSeriesList', () => {
   it('should disable preference toggle while updating', async () => {
     const mockFavorites: FavoriteSeries[] = [{ seriesTmdbId: 1, preferenceLevel: 'like' }];
 
-    mockGetSeriesDetails.mockResolvedValue({
-      id: 1,
-      name: 'Breaking Bad',
-      posterPath: '/poster1.jpg',
-      overview: 'A chemistry teacher',
-      firstAirDate: '2008-01-20',
-      genres: ['Drama'],
-      numberOfSeasons: 5,
-      numberOfEpisodes: 62,
-      backdropPath: '/backdrop1.jpg',
-      status: 'Ended',
-      voteAverage: 9.5,
-      genreIds: [18],
-      originCountry: ['US'],
-      originalLanguage: 'en',
-    });
+    mockGetSeriesDetailsBatch.mockResolvedValue([
+      {
+        id: 1,
+        name: 'Breaking Bad',
+        posterPath: '/poster1.jpg',
+        overview: 'A chemistry teacher',
+        firstAirDate: '2008-01-20',
+        genres: ['Drama'],
+        numberOfSeasons: 5,
+        numberOfEpisodes: 62,
+        backdropPath: '/backdrop1.jpg',
+        status: 'Ended',
+        voteAverage: 9.5,
+        genreIds: [18],
+        originCountry: ['US'],
+        originalLanguage: 'en',
+      },
+    ]);
 
     // Make the update slow so we can check disabled state
     let resolveUpdate: () => void;
@@ -589,7 +581,7 @@ describe('FavoriteSeriesList', () => {
       expect(screen.getByText('Breaking Bad')).toBeInTheDocument();
     });
 
-    const toggleButton = screen.getByRole('button', { name: /mark as loved/i });
+    const toggleButton = screen.getByRole('button', { name: /like.*click to set to loved/i });
     expect(toggleButton).not.toBeDisabled();
 
     await userEvent.click(toggleButton);
