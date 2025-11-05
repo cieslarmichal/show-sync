@@ -56,5 +56,8 @@
   },
   "openRouter": {
     "apiKey": "test-open-router-api-key"
+  },
+  "recommendations": {
+    "maxRequestsPerUser": 100
   }
 }

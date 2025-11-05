@@ -55,6 +55,7 @@ export const recommendationRoutes: FastifyPluginAsyncTypebox<{
     watchroomRepository,
     recommendationRequestRepository,
     loggerService,
+    config.recommendations.maxRequestsPerUser,
   );
   const generateRecommendationsAction = new GenerateRecommendationsAction(
     watchroomRepository,

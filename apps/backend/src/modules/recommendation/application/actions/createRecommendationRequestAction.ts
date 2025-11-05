@@ -1,4 +1,5 @@
 import { ForbiddenAccessError } from '../../../../common/errors/forbiddenAccessError.ts';
+import { OperationNotValidError } from '../../../../common/errors/operationNotValidError.ts';
 import { ResourceNotFoundError } from '../../../../common/errors/resourceNotFoundError.ts';
 import type { LoggerService } from '../../../../common/logger/loggerService.ts';
 import type { ExecutionContext } from '../../../../common/types/executionContext.ts';
@@ -18,15 +19,18 @@ export class CreateRecommendationRequestAction {
   private readonly watchroomRepository: WatchroomRepository;
   private readonly recommendationRequestRepository: RecommendationRequestRepository;
   private readonly loggerService: LoggerService;
+  private readonly maxRequestsPerUser: number;
 
   public constructor(
     watchroomRepository: WatchroomRepository,
     recommendationRequestRepository: RecommendationRequestRepository,
     loggerService: LoggerService,
+    maxRequestsPerUser: number,
   ) {
     this.watchroomRepository = watchroomRepository;
     this.recommendationRequestRepository = recommendationRequestRepository;
     this.loggerService = loggerService;
+    this.maxRequestsPerUser = maxRequestsPerUser;
   }
 
   public async execute(
@@ -58,6 +62,24 @@ export class CreateRecommendationRequestAction {
       });
     }
 
+    // Check if user has exceeded the maximum recommendation limit
+    const currentCount = await this.recommendationRequestRepository.countByUserId(userId);
+
+    if (currentCount >= this.maxRequestsPerUser) {
+      this.loggerService.warn({
+        message: 'User exceeded maximum recommendation limit',
+        event: 'watchroom.recommendation_request.create.limit_exceeded',
+        requestId: context.requestId,
+        userId,
+        currentCount,
+        maxLimit: this.maxRequestsPerUser,
+      });
+
+      throw new OperationNotValidError({
+        reason: `Maximum request limit reached (${String(this.maxRequestsPerUser)}).`,
+      });
+    }
+
     const recommendationRequest = await this.recommendationRequestRepository.create({
       watchroomId,
       status: 'pending',
@@ -69,6 +91,7 @@ export class CreateRecommendationRequestAction {
       requestId: context.requestId,
       watchroomId,
       recommendationRequestId: recommendationRequest.id,
+      userRecommendationCount: currentCount + 1,
     });
 
     return {

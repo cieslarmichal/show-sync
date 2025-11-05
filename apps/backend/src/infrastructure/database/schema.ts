@@ -98,9 +98,7 @@ export const recommendationRequests = pgTable(
   'recommendation_requests',
   {
     id: uuid('id').primaryKey(),
-    watchroomId: uuid('watchroom_id')
-      .notNull()
-      .references(() => watchrooms.id, { onDelete: 'cascade' }),
+    watchroomId: uuid('watchroom_id').references(() => watchrooms.id, { onDelete: 'set null' }),
     status: varchar('status', { length: 16 }).notNull(), // 'pending' | 'completed' | 'failed'
     createdAt: timestamp('created_at').notNull().defaultNow(),
   },

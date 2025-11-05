@@ -94,7 +94,7 @@ export class RecommendationRequestRepositoryImpl implements RecommendationReques
   private mapToRecommendationRequest(row: typeof recommendationRequests.$inferSelect): RecommendationRequest {
     return {
       id: row.id,
-      watchroomId: row.watchroomId,
+      watchroomId: row.watchroomId ?? undefined,
       status: row.status as RecommendationRequestStatus,
       createdAt: row.createdAt,
     };

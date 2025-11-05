@@ -77,5 +77,8 @@
     "retryDelayMs": 1000,
     "requestTimeoutMs": 30000,
     "maxRetryDelayMs": 30000
+  },
+  "recommendations": {
+    "maxRequestsPerUser": 10
   }
 }

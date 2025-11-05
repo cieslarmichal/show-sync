@@ -3,6 +3,7 @@ import { beforeEach, afterEach, describe, expect, it } from 'vitest';
 import { Generator } from '../../../../../tests/generator.ts';
 import { createTestExecutionContext } from '../../../../../tests/helpers/executionContext.ts';
 import { ForbiddenAccessError } from '../../../../common/errors/forbiddenAccessError.ts';
+import { OperationNotValidError } from '../../../../common/errors/operationNotValidError.ts';
 import { ResourceNotFoundError } from '../../../../common/errors/resourceNotFoundError.ts';
 import type { LoggerService } from '../../../../common/logger/loggerService.ts';
 import { createConfig } from '../../../../core/config.ts';
@@ -26,6 +27,7 @@ describe('CreateRecommendationRequestAction', () => {
   let userRepository: UserRepositoryImpl;
   let createRecommendationRequestAction: CreateRecommendationRequestAction;
   let loggerService: LoggerService;
+  const maxRecommendationsPerUser = 5;
 
   beforeEach(async () => {
     const config = createConfig();
@@ -45,6 +47,7 @@ describe('CreateRecommendationRequestAction', () => {
       watchroomRepository,
       recommendationRequestRepository,
       loggerService,
+      maxRecommendationsPerUser,
     );
 
     await databaseClient.db.delete(recommendationRequests);
@@ -182,6 +185,129 @@ describe('CreateRecommendationRequestAction', () => {
       );
 
       expect(result1.recommendationRequestId).not.toBe(result2.recommendationRequestId);
+    });
+
+    it('throws OperationNotValidError when user reaches maximum recommendation limit', async () => {
+      const userData = Generator.userData();
+      const user = await userRepository.create(userData);
+
+      // Create watchrooms and recommendation requests up to the limit
+      for (let i = 0; i < maxRecommendationsPerUser; i++) {
+        const watchroomData = {
+          name: Generator.words(3),
+          ownerId: user.id,
+          publicLinkId: Generator.alphaString(10),
+        };
+        const watchroom = await watchroomRepository.create(watchroomData);
+
+        await createRecommendationRequestAction.execute(
+          {
+            watchroomId: watchroom.id,
+            userId: user.id,
+          },
+          createTestExecutionContext(),
+        );
+      }
+
+      // Attempt to create one more recommendation request
+      const watchroomData = {
+        name: Generator.words(3),
+        ownerId: user.id,
+        publicLinkId: Generator.alphaString(10),
+      };
+      const watchroom = await watchroomRepository.create(watchroomData);
+
+      await expect(
+        createRecommendationRequestAction.execute(
+          {
+            watchroomId: watchroom.id,
+            userId: user.id,
+          },
+          createTestExecutionContext(),
+        ),
+      ).rejects.toThrow(OperationNotValidError);
+    });
+
+    it('counts recommendations across all user watchrooms', async () => {
+      const userData = Generator.userData();
+      const user = await userRepository.create(userData);
+
+      // Create first watchroom and recommendation
+      const watchroom1Data = {
+        name: Generator.words(3),
+        ownerId: user.id,
+        publicLinkId: Generator.alphaString(10),
+      };
+      const watchroom1 = await watchroomRepository.create(watchroom1Data);
+
+      await createRecommendationRequestAction.execute(
+        {
+          watchroomId: watchroom1.id,
+          userId: user.id,
+        },
+        createTestExecutionContext(),
+      );
+
+      // Create second watchroom and recommendation
+      const watchroom2Data = {
+        name: Generator.words(3),
+        ownerId: user.id,
+        publicLinkId: Generator.alphaString(10),
+      };
+      const watchroom2 = await watchroomRepository.create(watchroom2Data);
+
+      await createRecommendationRequestAction.execute(
+        {
+          watchroomId: watchroom2.id,
+          userId: user.id,
+        },
+        createTestExecutionContext(),
+      );
+
+      // Verify count
+      const count = await recommendationRequestRepository.countByUserId(user.id);
+      expect(count).toBe(2);
+    });
+
+    it('allows creating recommendation when under the limit', async () => {
+      const userData = Generator.userData();
+      const user = await userRepository.create(userData);
+
+      // Create fewer recommendations than the limit
+      for (let i = 0; i < maxRecommendationsPerUser - 1; i++) {
+        const watchroomData = {
+          name: Generator.words(3),
+          ownerId: user.id,
+          publicLinkId: Generator.alphaString(10),
+        };
+        const watchroom = await watchroomRepository.create(watchroomData);
+
+        await createRecommendationRequestAction.execute(
+          {
+            watchroomId: watchroom.id,
+            userId: user.id,
+          },
+          createTestExecutionContext(),
+        );
+      }
+
+      // Should still allow one more
+      const watchroomData = {
+        name: Generator.words(3),
+        ownerId: user.id,
+        publicLinkId: Generator.alphaString(10),
+      };
+      const watchroom = await watchroomRepository.create(watchroomData);
+
+      const result = await createRecommendationRequestAction.execute(
+        {
+          watchroomId: watchroom.id,
+          userId: user.id,
+        },
+        createTestExecutionContext(),
+      );
+
+      expect(result.recommendationRequestId).toBeDefined();
     });
   });
 });

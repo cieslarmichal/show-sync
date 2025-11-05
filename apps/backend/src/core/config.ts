@@ -82,6 +82,9 @@ const configSchema = Type.Object({
     requestTimeoutMs: Type.Number({ minimum: 5000, maximum: 120000 }),
     maxRetryDelayMs: Type.Number({ minimum: 5000, maximum: 120000 }),
   }),
+  recommendations: Type.Object({
+    maxRequestsPerUser: Type.Number({ minimum: 1, maximum: 1000 }),
+  }),
 });
 
 export type Config = Static<typeof configSchema>;
