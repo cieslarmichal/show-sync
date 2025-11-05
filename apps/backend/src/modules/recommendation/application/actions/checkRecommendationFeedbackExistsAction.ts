@@ -42,8 +42,7 @@ export class CheckRecommendationFeedbackExistsAction {
       });
     }
 
-    const recommendationRequest =
-      await this.recommendationRequestRepository.findById(recommendationRequestId);
+    const recommendationRequest = await this.recommendationRequestRepository.findById(recommendationRequestId);
 
     if (!recommendationRequest) {
       throw new ResourceNotFoundError({

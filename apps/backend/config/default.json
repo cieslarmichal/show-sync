@@ -14,19 +14,19 @@
   },
   "rateLimit": {
     "global": {
-      "max": 100,
+      "max": 150,
       "timeWindow": 60000
     },
     "register": {
-      "max": 5,
+      "max": 3,
       "timeWindow": 600000
     },
     "login": {
-      "max": 10,
+      "max": 6,
       "timeWindow": 600000
     },
     "logout": {
-      "max": 20,
+      "max": 10,
       "timeWindow": 600000
     },
     "refreshToken": {
