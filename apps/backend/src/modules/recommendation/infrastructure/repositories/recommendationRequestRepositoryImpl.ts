@@ -1,8 +1,8 @@
-import { eq, desc } from 'drizzle-orm';
+import { eq, desc, count, inArray } from 'drizzle-orm';
 
 import { UuidService } from '../../../../common/uuid/uuidService.ts';
 import type { DatabaseClient } from '../../../../infrastructure/database/database.ts';
-import { recommendationRequests } from '../../../../infrastructure/database/schema.ts';
+import { recommendationRequests, watchroomParticipants } from '../../../../infrastructure/database/schema.ts';
 import type { Transaction } from '../../../../infrastructure/database/transaction.ts';
 import type {
   CreateRecommendationRequestData,
@@ -67,6 +67,28 @@ export class RecommendationRequestRepositoryImpl implements RecommendationReques
     }
 
     return this.mapToRecommendationRequest(request);
+  }
+
+  public async countByUserId(userId: string): Promise<number> {
+    // Find all watchrooms where the user is a participant
+    const userWatchrooms = await this.databaseClient.db
+      .select({ watchroomId: watchroomParticipants.watchroomId })
+      .from(watchroomParticipants)
+      .where(eq(watchroomParticipants.userId, userId));
+
+    if (userWatchrooms.length === 0) {
+      return 0;
+    }
+
+    const watchroomIds = userWatchrooms.map((w) => w.watchroomId);
+
+    // Count recommendation requests for those watchrooms
+    const [result] = await this.databaseClient.db
+      .select({ count: count() })
+      .from(recommendationRequests)
+      .where(inArray(recommendationRequests.watchroomId, watchroomIds));
+
+    return result?.count ?? 0;
   }
 
   private mapToRecommendationRequest(row: typeof recommendationRequests.$inferSelect): RecommendationRequest {

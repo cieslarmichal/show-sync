@@ -7,10 +7,14 @@ import { UnauthorizedAccessError } from '../../../common/errors/unathorizedAcces
 import type { LoggerService } from '../../../common/logger/loggerService.ts';
 import type { Config } from '../../../core/config.ts';
 import type { DatabaseClient } from '../../../infrastructure/database/database.ts';
+import { RecommendationRequestRepositoryImpl } from '../../recommendation/infrastructure/repositories/recommendationRequestRepositoryImpl.ts';
+import { FavoriteSeriesRepositoryImpl } from '../../series/infrastructure/repositories/favoriteSeriesRepositoryImpl.ts';
+import { WatchroomRepositoryImpl } from '../../watchroom/infrastructure/repositories/watchroomRepositoryImpl.ts';
 import { ChangePasswordAction } from '../application/actions/changePasswordAction.ts';
 import { CreateUserAction } from '../application/actions/createUserAction.ts';
 import { DeleteUserAction } from '../application/actions/deleteUserAction.ts';
 import { FindUserAction } from '../application/actions/findUserAction.ts';
+import { GetUserStatsAction } from '../application/actions/getUserStatsAction.ts';
 import { LoginUserAction } from '../application/actions/loginUserAction.ts';
 import { LogoutUserAction } from '../application/actions/logoutUserAction.ts';
 import { RefreshTokenAction } from '../application/actions/refreshTokenAction.ts';
@@ -69,6 +73,9 @@ export const userRoutes: FastifyPluginAsyncTypebox<{
   const userRepository = new UserRepositoryImpl(databaseClient);
   const userSessionRepository = new UserSessionRepositoryImpl(databaseClient);
   const passwordService = new PasswordService(config);
+  const recommendationRequestRepository = new RecommendationRequestRepositoryImpl(databaseClient);
+  const favoriteSeriesRepository = new FavoriteSeriesRepositoryImpl(databaseClient);
+  const watchroomRepository = new WatchroomRepositoryImpl(databaseClient);
 
   const createUserAction = new CreateUserAction(userRepository, loggerService, passwordService);
   const findUserAction = new FindUserAction(userRepository);
@@ -90,6 +97,11 @@ export const userRoutes: FastifyPluginAsyncTypebox<{
     databaseClient,
   );
   const logoutUserAction = new LogoutUserAction(userSessionRepository, tokenService);
+  const getUserStatsAction = new GetUserStatsAction(
+    favoriteSeriesRepository,
+    watchroomRepository,
+    recommendationRequestRepository,
+  );
 
   const authenticationMiddleware = createAuthenticationMiddleware(tokenService);
 
@@ -316,6 +328,35 @@ export const userRoutes: FastifyPluginAsyncTypebox<{
       );
 
       return reply.status(204).send();
+    },
+  });
+
+  fastify.get('/users/me/stats', {
+    schema: {
+      response: {
+        200: Type.Object({
+          favoriteSeriesCount: Type.Integer(),
+          watchRoomsCount: Type.Integer(),
+          recommendationCount: Type.Integer(),
+        }),
+      },
+    },
+    config: {
+      rateLimit: config.rateLimit.profile,
+    },
+    preHandler: [authenticationMiddleware],
+    handler: async (request, reply) => {
+      if (!request.user) {
+        throw new UnauthorizedAccessError({
+          reason: 'User not authenticated',
+        });
+      }
+
+      const { userId } = request.user;
+
+      const stats = await getUserStatsAction.execute({ userId });
+
+      return reply.send(stats);
     },
   });
 };

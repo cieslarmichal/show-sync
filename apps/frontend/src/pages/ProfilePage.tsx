@@ -7,8 +7,7 @@ import { User, Mail, Eye, EyeOff } from 'lucide-react';
 import { getMyUser } from '../api/queries/getMyUser.ts';
 import { User as UserType } from '../api/types/user.ts';
 import { toast } from 'sonner';
-import { getMyFavoriteSeries } from '../api/queries/getMyFavoriteSeries.ts';
-import { getMyWatchrooms } from '../api/queries/watchroom.ts';
+import { getMyStats } from '../api/queries/getMyStats.ts';
 import {
   Dialog,
   DialogContent,
@@ -48,6 +47,7 @@ export default function ProfilePage() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [favoriteSeriesCount, setFavoriteSeriesCount] = useState<number>(0);
   const [watchRoomsCount, setWatchRoomsCount] = useState<number>(0);
+  const [recommendationCount, setRecommendationCount] = useState<number>(0);
   const navigate = useNavigate();
 
   const form = useForm<z.infer<typeof changePasswordSchema>>({
@@ -62,14 +62,11 @@ export default function ProfilePage() {
   useEffect(() => {
     const loadUserDetails = async () => {
       try {
-        const [user, favoriteSeries, watchrooms] = await Promise.all([
-          getMyUser(),
-          getMyFavoriteSeries(1, 1),
-          getMyWatchrooms(1, 1),
-        ]);
+        const [user, stats] = await Promise.all([getMyUser(), getMyStats()]);
         setUserDetails(user);
-        setFavoriteSeriesCount(favoriteSeries.metadata.total);
-        setWatchRoomsCount(watchrooms.metadata.total);
+        setFavoriteSeriesCount(stats.favoriteSeriesCount);
+        setWatchRoomsCount(stats.watchRoomsCount);
+        setRecommendationCount(stats.recommendationCount);
       } catch (error) {
         console.error('Failed to load user details:', error);
         toast.error('Failed to load profile information');
@@ -194,8 +191,8 @@ export default function ProfilePage() {
                   <p className="text-sm text-muted-foreground">Watch Rooms</p>
                 </div>
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-primary">0</div>
-                  <p className="text-sm text-muted-foreground">Recommendations</p>
+                  <div className="text-2xl font-bold text-primary">{recommendationCount}</div>
+                  <p className="text-sm text-muted-foreground">Recommendation Requests</p>
                 </div>
               </div>
             </CardContent>
