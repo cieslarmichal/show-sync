@@ -1,5 +1,5 @@
 import { LoggerServiceFactory } from '../common/logger/loggerServiceFactory.ts';
-import { DatabaseClient } from '../infrastructure/database/database.ts';
+import { DatabaseClient } from '../infrastructure/database/databaseClient.ts';
 
 import { createConfig } from './config.ts';
 import { HttpServer } from './httpServer.ts';

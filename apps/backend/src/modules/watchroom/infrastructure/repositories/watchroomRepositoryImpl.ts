@@ -1,7 +1,7 @@
 import { eq, desc, and, inArray, or, count, type SQL } from 'drizzle-orm';
 
 import { UuidService } from '../../../../common/uuid/uuidService.ts';
-import type { DatabaseClient } from '../../../../infrastructure/database/database.ts';
+import type { DatabaseClient } from '../../../../infrastructure/database/databaseClient.ts';
 import { users, watchroomParticipants, watchrooms } from '../../../../infrastructure/database/schema.ts';
 import type {
   CreateWatchroomData,

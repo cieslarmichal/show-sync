@@ -4,7 +4,7 @@ import { UnauthorizedAccessError } from '../../../../common/errors/unathorizedAc
 import type { LoggerService } from '../../../../common/logger/loggerService.ts';
 import type { ExecutionContext } from '../../../../common/types/executionContext.ts';
 import type { Config } from '../../../../core/config.ts';
-import type { DatabaseClient } from '../../../../infrastructure/database/database.ts';
+import type { DatabaseClient } from '../../../../infrastructure/database/databaseClient.ts';
 import type { UserRepository } from '../../domain/repositories/userRepository.ts';
 import type { UserSessionRepository } from '../../domain/repositories/userSessionRepository.ts';
 

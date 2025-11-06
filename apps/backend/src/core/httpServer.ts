@@ -19,7 +19,7 @@ import { httpStatusCodes } from '../common/http/httpStatusCode.ts';
 import { type LoggerService } from '../common/logger/loggerService.ts';
 import { OpenRouterService } from '../common/openRouter/openRouterService.ts';
 import { UuidService } from '../common/uuid/uuidService.ts';
-import type { DatabaseClient } from '../infrastructure/database/database.ts';
+import type { DatabaseClient } from '../infrastructure/database/databaseClient.ts';
 import { recommendationRoutes } from '../modules/recommendation/routes/recommendationRoutes.ts';
 import { seriesRoutes } from '../modules/series/routes/seriesRoutes.ts';
 import { userRoutes } from '../modules/user/routes/userRoutes.ts';

@@ -1,6 +1,6 @@
 import { sql } from 'drizzle-orm';
 
-import type { DatabaseClient } from '../../src/infrastructure/database/database.ts';
+import type { DatabaseClient } from '../../src/infrastructure/database/databaseClient.ts';
 
 export async function truncateTables(databaseClient: DatabaseClient): Promise<void> {
   const tables = [

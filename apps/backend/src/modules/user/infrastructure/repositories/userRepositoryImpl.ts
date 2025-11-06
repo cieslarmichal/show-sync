@@ -1,7 +1,7 @@
 import { eq } from 'drizzle-orm';
 
 import { UuidService } from '../../../../common/uuid/uuidService.ts';
-import type { DatabaseClient } from '../../../../infrastructure/database/database.ts';
+import type { DatabaseClient } from '../../../../infrastructure/database/databaseClient.ts';
 import { users } from '../../../../infrastructure/database/schema.ts';
 import type { CreateUserData, UserRepository } from '../../domain/repositories/userRepository.ts';
 import type { User } from '../../domain/types/user.ts';

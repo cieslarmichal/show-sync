@@ -4,7 +4,7 @@ import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import { Generator } from '../../../../tests/generator.ts';
 import { truncateTables } from '../../../../tests/helpers/dbCleanup.ts';
 import { closeTestServer, createTestContext } from '../../../../tests/helpers/testServer.ts';
-import type { DatabaseClient } from '../../../infrastructure/database/database.ts';
+import type { DatabaseClient } from '../../../infrastructure/database/databaseClient.ts';
 import { UserRepositoryImpl } from '../infrastructure/repositories/userRepositoryImpl.ts';
 
 import type { LoginResponse, UserDto } from './userSchemas.ts';

@@ -3,7 +3,7 @@ import { Pool } from 'pg';
 
 import * as schema from './schema.ts';
 
-export interface DatabaseConfig {
+export interface DatabaseClientConfig {
   readonly url: string;
 }
 
@@ -11,7 +11,7 @@ export class DatabaseClient {
   private pool: Pool;
   public readonly db: ReturnType<typeof drizzle>;
 
-  public constructor(config: DatabaseConfig) {
+  public constructor(config: DatabaseClientConfig) {
     this.pool = new Pool({
       connectionString: config.url,
       ssl: false,

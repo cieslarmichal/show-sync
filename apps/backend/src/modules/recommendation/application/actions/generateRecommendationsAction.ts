@@ -3,7 +3,7 @@ import { ResourceNotFoundError } from '../../../../common/errors/resourceNotFoun
 import type { LoggerService } from '../../../../common/logger/loggerService.ts';
 import type { OpenRouterService } from '../../../../common/openRouter/openRouterService.ts';
 import type { ExecutionContext } from '../../../../common/types/executionContext.ts';
-import type { DatabaseClient } from '../../../../infrastructure/database/database.ts';
+import type { DatabaseClient } from '../../../../infrastructure/database/databaseClient.ts';
 import type { FavoriteSeriesRepository } from '../../../series/domain/repositories/favoriteSeriesRepository.ts';
 import type { IgnoredSeriesRepository } from '../../../series/domain/repositories/ignoredSeriesRepository.ts';
 import type { TmdbService } from '../../../series/domain/services/tmdbService.ts';

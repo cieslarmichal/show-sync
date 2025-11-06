@@ -3,7 +3,7 @@ import type { FastifyInstance } from 'fastify';
 import { LoggerServiceFactory } from '../../src/common/logger/loggerServiceFactory.ts';
 import { createConfig } from '../../src/core/config.ts';
 import { HttpServer } from '../../src/core/httpServer.ts';
-import { DatabaseClient } from '../../src/infrastructure/database/database.ts';
+import { DatabaseClient } from '../../src/infrastructure/database/databaseClient.ts';
 
 let testServer: HttpServer | undefined;
 let testDatabase: DatabaseClient | undefined;

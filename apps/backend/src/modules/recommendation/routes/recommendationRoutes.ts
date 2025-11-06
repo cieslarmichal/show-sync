@@ -6,7 +6,7 @@ import { UnauthorizedAccessError } from '../../../common/errors/unathorizedAcces
 import type { LoggerService } from '../../../common/logger/loggerService.ts';
 import type { OpenRouterService } from '../../../common/openRouter/openRouterService.ts';
 import type { Config } from '../../../core/config.ts';
-import type { DatabaseClient } from '../../../infrastructure/database/database.ts';
+import type { DatabaseClient } from '../../../infrastructure/database/databaseClient.ts';
 import { FavoriteSeriesRepositoryImpl } from '../../series/infrastructure/repositories/favoriteSeriesRepositoryImpl.ts';
 import { IgnoredSeriesRepositoryImpl } from '../../series/infrastructure/repositories/ignoredSeriesRepositoryImpl.ts';
 import { TmdbServiceImpl } from '../../series/infrastructure/services/tmdbServiceImpl.ts';

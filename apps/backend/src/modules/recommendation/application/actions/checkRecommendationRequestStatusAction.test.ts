@@ -4,7 +4,7 @@ import { Generator } from '../../../../../tests/generator.ts';
 import { ForbiddenAccessError } from '../../../../common/errors/forbiddenAccessError.ts';
 import { ResourceNotFoundError } from '../../../../common/errors/resourceNotFoundError.ts';
 import { createConfig } from '../../../../core/config.ts';
-import { DatabaseClient } from '../../../../infrastructure/database/database.ts';
+import { DatabaseClient } from '../../../../infrastructure/database/databaseClient.ts';
 import {
   users,
   watchrooms,

@@ -26,6 +26,31 @@ export const userSessions = pgTable(
   (table) => [index('idx_user_sessions_user_id').on(table.userId)],
 );
 
+export const oneTimeTokens = pgTable(
+  'one_time_tokens',
+  {
+    id: uuid('id').primaryKey(),
+    userId: uuid('user_id')
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' }),
+    tokenHash: text('token_hash').notNull().unique(),
+    purpose: varchar('purpose', { length: 64 }).notNull(),
+    expiresAt: timestamp('expires_at').notNull(),
+    usedAt: timestamp('used_at'),
+    createdAt: timestamp('created_at').notNull().defaultNow(),
+  },
+  (table) => [
+    index('idx_one_time_tokens_user_id').on(table.userId),
+    index('idx_one_time_tokens_token_hash_purpose_expires_at_used_at').on(
+      table.tokenHash,
+      table.purpose,
+      table.expiresAt,
+      table.usedAt,
+    ),
+    index('idx_one_time_tokens_expires_at').on(table.expiresAt),
+  ],
+);
+
 export const userFavoriteSeries = pgTable(
   'user_favorite_series',
   {

@@ -2,7 +2,7 @@ import { eq, and, desc, count } from 'drizzle-orm';
 
 import { ResourceNotFoundError } from '../../../../common/errors/resourceNotFoundError.ts';
 import { UuidService } from '../../../../common/uuid/uuidService.ts';
-import type { DatabaseClient } from '../../../../infrastructure/database/database.ts';
+import type { DatabaseClient } from '../../../../infrastructure/database/databaseClient.ts';
 import { userFavoriteSeries } from '../../../../infrastructure/database/schema.ts';
 import type { Transaction } from '../../../../infrastructure/database/transaction.ts';
 import type {

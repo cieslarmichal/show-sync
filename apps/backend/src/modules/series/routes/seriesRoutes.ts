@@ -6,7 +6,7 @@ import { InputNotValidError } from '../../../common/errors/inputNotValidError.ts
 import { UnauthorizedAccessError } from '../../../common/errors/unathorizedAccessError.ts';
 import type { LoggerService } from '../../../common/logger/loggerService.ts';
 import type { Config } from '../../../core/config.ts';
-import type { DatabaseClient } from '../../../infrastructure/database/database.ts';
+import type { DatabaseClient } from '../../../infrastructure/database/databaseClient.ts';
 import { AddFavoriteSeriesAction } from '../application/actions/addFavoriteSeriesAction.ts';
 import { AddIgnoredSeriesAction } from '../application/actions/addIgnoredSeriesAction.ts';
 import { GetFavoriteSeriesAction } from '../application/actions/getFavoriteSeriesAction.ts';

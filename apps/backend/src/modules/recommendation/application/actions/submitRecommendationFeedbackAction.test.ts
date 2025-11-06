@@ -7,7 +7,7 @@ import { ResourceAlreadyExistsError } from '../../../../common/errors/resourceAl
 import { ResourceNotFoundError } from '../../../../common/errors/resourceNotFoundError.ts';
 import type { LoggerService } from '../../../../common/logger/loggerService.ts';
 import { createConfig } from '../../../../core/config.ts';
-import { DatabaseClient } from '../../../../infrastructure/database/database.ts';
+import { DatabaseClient } from '../../../../infrastructure/database/databaseClient.ts';
 import {
   recommendationFeedback,
   recommendationRequests,

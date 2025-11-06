@@ -4,7 +4,7 @@ import { createAuthenticationMiddleware } from '../../../common/auth/authMiddlew
 import type { TokenService } from '../../../common/auth/tokenService.ts';
 import { UnauthorizedAccessError } from '../../../common/errors/unathorizedAccessError.ts';
 import type { LoggerService } from '../../../common/logger/loggerService.ts';
-import type { DatabaseClient } from '../../../infrastructure/database/database.ts';
+import type { DatabaseClient } from '../../../infrastructure/database/databaseClient.ts';
 import { CreateWatchroomAction } from '../application/actions/createWatchroomAction.ts';
 import { DeleteWatchroomAction } from '../application/actions/deleteWatchroomAction.ts';
 import { FindPublicWatchroomDetailsAction } from '../application/actions/findPublicWatchroomDetailsAction.ts';
