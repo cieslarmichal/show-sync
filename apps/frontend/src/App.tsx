@@ -11,6 +11,8 @@ import { TooltipProvider } from './components/ui/Tooltip.tsx';
 import PrivateRoute from './auth/privateRoute.tsx';
 import LogoutPage from './pages/LogoutPage.tsx';
 import LoginPage from './pages/LoginPage.tsx';
+import RegisterPage from './pages/RegisterPage.tsx';
+import ForgotPasswordPage from './pages/ForgotPasswordPage.tsx';
 import SeriesPage from './pages/SeriesPage.tsx';
 import WatchRoomsPage from './pages/WatchRoomsPage.tsx';
 import ProfilePage from './pages/ProfilePage.tsx';
@@ -37,6 +39,14 @@ const router = createBrowserRouter([
       {
         path: '/login',
         element: <LoginPage />,
+      },
+      {
+        path: '/register',
+        element: <RegisterPage />,
+      },
+      {
+        path: '/forgot-password',
+        element: <ForgotPasswordPage />,
       },
       {
         path: '/logout',

@@ -1,5 +1,3 @@
-'use client';
-
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { useState } from 'react';
@@ -8,9 +6,9 @@ import { Button } from '@/components/ui/Button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/Form';
 import { Input } from '@/components/ui/Input';
 import { loginUser } from '../api/queries/login';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams, Link } from 'react-router-dom';
 import { z } from 'zod';
-import { EyeIcon, EyeOffIcon } from 'lucide-react';
+import { EyeIcon, EyeOffIcon, Mail, Lock } from 'lucide-react';
 
 const formSchema = z.object({
   email: z.string().email().max(64),
@@ -59,7 +57,7 @@ export default function LoginForm() {
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className="space-y-5"
+          className="space-y-4"
         >
           <FormField
             control={form.control}
@@ -70,14 +68,18 @@ export default function LoginForm() {
                   htmlFor="email"
                   className="text-sm font-medium text-foreground"
                 >
-                  Email
+                  Email address
                 </FormLabel>
                 <FormControl>
-                  <Input
-                    id="email"
-                    placeholder="name@domain.com"
-                    {...field}
-                  />
+                  <div className="relative">
+                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                    <Input
+                      id="email"
+                      placeholder="you@example.com"
+                      className="pl-10 h-11"
+                      {...field}
+                    />
+                  </div>
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -96,10 +98,12 @@ export default function LoginForm() {
                 </FormLabel>
                 <FormControl>
                   <div className="relative">
+                    <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                     <Input
                       id="password"
-                      placeholder="Enter your password"
+                      placeholder="Your password"
                       type={showPassword ? 'text' : 'password'}
+                      className="pl-10 h-11"
                       {...field}
                     />
                     <Button
@@ -120,14 +124,26 @@ export default function LoginForm() {
             )}
           />
 
-          <Button
-            type="submit"
-            className="w-full h-11 mt-6"
-            disabled={!form.formState.isValid || form.formState.isSubmitting}
-            data-testid="login-submit-button"
-          >
-            {form.formState.isSubmitting ? 'Signing in...' : 'Sign In'}
-          </Button>
+          {/* Forgot password link */}
+          <div className="text-left pt-2">
+            <Link
+              to="/forgot-password"
+              className="text-sm font-medium text-foreground hover:underline"
+            >
+              Forgot your password?
+            </Link>
+          </div>
+
+          <div className="pt-2">
+            <Button
+              type="submit"
+              className="w-full h-11 bg-foreground text-background hover:bg-foreground/90 font-semibold"
+              disabled={!form.formState.isValid || form.formState.isSubmitting}
+              data-testid="login-submit-button"
+            >
+              {form.formState.isSubmitting ? 'Signing in...' : 'Sign in'}
+            </Button>
+          </div>
         </form>
       </Form>
       {form.formState.errors.root && (

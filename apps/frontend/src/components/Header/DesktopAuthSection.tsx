@@ -42,7 +42,7 @@ export function DesktopAuthSection() {
       </Button>
       <Button
         size="lg"
-        onClick={() => navigate('/login?tab=register')}
+        onClick={() => navigate('/register')}
         className="text-sm bg-primary hover:bg-primary/90 transition-all duration-300 font-semibold text-primary-foreground rounded-md whitespace-nowrap h-10 px-3"
       >
         Sign Up

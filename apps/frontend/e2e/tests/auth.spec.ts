@@ -89,8 +89,8 @@ test.describe('Authentication Flow', () => {
       await expect(registerPage.backToSignInButton).toBeVisible({ timeout: 10000 });
       await registerPage.backToSignInButton.click();
 
-      // Wait for navigation to login tab with longer timeout for CI
-      await page.waitForURL(/\/login(\?tab=login)?$/, { timeout: 15000 });
+      // Wait for navigation to login page
+      await page.waitForURL(/\/login$/, { timeout: 15000 });
 
       // Wait for page to be stable
       await page.waitForLoadState('networkidle');
@@ -113,14 +113,24 @@ test.describe('Authentication Flow', () => {
       await expect(loginPage.formErrorMessage).toBeVisible();
     });
 
-    test('should navigate to registration tab', async ({ page }) => {
+    test('should navigate to registration page', async ({ page }) => {
       const loginPage = new LoginPageModel(page);
 
       await loginPage.goto();
-      await loginPage.clickRegisterTab();
+      await loginPage.clickSignUpLink();
 
-      // Should navigate to register tab
-      await expect(page).toHaveURL(/\/login\?tab=register/);
+      // Should navigate to register page
+      await expect(page).toHaveURL(/\/register/);
+    });
+
+    test('should navigate to forgot password page', async ({ page }) => {
+      const loginPage = new LoginPageModel(page);
+
+      await loginPage.goto();
+      await loginPage.clickForgotPasswordLink();
+
+      // Should navigate to forgot password page
+      await expect(page).toHaveURL(/\/forgot-password/);
     });
   });
 });

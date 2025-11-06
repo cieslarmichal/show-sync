@@ -1,7 +1,7 @@
 import type { Page } from '@playwright/test';
 import { BasePageModel } from './BasePageModel.ts';
 
-export class RegisterPageModel extends BasePageModel {
+export class ForgotPasswordPageModel extends BasePageModel {
   override readonly page: Page;
 
   constructor(page: Page) {
@@ -9,28 +9,16 @@ export class RegisterPageModel extends BasePageModel {
     this.page = page;
   }
 
-  get nameInput() {
-    return this.page.getByLabel('Name');
-  }
-
   get emailInput() {
     return this.page.getByLabel('Email Address');
   }
 
-  get passwordInput() {
-    return this.page.getByLabel('Password', { exact: true });
+  get submitButton() {
+    return this.page.getByTestId('reset-password-submit-button');
   }
 
-  get repeatPasswordInput() {
-    return this.page.getByLabel('Repeat Password');
-  }
-
-  get registerButton() {
-    return this.page.getByTestId('register-submit-button');
-  }
-
-  get backToSignInButton() {
-    return this.page.getByTestId('back-to-sign-in-button');
+  get backToLoginButton() {
+    return this.page.getByTestId('back-to-login-button');
   }
 
   get signInLink() {
@@ -49,20 +37,25 @@ export class RegisterPageModel extends BasePageModel {
     return this.fieldErrorMessage;
   }
 
-  override async goto(): Promise<void> {
-    await super.goto('/register');
+  get successMessage() {
+    return this.page.locator('text=If an account exists with the email you provided');
   }
 
-  async register(name: string, email: string, password: string, confirmPassword?: string): Promise<void> {
-    await this.fillField(this.nameInput, name);
+  override async goto(): Promise<void> {
+    await super.goto('/forgot-password');
+  }
+
+  async requestPasswordReset(email: string): Promise<void> {
     await this.fillField(this.emailInput, email);
-    await this.fillField(this.passwordInput, password);
-    await this.fillField(this.repeatPasswordInput, confirmPassword || password);
-    await this.registerButton.click();
+    await this.submitButton.click();
   }
 
   async clickSignInLink(): Promise<void> {
     await this.signInLink.click();
+  }
+
+  async clickBackToLoginButton(): Promise<void> {
+    await this.backToLoginButton.click();
   }
 
   async getErrorMessage(): Promise<string> {
@@ -71,5 +64,9 @@ export class RegisterPageModel extends BasePageModel {
 
   async hasErrorMessage(): Promise<boolean> {
     return this.isVisible(this.errorMessage);
+  }
+
+  async hasSuccessMessage(): Promise<boolean> {
+    return this.isVisible(this.successMessage);
   }
 }

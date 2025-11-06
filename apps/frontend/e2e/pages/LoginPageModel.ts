@@ -10,7 +10,7 @@ export class LoginPageModel extends BasePageModel {
   }
 
   get emailInput() {
-    return this.page.getByLabel('Email');
+    return this.page.getByLabel('Email Address');
   }
 
   get passwordInput() {
@@ -21,8 +21,12 @@ export class LoginPageModel extends BasePageModel {
     return this.page.getByTestId('login-submit-button');
   }
 
-  get registerTab() {
-    return this.page.getByTestId('register-tab-button');
+  get forgotPasswordLink() {
+    return this.page.getByRole('link', { name: /forgot your password/i });
+  }
+
+  get signUpLink() {
+    return this.page.getByRole('link', { name: /sign up/i });
   }
 
   get fieldErrorMessage() {
@@ -47,8 +51,12 @@ export class LoginPageModel extends BasePageModel {
     await this.loginButton.click();
   }
 
-  async clickRegisterTab(): Promise<void> {
-    await this.registerTab.click();
+  async clickSignUpLink(): Promise<void> {
+    await this.signUpLink.click();
+  }
+
+  async clickForgotPasswordLink(): Promise<void> {
+    await this.forgotPasswordLink.click();
   }
 
   async getErrorMessage(): Promise<string> {

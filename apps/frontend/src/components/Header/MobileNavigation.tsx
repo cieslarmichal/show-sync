@@ -58,7 +58,7 @@ export function MobileNavigation({ onItemClick }: MobileNavigationProps) {
           </Button>
           <Button
             variant="ghost"
-            onClick={() => handleNavigation('/login?tab=register')}
+            onClick={() => handleNavigation('/register')}
             className="w-full justify-start px-3 py-2 text-sm font-medium rounded-md transition-colors text-muted-foreground hover:text-primary hover:bg-primary/10"
           >
             Sign Up

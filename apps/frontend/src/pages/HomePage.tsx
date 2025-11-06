@@ -26,7 +26,7 @@ export default function HomePage() {
               <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
                 <Button
                   size="lg"
-                  onClick={() => navigate('/login?tab=register')}
+                  onClick={() => navigate('/register')}
                   className="bg-foreground text-background hover:bg-foreground/90 transition-colors shadow-lg hover:shadow-xl w-full sm:w-auto"
                 >
                   Get Started for Free
@@ -128,7 +128,7 @@ export default function HomePage() {
               </p>
               <Button
                 size="lg"
-                onClick={() => navigate('/login?tab=register')}
+                onClick={() => navigate('/register')}
                 className="bg-foreground text-background hover:bg-foreground/90 transition-colors shadow-lg hover:shadow-xl"
               >
                 Get Started for Free

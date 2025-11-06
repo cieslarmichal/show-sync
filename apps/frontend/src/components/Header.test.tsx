@@ -81,7 +81,7 @@ describe('Header', () => {
     const signUpButtons = screen.getAllByRole('button', { name: /sign up/i });
     await user.click(signUpButtons[0]);
 
-    expect(mockNavigate).toHaveBeenCalledWith('/login?tab=register');
+    expect(mockNavigate).toHaveBeenCalledWith('/register');
   });
 
   it('should show user avatar when authenticated', () => {

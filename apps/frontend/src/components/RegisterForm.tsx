@@ -1,5 +1,3 @@
-'use client';
-
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { Button } from '@/components/ui/Button';
@@ -9,7 +7,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/Tooltip
 import { registerUser } from '../api/queries/register';
 import { useState } from 'react';
 import { z } from 'zod';
-import { EyeIcon, EyeOffIcon, InfoIcon } from 'lucide-react';
+import { EyeIcon, EyeOffIcon, InfoIcon, Mail, Lock, User } from 'lucide-react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 
 const formSchema = z
@@ -81,7 +79,7 @@ export default function RegisterForm({ onSuccess }: Props) {
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className="space-y-5"
+          className="space-y-4"
         >
           <FormField
             control={form.control}
@@ -95,11 +93,15 @@ export default function RegisterForm({ onSuccess }: Props) {
                   Name
                 </FormLabel>
                 <FormControl>
-                  <Input
-                    id="name"
-                    placeholder="John Doe"
-                    {...field}
-                  />
+                  <div className="relative">
+                    <User className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                    <Input
+                      id="name"
+                      placeholder="John Doe"
+                      className="pl-10 h-11"
+                      {...field}
+                    />
+                  </div>
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -115,14 +117,18 @@ export default function RegisterForm({ onSuccess }: Props) {
                   htmlFor="email"
                   className="text-sm font-medium text-foreground"
                 >
-                  Email
+                  Email address
                 </FormLabel>
                 <FormControl>
-                  <Input
-                    id="email"
-                    placeholder="name@domain.com"
-                    {...field}
-                  />
+                  <div className="relative">
+                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                    <Input
+                      id="email"
+                      placeholder="you@example.com"
+                      className="pl-10 h-11"
+                      {...field}
+                    />
+                  </div>
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -158,10 +164,12 @@ export default function RegisterForm({ onSuccess }: Props) {
                 </div>
                 <FormControl>
                   <div className="relative">
+                    <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                     <Input
                       id="password"
-                      placeholder="Minimum 8 characters"
+                      placeholder="At least 8 characters"
                       type={showPassword ? 'text' : 'password'}
+                      className="pl-10 h-11"
                       {...field}
                     />
                     <Button
@@ -195,10 +203,12 @@ export default function RegisterForm({ onSuccess }: Props) {
                 </FormLabel>
                 <FormControl>
                   <div className="relative">
+                    <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                     <Input
                       id="passwordConfirmation"
                       placeholder="Repeat password"
                       type={showPasswordConfirmation ? 'text' : 'password'}
+                      className="pl-10 h-11"
                       {...field}
                     />
                     <Button
@@ -221,14 +231,16 @@ export default function RegisterForm({ onSuccess }: Props) {
             )}
           />
 
-          <Button
-            type="submit"
-            className="w-full h-11 mt-6"
-            disabled={!form.formState.isValid || form.formState.isSubmitting}
-            data-testid="register-submit-button"
-          >
-            {form.formState.isSubmitting ? 'Signing up...' : 'Sign Up'}
-          </Button>
+          <div className="pt-2">
+            <Button
+              type="submit"
+              className="w-full h-11 bg-foreground text-background hover:bg-foreground/90 font-semibold"
+              disabled={!form.formState.isValid || form.formState.isSubmitting}
+              data-testid="register-submit-button"
+            >
+              {form.formState.isSubmitting ? 'Creating account...' : 'Sign up'}
+            </Button>
+          </div>
         </form>
       </Form>
       {form.formState.errors.root && (
