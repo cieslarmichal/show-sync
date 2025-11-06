@@ -72,10 +72,10 @@ export default function Footer() {
               <div className="flex items-center gap-3 text-muted-foreground">
                 <Mail className="h-4 w-4" />
                 <a
-                  href="mailto:contact@showsync.com"
+                  href="mailto:contact@show-sync.com"
                   className="hover:text-foreground transition-colors"
                 >
-                  contact@showsync.com
+                  contact@show-sync.com
                 </a>
               </div>
               <div className="flex items-center gap-3 text-muted-foreground">

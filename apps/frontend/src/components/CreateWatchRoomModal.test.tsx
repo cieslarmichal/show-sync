@@ -31,14 +31,14 @@ describe('CreateWatchRoomModal', () => {
   it('should render create room button', () => {
     render(<CreateWatchRoomModal onRoomCreated={mockOnRoomCreated} />);
 
-    expect(screen.getByRole('button', { name: /create room/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /create watch room/i })).toBeInTheDocument();
   });
 
   it('should open modal when create room button is clicked', async () => {
     const user = userEvent.setup();
     render(<CreateWatchRoomModal onRoomCreated={mockOnRoomCreated} />);
 
-    const createButton = screen.getByRole('button', { name: /create room/i });
+    const createButton = screen.getByRole('button', { name: /create watch room/i });
     await user.click(createButton);
 
     await waitFor(() => {
@@ -50,7 +50,7 @@ describe('CreateWatchRoomModal', () => {
     const user = userEvent.setup();
     render(<CreateWatchRoomModal onRoomCreated={mockOnRoomCreated} />);
 
-    const createButton = screen.getByRole('button', { name: /create room/i });
+    const createButton = screen.getByRole('button', { name: /create watch room/i });
     await user.click(createButton);
 
     await waitFor(() => {
@@ -63,14 +63,14 @@ describe('CreateWatchRoomModal', () => {
     const user = userEvent.setup();
     render(<CreateWatchRoomModal onRoomCreated={mockOnRoomCreated} />);
 
-    const createButton = screen.getByRole('button', { name: /create room/i });
+    const createButton = screen.getByRole('button', { name: /create watch room/i });
     await user.click(createButton);
 
     await waitFor(() => {
       expect(screen.getByLabelText(/room name/i)).toBeInTheDocument();
     });
 
-    const submitButton = screen.getByRole('button', { name: /^create room$/i });
+    const submitButton = screen.getByRole('button', { name: /^create watch room$/i });
     await user.click(submitButton);
 
     await waitFor(() => {
@@ -82,7 +82,7 @@ describe('CreateWatchRoomModal', () => {
     const user = userEvent.setup();
     render(<CreateWatchRoomModal onRoomCreated={mockOnRoomCreated} />);
 
-    const createButton = screen.getByRole('button', { name: /create room/i });
+    const createButton = screen.getByRole('button', { name: /create watch room/i });
     await user.click(createButton);
 
     await waitFor(() => {
@@ -92,7 +92,7 @@ describe('CreateWatchRoomModal', () => {
     const nameInput = screen.getByLabelText(/room name/i);
     await user.type(nameInput, 'a'.repeat(65));
 
-    const submitButton = screen.getByRole('button', { name: /^create room$/i });
+    const submitButton = screen.getByRole('button', { name: /^create watch room$/i });
     await user.click(submitButton);
 
     await waitFor(() => {
@@ -104,7 +104,7 @@ describe('CreateWatchRoomModal', () => {
     const user = userEvent.setup();
     render(<CreateWatchRoomModal onRoomCreated={mockOnRoomCreated} />);
 
-    const createButton = screen.getByRole('button', { name: /create room/i });
+    const createButton = screen.getByRole('button', { name: /create watch room/i });
     await user.click(createButton);
 
     await waitFor(() => {
@@ -117,7 +117,7 @@ describe('CreateWatchRoomModal', () => {
     const descriptionInput = screen.getByLabelText(/ai prompt/i);
     await user.type(descriptionInput, 'a'.repeat(257));
 
-    const submitButton = screen.getByRole('button', { name: /^create room$/i });
+    const submitButton = screen.getByRole('button', { name: /^create watch room$/i });
     await user.click(submitButton);
 
     await waitFor(() => {
@@ -139,7 +139,7 @@ describe('CreateWatchRoomModal', () => {
 
     render(<CreateWatchRoomModal onRoomCreated={mockOnRoomCreated} />);
 
-    const createButton = screen.getByRole('button', { name: /create room/i });
+    const createButton = screen.getByRole('button', { name: /create watch room/i });
     await user.click(createButton);
 
     await waitFor(() => {
@@ -152,7 +152,7 @@ describe('CreateWatchRoomModal', () => {
     await user.type(nameInput, 'Test Room');
     await user.type(descriptionInput, 'Test Description');
 
-    const submitButton = screen.getByRole('button', { name: /^create room$/i });
+    const submitButton = screen.getByRole('button', { name: /^create watch room$/i });
     await user.click(submitButton);
 
     await waitFor(() => {
@@ -177,7 +177,7 @@ describe('CreateWatchRoomModal', () => {
 
     render(<CreateWatchRoomModal onRoomCreated={mockOnRoomCreated} />);
 
-    const createButton = screen.getByRole('button', { name: /create room/i });
+    const createButton = screen.getByRole('button', { name: /create watch room/i });
     await user.click(createButton);
 
     await waitFor(() => {
@@ -187,7 +187,7 @@ describe('CreateWatchRoomModal', () => {
     const nameInput = screen.getByLabelText(/room name/i);
     await user.type(nameInput, 'Test Room');
 
-    const submitButton = screen.getByRole('button', { name: /^create room$/i });
+    const submitButton = screen.getByRole('button', { name: /^create watch room$/i });
     await user.click(submitButton);
 
     await waitFor(() => {
@@ -209,7 +209,7 @@ describe('CreateWatchRoomModal', () => {
 
     render(<CreateWatchRoomModal onRoomCreated={mockOnRoomCreated} />);
 
-    const createButton = screen.getByRole('button', { name: /create room/i });
+    const createButton = screen.getByRole('button', { name: /create watch room/i });
     await user.click(createButton);
 
     await waitFor(() => {
@@ -219,7 +219,7 @@ describe('CreateWatchRoomModal', () => {
     const nameInput = screen.getByLabelText(/room name/i);
     await user.type(nameInput, 'Test Room');
 
-    const submitButton = screen.getByRole('button', { name: /^create room$/i });
+    const submitButton = screen.getByRole('button', { name: /^create watch room$/i });
     await user.click(submitButton);
 
     await waitFor(() => {
@@ -233,7 +233,7 @@ describe('CreateWatchRoomModal', () => {
 
     render(<CreateWatchRoomModal onRoomCreated={mockOnRoomCreated} />);
 
-    const createButton = screen.getByRole('button', { name: /create room/i });
+    const createButton = screen.getByRole('button', { name: /create watch room/i });
     await user.click(createButton);
 
     await waitFor(() => {
@@ -243,7 +243,7 @@ describe('CreateWatchRoomModal', () => {
     const nameInput = screen.getByLabelText(/room name/i);
     await user.type(nameInput, 'Test Room');
 
-    const submitButton = screen.getByRole('button', { name: /^create room$/i });
+    const submitButton = screen.getByRole('button', { name: /^create watch room$/i });
     await user.click(submitButton);
 
     await waitFor(() => {
@@ -255,7 +255,7 @@ describe('CreateWatchRoomModal', () => {
     const user = userEvent.setup();
     render(<CreateWatchRoomModal onRoomCreated={mockOnRoomCreated} />);
 
-    const createButton = screen.getByRole('button', { name: /create room/i });
+    const createButton = screen.getByRole('button', { name: /create watch room/i });
     await user.click(createButton);
 
     await waitFor(() => {
@@ -276,7 +276,7 @@ describe('CreateWatchRoomModal', () => {
 
     render(<CreateWatchRoomModal onRoomCreated={mockOnRoomCreated} />);
 
-    const createButton = screen.getByRole('button', { name: /create room/i });
+    const createButton = screen.getByRole('button', { name: /create watch room/i });
     await user.click(createButton);
 
     await waitFor(() => {
@@ -286,7 +286,7 @@ describe('CreateWatchRoomModal', () => {
     const nameInput = screen.getByLabelText(/room name/i);
     await user.type(nameInput, 'Test Room');
 
-    const submitButton = screen.getByRole('button', { name: /^create room$/i });
+    const submitButton = screen.getByRole('button', { name: /^create watch room$/i });
     await user.click(submitButton);
 
     await waitFor(() => {
@@ -308,7 +308,7 @@ describe('CreateWatchRoomModal', () => {
 
     render(<CreateWatchRoomModal onRoomCreated={mockOnRoomCreated} />);
 
-    const createButton = screen.getByRole('button', { name: /create room/i });
+    const createButton = screen.getByRole('button', { name: /create watch room/i });
     await user.click(createButton);
 
     await waitFor(() => {
@@ -318,7 +318,7 @@ describe('CreateWatchRoomModal', () => {
     const nameInput = screen.getByLabelText(/room name/i);
     await user.type(nameInput, 'Test Room');
 
-    const submitButton = screen.getByRole('button', { name: /^create room$/i });
+    const submitButton = screen.getByRole('button', { name: /^create watch room$/i });
     await user.click(submitButton);
 
     await waitFor(() => {
@@ -326,7 +326,7 @@ describe('CreateWatchRoomModal', () => {
     });
 
     // Reopen modal to check if form is reset
-    const createButtonAgain = screen.getByRole('button', { name: /create room/i });
+    const createButtonAgain = screen.getByRole('button', { name: /create watch room/i });
     await user.click(createButtonAgain);
 
     await waitFor(() => {
@@ -348,7 +348,7 @@ describe('CreateWatchRoomModal', () => {
 
     render(<CreateWatchRoomModal onRoomCreated={mockOnRoomCreated} />);
 
-    const createButton = screen.getByRole('button', { name: /create room/i });
+    const createButton = screen.getByRole('button', { name: /create watch room/i });
     await user.click(createButton);
 
     await waitFor(() => {
@@ -358,7 +358,7 @@ describe('CreateWatchRoomModal', () => {
     const nameInput = screen.getByLabelText(/room name/i);
     await user.type(nameInput, 'Test Room');
 
-    const submitButton = screen.getByRole('button', { name: /^create room$/i });
+    const submitButton = screen.getByRole('button', { name: /^create watch room$/i });
     await user.click(submitButton);
 
     await waitFor(() => {

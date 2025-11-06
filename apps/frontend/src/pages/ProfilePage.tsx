@@ -378,10 +378,10 @@ export default function ProfilePage() {
                 <p>
                   Need help? Contact our support team at{' '}
                   <a
-                    href="mailto:support@showsync.com"
+                    href="mailto:support@show-sync.com"
                     className="text-primary hover:underline"
                   >
-                    support@showsync.com
+                    support@show-sync.com
                   </a>
                 </p>
               </div>

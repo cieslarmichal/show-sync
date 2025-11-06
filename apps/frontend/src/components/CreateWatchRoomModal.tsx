@@ -64,7 +64,7 @@ export function CreateWatchRoomModal({ onRoomCreated, disabled = false, disabled
   const buttonElement = (
     <Button disabled={disabled}>
       <Plus className="w-4 h-4 mr-2" />
-      Create Room
+      Create Watch Room
     </Button>
   );
 
@@ -117,18 +117,14 @@ export function CreateWatchRoomModal({ onRoomCreated, disabled = false, disabled
               name="description"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel htmlFor="create-room-description">Description - AI Prompt (optional)</FormLabel>
+                  <FormLabel htmlFor="create-room-description">Description (optional)</FormLabel>
                   <FormControl>
                     <Textarea
                       id="create-room-description"
-                      placeholder="I'm looking for something light and funny, maybe a comedy series with strong character development..."
+                      placeholder="Describe what you're looking for to get better recommendations..."
                       {...field}
                     />
                   </FormControl>
-                  <p className="text-xs text-muted-foreground mt-1">
-                    💡 Describe your preferences, mood, or what you're looking for. The AI will use this to recommend
-                    series that match your interests.
-                  </p>
                   <FormMessage />
                 </FormItem>
               )}
@@ -145,7 +141,7 @@ export function CreateWatchRoomModal({ onRoomCreated, disabled = false, disabled
                 type="submit"
                 disabled={form.formState.isSubmitting}
               >
-                {form.formState.isSubmitting ? 'Creating...' : 'Create Room'}
+                {form.formState.isSubmitting ? 'Creating...' : 'Create Watch Room'}
               </Button>
             </div>
           </form>

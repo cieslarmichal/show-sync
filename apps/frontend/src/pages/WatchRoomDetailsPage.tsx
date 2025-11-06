@@ -785,14 +785,14 @@ export default function WatchRoomDetailsPage() {
                               {/* Series Poster */}
                               <button
                                 onMouseDown={(e) => handleOpenImdb(recommendation.seriesTmdbId, e)}
-                                className="relative shrink-0 w-full sm:w-42 h-auto p-0 rounded-xl overflow-hidden group/poster focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 cursor-pointer"
+                                className="relative shrink-0 w-full sm:w-48 h-auto p-0 rounded-xl overflow-hidden group/poster focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 cursor-pointer"
                               >
-                                {isImageLoading && <Skeleton className="absolute inset-0 h-60 w-full sm:w-40" />}
+                                {isImageLoading && <Skeleton className="absolute inset-0 h-72 w-full sm:w-48" />}
                                 {recommendation.seriesDetails?.posterPath ? (
                                   <img
                                     src={`https://image.tmdb.org/t/p/w300${recommendation.seriesDetails.posterPath}`}
                                     alt={`${recommendation.seriesDetails.name} poster`}
-                                    className="h-64 w-full sm:w-42 object-cover rounded-xl shadow-md group-hover/poster:shadow-xl transition-shadow"
+                                    className="h-72 w-full sm:w-48 object-cover rounded-xl shadow-md group-hover/poster:shadow-xl transition-shadow"
                                     onLoad={() => {
                                       setImageLoadingStates((prev) => {
                                         const newMap = new Map(prev);
@@ -803,7 +803,7 @@ export default function WatchRoomDetailsPage() {
                                     style={{ display: isImageLoading ? 'none' : 'block' }}
                                   />
                                 ) : (
-                                  <div className="h-60 w-full sm:w-40 rounded-xl bg-linear-to-br from-primary/20 to-primary/10 flex items-center justify-center">
+                                  <div className="h-72 w-full sm:w-48 rounded-xl bg-linear-to-br from-primary/20 to-primary/10 flex items-center justify-center">
                                     <TvMinimalPlay className="w-8 h-8 text-primary" />
                                   </div>
                                 )}

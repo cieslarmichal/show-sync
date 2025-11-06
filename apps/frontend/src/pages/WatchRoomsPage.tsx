@@ -96,7 +96,7 @@ export default function WatchRoomsPage() {
                 <Tv className="w-16 h-16 text-muted-foreground/40 mx-auto mb-4" />
                 <h3 className="text-lg font-semibold text-foreground mb-2">No watch rooms yet</h3>
                 <p className="text-sm text-muted-foreground max-w-md mx-auto mb-6">
-                  Create your first room to start getting AI-powered recommendations - with friends or solo!
+                  Create your first room to start getting AI recommendations!
                 </p>
                 <CreateWatchRoomModal
                   onRoomCreated={fetchRooms}

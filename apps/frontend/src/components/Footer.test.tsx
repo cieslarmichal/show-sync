@@ -41,7 +41,7 @@ describe('Footer', () => {
     renderFooter();
 
     expect(screen.getByText('Contact')).toBeInTheDocument();
-    expect(screen.getByText('contact@showsync.com')).toBeInTheDocument();
+    expect(screen.getByText('contact@show-sync.com')).toBeInTheDocument();
     expect(screen.getByText('+48 792 448 282')).toBeInTheDocument();
     expect(screen.getByText('Cracow, Poland')).toBeInTheDocument();
   });
@@ -49,8 +49,8 @@ describe('Footer', () => {
   it('should render contact email as mailto link', () => {
     renderFooter();
 
-    const emailLink = screen.getByText('contact@showsync.com');
-    expect(emailLink.closest('a')).toHaveAttribute('href', 'mailto:contact@showsync.com');
+    const emailLink = screen.getByText('contact@show-sync.com');
+    expect(emailLink.closest('a')).toHaveAttribute('href', 'mailto:contact@show-sync.com');
   });
 
   it('should render phone number as tel link', () => {

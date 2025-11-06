@@ -993,7 +993,7 @@ npm audit --audit-level=moderate
 
 **Dzień 3: Critical Path**
 
-- Complete user journey: Register → Add Series → Create Room → Invite → Generate Recommendations
+- Complete user journey: Register → Add Series → Create Watch Room → Invite → Generate Recommendations
 - Multi-user scenarios (2 browser contexts)
 - Error handling and edge cases
 
