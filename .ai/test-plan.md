@@ -1,4 +1,4 @@
-# Plan Testów dla 10x Series Matcher
+# Plan Testów dla ShowSync
 
 ## 1. Wprowadzenie i cele testowania
 

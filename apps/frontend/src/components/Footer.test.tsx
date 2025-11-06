@@ -27,8 +27,8 @@ describe('Footer', () => {
   it('should render logo and app name', () => {
     renderFooter();
 
-    expect(screen.getByText('10x Series Matcher')).toBeInTheDocument();
-    expect(screen.getByAltText('10x Series Matcher Logo')).toBeInTheDocument();
+    expect(screen.getByText('ShowSync')).toBeInTheDocument();
+    expect(screen.getByAltText('ShowSync Logo')).toBeInTheDocument();
   });
 
   it('should render app description', () => {
@@ -41,7 +41,7 @@ describe('Footer', () => {
     renderFooter();
 
     expect(screen.getByText('Contact')).toBeInTheDocument();
-    expect(screen.getByText('contact@10x-series-matcher.com')).toBeInTheDocument();
+    expect(screen.getByText('contact@showsync.com')).toBeInTheDocument();
     expect(screen.getByText('+48 792 448 282')).toBeInTheDocument();
     expect(screen.getByText('Cracow, Poland')).toBeInTheDocument();
   });
@@ -49,8 +49,8 @@ describe('Footer', () => {
   it('should render contact email as mailto link', () => {
     renderFooter();
 
-    const emailLink = screen.getByText('contact@10x-series-matcher.com');
-    expect(emailLink.closest('a')).toHaveAttribute('href', 'mailto:contact@10x-series-matcher.com');
+    const emailLink = screen.getByText('contact@showsync.com');
+    expect(emailLink.closest('a')).toHaveAttribute('href', 'mailto:contact@showsync.com');
   });
 
   it('should render phone number as tel link', () => {
@@ -72,7 +72,7 @@ describe('Footer', () => {
   it('should render copyright notice', () => {
     renderFooter();
 
-    expect(screen.getByText(/© 2025 10x Series Matcher/i)).toBeInTheDocument();
+    expect(screen.getByText(/© 2025 ShowSync/i)).toBeInTheDocument();
   });
 
   it('should show user account section when authenticated', () => {

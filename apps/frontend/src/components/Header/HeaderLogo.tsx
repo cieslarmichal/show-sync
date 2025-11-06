@@ -13,10 +13,10 @@ export function HeaderLogo() {
       >
         <img
           src="/logo.svg"
-          alt="10x Series Matcher Logo"
+          alt="ShowSync Logo"
           className="h-8 w-8 transition-transform group-hover:scale-105"
         />
-        <h2 className="text-lg font-semibold tracking-tight">10x Series Matcher</h2>
+        <h2 className="text-lg font-semibold tracking-tight">ShowSync</h2>
       </Link>
     </div>
   );

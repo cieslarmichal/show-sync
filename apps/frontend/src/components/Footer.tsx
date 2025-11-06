@@ -20,10 +20,10 @@ export default function Footer() {
             >
               <img
                 src="/logo.svg"
-                alt="10x Series Matcher Logo"
+                alt="ShowSync Logo"
                 className="h-8 w-8 transition-transform group-hover:scale-105"
               />
-              <h2 className="text-lg font-semibold tracking-tight">10x Series Matcher</h2>
+              <h2 className="text-lg font-semibold tracking-tight">ShowSync</h2>
             </Link>
             <p className="text-sm text-muted-foreground">
               Find the perfect series for your group. Get personalized recommendations based on everyone's tastes.
@@ -72,10 +72,10 @@ export default function Footer() {
               <div className="flex items-center gap-3 text-muted-foreground">
                 <Mail className="h-4 w-4" />
                 <a
-                  href="mailto:contact@10x-series-matcher.com"
+                  href="mailto:contact@showsync.com"
                   className="hover:text-foreground transition-colors"
                 >
-                  contact@10x-series-matcher.com
+                  contact@showsync.com
                 </a>
               </div>
               <div className="flex items-center gap-3 text-muted-foreground">
@@ -105,7 +105,7 @@ export default function Footer() {
 
       <div className="border-t border-border mt-10 pt-6 text-center max-w-6xl mx-auto px-4">
         <div className="flex flex-wrap items-baseline justify-center gap-x-1 gap-y-1 text-muted-foreground text-xs">
-          <span>© 2025 10x Series Matcher. Made with</span>
+          <span>© 2025 ShowSync. Made with</span>
           <Heart className="h-3 w-3 inline fill-current" />
           <span>by</span>
           <a

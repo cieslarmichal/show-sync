@@ -1,8 +1,8 @@
-# Dokument wymagań produktu (PRD) - 10x Series Matcher
+# Dokument wymagań produktu (PRD) - ShowSync
 
 ## 1. Przegląd produktu
 
-10x Series Matcher to aplikacja webowa zaprojektowana w celu rozwiązywania problemu wyboru serialu do wspólnego oglądania przez grupy osób (przyjaciół, rodziny, pary). Aplikacja generuje spersonalizowane rekomendacje na podstawie indywidualnych preferencji każdego z członków grupy.
+ShowSync to aplikacja webowa zaprojektowana w celu rozwiązywania problemu wyboru serialu do wspólnego oglądania przez grupy osób (przyjaciół, rodziny, pary). Aplikacja generuje spersonalizowane rekomendacje na podstawie indywidualnych preferencji każdego z członków grupy.
 
 Użytkownicy tworzą swoje profile, dodając do nich ulubione seriale. Następnie, jedna osoba tworzy "pokój oglądania" i udostępnia pozostałym unikalny link. Po dołączeniu wszystkich uczestników, system, wykorzystując API OpenAI, analizuje zbiorcze dane o gustach i prezentuje 3 do 5 najlepiej dopasowanych propozycji seriali. Każda rekomendacja jest wzbogacona o pisemne uzasadnienie, dlaczego dany tytuł powinien spodobać się całej grupie. Dane dotyczące seriali, takie jak opisy i plakaty, są pobierane z zewnętrznego API TMDB.
 
@@ -17,7 +17,7 @@ Grupy osób często napotykają trudności przy wspólnej decyzji, co obejrzeć.
 - Czasochłonność: Proces poszukiwania i negocjacji jest czasochłonny i często kończy się frustracją lub rezygnacją ze wspólnego oglądania.
 - Konflikty: Różnice zdań mogą prowadzić do niepotrzebnych sporów i psuć atmosferę spotkania.
 
-10x Series Matcher ma na celu rozwiązanie tych problemów, dostarczając obiektywne, oparte na danych rekomendacje, które oszczędzają czas i ułatwiają podjęcie wspólnej, satysfakcjonującej decyzji.
+ShowSync ma na celu rozwiązanie tych problemów, dostarczając obiektywne, oparte na danych rekomendacje, które oszczędzają czas i ułatwiają podjęcie wspólnej, satysfakcjonującej decyzji.
 
 ## 3. Wymagania funkcjonalne
 

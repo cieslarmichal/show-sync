@@ -1,4 +1,4 @@
-app = "10x-series-matcher-frontend"
+app = "showsync-frontend"
 primary_region = "fra"
 
 [build]

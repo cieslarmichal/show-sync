@@ -1,4 +1,4 @@
-# Kompletny Schemat Bazy Danych dla 10x Series Matcher
+# Kompletny Schemat Bazy Danych dla ShowSync
 
 ## Tabele
 

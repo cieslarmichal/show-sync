@@ -1,8 +1,8 @@
-# 10x Series Matcher
+# ShowSync
 
 ## Project Description
 
-10x Series Matcher helps groups pick a TV series to watch together. It uses everyone's favorite series to recommend a perfect match, ending the endless scrolling and debates.
+ShowSync helps groups pick a TV series to watch together. It uses everyone's favorite series to recommend a perfect match, ending the endless scrolling and debates.
 
 ## Table of Contents
 
@@ -45,8 +45,8 @@ To run the project on your local machine, please follow these steps.
 1. **Clone the repository:**
 
     ```sh
-    git clone https://github.com/your-username/10x-series-matcher.git
-    cd 10x-series-matcher
+    git clone https://github.com/cieslarmichal/showsync.git
+    cd showsync
     ```
 
 2. **Install dependencies:**

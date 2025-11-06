@@ -178,7 +178,7 @@ export default function ProfilePage() {
           <Card>
             <CardHeader>
               <CardTitle>Account Statistics</CardTitle>
-              <CardDescription>Your activity on 10x Series Matcher</CardDescription>
+              <CardDescription>Your activity on ShowSync</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
@@ -378,10 +378,10 @@ export default function ProfilePage() {
                 <p>
                   Need help? Contact our support team at{' '}
                   <a
-                    href="mailto:support@10x-series-matcher.com"
+                    href="mailto:support@showsync.com"
                     className="text-primary hover:underline"
                   >
-                    support@10x-series-matcher.com
+                    support@showsync.com
                   </a>
                 </p>
               </div>

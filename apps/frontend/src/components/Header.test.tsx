@@ -43,8 +43,8 @@ describe('Header', () => {
   it('should render logo and app name', () => {
     renderHeader();
 
-    expect(screen.getByText('10x Series Matcher')).toBeInTheDocument();
-    expect(screen.getByAltText('10x Series Matcher Logo')).toBeInTheDocument();
+    expect(screen.getByText('ShowSync')).toBeInTheDocument();
+    expect(screen.getByAltText('ShowSync Logo')).toBeInTheDocument();
   });
 
   it('should show loading skeleton when user data is not initialized', () => {

@@ -1,8 +1,8 @@
-# Architektura UI dla 10x Series Matcher
+# Architektura UI dla ShowSync
 
 ## 1. Przegląd struktury UI
 
-Architektura interfejsu użytkownika (UI) dla 10x Series Matcher została zaprojektowana z myślą o prostocie, intuicyjności i prowadzeniu użytkownika przez kluczowe funkcje aplikacji. Celem jest zapewnienie płynnego doświadczenia, od rejestracji i budowania profilu preferencji, aż po dołączenie do pokoju i otrzymanie rekomendacji seriali.
+Architektura interfejsu użytkownika (UI) dla ShowSync została zaprojektowana z myślą o prostocie, intuicyjności i prowadzeniu użytkownika przez kluczowe funkcje aplikacji. Celem jest zapewnienie płynnego doświadczenia, od rejestracji i budowania profilu preferencji, aż po dołączenie do pokoju i otrzymanie rekomendacji seriali.
 
 Struktura opiera się na kilku głównych widokach, które odpowiadają za poszczególne etapy interakcji użytkownika z aplikacją. Architektura jest zorientowana na zadania i w pełni zgodna z dostarczonym planem API. Wykorzystuje podejście "mobile-first", zapewniając responsywność i dostępność na różnych urządzeniach. Globalny stan autentykacji jest zarządzany centralnie, a nawigacja jest logiczna i przewidywalna, ułatwiając użytkownikom osiąganie ich celów.
 

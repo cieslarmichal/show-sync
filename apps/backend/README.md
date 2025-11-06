@@ -11,7 +11,7 @@ docker-compose up
 - In backend directory run:
 
 ```bash
-export DATABASE_URL=postgres://postgres:postgres@localhost:5432/10x-series-matcher
+export DATABASE_URL=postgres://postgres:postgres@localhost:5432/showsync
 npm run db:push
 ```
 
