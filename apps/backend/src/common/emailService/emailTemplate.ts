@@ -1,0 +1,18 @@
+import type { Config } from '../../core/config.ts';
+
+export type EmailTemplateName = keyof Config['resend']['emails'];
+
+interface ResetPasswordEmailTemplateData {
+  readonly resetLink: string;
+}
+
+interface EmailTemplateDataMap extends Record<EmailTemplateName, unknown> {
+  readonly resetPassword: ResetPasswordEmailTemplateData;
+}
+
+export type EmailTemplate = {
+  [K in keyof EmailTemplateDataMap]: {
+    readonly name: K;
+    readonly data: EmailTemplateDataMap[K];
+  };
+}[keyof EmailTemplateDataMap];

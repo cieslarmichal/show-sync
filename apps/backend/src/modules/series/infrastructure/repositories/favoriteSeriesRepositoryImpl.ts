@@ -1,7 +1,7 @@
 import { eq, and, desc, count } from 'drizzle-orm';
 
 import { ResourceNotFoundError } from '../../../../common/errors/resourceNotFoundError.ts';
-import { UuidService } from '../../../../common/uuid/uuidService.ts';
+import { IdService } from '../../../../common/id/idService.ts';
 import type { DatabaseClient } from '../../../../infrastructure/database/databaseClient.ts';
 import { userFavoriteSeries } from '../../../../infrastructure/database/schema.ts';
 import type { Transaction } from '../../../../infrastructure/database/transaction.ts';
@@ -25,7 +25,7 @@ export class FavoriteSeriesRepositoryImpl implements FavoriteSeriesRepository {
     const [newFavorite] = await db
       .insert(userFavoriteSeries)
       .values({
-        id: UuidService.generateUuid(),
+        id: IdService.generateUuid(),
         userId: favoriteSeriesData.userId,
         seriesTmdbId: favoriteSeriesData.seriesTmdbId,
         preferenceLevel: favoriteSeriesData.preferenceLevel,

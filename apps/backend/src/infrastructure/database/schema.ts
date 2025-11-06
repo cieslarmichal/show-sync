@@ -51,6 +51,23 @@ export const oneTimeTokens = pgTable(
   ],
 );
 
+export const emails = pgTable(
+  'emails',
+  {
+    id: uuid('id').notNull(),
+    payload: text('payload').notNull(),
+    recipient: varchar('recipient', { length: 255 }).notNull(),
+    status: varchar('status', { length: 20 }).notNull(),
+    templateName: varchar('template_name', { length: 20 }).notNull(),
+    createdAt: timestamp('created_at').notNull().defaultNow(),
+  },
+  (table) => [
+    index('emails_recipient_idx').on(table.recipient),
+    index('emails_status_idx').on(table.status),
+    index('emails_template_name_idx').on(table.templateName),
+  ],
+);
+
 export const userFavoriteSeries = pgTable(
   'user_favorite_series',
   {

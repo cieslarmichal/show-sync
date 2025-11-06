@@ -41,6 +41,10 @@
       "max": 3,
       "timeWindow": 3600000
     },
+    "oneTimeToken": {
+      "max": 10,
+      "timeWindow": 600000
+    },
     "accountDeletion": {
       "max": 2,
       "timeWindow": 3600000
@@ -48,6 +52,16 @@
     "recommendations": {
       "max": 5,
       "timeWindow": 60000
+    }
+  },
+  "resend": {
+    "apiKey": null,
+    "fromEmail": "contact@show-sync.com",
+    "emails": {
+      "resetPassword": {
+        "templateFile": "resetPassword.html",
+        "subject": "Reset your ShowSync password"
+      }
     }
   },
   "token": {
@@ -60,6 +74,9 @@
       "expiresIn": 604800,
       "graceMs": 10000,
       "idempotencyMs": 3000
+    },
+    "resetPassword": {
+      "expiresIn": 3600
     }
   },
   "tmdb": {

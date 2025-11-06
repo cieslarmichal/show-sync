@@ -1,3 +1,4 @@
+import type { Transaction } from '../../../../infrastructure/database/transaction.ts';
 import type { User } from '../types/user.ts';
 
 export interface CreateUserData {
@@ -8,8 +9,8 @@ export interface CreateUserData {
 
 export interface UserRepository {
   create(userData: CreateUserData): Promise<User>;
-  findById(id: string): Promise<User | null>;
-  findByEmail(email: string): Promise<User | null>;
+  findById(id: string, tx?: Transaction): Promise<User | null>;
+  findByEmail(email: string, tx?: Transaction): Promise<User | null>;
   delete(id: string): Promise<void>;
-  updatePassword(id: string, password: string): Promise<void>;
+  updatePassword(id: string, password: string, tx?: Transaction): Promise<void>;
 }

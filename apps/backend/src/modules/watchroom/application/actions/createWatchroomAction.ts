@@ -1,11 +1,8 @@
-import { customAlphabet } from 'nanoid';
-
+import { IdService } from '../../../../common/id/idService.ts';
 import type { LoggerService } from '../../../../common/logger/loggerService.ts';
 import type { ExecutionContext } from '../../../../common/types/executionContext.ts';
 import type { WatchroomRepository } from '../../domain/repositories/watchroomRepository.ts';
 import type { Watchroom } from '../../domain/types/watchroom.ts';
-
-const nanoid = customAlphabet('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789', 10);
 
 export interface CreateWatchroomActionPayload {
   readonly name: string;
@@ -25,7 +22,7 @@ export class CreateWatchroomAction {
   public async execute(payload: CreateWatchroomActionPayload, context: ExecutionContext): Promise<Watchroom> {
     const { name, description, ownerId } = payload;
 
-    const publicLinkId = nanoid();
+    const publicLinkId = IdService.generateNanoid();
 
     this.loggerService.debug({
       message: 'Creating watchroom',

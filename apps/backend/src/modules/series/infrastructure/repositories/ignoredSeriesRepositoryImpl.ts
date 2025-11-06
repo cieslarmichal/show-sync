@@ -1,6 +1,6 @@
 import { eq, and, desc, count } from 'drizzle-orm';
 
-import { UuidService } from '../../../../common/uuid/uuidService.ts';
+import { IdService } from '../../../../common/id/idService.ts';
 import type { DatabaseClient } from '../../../../infrastructure/database/databaseClient.ts';
 import { userIgnoredSeries } from '../../../../infrastructure/database/schema.ts';
 import type { Transaction } from '../../../../infrastructure/database/transaction.ts';
@@ -23,7 +23,7 @@ export class IgnoredSeriesRepositoryImpl implements IgnoredSeriesRepository {
     const [newIgnored] = await db
       .insert(userIgnoredSeries)
       .values({
-        id: UuidService.generateUuid(),
+        id: IdService.generateUuid(),
         userId: ignoredSeriesData.userId,
         seriesTmdbId: ignoredSeriesData.seriesTmdbId,
       })

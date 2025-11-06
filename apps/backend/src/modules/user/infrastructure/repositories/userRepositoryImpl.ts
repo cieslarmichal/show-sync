@@ -1,8 +1,9 @@
 import { eq } from 'drizzle-orm';
 
-import { UuidService } from '../../../../common/uuid/uuidService.ts';
+import { IdService } from '../../../../common/id/idService.ts';
 import type { DatabaseClient } from '../../../../infrastructure/database/databaseClient.ts';
 import { users } from '../../../../infrastructure/database/schema.ts';
+import type { Transaction } from '../../../../infrastructure/database/transaction.ts';
 import type { CreateUserData, UserRepository } from '../../domain/repositories/userRepository.ts';
 import type { User } from '../../domain/types/user.ts';
 
@@ -17,7 +18,7 @@ export class UserRepositoryImpl implements UserRepository {
     const [newUser] = await this.databaseClient.db
       .insert(users)
       .values({
-        id: UuidService.generateUuid(),
+        id: IdService.generateUuid(),
         name: userData.name,
         email: userData.email,
         password: userData.password,
@@ -31,24 +32,34 @@ export class UserRepositoryImpl implements UserRepository {
     return this.mapToUser(newUser);
   }
 
-  public async findById(id: string): Promise<User | null> {
-    const [user] = await this.databaseClient.db.select().from(users).where(eq(users.id, id)).limit(1);
+  public async findById(id: string, tx?: Transaction): Promise<User | null> {
+    const db = tx ?? this.databaseClient.db;
+
+    const query = db.select().from(users).where(eq(users.id, id)).limit(1);
+
+    const [user] = tx ? await query.for('update') : await query;
 
     return user ? this.mapToUser(user) : null;
   }
 
-  public async findByEmail(email: string): Promise<User | null> {
-    const [user] = await this.databaseClient.db.select().from(users).where(eq(users.email, email)).limit(1);
+  public async findByEmail(email: string, tx?: Transaction): Promise<User | null> {
+    const db = tx ?? this.databaseClient.db;
 
-    return user ? this.mapToUser(user) : null;
+    const query = db.select().from(users).where(eq(users.email, email)).limit(1);
+
+    const [record] = tx ? await query.for('update') : await query;
+
+    return record ? this.mapToUser(record) : null;
   }
 
   public async delete(id: string): Promise<void> {
     await this.databaseClient.db.delete(users).where(eq(users.id, id));
   }
 
-  public async updatePassword(id: string, password: string): Promise<void> {
-    await this.databaseClient.db.update(users).set({ password }).where(eq(users.id, id));
+  public async updatePassword(id: string, password: string, tx?: Transaction): Promise<void> {
+    const db = tx ? tx : this.databaseClient.db;
+
+    await db.update(users).set({ password }).where(eq(users.id, id));
   }
 
   private mapToUser(dbUser: typeof users.$inferSelect): User {

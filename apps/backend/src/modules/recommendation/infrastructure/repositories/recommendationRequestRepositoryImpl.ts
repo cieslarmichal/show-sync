@@ -1,6 +1,6 @@
 import { eq, desc, count, inArray } from 'drizzle-orm';
 
-import { UuidService } from '../../../../common/uuid/uuidService.ts';
+import { IdService } from '../../../../common/id/idService.ts';
 import type { DatabaseClient } from '../../../../infrastructure/database/databaseClient.ts';
 import { recommendationRequests, watchroomParticipants } from '../../../../infrastructure/database/schema.ts';
 import type { Transaction } from '../../../../infrastructure/database/transaction.ts';
@@ -21,7 +21,7 @@ export class RecommendationRequestRepositoryImpl implements RecommendationReques
     const [request] = await this.databaseClient.db
       .insert(recommendationRequests)
       .values({
-        id: UuidService.generateUuid(),
+        id: IdService.generateUuid(),
         watchroomId: data.watchroomId,
         status: data.status,
       })

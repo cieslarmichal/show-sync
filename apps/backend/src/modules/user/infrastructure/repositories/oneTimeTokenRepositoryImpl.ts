@@ -1,6 +1,6 @@
 import { and, eq, gt, isNull, lt } from 'drizzle-orm';
 
-import { UuidService } from '../../../../common/uuid/uuidService.ts';
+import { IdService } from '../../../../common/id/idService.ts';
 import type { DatabaseClient } from '../../../../infrastructure/database/databaseClient.ts';
 import { oneTimeTokens } from '../../../../infrastructure/database/schema.ts';
 import type { Transaction } from '../../../../infrastructure/database/transaction.ts';
@@ -23,7 +23,7 @@ export class OneTimeTokenRepositoryImpl implements OneTimeTokenRepository {
     const result = await db
       .insert(oneTimeTokens)
       .values({
-        id: UuidService.generateUuid(),
+        id: IdService.generateUuid(),
         userId: data.userId,
         tokenHash: data.tokenHash,
         purpose: data.purpose,

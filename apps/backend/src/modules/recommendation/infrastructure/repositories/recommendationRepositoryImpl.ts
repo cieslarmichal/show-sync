@@ -1,6 +1,6 @@
 import { eq } from 'drizzle-orm';
 
-import { UuidService } from '../../../../common/uuid/uuidService.ts';
+import { IdService } from '../../../../common/id/idService.ts';
 import type { DatabaseClient } from '../../../../infrastructure/database/databaseClient.ts';
 import { recommendations } from '../../../../infrastructure/database/schema.ts';
 import type { Transaction } from '../../../../infrastructure/database/transaction.ts';
@@ -19,7 +19,7 @@ export class RecommendationRepositoryImpl implements RecommendationRepository {
 
   public async create(data: CreateRecommendationData[], tx: Transaction): Promise<void> {
     const values = data.map((item) => ({
-      id: UuidService.generateUuid(),
+      id: IdService.generateUuid(),
       recommendationRequestId: item.recommendationRequestId,
       seriesTmdbId: item.seriesTmdbId,
       justification: item.justification,

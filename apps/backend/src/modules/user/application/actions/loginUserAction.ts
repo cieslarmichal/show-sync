@@ -1,9 +1,9 @@
 import type { TokenService } from '../../../../common/auth/tokenService.ts';
 import { CryptoService } from '../../../../common/crypto/cryptoService.ts';
 import { UnauthorizedAccessError } from '../../../../common/errors/unathorizedAccessError.ts';
+import { IdService } from '../../../../common/id/idService.ts';
 import type { LoggerService } from '../../../../common/logger/loggerService.ts';
 import type { ExecutionContext } from '../../../../common/types/executionContext.ts';
-import { UuidService } from '../../../../common/uuid/uuidService.ts';
 import type { UserRepository } from '../../domain/repositories/userRepository.ts';
 import type { UserSessionRepository } from '../../domain/repositories/userSessionRepository.ts';
 import type { PasswordService } from '../services/passwordService.ts';
@@ -67,7 +67,7 @@ export class LoginUserAction {
       });
     }
 
-    const sessionId = UuidService.generateUuid();
+    const sessionId = IdService.generateUuid();
     const accessPayload = { userId: user.id, email: user.email };
     const refreshPayload = { userId: user.id, email: user.email, sessionId };
 

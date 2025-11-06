@@ -1,6 +1,6 @@
 import { eq, desc, and, inArray, or, count, type SQL } from 'drizzle-orm';
 
-import { UuidService } from '../../../../common/uuid/uuidService.ts';
+import { IdService } from '../../../../common/id/idService.ts';
 import type { DatabaseClient } from '../../../../infrastructure/database/databaseClient.ts';
 import { users, watchroomParticipants, watchrooms } from '../../../../infrastructure/database/schema.ts';
 import type {
@@ -29,7 +29,7 @@ export class WatchroomRepositoryImpl implements WatchroomRepository {
   }
 
   public async create(data: CreateWatchroomData): Promise<Watchroom> {
-    const watchroomId = UuidService.generateUuid();
+    const watchroomId = IdService.generateUuid();
 
     await this.databaseClient.db.transaction(async (tx) => {
       await tx.insert(watchrooms).values({
@@ -41,7 +41,7 @@ export class WatchroomRepositoryImpl implements WatchroomRepository {
       });
 
       await tx.insert(watchroomParticipants).values({
-        id: UuidService.generateUuid(),
+        id: IdService.generateUuid(),
         watchroomId,
         userId: data.ownerId,
       });
@@ -193,7 +193,7 @@ export class WatchroomRepositoryImpl implements WatchroomRepository {
 
   public async addParticipant(watchroomId: string, userId: string): Promise<void> {
     await this.databaseClient.db.insert(watchroomParticipants).values({
-      id: UuidService.generateUuid(),
+      id: IdService.generateUuid(),
       watchroomId,
       userId,
     });

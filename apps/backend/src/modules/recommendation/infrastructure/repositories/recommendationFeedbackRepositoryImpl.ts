@@ -1,6 +1,6 @@
 import { and, eq } from 'drizzle-orm';
 
-import { UuidService } from '../../../../common/uuid/uuidService.ts';
+import { IdService } from '../../../../common/id/idService.ts';
 import type { DatabaseClient } from '../../../../infrastructure/database/databaseClient.ts';
 import { recommendationFeedback } from '../../../../infrastructure/database/schema.ts';
 import type {
@@ -20,7 +20,7 @@ export class RecommendationFeedbackRepositoryImpl implements RecommendationFeedb
     const [feedback] = await this.databaseClient.db
       .insert(recommendationFeedback)
       .values({
-        id: UuidService.generateUuid(),
+        id: IdService.generateUuid(),
         recommendationRequestId: data.recommendationRequestId,
         userId: data.userId,
         rating: data.rating,

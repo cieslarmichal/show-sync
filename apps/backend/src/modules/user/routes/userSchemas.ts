@@ -1,21 +1,31 @@
 import { Type, type Static } from '@fastify/type-provider-typebox';
 
+export const emailSchema = Type.String({
+  format: 'email',
+  maxLength: 254,
+});
+
+export const passwordSchema = Type.String({
+  minLength: 8,
+  maxLength: 64,
+});
+
 export const userSchema = Type.Object({
   id: Type.String({ format: 'uuid' }),
   name: Type.String({ minLength: 1, maxLength: 64 }),
-  email: Type.String({ minLength: 1, maxLength: 255, format: 'email' }),
+  email: emailSchema,
   createdAt: Type.String({ format: 'date-time' }),
 });
 
 export const registerRequestSchema = Type.Object({
   name: Type.String({ minLength: 1, maxLength: 64 }),
-  email: Type.String({ minLength: 1, maxLength: 255, format: 'email' }),
-  password: Type.String({ minLength: 8, maxLength: 64 }),
+  email: emailSchema,
+  password: passwordSchema,
 });
 
 export const loginRequestSchema = Type.Object({
-  email: Type.String({ format: 'email' }),
-  password: Type.String({ minLength: 8, maxLength: 64 }),
+  email: emailSchema,
+  password: passwordSchema,
 });
 
 export const loginResponseSchema = Type.Object({

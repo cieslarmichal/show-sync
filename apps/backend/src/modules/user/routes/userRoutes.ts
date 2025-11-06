@@ -11,6 +11,7 @@ import { RecommendationRequestRepositoryImpl } from '../../recommendation/infras
 import { FavoriteSeriesRepositoryImpl } from '../../series/infrastructure/repositories/favoriteSeriesRepositoryImpl.ts';
 import { WatchroomRepositoryImpl } from '../../watchroom/infrastructure/repositories/watchroomRepositoryImpl.ts';
 import { ChangePasswordAction } from '../application/actions/changePasswordAction.ts';
+import { ChangePasswordByTokenAction } from '../application/actions/changePasswordByTokenAction.ts';
 import { CreateUserAction } from '../application/actions/createUserAction.ts';
 import { DeleteUserAction } from '../application/actions/deleteUserAction.ts';
 import { FindUserAction } from '../application/actions/findUserAction.ts';
@@ -18,15 +19,21 @@ import { GetUserStatsAction } from '../application/actions/getUserStatsAction.ts
 import { LoginUserAction } from '../application/actions/loginUserAction.ts';
 import { LogoutUserAction } from '../application/actions/logoutUserAction.ts';
 import { RefreshTokenAction } from '../application/actions/refreshTokenAction.ts';
+import { SendResetPasswordEmailAction } from '../application/actions/sendResetPasswordEmailAction.ts';
+import { ValidateOneTimeTokenAction } from '../application/actions/validateOneTimeTokenAction.ts';
 import { PasswordService } from '../application/services/passwordService.ts';
 import type { User } from '../domain/types/user.ts';
+import { EmailRepositoryImpl } from '../infrastructure/repositories/emailRepositoryImpl.ts';
+import { OneTimeTokenRepositoryImpl } from '../infrastructure/repositories/oneTimeTokenRepositoryImpl.ts';
 import { UserRepositoryImpl } from '../infrastructure/repositories/userRepositoryImpl.ts';
 import { UserSessionRepositoryImpl } from '../infrastructure/repositories/userSessionRepositoryImpl.ts';
 
 import {
   changePasswordRequestSchema,
+  emailSchema,
   loginRequestSchema,
   loginResponseSchema,
+  passwordSchema,
   registerRequestSchema,
   userSchema,
   type UserDto,
@@ -76,6 +83,8 @@ export const userRoutes: FastifyPluginAsyncTypebox<{
   const recommendationRequestRepository = new RecommendationRequestRepositoryImpl(databaseClient);
   const favoriteSeriesRepository = new FavoriteSeriesRepositoryImpl(databaseClient);
   const watchroomRepository = new WatchroomRepositoryImpl(databaseClient);
+  const emailRepository = new EmailRepositoryImpl(databaseClient);
+  const oneTimeTokenRepository = new OneTimeTokenRepositoryImpl(databaseClient);
 
   const createUserAction = new CreateUserAction(userRepository, loggerService, passwordService);
   const findUserAction = new FindUserAction(userRepository);
@@ -87,7 +96,6 @@ export const userRoutes: FastifyPluginAsyncTypebox<{
     passwordService,
     userSessionRepository,
   );
-  const changePasswordAction = new ChangePasswordAction(userRepository, loggerService, passwordService);
   const refreshTokenAction = new RefreshTokenAction(
     userRepository,
     userSessionRepository,
@@ -101,6 +109,26 @@ export const userRoutes: FastifyPluginAsyncTypebox<{
     favoriteSeriesRepository,
     watchroomRepository,
     recommendationRequestRepository,
+  );
+  const resetUserPasswordAction = new SendResetPasswordEmailAction(
+    userRepository,
+    loggerService,
+    config,
+    emailRepository,
+    oneTimeTokenRepository,
+  );
+  const changePasswordAction = new ChangePasswordAction(userRepository, loggerService, passwordService);
+  const changePasswordByTokenAction = new ChangePasswordByTokenAction(
+    userRepository,
+    loggerService,
+    passwordService,
+    oneTimeTokenRepository,
+    databaseClient,
+  );
+  const validateOneTimeTokenAction = new ValidateOneTimeTokenAction(
+    userRepository,
+    loggerService,
+    oneTimeTokenRepository,
   );
 
   const authenticationMiddleware = createAuthenticationMiddleware(tokenService);
@@ -293,6 +321,71 @@ export const userRoutes: FastifyPluginAsyncTypebox<{
       if (refreshToken) {
         reply.clearCookie(refreshTokenCookie.name, { path: refreshTokenCookie.config.path });
       }
+
+      return reply.status(204).send();
+    },
+  });
+
+  fastify.post('/users/reset-password', {
+    schema: {
+      body: Type.Object({
+        email: emailSchema,
+      }),
+      response: {
+        204: Type.Null(),
+      },
+    },
+    config: {
+      rateLimit: config.rateLimit.passwordChange,
+    },
+    handler: async (request, reply) => {
+      const { email } = request.body;
+
+      await resetUserPasswordAction.execute({ email });
+
+      return reply.status(204).send();
+    },
+  });
+
+  fastify.post('/one-time-tokens/validate', {
+    schema: {
+      body: Type.Object({
+        token: Type.String({ minLength: 1 }),
+        purpose: Type.Union([Type.Literal('reset-password')]),
+      }),
+      response: {
+        200: Type.Object({ valid: Type.Boolean() }),
+      },
+    },
+    config: {
+      rateLimit: config.rateLimit.oneTimeToken,
+    },
+    handler: async (request, reply) => {
+      const { token, purpose } = request.body;
+
+      const valid = await validateOneTimeTokenAction.execute({ token, purpose });
+
+      return reply.send({ valid });
+    },
+  });
+
+  fastify.post('/users/change-password', {
+    schema: {
+      body: Type.Object({
+        token: Type.String({ minLength: 1 }),
+        newPassword: passwordSchema,
+      }),
+      response: {
+        204: Type.Null(),
+      },
+    },
+    config: {
+      rateLimit: config.rateLimit.passwordChange,
+    },
+    handler: async (request, reply) => {
+      const { token, newPassword } = request.body;
+
+      await changePasswordByTokenAction.execute({ token, newPassword });
 
       return reply.status(204).send();
     },

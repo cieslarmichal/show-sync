@@ -23,6 +23,9 @@ const configSchema = Type.Object({
       // Short client/API idempotency window for coalescing duplicate refresh requests
       idempotencyMs: Type.Number({ minimum: 100, maximum: 5000 }),
     }),
+    resetPassword: Type.Object({
+      expiresIn: Type.Number({ minimum: 1800 }),
+    }),
   }),
   server: Type.Object({
     host: Type.String({ minLength: 1 }),
@@ -57,6 +60,10 @@ const configSchema = Type.Object({
       max: Type.Number({ minimum: 1 }),
       timeWindow: Type.Number({ minimum: 1000 }),
     }),
+    oneTimeToken: Type.Object({
+      max: Type.Number({ minimum: 1 }),
+      timeWindow: Type.Number({ minimum: 1000 }),
+    }),
     accountDeletion: Type.Object({
       max: Type.Number({ minimum: 1 }),
       timeWindow: Type.Number({ minimum: 1000 }),
@@ -64,6 +71,16 @@ const configSchema = Type.Object({
     recommendations: Type.Object({
       max: Type.Number({ minimum: 1 }),
       timeWindow: Type.Number({ minimum: 1000 }),
+    }),
+  }),
+  resend: Type.Object({
+    apiKey: Type.String({ minLength: 1 }),
+    fromEmail: Type.String({ minLength: 1 }),
+    emails: Type.Object({
+      resetPassword: Type.Object({
+        templateFile: Type.String({ minLength: 1 }),
+        subject: Type.String({ minLength: 1 }),
+      }),
     }),
   }),
   tmdb: Type.Object({

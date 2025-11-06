@@ -16,9 +16,9 @@ import { ResourceNotFoundError } from '../common/errors/resourceNotFoundError.ts
 import { serializeError } from '../common/errors/serializeError.ts';
 import { UnauthorizedAccessError } from '../common/errors/unathorizedAccessError.ts';
 import { httpStatusCodes } from '../common/http/httpStatusCode.ts';
+import { IdService } from '../common/id/idService.ts';
 import { type LoggerService } from '../common/logger/loggerService.ts';
 import { OpenRouterService } from '../common/openRouter/openRouterService.ts';
-import { UuidService } from '../common/uuid/uuidService.ts';
 import type { DatabaseClient } from '../infrastructure/database/databaseClient.ts';
 import { recommendationRoutes } from '../modules/recommendation/routes/recommendationRoutes.ts';
 import { seriesRoutes } from '../modules/series/routes/seriesRoutes.ts';
@@ -105,7 +105,7 @@ export class HttpServer {
         return;
       }
 
-      const requestId = UuidService.generateUuid();
+      const requestId = IdService.generateUuid();
       request.id = requestId;
       reply.header('X-Request-ID', requestId);
 
