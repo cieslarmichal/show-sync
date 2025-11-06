@@ -31,19 +31,19 @@ export function DesktopAuthSection() {
   }
 
   return (
-    <div className="flex items-center gap-2 lg:gap-3">
+    <div className="flex items-center gap-3 lg:gap-4">
       <Button
-        variant="link"
+        variant="ghost"
         size="lg"
         onClick={() => navigate('/login')}
-        className="text-sm text-muted-foreground whitespace-nowrap h-10 px-3"
+        className="text-sm text-foreground hover:text-foreground hover:bg-accent font-medium whitespace-nowrap h-10 px-4 rounded-md transition-colors"
       >
         Sign In
       </Button>
       <Button
         size="lg"
         onClick={() => navigate('/register')}
-        className="text-sm bg-primary hover:bg-primary/90 transition-all duration-300 font-semibold text-primary-foreground rounded-md whitespace-nowrap h-10 px-3"
+        className="text-sm bg-foreground hover:bg-foreground/90 text-background font-semibold whitespace-nowrap h-10 px-5 rounded-md shadow-sm hover:shadow transition-all duration-200"
       >
         Sign Up
       </Button>

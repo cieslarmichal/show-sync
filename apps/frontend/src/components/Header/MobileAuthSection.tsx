@@ -29,10 +29,10 @@ export function MobileAuthSection() {
   return (
     <Button
       size="sm"
-      onClick={() => navigate('/login')}
-      className="text-xs bg-primary hover:bg-primary/90 text-primary-foreground h-8 px-3"
+      onClick={() => navigate('/register')}
+      className="text-xs bg-foreground hover:bg-foreground/90 text-background font-semibold h-8 px-4 rounded-md shadow-sm transition-all"
     >
-      Sign In
+      Sign Up
     </Button>
   );
 }
