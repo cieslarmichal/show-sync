@@ -1,5 +1,5 @@
 {
-  "name": "showsync",
+  "name": "show-sync",
   "scripts": {
     "build": "turbo run build",
     "build:dev": "turbo run build:dev",
