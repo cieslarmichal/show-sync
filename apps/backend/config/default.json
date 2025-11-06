@@ -56,7 +56,7 @@
   },
   "resend": {
     "apiKey": null,
-    "fromEmail": "contact@show-sync.com",
+    "fromEmail": "noreply@show-sync.com",
     "emails": {
       "resetPassword": {
         "templateFile": "resetPassword.html",
