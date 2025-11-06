@@ -1,16 +1,20 @@
-<svg width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <!-- Rounded square background -->
-  <rect x="10" y="10" width="180" height="180" rx="40" fill="#0A0A0A"/>
-
-  <!-- SM text with better sizing -->
-  <text
-    x="100"
-    y="125"
-    font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif"
-    font-size="70"
-    font-weight="600"
-    fill="white"
-    text-anchor="middle"
-    letter-spacing="2"
-  >SM</text>
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  width="100"
+  height="100"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="1.5"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  <title>ShowSync Logo Concept A: Sync-Play</title>
+  <path d="M21.5 3v4.5h-4.5" />
+  <path d="M2.5 21v-4.5h4.5" />
+  <path d="M2 11.5a10 10 0 0 1 18.8-4.3" />
+  <path d="M22 12.5a10 10 0 0 1-18.8 4.3" />
+  <polygon points="10,8 16,12 10,16" fill="currentColor" />
+  <path d="M22 12.5a10 10 0 0 1-18.8 4.3" />
+  <polygon points="10,8 16,12 10,16" fill="currentColor" />
 </svg>
