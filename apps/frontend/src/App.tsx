@@ -13,6 +13,7 @@ import LogoutPage from './pages/LogoutPage.tsx';
 import LoginPage from './pages/LoginPage.tsx';
 import RegisterPage from './pages/RegisterPage.tsx';
 import ForgotPasswordPage from './pages/ForgotPasswordPage.tsx';
+import ResetPasswordPage from './pages/ResetPasswordPage.tsx';
 import SeriesPage from './pages/SeriesPage.tsx';
 import WatchRoomsPage from './pages/WatchRoomsPage.tsx';
 import ProfilePage from './pages/ProfilePage.tsx';
@@ -47,6 +48,10 @@ const router = createBrowserRouter([
       {
         path: '/forgot-password',
         element: <ForgotPasswordPage />,
+      },
+      {
+        path: '/reset-password',
+        element: <ResetPasswordPage />,
       },
       {
         path: '/logout',

@@ -7,6 +7,7 @@ import { Mail } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/Form';
 import { Input } from '@/components/ui/Input';
+import { requestPasswordReset } from '@/api/queries/requestPasswordReset';
 
 const formSchema = z.object({
   email: z.string().email('Invalid email address').max(64),
@@ -27,12 +28,7 @@ export default function ForgotPasswordPage() {
 
   async function onSubmit(values: FormValues) {
     try {
-      // TODO: Implement forgot password API call
-      console.log('Password reset requested for:', values.email);
-
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-
+      await requestPasswordReset({ email: values.email });
       setIsSubmitted(true);
     } catch (error) {
       form.setError('root', {

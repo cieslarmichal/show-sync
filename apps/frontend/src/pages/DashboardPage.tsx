@@ -153,12 +153,12 @@ export default function DashboardPage() {
                         <div className="flex items-center justify-center gap-1.5">
                           {totalCount < SERIES_THRESHOLDS.GOOD_ACCURACY ? (
                             <span className="text-xs text-muted-foreground">
-                              {toReachGoodAccuracy} more for good accuracy
+                              Rate {toReachGoodAccuracy} more series for good accuracy
                             </span>
                           ) : totalCount < SERIES_THRESHOLDS.MAX_ACCURACY ? (
                             <span className="text-xs text-violet-600 dark:text-violet-400 font-medium flex items-center gap-1">
                               <Check className="w-3 h-3" />
-                              Good accuracy • {toReachMaxAccuracy} more for max
+                              Good accuracy • Rate {toReachMaxAccuracy} more series for max
                             </span>
                           ) : (
                             <span className="text-xs text-emerald-600 dark:text-emerald-400 font-medium flex items-center gap-1">

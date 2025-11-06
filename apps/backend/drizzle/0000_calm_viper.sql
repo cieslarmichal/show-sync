@@ -1,3 +1,23 @@
+CREATE TABLE "emails" (
+	"id" uuid NOT NULL,
+	"payload" text NOT NULL,
+	"recipient" varchar(255) NOT NULL,
+	"status" varchar(20) NOT NULL,
+	"template_name" varchar(20) NOT NULL,
+	"created_at" timestamp DEFAULT now() NOT NULL
+);
+--> statement-breakpoint
+CREATE TABLE "one_time_tokens" (
+	"id" uuid PRIMARY KEY NOT NULL,
+	"user_id" uuid NOT NULL,
+	"token_hash" text NOT NULL,
+	"purpose" varchar(64) NOT NULL,
+	"expires_at" timestamp NOT NULL,
+	"used_at" timestamp,
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	CONSTRAINT "one_time_tokens_token_hash_unique" UNIQUE("token_hash")
+);
+--> statement-breakpoint
 CREATE TABLE "recommendation_feedback" (
 	"id" uuid PRIMARY KEY NOT NULL,
 	"recommendation_request_id" uuid NOT NULL,
@@ -11,7 +31,7 @@ CREATE TABLE "recommendation_feedback" (
 --> statement-breakpoint
 CREATE TABLE "recommendation_requests" (
 	"id" uuid PRIMARY KEY NOT NULL,
-	"watchroom_id" uuid NOT NULL,
+	"watchroom_id" uuid,
 	"status" varchar(16) NOT NULL,
 	"created_at" timestamp DEFAULT now() NOT NULL
 );
@@ -78,9 +98,10 @@ CREATE TABLE "watchrooms" (
 	CONSTRAINT "watchrooms_public_link_id_unique" UNIQUE("public_link_id")
 );
 --> statement-breakpoint
+ALTER TABLE "one_time_tokens" ADD CONSTRAINT "one_time_tokens_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "recommendation_feedback" ADD CONSTRAINT "recommendation_feedback_recommendation_request_id_recommendation_requests_id_fk" FOREIGN KEY ("recommendation_request_id") REFERENCES "public"."recommendation_requests"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "recommendation_feedback" ADD CONSTRAINT "recommendation_feedback_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "recommendation_requests" ADD CONSTRAINT "recommendation_requests_watchroom_id_watchrooms_id_fk" FOREIGN KEY ("watchroom_id") REFERENCES "public"."watchrooms"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "recommendation_requests" ADD CONSTRAINT "recommendation_requests_watchroom_id_watchrooms_id_fk" FOREIGN KEY ("watchroom_id") REFERENCES "public"."watchrooms"("id") ON DELETE set null ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "recommendations" ADD CONSTRAINT "recommendations_recommendation_request_id_recommendation_requests_id_fk" FOREIGN KEY ("recommendation_request_id") REFERENCES "public"."recommendation_requests"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "user_favorite_series" ADD CONSTRAINT "user_favorite_series_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "user_ignored_series" ADD CONSTRAINT "user_ignored_series_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
@@ -88,6 +109,12 @@ ALTER TABLE "user_sessions" ADD CONSTRAINT "user_sessions_user_id_users_id_fk" F
 ALTER TABLE "watchroom_participants" ADD CONSTRAINT "watchroom_participants_watchroom_id_watchrooms_id_fk" FOREIGN KEY ("watchroom_id") REFERENCES "public"."watchrooms"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "watchroom_participants" ADD CONSTRAINT "watchroom_participants_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "watchrooms" ADD CONSTRAINT "watchrooms_owner_id_users_id_fk" FOREIGN KEY ("owner_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+CREATE INDEX "emails_recipient_idx" ON "emails" USING btree ("recipient");--> statement-breakpoint
+CREATE INDEX "emails_status_idx" ON "emails" USING btree ("status");--> statement-breakpoint
+CREATE INDEX "emails_template_name_idx" ON "emails" USING btree ("template_name");--> statement-breakpoint
+CREATE INDEX "idx_one_time_tokens_user_id" ON "one_time_tokens" USING btree ("user_id");--> statement-breakpoint
+CREATE INDEX "idx_one_time_tokens_token_hash_purpose_expires_at_used_at" ON "one_time_tokens" USING btree ("token_hash","purpose","expires_at","used_at");--> statement-breakpoint
+CREATE INDEX "idx_one_time_tokens_expires_at" ON "one_time_tokens" USING btree ("expires_at");--> statement-breakpoint
 CREATE INDEX "idx_recommendation_feedback_recommendation_request_id" ON "recommendation_feedback" USING btree ("recommendation_request_id");--> statement-breakpoint
 CREATE INDEX "idx_recommendation_feedback_user_id" ON "recommendation_feedback" USING btree ("user_id");--> statement-breakpoint
 CREATE INDEX "idx_recommendation_requests_watchroom_id" ON "recommendation_requests" USING btree ("watchroom_id");--> statement-breakpoint
