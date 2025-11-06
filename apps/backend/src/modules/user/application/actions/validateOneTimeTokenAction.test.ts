@@ -35,11 +35,7 @@ describe('ValidateOneTimeTokenAction', () => {
       error: () => {},
     } as unknown as LoggerService;
 
-    validateOneTimeTokenAction = new ValidateOneTimeTokenAction(
-      userRepository,
-      loggerService,
-      oneTimeTokenRepository,
-    );
+    validateOneTimeTokenAction = new ValidateOneTimeTokenAction(userRepository, loggerService, oneTimeTokenRepository);
 
     await databaseClient.db.delete(oneTimeTokens);
     await databaseClient.db.delete(users);

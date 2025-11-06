@@ -27,6 +27,7 @@ export function PreferenceToggle({ preferenceLevel, onToggle, disabled = false }
           disabled={disabled}
           variant="ghost"
           size="icon"
+          data-testid="preference-toggle"
           aria-label={label}
           aria-pressed={isLoved}
           className={`relative h-8 w-8 rounded-full p-0 transition-colors

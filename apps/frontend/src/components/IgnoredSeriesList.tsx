@@ -125,6 +125,7 @@ export default function IgnoredSeriesList({
               return (
                 <div
                   key={ignored.seriesTmdbId}
+                  data-testid="ignored-series-card"
                   className={`group relative transition-all duration-300 ${
                     isRemoving ? 'opacity-0 scale-95' : 'opacity-100 scale-100'
                   }`}

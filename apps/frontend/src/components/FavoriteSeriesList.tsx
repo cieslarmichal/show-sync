@@ -148,6 +148,7 @@ export default function FavoriteSeriesList({
               return (
                 <div
                   key={favorite.seriesTmdbId}
+                  data-testid="favorite-series-card"
                   className={`group relative transition-all duration-300 ${
                     isRemoving ? 'opacity-0 scale-95' : 'opacity-100 scale-100'
                   }`}
