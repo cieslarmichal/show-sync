@@ -42,7 +42,8 @@ describe('CreateWatchRoomModal', () => {
     await user.click(createButton);
 
     await waitFor(() => {
-      expect(screen.getByText('Create Watch Room')).toBeInTheDocument();
+      expect(screen.getByRole('dialog')).toBeInTheDocument();
+      expect(screen.getByText('Create a new watch room to discover your next favorite series.')).toBeInTheDocument();
     });
   });
 
@@ -55,7 +56,7 @@ describe('CreateWatchRoomModal', () => {
 
     await waitFor(() => {
       expect(screen.getByLabelText(/room name/i)).toBeInTheDocument();
-      expect(screen.getByLabelText(/ai prompt/i)).toBeInTheDocument();
+      expect(screen.getByLabelText(/description/i)).toBeInTheDocument();
     });
   });
 
@@ -108,13 +109,13 @@ describe('CreateWatchRoomModal', () => {
     await user.click(createButton);
 
     await waitFor(() => {
-      expect(screen.getByLabelText(/ai prompt/i)).toBeInTheDocument();
+      expect(screen.getByLabelText(/description/i)).toBeInTheDocument();
     });
 
     const nameInput = screen.getByLabelText(/room name/i);
     await user.type(nameInput, 'Test Room');
 
-    const descriptionInput = screen.getByLabelText(/ai prompt/i);
+    const descriptionInput = screen.getByLabelText(/description/i);
     await user.type(descriptionInput, 'a'.repeat(257));
 
     const submitButton = screen.getByRole('button', { name: /^create watch room$/i });
@@ -147,7 +148,7 @@ describe('CreateWatchRoomModal', () => {
     });
 
     const nameInput = screen.getByLabelText(/room name/i);
-    const descriptionInput = screen.getByLabelText(/ai prompt/i);
+    const descriptionInput = screen.getByLabelText(/description/i);
 
     await user.type(nameInput, 'Test Room');
     await user.type(descriptionInput, 'Test Description');
@@ -259,14 +260,14 @@ describe('CreateWatchRoomModal', () => {
     await user.click(createButton);
 
     await waitFor(() => {
-      expect(screen.getByText('Create Watch Room')).toBeInTheDocument();
+      expect(screen.getByRole('dialog')).toBeInTheDocument();
     });
 
     const cancelButton = screen.getByRole('button', { name: /cancel/i });
     await user.click(cancelButton);
 
     await waitFor(() => {
-      expect(screen.queryByText('Create Watch Room')).not.toBeInTheDocument();
+      expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
     });
   });
 

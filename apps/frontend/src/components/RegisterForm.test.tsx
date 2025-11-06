@@ -15,7 +15,7 @@ describe('RegisterForm', () => {
 
     expect(screen.getByLabelText(/name/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/email/i)).toBeInTheDocument();
-    expect(screen.getByPlaceholderText(/minimum 8 characters/i)).toBeInTheDocument();
+    expect(screen.getByPlaceholderText(/at least 8 characters/i)).toBeInTheDocument();
     expect(screen.getByPlaceholderText(/repeat password/i)).toBeInTheDocument();
   });
 
@@ -52,7 +52,7 @@ describe('RegisterForm', () => {
     const user = userEvent.setup();
     await renderWithProviders(<RegisterForm onSuccess={mockOnSuccess} />);
 
-    const passwordInput = screen.getByPlaceholderText(/minimum 8 characters/i);
+    const passwordInput = screen.getByPlaceholderText(/at least 8 characters/i);
 
     await user.type(passwordInput, 'short');
     await user.tab();
@@ -66,7 +66,7 @@ describe('RegisterForm', () => {
     const user = userEvent.setup();
     await renderWithProviders(<RegisterForm onSuccess={mockOnSuccess} />);
 
-    const passwordInput = screen.getByPlaceholderText(/minimum 8 characters/i);
+    const passwordInput = screen.getByPlaceholderText(/at least 8 characters/i);
 
     await user.type(passwordInput, 'PASSWORD123!');
     await user.tab();
@@ -80,7 +80,7 @@ describe('RegisterForm', () => {
     const user = userEvent.setup();
     await renderWithProviders(<RegisterForm onSuccess={mockOnSuccess} />);
 
-    const passwordInput = screen.getByPlaceholderText(/minimum 8 characters/i);
+    const passwordInput = screen.getByPlaceholderText(/at least 8 characters/i);
 
     await user.type(passwordInput, 'password123!');
     await user.tab();
@@ -94,7 +94,7 @@ describe('RegisterForm', () => {
     const user = userEvent.setup();
     await renderWithProviders(<RegisterForm onSuccess={mockOnSuccess} />);
 
-    const passwordInput = screen.getByPlaceholderText(/minimum 8 characters/i);
+    const passwordInput = screen.getByPlaceholderText(/at least 8 characters/i);
 
     await user.type(passwordInput, 'Password!');
     await user.tab();
@@ -108,7 +108,7 @@ describe('RegisterForm', () => {
     const user = userEvent.setup();
     await renderWithProviders(<RegisterForm onSuccess={mockOnSuccess} />);
 
-    const passwordInput = screen.getByPlaceholderText(/minimum 8 characters/i);
+    const passwordInput = screen.getByPlaceholderText(/at least 8 characters/i);
 
     await user.type(passwordInput, 'Password123');
     await user.tab();
@@ -122,7 +122,7 @@ describe('RegisterForm', () => {
     const user = userEvent.setup();
     await renderWithProviders(<RegisterForm onSuccess={mockOnSuccess} />);
 
-    const passwordInput = screen.getByPlaceholderText(/minimum 8 characters/i);
+    const passwordInput = screen.getByPlaceholderText(/at least 8 characters/i);
     const confirmPasswordInput = screen.getByPlaceholderText(/repeat password/i);
     const nameInput = screen.getByLabelText(/name/i);
     const emailInput = screen.getByLabelText(/email/i);
@@ -144,7 +144,7 @@ describe('RegisterForm', () => {
 
     const nameInput = screen.getByLabelText(/name/i);
     const emailInput = screen.getByLabelText(/email/i);
-    const passwordInput = screen.getByPlaceholderText(/minimum 8 characters/i);
+    const passwordInput = screen.getByPlaceholderText(/at least 8 characters/i);
     const confirmPasswordInput = screen.getByPlaceholderText(/repeat password/i);
     const submitButton = screen.getByRole('button', { name: /sign up/i });
 
@@ -162,7 +162,7 @@ describe('RegisterForm', () => {
     const user = userEvent.setup();
     await renderWithProviders(<RegisterForm onSuccess={mockOnSuccess} />);
 
-    const passwordInput = screen.getByPlaceholderText(/minimum 8 characters/i);
+    const passwordInput = screen.getByPlaceholderText(/at least 8 characters/i);
     const toggleButtons = screen.getAllByRole('button').filter((btn) => btn.getAttribute('tabindex') === '-1');
     const passwordToggle = toggleButtons[0];
 
@@ -198,7 +198,7 @@ describe('RegisterForm', () => {
 
     const nameInput = screen.getByLabelText(/name/i);
     const emailInput = screen.getByLabelText(/email/i);
-    const passwordInput = screen.getByPlaceholderText(/minimum 8 characters/i);
+    const passwordInput = screen.getByPlaceholderText(/at least 8 characters/i);
     const confirmPasswordInput = screen.getByPlaceholderText(/repeat password/i);
     const submitButton = screen.getByRole('button', { name: /sign up/i });
 
@@ -224,7 +224,7 @@ describe('RegisterForm', () => {
 
     const nameInput = screen.getByLabelText(/name/i);
     const emailInput = screen.getByLabelText(/email/i);
-    const passwordInput = screen.getByPlaceholderText(/minimum 8 characters/i);
+    const passwordInput = screen.getByPlaceholderText(/at least 8 characters/i);
     const confirmPasswordInput = screen.getByPlaceholderText(/repeat password/i);
     const submitButton = screen.getByRole('button', { name: /sign up/i });
 
