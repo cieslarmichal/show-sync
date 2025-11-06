@@ -91,7 +91,7 @@ export default function SearchSeries({
         </div>
         <p className="text-xs text-muted-foreground px-1">
           <span className="font-medium">Like</span> or <span className="font-medium">Love</span> the series you enjoy •
-          <span className="font-medium"> Skip</span> to exclude them from AI recommendations
+          <span className="font-medium"> Skip</span> to exclude them from recommendations
         </p>
       </div>
 

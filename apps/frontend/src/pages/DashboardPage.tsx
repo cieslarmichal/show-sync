@@ -289,7 +289,7 @@ export default function DashboardPage() {
                               3
                             </span>
                             <div>
-                              <p className="font-medium text-foreground">Get AI matches</p>
+                              <p className="font-medium text-foreground">Get recommendations</p>
                               <p className="text-xs text-muted-foreground">Based on everyone's favorite series</p>
                             </div>
                           </li>
@@ -322,7 +322,7 @@ export default function DashboardPage() {
                               3
                             </span>
                             <div>
-                              <p className="font-medium text-foreground">Get AI matches</p>
+                              <p className="font-medium text-foreground">Get recommendations</p>
                               <p className="text-xs text-muted-foreground">Based on everyone's favorite series</p>
                             </div>
                           </li>

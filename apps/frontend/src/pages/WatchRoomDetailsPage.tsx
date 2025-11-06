@@ -626,7 +626,7 @@ export default function WatchRoomDetailsPage() {
             </CardContent>
           </Card>
 
-          {/* AI Recommendations Card */}
+          {/* Recommendations Card */}
           <Card className="border shadow-lg hover:shadow-xl transition-shadow duration-300 overflow-hidden">
             <div className="absolute inset-0 bg-linear-to-br from-primary/5 via-transparent to-transparent pointer-events-none" />
             <CardHeader className="relative pb-6">
@@ -636,7 +636,7 @@ export default function WatchRoomDetailsPage() {
                     <div className="w-10 h-10 rounded-lg bg-linear-to-br from-primary to-primary/70 flex items-center justify-center shadow-md">
                       <Sparkles className="w-5 h-5 text-primary-foreground" />
                     </div>
-                    <CardTitle className="text-2xl">AI Recommendations</CardTitle>
+                    <CardTitle className="text-2xl">Recommendations</CardTitle>
                   </div>
                   <CardDescription className="text-base">
                     Get personalized series recommendations based on everyone's preferences.
@@ -733,7 +733,7 @@ export default function WatchRoomDetailsPage() {
                       <span>Love the series you enjoy</span>
                       <span className="text-muted-foreground/50">•</span>
                       <EyeOff className="w-4 h-4 text-muted-foreground" />
-                      <span>Skip to exclude them from AI recommendations</span>
+                      <span>Skip to exclude them from future recommendations</span>
                     </p>
                   </div>
 
@@ -886,7 +886,7 @@ export default function WatchRoomDetailsPage() {
                                     )}
                                 </div>
 
-                                {/* AI Justification */}
+                                {/* Recommendation Justification */}
                                 <div className="rounded-lg bg-primary/5 border-l-4 border-primary p-4 space-y-2 shadow-sm">
                                   <p className="text-xs font-semibold text-primary flex items-center gap-1.5">
                                     <Sparkles className="w-3.5 h-3.5" />
