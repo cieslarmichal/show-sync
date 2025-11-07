@@ -46,7 +46,7 @@ export const recommendationRoutes: FastifyPluginAsyncTypebox<{
   const recommendationFeedbackRepository = new RecommendationFeedbackRepositoryImpl(databaseClient);
   const favoriteSeriesRepository = new FavoriteSeriesRepositoryImpl(databaseClient);
   const ignoredSeriesRepository = new IgnoredSeriesRepositoryImpl(databaseClient);
-  const tmdbService = new TmdbServiceImpl(config.tmdb.apiKey, config.tmdb.baseUrl);
+  const tmdbService = new TmdbServiceImpl(config.tmdb.apiKey, config.tmdb.baseUrl, loggerService);
 
   const recommendationPromptBuilder = new RecommendationPromptBuilder();
   const seriesNameResolver = new SeriesNameResolver(tmdbService);

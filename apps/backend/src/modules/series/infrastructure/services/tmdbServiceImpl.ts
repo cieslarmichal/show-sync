@@ -1,5 +1,7 @@
+import { InMemoryCache } from '../../../../common/cache/inMemoryCache.ts';
 import { ExternalServiceError } from '../../../../common/errors/externalServiceError.ts';
 import { ResourceNotFoundError } from '../../../../common/errors/resourceNotFoundError.ts';
+import type { LoggerService } from '../../../../common/logger/loggerService.ts';
 import type { SearchSeriesParams, SeriesSearchResult, TmdbService } from '../../domain/services/tmdbService.ts';
 import type { TmdbSeries, TmdbSeriesDetails, TmdbSeriesExternalIds } from '../../domain/types/tmdbSeries.ts';
 
@@ -51,14 +53,35 @@ interface TmdbApiExternalIdsResponse {
 export class TmdbServiceImpl implements TmdbService {
   private readonly apiKey: string;
   private readonly baseUrl: string;
+  private readonly searchCache: InMemoryCache<SeriesSearchResult>;
+  private readonly detailsCache: InMemoryCache<TmdbSeriesDetails>;
+  private readonly externalIdsCache: InMemoryCache<TmdbSeriesExternalIds>;
 
-  public constructor(apiKey: string, baseUrl: string) {
+  public constructor(apiKey: string, baseUrl: string, logger?: LoggerService) {
     this.apiKey = apiKey;
     this.baseUrl = baseUrl;
+
+    // Cache search results for 30 minutes (less volatile than details)
+    this.searchCache = new InMemoryCache<SeriesSearchResult>(30 * 60 * 1000, 500, logger);
+
+    // Cache series details for 24 hours (relatively stable data)
+    this.detailsCache = new InMemoryCache<TmdbSeriesDetails>(24 * 60 * 60 * 1000, 1000, logger);
+
+    // Cache external IDs for 24 hours (very stable data)
+    this.externalIdsCache = new InMemoryCache<TmdbSeriesExternalIds>(24 * 60 * 60 * 1000, 1000, logger);
   }
 
   public async searchSeries(params: SearchSeriesParams): Promise<SeriesSearchResult> {
     const { query, page } = params;
+
+    // Create cache key from search parameters
+    const cacheKey = `search:${query}:${page.toString()}`;
+    
+    // Check cache first
+    const cachedResult = this.searchCache.get(cacheKey);
+    if (cachedResult) {
+      return cachedResult;
+    }
 
     const url = new URL(`${this.baseUrl}/search/tv`);
     url.searchParams.append('api_key', this.apiKey);
@@ -85,7 +108,12 @@ export class TmdbServiceImpl implements TmdbService {
 
       const data = (await response.json()) as TmdbApiSearchResponse;
 
-      return this.mapToSeriesSearchResult(data);
+      const result = this.mapToSeriesSearchResult(data);
+      
+      // Store in cache
+      this.searchCache.set(cacheKey, result);
+      
+      return result;
     } catch (error) {
       if (error instanceof ExternalServiceError) {
         throw error;
@@ -111,6 +139,15 @@ export class TmdbServiceImpl implements TmdbService {
   }
 
   public async getSeriesDetails(seriesTmdbId: number): Promise<TmdbSeriesDetails> {
+    // Create cache key from series ID
+    const cacheKey = `details:${seriesTmdbId.toString()}`;
+    
+    // Check cache first
+    const cachedDetails = this.detailsCache.get(cacheKey);
+    if (cachedDetails) {
+      return cachedDetails;
+    }
+
     const url = new URL(`${this.baseUrl}/tv/${seriesTmdbId.toString()}`);
     url.searchParams.append('api_key', this.apiKey);
 
@@ -141,7 +178,12 @@ export class TmdbServiceImpl implements TmdbService {
 
       const data = (await response.json()) as TmdbApiSeriesDetailsResponse;
 
-      return this.mapToSeriesDetails(data);
+      const result = this.mapToSeriesDetails(data);
+      
+      // Store in cache
+      this.detailsCache.set(cacheKey, result);
+      
+      return result;
     } catch (error) {
       if (error instanceof ExternalServiceError || error instanceof ResourceNotFoundError) {
         throw error;
@@ -156,6 +198,15 @@ export class TmdbServiceImpl implements TmdbService {
   }
 
   public async getSeriesExternalIds(seriesTmdbId: number): Promise<TmdbSeriesExternalIds> {
+    // Create cache key from series ID
+    const cacheKey = `externalIds:${seriesTmdbId.toString()}`;
+    
+    // Check cache first
+    const cachedExternalIds = this.externalIdsCache.get(cacheKey);
+    if (cachedExternalIds) {
+      return cachedExternalIds;
+    }
+
     const url = new URL(`${this.baseUrl}/tv/${seriesTmdbId.toString()}/external_ids`);
     url.searchParams.append('api_key', this.apiKey);
 
@@ -186,7 +237,12 @@ export class TmdbServiceImpl implements TmdbService {
 
       const data = (await response.json()) as TmdbApiExternalIdsResponse;
 
-      return this.mapToSeriesExternalIds(data);
+      const result = this.mapToSeriesExternalIds(data);
+      
+      // Store in cache
+      this.externalIdsCache.set(cacheKey, result);
+      
+      return result;
     } catch (error) {
       if (error instanceof ExternalServiceError || error instanceof ResourceNotFoundError) {
         throw error;
@@ -198,6 +254,24 @@ export class TmdbServiceImpl implements TmdbService {
         originalError: error,
       });
     }
+  }
+
+  public getCacheStats(): {
+    search: { hits: number; misses: number; size: number; hitRate: string };
+    details: { hits: number; misses: number; size: number; hitRate: string };
+    externalIds: { hits: number; misses: number; size: number; hitRate: string };
+  } {
+    return {
+      search: this.searchCache.getStats(),
+      details: this.detailsCache.getStats(),
+      externalIds: this.externalIdsCache.getStats(),
+    };
+  }
+
+  public clearCache(): void {
+    this.searchCache.clear();
+    this.detailsCache.clear();
+    this.externalIdsCache.clear();
   }
 
   private mapToSeries(apiSeries: TmdbApiSeriesResponse): TmdbSeries {

@@ -98,7 +98,7 @@ export const seriesRoutes: FastifyPluginAsyncTypebox<{
     preferenceLevel: favorite.preferenceLevel,
   });
 
-  const tmdbService = new TmdbServiceImpl(config.tmdb.apiKey, config.tmdb.baseUrl);
+  const tmdbService = new TmdbServiceImpl(config.tmdb.apiKey, config.tmdb.baseUrl, loggerService);
   const searchSeriesAction = new SearchSeriesAction(tmdbService);
   const getSeriesDetailsBatchAction = new GetSeriesDetailsBatchAction(tmdbService);
   const getSeriesExternalIdsAction = new GetSeriesExternalIdsAction(tmdbService);
