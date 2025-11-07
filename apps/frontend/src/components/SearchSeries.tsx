@@ -129,7 +129,7 @@ export default function SearchSeries({
 
       {!isLoading && results.length > 0 && (
         <div className="space-y-3 max-h-[400px] sm:max-h-[500px] overflow-y-auto">
-          {results.map((series) => (
+          {results.map((series, index) => (
             <Card
               key={series.id}
               className="p-4"
@@ -188,6 +188,7 @@ export default function SearchSeries({
                       disabled={profileSeriesIds.has(series.id)}
                       aria-label="Mark as loved"
                       aria-pressed={profileSeriesIds.has(series.id)}
+                      data-testid={`search-result-love-button-${index}`}
                     >
                       <Heart
                         className={`w-4 h-4 mr-1.5 transition-all duration-300 text-red-500 dark:text-red-400 ${
@@ -215,6 +216,7 @@ export default function SearchSeries({
                       disabled={profileSeriesIds.has(series.id)}
                       aria-label="Mark as liked"
                       aria-pressed={profileSeriesIds.has(series.id)}
+                      data-testid={`search-result-like-button-${index}`}
                     >
                       <ThumbsUp
                         className={`w-4 h-4 mr-1.5 transition-all duration-300 text-sky-500 dark:text-sky-400 ${
@@ -242,6 +244,7 @@ export default function SearchSeries({
                       disabled={ignoredSeriesIds?.has(series.id)}
                       aria-label="Mark as not interested"
                       aria-pressed={ignoredSeriesIds?.has(series.id)}
+                      data-testid={`search-result-skip-button-${index}`}
                     >
                       <EyeOff
                         className={`w-4 h-4 mr-1.5 transition-all duration-300 ${

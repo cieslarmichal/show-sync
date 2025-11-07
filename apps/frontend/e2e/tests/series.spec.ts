@@ -32,23 +32,17 @@ test.describe('Series Flow', () => {
   });
 
   test.describe('Search and Add Series', () => {
-    test('should search for a series and display results', async ({ page }) => {
-      // Type in search box
-      await seriesPage.searchInput.fill('Breaking Bad');
-
-      // Wait for search results - look for Love button which appears in results
-      const loveButton = page.locator('button').filter({ hasText: 'Love' }).first();
-      await expect(loveButton).toBeVisible({ timeout: 20000 });
-    });
-
     test('should add a series with "Love" preference', async ({ page }) => {
       // Search for a series
       await seriesPage.searchSeries('Breaking Bad');
 
-      // Wait for and click the "Love" button on the first result
-      const firstLoveButton = page.locator('button:has-text("Love")').first();
+      // Wait for and click the "Love" button on the first result (index 0)
+      const firstLoveButton = page.getByTestId('search-result-love-button-0');
       await expect(firstLoveButton).toBeVisible({ timeout: 15000 });
       await firstLoveButton.click();
+
+      // Wait for the count to update to 1 in the All tab
+      await expect(seriesPage.filterTabAll).toContainText('All (1)', { timeout: 10000 });
 
       // Verify the series appears in the favorites list
       const allCount = await seriesPage.getTabCount('all');
@@ -70,10 +64,13 @@ test.describe('Series Flow', () => {
       // Search for a series
       await seriesPage.searchSeries('Friends');
 
-      // Wait for and click the "Like" button on the first result
-      const firstLikeButton = page.locator('button:has-text("Like")').first();
+      // Wait for and click the "Like" button on the first result (index 0)
+      const firstLikeButton = page.getByTestId('search-result-like-button-0');
       await expect(firstLikeButton).toBeVisible({ timeout: 15000 });
       await firstLikeButton.click();
+
+      // Wait for the count to update to 1 in the All tab
+      await expect(seriesPage.filterTabAll).toContainText('All (1)', { timeout: 10000 });
 
       // Verify counts
       const allCount = await seriesPage.getTabCount('all');
@@ -95,10 +92,13 @@ test.describe('Series Flow', () => {
       // Search for a series
       await seriesPage.searchSeries('Game of Thrones');
 
-      // Wait for and click the "Skip" button on the first result
-      const firstSkipButton = page.locator('button:has-text("Skip")').first();
+      // Wait for and click the "Skip" button on the first result (index 0)
+      const firstSkipButton = page.getByTestId('search-result-skip-button-0');
       await expect(firstSkipButton).toBeVisible({ timeout: 15000 });
       await firstSkipButton.click();
+
+      // Wait for ignored section to update
+      await page.waitForTimeout(1000);
 
       // Verify the series does NOT appear in favorites
       const allCount = await seriesPage.getTabCount('all');
@@ -130,14 +130,20 @@ test.describe('Series Flow', () => {
       // Add a series with "Like" preference
       await seriesPage.searchSeries('Stranger Things');
 
-      const likeButton = page.locator('button:has-text("Like")').first();
+      const likeButton = page.getByTestId('search-result-like-button-0');
       await expect(likeButton).toBeVisible({ timeout: 15000 });
       await likeButton.click();
+
+      // Wait for the count to update
+      await expect(seriesPage.filterTabAll).toContainText('All (1)', { timeout: 10000 });
 
       // Find the series card in favorites and toggle to "Love"
       const preferenceToggle = page.locator('[data-testid="preference-toggle"]').first();
       await expect(preferenceToggle).toBeVisible({ timeout: 10000 });
       await preferenceToggle.click();
+
+      // Wait for loved count to update
+      await expect(seriesPage.filterTabLoved).toContainText('Loved (1)', { timeout: 10000 });
 
       // Verify counts updated
       const lovedCount = await seriesPage.getTabCount('loved');
@@ -151,14 +157,20 @@ test.describe('Series Flow', () => {
       // Add a series with "Love" preference
       await seriesPage.searchSeries('The Mandalorian');
 
-      const loveButton = page.locator('button:has-text("Love")').first();
+      const loveButton = page.getByTestId('search-result-love-button-0');
       await expect(loveButton).toBeVisible({ timeout: 15000 });
       await loveButton.click();
+
+      // Wait for the count to update
+      await expect(seriesPage.filterTabAll).toContainText('All (1)', { timeout: 10000 });
 
       // Find the series card and toggle to "Like"
       const preferenceToggle = page.locator('[data-testid="preference-toggle"]').first();
       await expect(preferenceToggle).toBeVisible({ timeout: 10000 });
       await preferenceToggle.click();
+
+      // Wait for liked count to update
+      await expect(seriesPage.filterTabLiked).toContainText('Liked (1)', { timeout: 10000 });
 
       // Verify counts updated
       const lovedCount = await seriesPage.getTabCount('loved');
@@ -172,14 +184,20 @@ test.describe('Series Flow', () => {
       // Add a series
       await seriesPage.searchSeries('The Witcher');
 
-      const loveButton = page.locator('button:has-text("Love")').first();
+      const loveButton = page.getByTestId('search-result-love-button-0');
       await expect(loveButton).toBeVisible({ timeout: 15000 });
       await loveButton.click();
+
+      // Wait for the count to update
+      await expect(seriesPage.filterTabAll).toContainText('All (1)', { timeout: 10000 });
 
       // Remove the series
       const removeButton = page.locator('button[aria-label*="Remove"]').first();
       await expect(removeButton).toBeVisible({ timeout: 10000 });
       await removeButton.click();
+
+      // Wait for count to go back to 0
+      await expect(seriesPage.filterTabAll).toContainText('All (0)', { timeout: 10000 });
 
       // Verify counts are back to 0
       const allCount = await seriesPage.getTabCount('all');
@@ -191,14 +209,16 @@ test.describe('Series Flow', () => {
     test('should filter series by "Loved" preference', async ({ page }) => {
       // Add two series: one loved, one liked
       await seriesPage.searchSeries('The Boys');
-      const loveButton1 = page.locator('button:has-text("Love")').first();
+      const loveButton1 = page.getByTestId('search-result-love-button-0');
       await expect(loveButton1).toBeVisible({ timeout: 15000 });
       await loveButton1.click();
+      await expect(seriesPage.filterTabAll).toContainText('All (1)', { timeout: 10000 });
 
       await seriesPage.searchSeries('House');
-      const likeButton1 = page.locator('button:has-text("Like")').first();
+      const likeButton1 = page.getByTestId('search-result-like-button-0');
       await expect(likeButton1).toBeVisible({ timeout: 15000 });
       await likeButton1.click();
+      await expect(seriesPage.filterTabAll).toContainText('All (2)', { timeout: 10000 });
 
       // Click the "Loved" tab
       await seriesPage.clickLovedTab();
@@ -213,14 +233,16 @@ test.describe('Series Flow', () => {
     test('should filter series by "Liked" preference', async ({ page }) => {
       // Add two series: one loved, one liked
       await seriesPage.searchSeries('Peaky Blinders');
-      const loveButton1 = page.locator('button:has-text("Love")').first();
+      const loveButton1 = page.getByTestId('search-result-love-button-0');
       await expect(loveButton1).toBeVisible({ timeout: 15000 });
       await loveButton1.click();
+      await expect(seriesPage.filterTabAll).toContainText('All (1)', { timeout: 10000 });
 
       await seriesPage.searchSeries('Sherlock');
-      const likeButton1 = page.locator('button:has-text("Like")').first();
+      const likeButton1 = page.getByTestId('search-result-like-button-0');
       await expect(likeButton1).toBeVisible({ timeout: 15000 });
       await likeButton1.click();
+      await expect(seriesPage.filterTabAll).toContainText('All (2)', { timeout: 10000 });
 
       // Click the "Liked" tab
       await seriesPage.clickLikedTab();
@@ -235,14 +257,16 @@ test.describe('Series Flow', () => {
     test('should show all series in "All" tab', async ({ page }) => {
       // Add two series with different preferences
       await seriesPage.searchSeries('Lost');
-      const loveButton1 = page.locator('button:has-text("Love")').first();
+      const loveButton1 = page.getByTestId('search-result-love-button-0');
       await expect(loveButton1).toBeVisible({ timeout: 15000 });
       await loveButton1.click();
+      await expect(seriesPage.filterTabAll).toContainText('All (1)', { timeout: 10000 });
 
       await seriesPage.searchSeries('Prison Break');
-      const likeButton1 = page.locator('button:has-text("Like")').first();
+      const likeButton1 = page.getByTestId('search-result-like-button-0');
       await expect(likeButton1).toBeVisible({ timeout: 15000 });
       await likeButton1.click();
+      await expect(seriesPage.filterTabAll).toContainText('All (2)', { timeout: 10000 });
 
       // Verify counts
       const allCount = await seriesPage.getTabCount('all');
@@ -270,9 +294,10 @@ test.describe('Series Flow', () => {
     test('should display empty state for "Loved" tab when no loved series', async ({ page }) => {
       // Add a liked series
       await seriesPage.searchSeries('Vikings');
-      const likeButton = page.locator('button:has-text("Like")').first();
+      const likeButton = page.getByTestId('search-result-like-button-0');
       await expect(likeButton).toBeVisible({ timeout: 15000 });
       await likeButton.click();
+      await expect(seriesPage.filterTabAll).toContainText('All (1)', { timeout: 10000 });
 
       // Click loved tab
       await seriesPage.clickLovedTab();
@@ -285,9 +310,10 @@ test.describe('Series Flow', () => {
     test('should display empty state for "Liked" tab when no liked series', async ({ page }) => {
       // Add a loved series
       await seriesPage.searchSeries('Westworld');
-      const loveButton = page.locator('button:has-text("Love")').first();
+      const loveButton = page.getByTestId('search-result-love-button-0');
       await expect(loveButton).toBeVisible({ timeout: 15000 });
       await loveButton.click();
+      await expect(seriesPage.filterTabAll).toContainText('All (1)', { timeout: 10000 });
 
       // Click liked tab
       await seriesPage.clickLikedTab();
