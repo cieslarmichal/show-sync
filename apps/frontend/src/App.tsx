@@ -2,6 +2,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { StrictMode } from 'react';
 import { AuthContextProvider } from './context/AuthContextProvider.tsx';
 import { SeriesContextProvider } from './context/SeriesContextProvider.tsx';
+import { useStructuredData } from './hooks/useSEO.ts';
 
 import Root from './pages/Root';
 import { CookiesProvider } from 'react-cookie';
@@ -101,7 +102,10 @@ const router = createBrowserRouter([
   },
 ]);
 
-function App() {
+function AppContent() {
+  // Inject structured data for SEO
+  useStructuredData();
+
   return (
     <StrictMode>
       <CookiesProvider>
@@ -115,6 +119,10 @@ function App() {
       </CookiesProvider>
     </StrictMode>
   );
+}
+
+function App() {
+  return <AppContent />;
 }
 
 export default App;

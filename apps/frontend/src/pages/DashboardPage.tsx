@@ -15,8 +15,15 @@ import {
 import { Skeleton } from '../components/ui/Skeleton';
 import { Heart, Tv, Check, Lock } from 'lucide-react';
 import { SERIES_THRESHOLDS } from '../config/seriesThresholds';
+import { useSEO } from '../hooks/useSEO';
 
 export default function DashboardPage() {
+  useSEO({
+    title: 'Dashboard - ShowSync',
+    description: 'Your personal ShowSync dashboard. View your series ratings and create watch rooms.',
+    noindex: true, // Private page, don't index
+  });
+
   const { userDataInitialized } = useContext(AuthContext);
   const { lovedCount, likedCount, totalCount } = useContext(SeriesContext);
   const navigate = useNavigate();

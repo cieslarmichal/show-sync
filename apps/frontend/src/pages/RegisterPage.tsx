@@ -2,8 +2,16 @@ import { useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import RegisterForm from '../components/RegisterForm';
 import { Button } from '@/components/ui/Button';
+import { useSEO } from '../hooks/useSEO';
 
 export default function RegisterPage() {
+  useSEO({
+    title: 'Create Account - ShowSync',
+    description:
+      'Create a free ShowSync account to start getting AI-powered TV series recommendations for you and your friends.',
+    keywords: ['sign up', 'register', 'create account', 'join showsync'],
+  });
+
   const [searchParams] = useSearchParams();
   const redirect = searchParams.get('redirect');
   const [isRegistrationSuccess, setIsRegistrationSuccess] = useState(false);

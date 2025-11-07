@@ -14,8 +14,16 @@ import { removeIgnoredSeries } from '../api/queries/removeIgnoredSeries.ts';
 import { Series, FavoriteSeries, IgnoredSeries, PreferenceLevel } from '../api/types/series.ts';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '../components/ui/Tabs';
 import { SeriesContext } from '../context/SeriesContext';
+import { useSEO } from '../hooks/useSEO';
 
 export default function SeriesPage() {
+  useSEO({
+    title: 'My Series - ShowSync',
+    description:
+      'Browse, rate, and manage your favorite TV series. Build your taste profile to get better AI-powered recommendations.',
+    keywords: ['tv series', 'rate series', 'favorite shows', 'tv recommendations', 'series list'],
+  });
+
   const { refreshCounts } = useContext(SeriesContext);
   const [profileSeriesIds, setProfileSeriesIds] = useState<Set<number>>(new Set());
   const [ignoredSeriesIds, setIgnoredSeriesIds] = useState<Set<number>>(new Set());

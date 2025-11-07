@@ -2,9 +2,26 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from '../components/ui/Button';
 import { Card } from '../components/ui/Card';
 import { Heart, BrainCircuit, PartyPopper, Tv, Users } from 'lucide-react';
+import { useSEO } from '../hooks/useSEO';
 
 export default function HomePage() {
   const navigate = useNavigate();
+
+  useSEO({
+    title: 'ShowSync - AI-Powered Series Recommendations for Groups',
+    description:
+      'Find the perfect TV series for your watch party. Get AI-powered recommendations based on group preferences. Create watch rooms and discover series everyone will love.',
+    keywords: [
+      'tv series recommendations',
+      'watch party',
+      'group recommendations',
+      'ai recommendations',
+      'series matching',
+      'tv shows',
+      'watch together',
+      'streaming recommendations',
+    ],
+  });
 
   return (
     <div className="min-h-screen bg-background">

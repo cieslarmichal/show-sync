@@ -1,0 +1,10 @@
+# https://www.robotstxt.org/robotstxt.html
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /watchrooms/*/
+Disallow: /my-profile
+Disallow: /dashboard
+
+# Sitemap location
+Sitemap: https://show-sync.com/sitemap.xml

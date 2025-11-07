@@ -1,7 +1,14 @@
 import { Link, useSearchParams } from 'react-router-dom';
 import LoginForm from '../components/LoginForm';
+import { useSEO } from '../hooks/useSEO';
 
 export default function LoginPage() {
+  useSEO({
+    title: 'Sign In - ShowSync',
+    description: 'Sign in to your ShowSync account to access your series ratings and watch rooms.',
+    keywords: ['login', 'sign in', 'account access'],
+  });
+
   const [searchParams] = useSearchParams();
   const redirect = searchParams.get('redirect');
 

@@ -11,8 +11,16 @@ import { CreateWatchRoomModal } from '../components/CreateWatchRoomModal.tsx';
 import { AuthContext } from '../context/AuthContext.tsx';
 import { SERIES_THRESHOLDS } from '../config/seriesThresholds.ts';
 import { SeriesContext } from '../context/SeriesContext.tsx';
+import { useSEO } from '../hooks/useSEO.ts';
 
 export default function WatchRoomsPage() {
+  useSEO({
+    title: 'Watch Rooms - ShowSync',
+    description:
+      'Create watch rooms to get AI-powered series recommendations. Invite friends or discover series for solo binging.',
+    keywords: ['watch rooms', 'group recommendations', 'watch party', 'series recommendations', 'watch together'],
+  });
+
   const [rooms, setRooms] = useState<Watchroom[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [page, setPage] = useState(1);
