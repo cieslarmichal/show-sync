@@ -18,7 +18,7 @@ import { useSEO } from '../hooks/useSEO';
 
 export default function SeriesPage() {
   useSEO({
-    title: 'My Series - ShowSync',
+    title: 'Series - ShowSync',
     description:
       'Browse, rate, and manage your favorite TV series. Build your taste profile to get better AI-powered recommendations.',
     keywords: ['tv series', 'rate series', 'favorite shows', 'tv recommendations', 'series list'],
