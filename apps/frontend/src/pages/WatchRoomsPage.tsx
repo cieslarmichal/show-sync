@@ -45,7 +45,7 @@ export default function WatchRoomsPage() {
   const canCreateRoom =
     totalCount >= SERIES_THRESHOLDS.MIN_TOTAL_FOR_ROOM && lovedCount >= SERIES_THRESHOLDS.MIN_LOVED_FOR_ROOM;
   const disabledReason = !canCreateRoom
-    ? `You need at least ${SERIES_THRESHOLDS.MIN_TOTAL_FOR_ROOM} rated series and ${SERIES_THRESHOLDS.MIN_LOVED_FOR_ROOM} loved series to create a watch room.`
+    ? `To create a watch room, you need at least ${SERIES_THRESHOLDS.MIN_TOTAL_FOR_ROOM} rated series (including ${SERIES_THRESHOLDS.MIN_LOVED_FOR_ROOM} loved). Currently: ${totalCount} total, ${lovedCount} loved.`
     : undefined;
 
   const handleCopyLink = (publicLinkId: string) => {

@@ -1,7 +1,7 @@
-import { HeaderLogo } from './Header/HeaderLogo';
-import { DesktopNavigation } from './Header/DesktopNavigation';
-import { DesktopAuthSection } from './Header/DesktopAuthSection';
-import { MobileMenu } from './Header/MobileMenu';
+import { HeaderLogo } from './header/HeaderLogo';
+import { DesktopNavigation } from './header/DesktopNavigation';
+import { DesktopAuthSection } from './header/DesktopAuthSection';
+import { MobileMenu } from './header/MobileMenu';
 
 export default function Header() {
   return (
