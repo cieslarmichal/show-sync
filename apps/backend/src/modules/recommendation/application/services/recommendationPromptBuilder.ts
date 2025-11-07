@@ -1,3 +1,5 @@
+import { PromptSanitizer } from '../../../../common/sanitization/promptSanitizer.ts';
+
 interface SeriesInfo {
   readonly tmdbId: number;
   readonly name: string;
@@ -32,10 +34,13 @@ export class RecommendationPromptBuilder {
   }
 
   private buildWatchroomSection(watchroomName: string, watchroomDescription: string | undefined): string {
-    let section = `WATCH ROOM: "${watchroomName}"\n`;
+    // Sanitize user input to prevent prompt injection
+    const safeName = PromptSanitizer.sanitizeForPrompt(watchroomName);
+    let section = `WATCH ROOM: "${safeName}"\n`;
 
     if (watchroomDescription) {
-      section += `Description: ${watchroomDescription}\n`;
+      const safeDescription = PromptSanitizer.sanitizeForPrompt(watchroomDescription);
+      section += `Description: ${safeDescription}\n`;
       section += `Use this description to understand the group's overall vibe and preferences.\n`;
     }
 
