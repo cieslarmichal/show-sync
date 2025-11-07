@@ -44,6 +44,7 @@ describe('SendResetPasswordEmailAction', () => {
       config,
       emailRepository,
       oneTimeTokenRepository,
+      databaseClient,
     );
 
     await databaseClient.db.delete(emails);

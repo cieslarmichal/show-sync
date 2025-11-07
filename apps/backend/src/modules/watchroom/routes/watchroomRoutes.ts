@@ -47,12 +47,12 @@ export const watchroomRoutes: FastifyPluginAsyncTypebox<{
   const createWatchroomAction = new CreateWatchroomAction(watchroomRepository, loggerService);
   const findUserWatchroomsAction = new FindUserWatchroomsAction(watchroomRepository);
   const findPublicWatchroomDetailsAction = new FindPublicWatchroomDetailsAction(watchroomRepository);
-  const joinWatchroomAction = new JoinWatchroomAction(watchroomRepository, loggerService);
+  const joinWatchroomAction = new JoinWatchroomAction(watchroomRepository, loggerService, databaseClient);
   const findWatchroomDetailsAction = new FindWatchroomDetailsAction(watchroomRepository);
   const updateWatchroomAction = new UpdateWatchroomAction(watchroomRepository, loggerService);
   const deleteWatchroomAction = new DeleteWatchroomAction(watchroomRepository, loggerService);
-  const removeParticipantAction = new RemoveParticipantAction(watchroomRepository, loggerService);
-  const leaveWatchroomAction = new LeaveWatchroomAction(watchroomRepository, loggerService);
+  const removeParticipantAction = new RemoveParticipantAction(watchroomRepository, loggerService, databaseClient);
+  const leaveWatchroomAction = new LeaveWatchroomAction(watchroomRepository, loggerService, databaseClient);
 
   const authenticationMiddleware = createAuthenticationMiddleware(tokenService);
 

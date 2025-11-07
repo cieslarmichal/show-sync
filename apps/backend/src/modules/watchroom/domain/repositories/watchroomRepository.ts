@@ -1,3 +1,4 @@
+import type { Transaction } from '../../../../infrastructure/database/transaction.ts';
 import type { Watchroom } from '../types/watchroom.ts';
 
 export interface CreateWatchroomData {
@@ -19,12 +20,12 @@ export interface FindWatchroomParams {
 
 export type WatchroomRepository = {
   create(data: CreateWatchroomData): Promise<Watchroom>;
-  findOne(params: FindWatchroomParams): Promise<Watchroom | null>;
+  findOne(params: FindWatchroomParams, tx?: Transaction): Promise<Watchroom | null>;
   findMany(userId: string, page: number, pageSize: number): Promise<Watchroom[]>;
   count(userId: string): Promise<number>;
   delete(watchroomId: string): Promise<void>;
   update(watchroomId: string, data: UpdateWatchroomData): Promise<Watchroom>;
-  addParticipant(watchroomId: string, userId: string): Promise<void>;
-  removeParticipant(watchroomId: string, userId: string): Promise<void>;
-  isParticipant(watchroomId: string, userId: string): Promise<boolean>;
+  addParticipant(watchroomId: string, userId: string, tx?: Transaction): Promise<void>;
+  removeParticipant(watchroomId: string, userId: string, tx?: Transaction): Promise<void>;
+  isParticipant(watchroomId: string, userId: string, tx?: Transaction): Promise<boolean>;
 };

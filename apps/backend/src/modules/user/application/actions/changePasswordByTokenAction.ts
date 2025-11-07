@@ -38,44 +38,67 @@ export class ChangePasswordByTokenAction {
 
     const tokenHash = CryptoService.hashData(token);
 
-    await this.databaseClient.db.transaction(async (tx) => {
-      const oneTimeToken = await this.oneTimeTokenRepository.findValidByHash(tokenHash, 'reset-password', tx);
+    const startTime = Date.now();
 
-      if (!oneTimeToken) {
-        throw new InputNotValidError({
-          reason: 'Reset password token is invalid or has been used',
-          value: token,
-        });
-      }
+    try {
+      await this.databaseClient.db.transaction(
+        async (tx) => {
+          const oneTimeToken = await this.oneTimeTokenRepository.findValidByHash(tokenHash, 'reset-password', tx);
 
-      this.loggerService.debug({
-        message: 'Starting password change with token...',
-        userId: oneTimeToken.userId,
+          if (!oneTimeToken) {
+            throw new InputNotValidError({
+              reason: 'Reset password token is invalid or has been used',
+              value: token,
+            });
+          }
+
+          this.loggerService.debug({
+            message: 'Starting password change with token...',
+            userId: oneTimeToken.userId,
+          });
+
+          const user = await this.userRepository.findById(oneTimeToken.userId, tx);
+
+          if (!user) {
+            throw new OperationNotValidError({
+              reason: 'User not found',
+              userId: oneTimeToken.userId,
+            });
+          }
+
+          this.passwordService.validatePassword(newPassword);
+
+          const hashedPassword = await this.passwordService.hashPassword(newPassword);
+
+          await this.userRepository.updatePassword(user.id, hashedPassword, tx);
+
+          await this.oneTimeTokenRepository.markUsed(oneTimeToken.id, tx);
+
+          const duration = Date.now() - startTime;
+
+          this.loggerService.info({
+            message: 'Password changed successfully',
+            event: 'password.change.success',
+            userId: user.id,
+            email: user.email,
+            transactionDuration: duration,
+          });
+        },
+        {
+          isolationLevel: 'serializable',
+        },
+      );
+    } catch (error) {
+      const duration = Date.now() - startTime;
+
+      this.loggerService.error({
+        message: 'Password change with token transaction failed',
+        event: 'password.change.transaction.failure',
+        transactionDuration: duration,
+        error: error instanceof Error ? error.message : String(error),
       });
 
-      const user = await this.userRepository.findById(oneTimeToken.userId, tx);
-
-      if (!user) {
-        throw new OperationNotValidError({
-          reason: 'User not found',
-          userId: oneTimeToken.userId,
-        });
-      }
-
-      this.passwordService.validatePassword(newPassword);
-
-      const hashedPassword = await this.passwordService.hashPassword(newPassword);
-
-      await this.userRepository.updatePassword(user.id, hashedPassword, tx);
-
-      await this.oneTimeTokenRepository.markUsed(oneTimeToken.id, tx);
-
-      this.loggerService.info({
-        message: 'Password changed successfully',
-        event: 'password.change.success',
-        userId: user.id,
-        email: user.email,
-      });
-    });
+      throw error;
+    }
   }
 }

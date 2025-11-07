@@ -38,8 +38,8 @@ describe('RemoveParticipantAction', () => {
     } as unknown as LoggerService;
 
     createWatchroomAction = new CreateWatchroomAction(watchroomRepository, loggerService);
-    joinWatchroomAction = new JoinWatchroomAction(watchroomRepository, loggerService);
-    removeParticipantAction = new RemoveParticipantAction(watchroomRepository, loggerService);
+    joinWatchroomAction = new JoinWatchroomAction(watchroomRepository, loggerService, databaseClient);
+    removeParticipantAction = new RemoveParticipantAction(watchroomRepository, loggerService, databaseClient);
 
     await databaseClient.db.delete(watchroomParticipants);
     await databaseClient.db.delete(watchrooms);

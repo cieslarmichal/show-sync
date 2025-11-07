@@ -43,32 +43,58 @@ export class AddIgnoredSeriesAction {
       });
     }
 
-    const result = await this.databaseClient.db.transaction(async (tx) => {
-      const favoriteSeries = await this.favoriteSeriesRepository.findOne(userId, seriesTmdbId, tx);
+    const startTime = Date.now();
 
-      if (favoriteSeries) {
-        await this.favoriteSeriesRepository.delete(userId, seriesTmdbId, tx);
+    try {
+      const result = await this.databaseClient.db.transaction(
+        async (tx) => {
+          const favoriteSeries = await this.favoriteSeriesRepository.findOne(userId, seriesTmdbId, tx);
 
-        this.loggerService.info({
-          message: 'Series removed from favorites before adding to ignored list',
-          event: 'series.favorite.removed',
-          requestId: context.requestId,
-          userId,
-          seriesTmdbId,
-        });
-      }
+          if (favoriteSeries) {
+            await this.favoriteSeriesRepository.delete(userId, seriesTmdbId, tx);
 
-      return await this.ignoredSeriesRepository.create({ userId, seriesTmdbId }, tx);
-    });
+            this.loggerService.info({
+              message: 'Series removed from favorites before adding to ignored list',
+              event: 'series.favorite.removed',
+              requestId: context.requestId,
+              userId,
+              seriesTmdbId,
+            });
+          }
 
-    this.loggerService.info({
-      message: 'Series added to ignored list',
-      event: 'series.ignored.added',
-      requestId: context.requestId,
-      userId,
-      seriesTmdbId,
-    });
+          return await this.ignoredSeriesRepository.create({ userId, seriesTmdbId }, tx);
+        },
+        {
+          isolationLevel: 'read committed',
+        },
+      );
 
-    return result;
+      const duration = Date.now() - startTime;
+
+      this.loggerService.info({
+        message: 'Series added to ignored list',
+        event: 'series.ignored.added',
+        requestId: context.requestId,
+        userId,
+        seriesTmdbId,
+        transactionDuration: duration,
+      });
+
+      return result;
+    } catch (error) {
+      const duration = Date.now() - startTime;
+
+      this.loggerService.error({
+        message: 'Add ignored series transaction failed',
+        event: 'series.ignored.transaction.failure',
+        requestId: context.requestId,
+        userId,
+        seriesTmdbId,
+        transactionDuration: duration,
+        error: error instanceof Error ? error.message : String(error),
+      });
+
+      throw error;
+    }
   }
 }

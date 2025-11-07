@@ -44,33 +44,59 @@ export class AddFavoriteSeriesAction {
       });
     }
 
-    const favoriteSeries = await this.databaseClient.db.transaction(async (tx) => {
-      const ignoredSeries = await this.ignoredSeriesRepository.findOne(userId, seriesTmdbId, tx);
+    const startTime = Date.now();
 
-      if (ignoredSeries) {
-        await this.ignoredSeriesRepository.delete(userId, seriesTmdbId, tx);
+    try {
+      const favoriteSeries = await this.databaseClient.db.transaction(
+        async (tx) => {
+          const ignoredSeries = await this.ignoredSeriesRepository.findOne(userId, seriesTmdbId, tx);
 
-        this.loggerService.info({
-          message: 'Series removed from ignored list before adding to favorites',
-          event: 'series.ignored.removed',
-          requestId: context.requestId,
-          userId,
-          seriesTmdbId,
-        });
-      }
+          if (ignoredSeries) {
+            await this.ignoredSeriesRepository.delete(userId, seriesTmdbId, tx);
 
-      return await this.favoriteSeriesRepository.create({ userId, seriesTmdbId, preferenceLevel }, tx);
-    });
+            this.loggerService.info({
+              message: 'Series removed from ignored list before adding to favorites',
+              event: 'series.ignored.removed',
+              requestId: context.requestId,
+              userId,
+              seriesTmdbId,
+            });
+          }
 
-    this.loggerService.info({
-      message: 'Series added to favorites',
-      event: 'series.favorite.added',
-      requestId: context.requestId,
-      userId,
-      seriesTmdbId,
-      preferenceLevel,
-    });
+          return await this.favoriteSeriesRepository.create({ userId, seriesTmdbId, preferenceLevel }, tx);
+        },
+        {
+          isolationLevel: 'read committed',
+        },
+      );
 
-    return favoriteSeries;
+      const duration = Date.now() - startTime;
+
+      this.loggerService.info({
+        message: 'Series added to favorites',
+        event: 'series.favorite.added',
+        requestId: context.requestId,
+        userId,
+        seriesTmdbId,
+        preferenceLevel,
+        transactionDuration: duration,
+      });
+
+      return favoriteSeries;
+    } catch (error) {
+      const duration = Date.now() - startTime;
+
+      this.loggerService.error({
+        message: 'Add favorite series transaction failed',
+        event: 'series.favorite.transaction.failure',
+        requestId: context.requestId,
+        userId,
+        seriesTmdbId,
+        transactionDuration: duration,
+        error: error instanceof Error ? error.message : String(error),
+      });
+
+      throw error;
+    }
   }
 }

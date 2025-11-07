@@ -3,6 +3,7 @@ import { eq, desc, and, inArray, or, count, type SQL } from 'drizzle-orm';
 import { IdService } from '../../../../common/id/idService.ts';
 import type { DatabaseClient } from '../../../../infrastructure/database/databaseClient.ts';
 import { users, watchroomParticipants, watchrooms } from '../../../../infrastructure/database/schema.ts';
+import type { Transaction } from '../../../../infrastructure/database/transaction.ts';
 import type {
   CreateWatchroomData,
   FindWatchroomParams,
@@ -31,21 +32,26 @@ export class WatchroomRepositoryImpl implements WatchroomRepository {
   public async create(data: CreateWatchroomData): Promise<Watchroom> {
     const watchroomId = IdService.generateUuid();
 
-    await this.databaseClient.db.transaction(async (tx) => {
-      await tx.insert(watchrooms).values({
-        id: watchroomId,
-        name: data.name,
-        description: data.description ?? null,
-        ownerId: data.ownerId,
-        publicLinkId: data.publicLinkId,
-      });
+    await this.databaseClient.db.transaction(
+      async (tx) => {
+        await tx.insert(watchrooms).values({
+          id: watchroomId,
+          name: data.name,
+          description: data.description ?? null,
+          ownerId: data.ownerId,
+          publicLinkId: data.publicLinkId,
+        });
 
-      await tx.insert(watchroomParticipants).values({
-        id: IdService.generateUuid(),
-        watchroomId,
-        userId: data.ownerId,
-      });
-    });
+        await tx.insert(watchroomParticipants).values({
+          id: IdService.generateUuid(),
+          watchroomId,
+          userId: data.ownerId,
+        });
+      },
+      {
+        isolationLevel: 'serializable',
+      },
+    );
 
     const watchroom = await this.findOne({ id: watchroomId });
 
@@ -56,7 +62,9 @@ export class WatchroomRepositoryImpl implements WatchroomRepository {
     return watchroom;
   }
 
-  public async findOne(params: FindWatchroomParams): Promise<Watchroom | null> {
+  public async findOne(params: FindWatchroomParams, tx?: Transaction): Promise<Watchroom | null> {
+    const db = tx ?? this.databaseClient.db;
+    
     const conditions: SQL[] = [];
 
     if (params.id) {
@@ -73,7 +81,7 @@ export class WatchroomRepositoryImpl implements WatchroomRepository {
 
     const whereClause = conditions.length === 1 ? conditions[0] : or(...conditions);
 
-    const [watchroomData] = await this.databaseClient.db
+    const [watchroomData] = await db
       .select({
         id: watchrooms.id,
         name: watchrooms.name,
@@ -92,7 +100,7 @@ export class WatchroomRepositoryImpl implements WatchroomRepository {
       return null;
     }
 
-    const participants = await this.databaseClient.db
+    const participants = await db
       .select({
         id: users.id,
         name: users.name,
@@ -191,22 +199,28 @@ export class WatchroomRepositoryImpl implements WatchroomRepository {
     return updatedWatchroom;
   }
 
-  public async addParticipant(watchroomId: string, userId: string): Promise<void> {
-    await this.databaseClient.db.insert(watchroomParticipants).values({
+  public async addParticipant(watchroomId: string, userId: string, tx?: Transaction): Promise<void> {
+    const db = tx ?? this.databaseClient.db;
+    
+    await db.insert(watchroomParticipants).values({
       id: IdService.generateUuid(),
       watchroomId,
       userId,
     });
   }
 
-  public async removeParticipant(watchroomId: string, userId: string): Promise<void> {
-    await this.databaseClient.db
+  public async removeParticipant(watchroomId: string, userId: string, tx?: Transaction): Promise<void> {
+    const db = tx ?? this.databaseClient.db;
+    
+    await db
       .delete(watchroomParticipants)
       .where(and(eq(watchroomParticipants.watchroomId, watchroomId), eq(watchroomParticipants.userId, userId)));
   }
 
-  public async isParticipant(watchroomId: string, userId: string): Promise<boolean> {
-    const [participant] = await this.databaseClient.db
+  public async isParticipant(watchroomId: string, userId: string, tx?: Transaction): Promise<boolean> {
+    const db = tx ?? this.databaseClient.db;
+    
+    const [participant] = await db
       .select()
       .from(watchroomParticipants)
       .where(and(eq(watchroomParticipants.watchroomId, watchroomId), eq(watchroomParticipants.userId, userId)))

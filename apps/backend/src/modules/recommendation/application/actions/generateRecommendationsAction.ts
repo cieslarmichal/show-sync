@@ -160,27 +160,53 @@ export class GenerateRecommendationsAction {
         });
       }
 
-      await this.databaseClient.db.transaction(async (tx) => {
-        await this.recommendationRepository.create(
-          resolutionResult.resolved.map((r) => ({
-            recommendationRequestId,
-            seriesTmdbId: r.seriesTmdbId,
-            justification: r.justification,
-          })),
-          tx,
+      const transactionStartTime = Date.now();
+
+      try {
+        await this.databaseClient.db.transaction(
+          async (tx) => {
+            await this.recommendationRepository.create(
+              resolutionResult.resolved.map((r) => ({
+                recommendationRequestId,
+                seriesTmdbId: r.seriesTmdbId,
+                justification: r.justification,
+              })),
+              tx,
+            );
+
+            await this.recommendationRequestRepository.updateStatus(recommendationRequestId, 'completed', tx);
+          },
+          {
+            isolationLevel: 'serializable',
+          },
         );
 
-        await this.recommendationRequestRepository.updateStatus(recommendationRequestId, 'completed', tx);
-      });
+        const transactionDuration = Date.now() - transactionStartTime;
 
-      this.loggerService.info({
-        message: 'Recommendations generated and saved successfully',
-        event: 'watchroom.recommendations.generate.success',
-        requestId: context.requestId,
-        watchroomId,
-        recommendationRequestId,
-        resolvedCount: resolutionResult.resolved.length,
-      });
+        this.loggerService.info({
+          message: 'Recommendations generated and saved successfully',
+          event: 'watchroom.recommendations.generate.success',
+          requestId: context.requestId,
+          watchroomId,
+          recommendationRequestId,
+          resolvedCount: resolutionResult.resolved.length,
+          transactionDuration,
+        });
+      } catch (error) {
+        const transactionDuration = Date.now() - transactionStartTime;
+
+        this.loggerService.error({
+          message: 'Recommendation transaction failed',
+          event: 'watchroom.recommendations.transaction.failure',
+          requestId: context.requestId,
+          watchroomId,
+          recommendationRequestId,
+          transactionDuration,
+          error: error instanceof Error ? error.message : String(error),
+        });
+
+        throw error;
+      }
     } catch (error: unknown) {
       this.loggerService.error({
         message: 'Failed to generate recommendations',

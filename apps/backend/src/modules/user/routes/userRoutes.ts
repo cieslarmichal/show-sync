@@ -116,6 +116,7 @@ export const userRoutes: FastifyPluginAsyncTypebox<{
     config,
     emailRepository,
     oneTimeTokenRepository,
+    databaseClient,
   );
   const changePasswordAction = new ChangePasswordAction(userRepository, loggerService, passwordService);
   const changePasswordByTokenAction = new ChangePasswordByTokenAction(
