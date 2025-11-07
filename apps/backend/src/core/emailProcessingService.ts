@@ -11,7 +11,9 @@ export class EmailProcessingService {
   private intervalId: NodeJS.Timeout | null = null;
   private readonly intervalMs: number;
   private readonly maxRetries: number;
+  private readonly concurrency: number;
   private readonly retryAttempts = new Map<string, number>();
+  private readonly nextRetryAt = new Map<string, number>();
 
   public constructor(
     emailRepository: EmailRepository,
@@ -19,12 +21,14 @@ export class EmailProcessingService {
     loggerService: LoggerService,
     intervalMs = 5000,
     maxRetries = 5,
+    concurrency = 3,
   ) {
     this.emailRepository = emailRepository;
     this.emailService = emailService;
     this.loggerService = loggerService;
     this.intervalMs = intervalMs;
     this.maxRetries = maxRetries;
+    this.concurrency = concurrency;
   }
 
   public start(): void {
@@ -43,6 +47,7 @@ export class EmailProcessingService {
       this.processEmails().catch((error: unknown) => {
         this.loggerService.error({
           message: 'Error processing emails',
+          event: 'email.processing.error',
           error: error instanceof Error ? error.message : String(error),
         });
       });
@@ -54,6 +59,7 @@ export class EmailProcessingService {
       clearInterval(this.intervalId);
       this.intervalId = null;
       this.retryAttempts.clear();
+      this.nextRetryAt.clear();
       this.loggerService.info({ message: 'Email processing service stopped' });
     }
   }
@@ -66,13 +72,26 @@ export class EmailProcessingService {
         return;
       }
 
-      this.loggerService.debug({
-        message: 'Processing pending emails',
-        count: pendingEmails.length,
+      // Filter emails that are ready to be retried (exponential backoff)
+      const now = Date.now();
+      const readyEmails = pendingEmails.filter((email) => {
+        const nextRetry = this.nextRetryAt.get(email.id);
+        return !nextRetry || nextRetry <= now;
       });
 
-      for (const email of pendingEmails) {
-        await this.processEmail(email);
+      if (readyEmails.length === 0) {
+        return;
+      }
+
+      this.loggerService.debug({
+        message: 'Processing pending emails',
+        count: readyEmails.length,
+      });
+
+      // Process emails concurrently in batches
+      for (let i = 0; i < readyEmails.length; i += this.concurrency) {
+        const batch = readyEmails.slice(i, i + this.concurrency);
+        await Promise.all(batch.map((email) => this.processEmail(email)));
       }
     } catch (error) {
       this.loggerService.error({
@@ -88,6 +107,7 @@ export class EmailProcessingService {
     if (currentAttempts >= this.maxRetries) {
       this.loggerService.warn({
         message: 'Max retries reached for email, marking as failed',
+        event: 'email.sent.failure',
         emailId: email.id,
         attempts: currentAttempts,
       });
@@ -102,6 +122,7 @@ export class EmailProcessingService {
 
       this.loggerService.debug({
         message: 'Sending email',
+        event: 'email.sending',
         emailId: email.id,
         recipient: email.recipient,
         template: email.templateName,
@@ -119,9 +140,11 @@ export class EmailProcessingService {
       await this.emailRepository.updateStatus(email.id, 'sent');
 
       this.retryAttempts.delete(email.id);
+      this.nextRetryAt.delete(email.id);
 
       this.loggerService.info({
         message: 'Email sent successfully',
+        event: 'email.sent.success',
         emailId: email.id,
         recipient: email.recipient,
         template: email.templateName,
@@ -130,18 +153,25 @@ export class EmailProcessingService {
       const nextAttempts = currentAttempts + 1;
       this.retryAttempts.set(email.id, nextAttempts);
 
+      // Exponential backoff: 1s, 2s, 4s, 8s, 16s
+      const delayMs = Math.min(1000 * Math.pow(2, currentAttempts), 30000);
+      this.nextRetryAt.set(email.id, Date.now() + delayMs);
+
       this.loggerService.error({
         message: 'Failed to send email',
+        event: 'email.sent.failure',
         emailId: email.id,
         recipient: email.recipient,
         template: email.templateName,
         attempt: nextAttempts,
+        nextRetryInMs: nextAttempts < this.maxRetries ? delayMs : undefined,
         error: error instanceof BaseError ? error.context : String(error),
       });
 
       if (nextAttempts >= this.maxRetries) {
         await this.emailRepository.updateStatus(email.id, 'failed');
         this.retryAttempts.delete(email.id);
+        this.nextRetryAt.delete(email.id);
       }
     }
   }

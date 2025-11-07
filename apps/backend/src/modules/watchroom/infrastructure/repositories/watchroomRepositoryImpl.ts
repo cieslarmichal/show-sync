@@ -64,7 +64,7 @@ export class WatchroomRepositoryImpl implements WatchroomRepository {
 
   public async findOne(params: FindWatchroomParams, tx?: Transaction): Promise<Watchroom | null> {
     const db = tx ?? this.databaseClient.db;
-    
+
     const conditions: SQL[] = [];
 
     if (params.id) {
@@ -201,7 +201,7 @@ export class WatchroomRepositoryImpl implements WatchroomRepository {
 
   public async addParticipant(watchroomId: string, userId: string, tx?: Transaction): Promise<void> {
     const db = tx ?? this.databaseClient.db;
-    
+
     await db.insert(watchroomParticipants).values({
       id: IdService.generateUuid(),
       watchroomId,
@@ -211,7 +211,7 @@ export class WatchroomRepositoryImpl implements WatchroomRepository {
 
   public async removeParticipant(watchroomId: string, userId: string, tx?: Transaction): Promise<void> {
     const db = tx ?? this.databaseClient.db;
-    
+
     await db
       .delete(watchroomParticipants)
       .where(and(eq(watchroomParticipants.watchroomId, watchroomId), eq(watchroomParticipants.userId, userId)));
@@ -219,7 +219,7 @@ export class WatchroomRepositoryImpl implements WatchroomRepository {
 
   public async isParticipant(watchroomId: string, userId: string, tx?: Transaction): Promise<boolean> {
     const db = tx ?? this.databaseClient.db;
-    
+
     const [participant] = await db
       .select()
       .from(watchroomParticipants)

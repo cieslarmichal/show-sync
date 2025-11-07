@@ -117,7 +117,6 @@ export class HttpServer {
         requestId: request.id,
         method: request.method,
         url: request.url,
-        ip: request.ip,
       });
 
       done();

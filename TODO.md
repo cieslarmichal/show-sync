@@ -4,5 +4,5 @@
 - Setup Cloudflare CDN
 - Monetization
 - Email processing with event-driven architecture
-- Security audit - CSRF, rate limits, input sanitization
+- Security audit - CSRF, input sanitization
 - Max watchroom participants - 8
