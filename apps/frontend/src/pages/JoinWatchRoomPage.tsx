@@ -8,6 +8,7 @@ import { getPublicWatchroomDetails, joinWatchroom } from '../api/queries/watchro
 import type { Watchroom } from '../api/types/watchroom.ts';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/Card.tsx';
 import { Button } from '../components/ui/Button.tsx';
+import { config } from '../config.ts';
 
 export default function JoinWatchRoomPage() {
   const { publicLinkId } = useParams<{ publicLinkId: string }>();
@@ -60,6 +61,11 @@ export default function JoinWatchRoomPage() {
         if (room) {
           setTimeout(() => navigate(`/watchrooms/${room.id}`), 1000);
         }
+      } else if (error instanceof Error && error.message.includes('HTTP 400')) {
+        // Room is full
+        toast.error('Cannot join room', {
+          description: 'This watch room has reached its maximum capacity.',
+        });
       } else {
         toast.error('Failed to join the watch room.');
       }
@@ -101,6 +107,7 @@ export default function JoinWatchRoomPage() {
   const ownerName = ownerParticipant?.name || 'Unknown';
   const participantCount = room.participants.length;
   const isAlreadyParticipant = userData ? room.participants.some((p) => p.id === userData.id) : false;
+  const isRoomFull = participantCount >= config.watchroom.maxParticipants;
 
   return (
     <div className="min-h-screen bg-background flex items-start justify-center p-4 py-12 md:py-16">
@@ -123,17 +130,22 @@ export default function JoinWatchRoomPage() {
             </div>
           )}
 
-          <div className="flex items-center justify-center gap-3 p-3 rounded-lg bg-secondary/50">
+          <div className="flex items-center justify-center gap-3 p-4 rounded-lg bg-secondary/50">
             <Users className="w-5 h-5 text-muted-foreground shrink-0" />
-            <div className="flex items-center gap-1.5">
-              <span className="text-lg font-bold leading-none">{participantCount}</span>
-              <span className="text-sm text-muted-foreground leading-none">
-                {participantCount === 1 ? 'participant' : 'participants'}
-              </span>
+            <div className="flex items-center gap-2">
+              <span className="text-lg font-bold">{participantCount}</span>
+              <span className="text-sm text-muted-foreground">/ {config.watchroom.maxParticipants}</span>
             </div>
           </div>
 
           <div className="pt-2">
+            {isRoomFull && !isAlreadyParticipant && (
+              <div className="mb-4 p-3 rounded-lg bg-destructive/10 border border-destructive/20">
+                <p className="text-sm text-center text-destructive font-medium">
+                  This watch room is full (maximum {config.watchroom.maxParticipants} participants)
+                </p>
+              </div>
+            )}
             {isAlreadyParticipant && (
               <div className="mb-4 p-3 rounded-lg bg-primary/10 border border-primary/20">
                 <p className="text-sm text-center text-primary font-medium">
@@ -145,7 +157,7 @@ export default function JoinWatchRoomPage() {
               onClick={handleJoin}
               className="w-full h-12 text-base font-semibold"
               size="lg"
-              disabled={isJoining || isAlreadyParticipant}
+              disabled={isJoining || isAlreadyParticipant || isRoomFull}
             >
               {isJoining ? (
                 <>

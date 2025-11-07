@@ -97,5 +97,8 @@
   },
   "recommendations": {
     "maxRequestsPerUser": 10
+  },
+  "watchroom": {
+    "maxParticipants": 6
   }
 }

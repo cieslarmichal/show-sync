@@ -229,6 +229,17 @@ export class WatchroomRepositoryImpl implements WatchroomRepository {
     return !!participant;
   }
 
+  public async countParticipants(watchroomId: string, tx?: Transaction): Promise<number> {
+    const db = tx ?? this.databaseClient.db;
+
+    const [result] = await db
+      .select({ count: count() })
+      .from(watchroomParticipants)
+      .where(eq(watchroomParticipants.watchroomId, watchroomId));
+
+    return result?.count ?? 0;
+  }
+
   private mapToWatchroom(watchroomData: WatchroomRow, participants: Array<{ id: string; name: string }>): Watchroom {
     return {
       id: watchroomData.id,

@@ -4,6 +4,7 @@ import { createAuthenticationMiddleware } from '../../../common/auth/authMiddlew
 import type { TokenService } from '../../../common/auth/tokenService.ts';
 import { UnauthorizedAccessError } from '../../../common/errors/unathorizedAccessError.ts';
 import type { LoggerService } from '../../../common/logger/loggerService.ts';
+import type { Config } from '../../../core/config.ts';
 import type { DatabaseClient } from '../../../infrastructure/database/databaseClient.ts';
 import { CreateWatchroomAction } from '../application/actions/createWatchroomAction.ts';
 import { DeleteWatchroomAction } from '../application/actions/deleteWatchroomAction.ts';
@@ -39,15 +40,16 @@ export const watchroomRoutes: FastifyPluginAsyncTypebox<{
   databaseClient: DatabaseClient;
   tokenService: TokenService;
   loggerService: LoggerService;
+  config: Config;
 }> = async function (fastify, opts) {
-  const { databaseClient, tokenService, loggerService } = opts;
+  const { databaseClient, tokenService, loggerService, config } = opts;
 
   const watchroomRepository = new WatchroomRepositoryImpl(databaseClient);
 
   const createWatchroomAction = new CreateWatchroomAction(watchroomRepository, loggerService);
   const findUserWatchroomsAction = new FindUserWatchroomsAction(watchroomRepository);
   const findPublicWatchroomDetailsAction = new FindPublicWatchroomDetailsAction(watchroomRepository);
-  const joinWatchroomAction = new JoinWatchroomAction(watchroomRepository, loggerService, databaseClient);
+  const joinWatchroomAction = new JoinWatchroomAction(watchroomRepository, loggerService, databaseClient, config);
   const findWatchroomDetailsAction = new FindWatchroomDetailsAction(watchroomRepository);
   const updateWatchroomAction = new UpdateWatchroomAction(watchroomRepository, loggerService);
   const deleteWatchroomAction = new DeleteWatchroomAction(watchroomRepository, loggerService);

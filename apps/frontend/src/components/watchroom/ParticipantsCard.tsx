@@ -9,6 +9,7 @@ import { Button } from '../ui/Button.tsx';
 import { Badge } from '../ui/Badge.tsx';
 import { Tooltip, TooltipContent, TooltipTrigger } from '../ui/Tooltip.tsx';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '../ui/Dialog.tsx';
+import { config } from '../../config.ts';
 
 interface ParticipantsCardProps {
   room: WatchroomDetails;
@@ -84,7 +85,8 @@ export function ParticipantsCard({ room, isOwner, currentUserId, onRoomUpdated, 
             <div>
               <CardTitle className="text-2xl">Participants</CardTitle>
               <p className="text-sm text-muted-foreground mt-1">
-                {room.participants.length} {room.participants.length === 1 ? 'member' : 'members'}
+                {room.participants.length} / {config.watchroom.maxParticipants}{' '}
+                {room.participants.length === 1 ? 'member' : 'members'}
               </p>
             </div>
           </div>

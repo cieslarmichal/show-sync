@@ -9,7 +9,7 @@ import { getMyWatchrooms } from '../api/queries/watchroom.ts';
 import type { Watchroom } from '../api/types/watchroom.ts';
 import { CreateWatchRoomModal } from '../components/CreateWatchRoomModal.tsx';
 import { AuthContext } from '../context/AuthContext.tsx';
-import { SERIES_THRESHOLDS } from '../config/seriesThresholds.ts';
+import { config } from '../config.ts';
 import { SeriesContext } from '../context/SeriesContext.tsx';
 import { useSEO } from '../hooks/useSEO.ts';
 
@@ -50,10 +50,9 @@ export default function WatchRoomsPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page]);
 
-  const canCreateRoom =
-    totalCount >= SERIES_THRESHOLDS.MIN_TOTAL_FOR_ROOM && lovedCount >= SERIES_THRESHOLDS.MIN_LOVED_FOR_ROOM;
+  const canCreateRoom = totalCount >= config.series.minTotalForRoom && lovedCount >= config.series.minLovedForRoom;
   const disabledReason = !canCreateRoom
-    ? `To create a watch room, you need at least ${SERIES_THRESHOLDS.MIN_TOTAL_FOR_ROOM} rated series (including ${SERIES_THRESHOLDS.MIN_LOVED_FOR_ROOM} loved). Currently: ${totalCount} total, ${lovedCount} loved.`
+    ? `To create a watch room, you need at least ${config.series.minTotalForRoom} rated series (including ${config.series.minLovedForRoom} loved). Currently: ${totalCount} total, ${lovedCount} loved.`
     : undefined;
 
   const handleCopyLink = (publicLinkId: string) => {
@@ -134,8 +133,7 @@ export default function WatchRoomsPage() {
                             className="shrink-0 text-xs bg-secondary/50"
                           >
                             <Users className="w-3 h-3 mr-1.5" />
-                            {room.participants.length} Member
-                            {room.participants.length > 1 && 's'}
+                            {room.participants.length} / {config.watchroom.maxParticipants}
                           </Badge>
                           {isOwner && (
                             <Badge

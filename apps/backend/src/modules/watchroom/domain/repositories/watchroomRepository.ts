@@ -28,4 +28,5 @@ export type WatchroomRepository = {
   addParticipant(watchroomId: string, userId: string, tx?: Transaction): Promise<void>;
   removeParticipant(watchroomId: string, userId: string, tx?: Transaction): Promise<void>;
   isParticipant(watchroomId: string, userId: string, tx?: Transaction): Promise<boolean>;
+  countParticipants(watchroomId: string, tx?: Transaction): Promise<number>;
 };

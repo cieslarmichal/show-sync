@@ -292,6 +292,7 @@ export default function ResetPasswordPage() {
               <li>At least 8 characters long</li>
               <li>Contains uppercase and lowercase letters</li>
               <li>Contains at least one number</li>
+              <li>Contains at least one special character</li>
             </ul>
           </div>
 

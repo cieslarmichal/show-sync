@@ -1,9 +1,11 @@
+import { OperationNotValidError } from '../../../../common/errors/operationNotValidError.ts';
 import { ResourceAlreadyExistsError } from '../../../../common/errors/resourceAlreadyExistsError.ts';
 import { ResourceNotFoundError } from '../../../../common/errors/resourceNotFoundError.ts';
 import type { LoggerService } from '../../../../common/logger/loggerService.ts';
 import type { ExecutionContext } from '../../../../common/types/executionContext.ts';
+import type { Config } from '../../../../core/config.ts';
 import type { DatabaseClient } from '../../../../infrastructure/database/databaseClient.ts';
-import type { WatchroomRepository } from '../../domain/repositories/watchroomRepository.ts';
+import { type WatchroomRepository } from '../../domain/repositories/watchroomRepository.ts';
 import type { Watchroom } from '../../domain/types/watchroom.ts';
 
 export interface JoinWatchroomActionPayload {
@@ -15,15 +17,18 @@ export class JoinWatchroomAction {
   private readonly watchroomRepository: WatchroomRepository;
   private readonly loggerService: LoggerService;
   private readonly databaseClient: DatabaseClient;
+  private readonly config: Config;
 
   public constructor(
     watchroomRepository: WatchroomRepository,
     loggerService: LoggerService,
     databaseClient: DatabaseClient,
+    config: Config,
   ) {
     this.watchroomRepository = watchroomRepository;
     this.loggerService = loggerService;
     this.databaseClient = databaseClient;
+    this.config = config;
   }
 
   public async execute(payload: JoinWatchroomActionPayload, context: ExecutionContext): Promise<Watchroom> {
@@ -63,6 +68,19 @@ export class JoinWatchroomAction {
             });
           }
 
+          // Check if watchroom has reached maximum participants
+          const participantCount = await this.watchroomRepository.countParticipants(watchroom.id, tx);
+          const maxParticipants = this.config.watchroom.maxParticipants;
+
+          if (participantCount >= maxParticipants) {
+            throw new OperationNotValidError({
+              reason: `Watchroom has reached maximum capacity of ${maxParticipants.toString()} participants`,
+              watchroomId: watchroom.id,
+              currentParticipants: participantCount,
+              maxParticipants,
+            });
+          }
+
           await this.watchroomRepository.addParticipant(watchroom.id, userId, tx);
         },
         {
@@ -85,7 +103,7 @@ export class JoinWatchroomAction {
     } catch (error) {
       const duration = Date.now() - startTime;
 
-      if (error instanceof ResourceAlreadyExistsError) {
+      if (error instanceof ResourceAlreadyExistsError || error instanceof OperationNotValidError) {
         throw error;
       }
 

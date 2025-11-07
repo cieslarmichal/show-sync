@@ -417,6 +417,7 @@ export class HttpServer {
       databaseClient: this.databaseClient,
       tokenService,
       loggerService: this.loggerService,
+      config: this.config,
     });
 
     await this.fastifyServer.register(recommendationRoutes, {

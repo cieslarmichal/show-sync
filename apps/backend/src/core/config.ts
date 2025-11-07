@@ -102,6 +102,9 @@ const configSchema = Type.Object({
   recommendations: Type.Object({
     maxRequestsPerUser: Type.Number({ minimum: 1, maximum: 1000 }),
   }),
+  watchroom: Type.Object({
+    maxParticipants: Type.Number({ minimum: 1, maximum: 10 }),
+  }),
 });
 
 export type Config = Static<typeof configSchema>;
