@@ -82,7 +82,7 @@ export default function IgnoredSeriesList({
         newSet.delete(seriesTmdbId);
         return newSet;
       });
-        console.error('Failed to remove ignored show:', err);
+      console.error('Failed to remove ignored show:', err);
     }
   };
 
@@ -109,9 +109,7 @@ export default function IgnoredSeriesList({
       {ignoredSeries.length === 0 ? (
         <div className="text-center py-8 text-muted-foreground">
           <p>No skipped shows yet</p>
-          <p className="text-sm mt-1">
-            Shows you "Skip" will appear here and won't be suggested to you.
-          </p>
+          <p className="text-sm mt-1">Shows you "Skip" will appear here and won't be suggested to you.</p>
         </div>
       ) : (
         <div className="max-h-[400px] sm:max-h-[500px] overflow-y-auto">

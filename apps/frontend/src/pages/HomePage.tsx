@@ -33,12 +33,13 @@ export default function HomePage() {
           <div className="animate-fade-in space-y-20 sm:space-y-32">
             {/* Hero Section */}
             <div className="text-center pt-12">
-                        <h1 className="text-4xl sm:text-6xl lg:text-7xl font-bold text-foreground mb-6 tracking-tighter">
-            Find great TV shows to watch together
-          </h1>
-          <p className="text-lg sm:text-xl text-muted-foreground font-light tracking-tight max-w-4xl mx-auto mb-10">
-            Tell us which TV shows you like, invite your friends, and we'll suggest shows everyone will enjoy watching together.
-          </p>
+              <h1 className="text-4xl sm:text-6xl lg:text-7xl font-bold text-foreground mb-6 tracking-tighter">
+                Find great TV shows to watch together
+              </h1>
+              <p className="text-lg sm:text-xl text-muted-foreground font-light tracking-tight max-w-4xl mx-auto mb-10">
+                Tell us which TV shows you like, invite your friends, and we'll suggest shows everyone will enjoy
+                watching together.
+              </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
                 <Button
                   size="lg"
@@ -60,12 +61,12 @@ export default function HomePage() {
 
             {/* How It Works Section */}
             <div className="space-y-12">
-                          <div className="text-center">
-              <h2 className="text-3xl sm:text-4xl font-bold text-foreground">How It Works</h2>
-              <p className="text-lg text-muted-foreground mt-3">
-                Just 3 simple steps to find your next favorite show.
-              </p>
-            </div>
+              <div className="text-center">
+                <h2 className="text-3xl sm:text-4xl font-bold text-foreground">How It Works</h2>
+                <p className="text-lg text-muted-foreground mt-3">
+                  Just 3 simple steps to find your next favorite show.
+                </p>
+              </div>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
                 <div className="space-y-4">
                   <div className="flex justify-center">
@@ -74,7 +75,9 @@ export default function HomePage() {
                     </div>
                   </div>
                   <h3 className="text-xl font-semibold">1. Tell Us What You Like</h3>
-                  <p className="text-muted-foreground">Rate TV shows you've watched - mark which ones you loved or liked.</p>
+                  <p className="text-muted-foreground">
+                    Rate TV shows you've watched - mark which ones you loved or liked.
+                  </p>
                 </div>
                 <div className="space-y-4">
                   <div className="flex justify-center">
@@ -83,7 +86,9 @@ export default function HomePage() {
                     </div>
                   </div>
                   <h3 className="text-xl font-semibold">2. Create a Watch Room</h3>
-                  <p className="text-muted-foreground">Make a watch room and invite your friends - or just use it for yourself!</p>
+                  <p className="text-muted-foreground">
+                    Make a watch room and invite your friends - or just use it for yourself!
+                  </p>
                 </div>
                 <div className="space-y-4">
                   <div className="flex justify-center">
@@ -92,7 +97,9 @@ export default function HomePage() {
                     </div>
                   </div>
                   <h3 className="text-xl font-semibold">3. Get Suggestions</h3>
-                  <p className="text-muted-foreground">We'll suggest TV shows that match what everyone in your group likes.</p>
+                  <p className="text-muted-foreground">
+                    We'll suggest TV shows that match what everyone in your group likes.
+                  </p>
                 </div>
               </div>
             </div>
@@ -135,9 +142,7 @@ export default function HomePage() {
 
             {/* CTA Section */}
             <div className="text-center py-12">
-              <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-4">
-                Ready to discover great shows?
-              </h2>
+              <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-4">Ready to discover great shows?</h2>
               <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-8">
                 Sign up for free and stop wasting time arguing about what to watch.
               </p>

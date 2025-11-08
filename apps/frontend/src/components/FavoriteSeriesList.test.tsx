@@ -244,8 +244,8 @@ describe('FavoriteSeriesList', () => {
 
     await waitFor(() => {
       // Should show fallback IDs when details fail to load
-      expect(screen.getByText('Series 1')).toBeInTheDocument();
-      expect(screen.getByText('Series 2')).toBeInTheDocument();
+      expect(screen.getByText('Show 1')).toBeInTheDocument();
+      expect(screen.getByText('Show 2')).toBeInTheDocument();
     });
 
     consoleErrorSpy.mockRestore();
@@ -320,7 +320,7 @@ describe('FavoriteSeriesList', () => {
       />,
     );
 
-    expect(screen.getByText('Series 123')).toBeInTheDocument();
+    expect(screen.getByText('Show 123')).toBeInTheDocument();
   });
 
   it('should clear series details when favorites array becomes empty', async () => {

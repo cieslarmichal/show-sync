@@ -81,9 +81,7 @@ describe('IgnoredSeriesList', () => {
     );
 
     expect(screen.getByText('No skipped shows yet')).toBeInTheDocument();
-    expect(
-      screen.getByText('Shows you "Skip" will appear here and won\'t be suggested to you.'),
-    ).toBeInTheDocument();
+    expect(screen.getByText('Shows you "Skip" will appear here and won\'t be suggested to you.')).toBeInTheDocument();
   });
 
   it('should render ignored shows list', async () => {
@@ -119,7 +117,7 @@ describe('IgnoredSeriesList', () => {
       expect(screen.getByText('Breaking Bad')).toBeInTheDocument();
     });
 
-    const removeButtons = screen.getAllByRole('button', { name: /remove.*from ignored list/i });
+    const removeButtons = screen.getAllByRole('button', { name: /remove.*from skipped list/i });
     await user.click(removeButtons[0]);
 
     expect(mockOnRemoveIgnored).toHaveBeenCalledWith(1);
@@ -156,7 +154,7 @@ describe('IgnoredSeriesList', () => {
 
     await waitFor(() => {
       // Should show fallback name with series ID
-      expect(screen.getByText('Series 1')).toBeInTheDocument();
+      expect(screen.getByText('Show 1')).toBeInTheDocument();
     });
 
     // Should render "No Image Available" when series details fail to load

@@ -248,7 +248,9 @@ describe('CreateWatchRoomModal', () => {
     await user.click(submitButton);
 
     await waitFor(() => {
-      expect(mockToast.error).toHaveBeenCalledWith('Could not create watch room. Try a different name or try again later.');
+      expect(mockToast.error).toHaveBeenCalledWith(
+        'Could not create watch room. Try a different name or try again later.',
+      );
     });
   });
 

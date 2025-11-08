@@ -28,13 +28,15 @@ describe('Footer', () => {
     renderFooter();
 
     expect(screen.getByText('ShowSync')).toBeInTheDocument();
-    expect(screen.getByAltText('ShowSync Logo')).toBeInTheDocument();
+    // Logo has aria-hidden, so we just check it exists in the DOM
+    const logo = document.querySelector('img[alt=""][aria-hidden="true"]');
+    expect(logo).toBeInTheDocument();
   });
 
   it('should render app description', () => {
     renderFooter();
 
-    expect(screen.getByText(/Find the perfect show for your group/i)).toBeInTheDocument();
+    expect(screen.getByText(/Find great TV shows to watch together/i)).toBeInTheDocument();
   });
 
   it('should render contact section', () => {
@@ -64,7 +66,7 @@ describe('Footer', () => {
     renderFooter();
 
     const locationLink = screen.getByText('Cracow, Poland');
-    expect(locationLink.closest('a')).toHaveAttribute('href', 'https://maps.google.com/?q=Cracow, Poland');
+    expect(locationLink.closest('a')).toHaveAttribute('href', 'https://maps.google.com/?q=Cracow,Poland');
     expect(locationLink.closest('a')).toHaveAttribute('target', '_blank');
     expect(locationLink.closest('a')).toHaveAttribute('rel', 'noopener noreferrer');
   });

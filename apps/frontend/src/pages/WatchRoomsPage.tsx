@@ -16,8 +16,7 @@ import { useSEO } from '../hooks/useSEO.ts';
 export default function WatchRoomsPage() {
   useSEO({
     title: 'Watch Rooms - ShowSync',
-    description:
-      'Create watch rooms to get smart show suggestions. Invite friends or discover shows for solo binging.',
+    description: 'Create watch rooms to get smart show suggestions. Invite friends or discover shows for solo binging.',
     keywords: ['watch rooms', 'group recommendations', 'watch party', 'show recommendations', 'watch together'],
   });
 
@@ -162,9 +161,7 @@ export default function WatchRoomsPage() {
                             {room.description}
                           </CardDescription>
                         ) : (
-                          <p className="text-sm text-muted-foreground/50 italic">
-                            No description added yet.
-                          </p>
+                          <p className="text-sm text-muted-foreground/50 italic">No description added yet.</p>
                         )}
                       </CardContent>
 
