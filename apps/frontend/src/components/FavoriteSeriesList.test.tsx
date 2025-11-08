@@ -47,7 +47,7 @@ describe('FavoriteSeriesList', () => {
       />,
     );
 
-    expect(screen.getByText('No favorite shows yet.')).toBeInTheDocument();
+    expect(screen.getByText('No favorite shows yet')).toBeInTheDocument();
     expect(screen.getByText(/Search for shows above/i)).toBeInTheDocument();
   });
 
@@ -366,7 +366,7 @@ describe('FavoriteSeriesList', () => {
       />,
     );
 
-    expect(screen.getByText('No favorite shows yet.')).toBeInTheDocument();
+    expect(screen.getByText('No favorite shows yet')).toBeInTheDocument();
     expect(screen.queryByText('Breaking Bad')).not.toBeInTheDocument();
   });
 

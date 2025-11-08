@@ -57,7 +57,7 @@ export function CreateWatchRoomModal({ onRoomCreated, disabled = false, disabled
       form.reset();
       onRoomCreated();
     } catch {
-      toast.error('Failed to create watch room. Please try again.');
+      toast.error('Could not create watch room. Try a different name or try again later.');
     }
   }
 
@@ -89,7 +89,7 @@ export function CreateWatchRoomModal({ onRoomCreated, disabled = false, disabled
         <DialogHeader>
           <DialogTitle>Create Watch Room</DialogTitle>
         </DialogHeader>
-        <DialogDescription>Create a watch room to get show suggestions based on everyone's favorites.</DialogDescription>
+        <DialogDescription>Get show suggestions based on what you (and your friends) like.</DialogDescription>
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}

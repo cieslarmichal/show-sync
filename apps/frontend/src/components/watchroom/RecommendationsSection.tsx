@@ -108,8 +108,8 @@ export function RecommendationsSection({
 
       const { recommendationRequestId } = await generateRecommendations(watchroomId);
 
-      toast.success('Generating recommendations...', {
-        description: 'Recommendation generation started. Results will be available shortly.',
+      toast.success('Generating suggestions...', {
+        description: 'This will take a moment. Results will be ready shortly.',
       });
 
       // Poll for status using requestId every 2 seconds, max 30 attempts (60 seconds total)
@@ -126,15 +126,15 @@ export function RecommendationsSection({
           if (statusResult.status === 'completed') {
             const fetchedRecommendations = await fetchRecommendations();
 
-            toast.success('Recommendations ready!', {
-              description: `Found ${fetchedRecommendations.length} shows for your group.`,
+            toast.success('Suggestions ready!', {
+              description: `Found ${fetchedRecommendations.length} shows for your watch room.`,
             });
             setIsGenerating(false);
             return;
           }
 
           if (statusResult.status === 'failed') {
-            toast.error('Failed to generate recommendations', {
+            toast.error('Could not generate suggestions', {
               description: 'Something went wrong. Please try again.',
             });
             setIsGenerating(false);
@@ -145,8 +145,8 @@ export function RecommendationsSection({
         }
 
         if (attempts >= maxAttempts) {
-          toast.error('Generation taking longer than expected', {
-            description: 'Please refresh the page in a moment.',
+          toast.error('This is taking longer than usual', {
+            description: 'Give it a minute, then refresh the page.',
           });
           setIsGenerating(false);
           return;
@@ -158,14 +158,14 @@ export function RecommendationsSection({
       setTimeout(() => pollForStatus(), pollInterval);
     } catch (error) {
       console.error('Failed to generate recommendations:', error);
-      const errorMessage = error instanceof Error ? error.message : 'Failed to generate recommendations.';
+      const errorMessage = error instanceof Error ? error.message : 'Could not generate suggestions.';
 
       if (errorMessage.includes('Too many requests') || errorMessage.includes('Rate limit')) {
-        toast.error('Rate limit exceeded', {
-          description: 'You can generate recommendations up to 5 times per minute. Please wait a moment and try again.',
+        toast.error('Slow down!', {
+          description: 'Wait a moment before generating again (limit: 5 times per minute).',
         });
       } else {
-        toast.error('Failed to generate recommendations.');
+        toast.error('Could not generate suggestions. Please try again.');
       }
       setIsGenerating(false);
     }

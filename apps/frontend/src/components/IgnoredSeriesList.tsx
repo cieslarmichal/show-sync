@@ -108,9 +108,9 @@ export default function IgnoredSeriesList({
     <div className="space-y-3">
       {ignoredSeries.length === 0 ? (
         <div className="text-center py-8 text-muted-foreground">
-          <p>No skipped shows yet.</p>
+          <p>No skipped shows yet</p>
           <p className="text-sm mt-1">
-            When you skip a show, it will appear here and won't be suggested to you.
+            Shows you "Skip" will appear here and won't be suggested to you.
           </p>
         </div>
       ) : (

@@ -43,7 +43,7 @@ describe('CreateWatchRoomModal', () => {
 
     await waitFor(() => {
       expect(screen.getByRole('dialog')).toBeInTheDocument();
-      expect(screen.getByText('Create a new watch room to discover your next favorite show.')).toBeInTheDocument();
+      expect(screen.getByText('Get show suggestions based on what you (and your friends) like.')).toBeInTheDocument();
     });
   });
 
@@ -248,7 +248,7 @@ describe('CreateWatchRoomModal', () => {
     await user.click(submitButton);
 
     await waitFor(() => {
-      expect(mockToast.error).toHaveBeenCalledWith('Failed to create watch room. Please try again.');
+      expect(mockToast.error).toHaveBeenCalledWith('Could not create watch room. Try a different name or try again later.');
     });
   });
 

@@ -18,8 +18,8 @@ export default function FavoriteSeriesList({
   onRemoveFavorite,
   onUpdatePreference,
   isLoading: externalLoading,
-  emptyMessage = 'No favorite shows yet.',
-  emptySubMessage = 'Search for shows above and add them to your favorites!',
+  emptyMessage = 'No favorite shows yet',
+  emptySubMessage = 'Search for shows above and mark the ones you like or love!',
 }: FavoriteSeriesListProps) {
   const [seriesDetails, setSeriesDetails] = useState<Map<number, SeriesDetails>>(new Map());
   const [removingIds, setRemovingIds] = useState<Set<number>>(new Set());

@@ -75,7 +75,7 @@ export default function LoginForm() {
                     <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                     <Input
                       id="email"
-                      placeholder="you@example.com"
+                      placeholder="Enter your email"
                       className="pl-10 h-11"
                       {...field}
                     />
@@ -101,7 +101,7 @@ export default function LoginForm() {
                     <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                     <Input
                       id="password"
-                      placeholder="Your password"
+                      placeholder="Enter your password"
                       type={showPassword ? 'text' : 'password'}
                       className="pl-10 h-11"
                       {...field}

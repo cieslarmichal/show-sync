@@ -25,7 +25,7 @@ export default function WatchRoomDetailsPage() {
       const fetchedRoom = await getWatchroomDetails(id);
       setRoom(fetchedRoom);
     } catch {
-      toast.error('Failed to load watch room details.');
+      toast.error('Could not load watch room. Please try again.');
       navigate('/watchrooms');
     } finally {
       setIsLoading(false);

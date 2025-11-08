@@ -50,7 +50,7 @@ export default function SeriesPage() {
         setLikedCount(liked);
       } catch (error) {
         console.error('Failed to load series:', error);
-        toast.error('Failed to load your shows');
+        toast.error('Could not load your shows. Please refresh the page.');
       } finally {
         setIsLoading(false);
       }
@@ -68,7 +68,7 @@ export default function SeriesPage() {
         setIgnoredSeriesIds(new Set(ignored.map((ign: IgnoredSeries) => ign.seriesTmdbId)));
       } catch (error) {
         console.error('Failed to load ignored series:', error);
-        toast.error('Failed to load your skipped shows');
+        toast.error('Could not load your skipped shows. Please refresh the page.');
       } finally {
         setIsLoadingIgnored(false);
       }
@@ -107,7 +107,7 @@ export default function SeriesPage() {
       toast.success(`"${series.name}" added to your favorites!`);
     } catch (error) {
       console.error('Failed to add to favorites:', error);
-      toast.error('Failed to add show to your favorites');
+      toast.error('Could not save your rating. Please check your connection and try again.');
     }
   };
 
@@ -133,7 +133,7 @@ export default function SeriesPage() {
       toast.success('Show removed from your favorites');
     } catch (error) {
       console.error('Failed to remove series:', error);
-      toast.error('Failed to remove show from your favorites');
+      toast.error('Could not remove show. Please try again.');
     }
   };
 
@@ -159,7 +159,7 @@ export default function SeriesPage() {
       toast.success(`Preference updated to ${preferenceLevel === 'love' ? '❤️ Loved' : '👍 Liked'}`);
     } catch (error) {
       console.error('Failed to update preference:', error);
-      toast.error('Failed to update preference');
+      toast.error('Could not update your rating. Please try again.');
     }
   };
 
@@ -175,7 +175,7 @@ export default function SeriesPage() {
       toast.success('Show removed from skipped list');
     } catch (error) {
       console.error('Failed to remove ignored series:', error);
-      toast.error('Failed to remove show from skipped list');
+      toast.error('Could not restore show. Please try again.');
     }
   };
 
@@ -201,7 +201,7 @@ export default function SeriesPage() {
       toast.success(`"${series.name}" added to your ignored list`);
     } catch (error) {
       console.error('Failed to add to ignored:', error);
-      toast.error('Failed to add show to skipped list');
+      toast.error('Could not skip show. Please try again.');
     }
   };
 

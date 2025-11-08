@@ -32,11 +32,11 @@ export function RoomHeader({ room, isOwner, onCopyLink, onRoomUpdated, onRoomDel
       const errorMessage = error instanceof Error ? error.message : 'Failed to delete room.';
 
       if (errorMessage.includes('Too many requests') || errorMessage.includes('Rate limit')) {
-        toast.error('Rate limit exceeded', {
-          description: 'Please wait a moment before trying again.',
+        toast.error('Slow down!', {
+          description: 'Wait a moment before trying again.',
         });
       } else {
-        toast.error('Failed to delete room.');
+        toast.error('Could not delete watch room. Please try again.');
       }
       setIsProcessing(false);
       setConfirmDeleteDialog(false);

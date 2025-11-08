@@ -269,7 +269,7 @@ export default function DashboardPage() {
                               1
                             </span>
                             <div>
-                              <p className="font-medium text-foreground">Create a group</p>
+                              <p className="font-medium text-foreground">Create a watch room</p>
                               <p className="text-xs text-muted-foreground">Get a link you can share with others</p>
                             </div>
                           </li>

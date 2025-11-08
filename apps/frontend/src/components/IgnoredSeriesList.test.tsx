@@ -80,9 +80,9 @@ describe('IgnoredSeriesList', () => {
       />,
     );
 
-    expect(screen.getByText('No skipped shows yet.')).toBeInTheDocument();
+    expect(screen.getByText('No skipped shows yet')).toBeInTheDocument();
     expect(
-      screen.getByText('Shows you "Skip" will appear here and will be excluded from recommendations.'),
+      screen.getByText('Shows you "Skip" will appear here and won\'t be suggested to you.'),
     ).toBeInTheDocument();
   });
 

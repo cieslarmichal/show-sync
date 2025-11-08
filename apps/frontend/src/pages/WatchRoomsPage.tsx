@@ -39,7 +39,7 @@ export default function WatchRoomsPage() {
       setTotal(response.metadata.total);
       setTotalPages(Math.ceil(response.metadata.total / pageSize));
     } catch {
-      toast.error('Failed to fetch watchrooms.');
+      toast.error('Could not load watch rooms. Please refresh the page.');
     } finally {
       setIsLoading(false);
     }

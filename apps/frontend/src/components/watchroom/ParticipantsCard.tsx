@@ -43,11 +43,11 @@ export function ParticipantsCard({ room, isOwner, currentUserId, onRoomUpdated, 
       const errorMessage = error instanceof Error ? error.message : 'Failed to remove participant.';
 
       if (errorMessage.includes('Too many requests') || errorMessage.includes('Rate limit')) {
-        toast.error('Rate limit exceeded', {
-          description: 'Please wait a moment before trying again.',
+        toast.error('Slow down!', {
+          description: 'Wait a moment before trying again.',
         });
       } else {
-        toast.error('Failed to remove participant.');
+        toast.error('Could not remove participant. Please try again.');
       }
     } finally {
       setIsProcessing(false);
@@ -64,11 +64,11 @@ export function ParticipantsCard({ room, isOwner, currentUserId, onRoomUpdated, 
       const errorMessage = error instanceof Error ? error.message : 'Failed to leave the room.';
 
       if (errorMessage.includes('Too many requests') || errorMessage.includes('Rate limit')) {
-        toast.error('Rate limit exceeded', {
-          description: 'Please wait a moment before trying again.',
+        toast.error('Slow down!', {
+          description: 'Wait a moment before trying again.',
         });
       } else {
-        toast.error('Failed to leave the room.');
+        toast.error('Could not leave watch room. Please try again.');
       }
       setIsProcessing(false);
     }
