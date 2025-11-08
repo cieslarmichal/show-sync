@@ -16,7 +16,7 @@ export class SeriesPageModel extends BasePageModel {
   constructor(page: Page) {
     super(page);
     this.pageTitle = page.getByRole('heading', { name: /rate tv shows/i });
-    this.searchInput = page.getByPlaceholder(/search for tv shows by title/i);
+    this.searchInput = page.getByPlaceholder(/search for a tv show by title/i);
     this.searchResults = page.getByTestId('search-results');
     this.favoritesSection = page.getByRole('heading', { name: /favorite shows/i });
     this.ignoredSection = page.getByRole('heading', { name: /skipped shows/i });
