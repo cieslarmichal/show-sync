@@ -105,7 +105,7 @@ test.describe('Series Flow', () => {
       expect(allCount).toBe(0);
 
       // Scroll down to the ignored series section
-      const ignoredSection = page.getByRole('heading', { name: /ignored series/i });
+      const ignoredSection = page.getByRole('heading', { name: /skipped shows/i });
       await ignoredSection.scrollIntoViewIfNeeded();
 
       // Verify it appears in the ignored series section
@@ -120,7 +120,7 @@ test.describe('Series Flow', () => {
       await seriesPage.searchSeries('zxcvbnmasdfghjkl123456789');
 
       // Verify empty state message is shown
-      const emptyMessage = page.getByText(/no series found for/i);
+      const emptyMessage = page.getByText(/no shows found for/i);
       await expect(emptyMessage).toBeVisible({ timeout: 15000 });
     });
   });
@@ -303,7 +303,7 @@ test.describe('Series Flow', () => {
       await seriesPage.clickLovedTab();
 
       // Should show empty message for loved
-      const emptyMessage = page.getByText(/no loved series yet/i);
+      const emptyMessage = page.getByText(/no loved shows yet/i);
       await expect(emptyMessage).toBeVisible();
     });
 
@@ -319,7 +319,7 @@ test.describe('Series Flow', () => {
       await seriesPage.clickLikedTab();
 
       // Should show empty message for liked
-      const emptyMessage = page.getByText(/no liked series yet/i);
+      const emptyMessage = page.getByText(/no liked shows yet/i);
       await expect(emptyMessage).toBeVisible();
     });
   });
