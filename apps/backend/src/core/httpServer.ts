@@ -234,14 +234,20 @@ export class HttpServer {
 
     this.fastifyServer.setErrorHandler((error, request, reply) => {
       const requestId = request.id;
+      const baseContext = {
+        requestId,
+        method: request.method,
+        url: request.url,
+        userId: request.user?.userId,
+        ip: request.ip,
+      };
 
+      // Handle TypeError (unexpected runtime errors)
       if (error instanceof TypeError) {
         this.loggerService.error({
           message: 'HTTP request type error',
-          event: 'http.request.error',
-          requestId,
-          method: request.method,
-          url: request.url,
+          event: 'http.request.type_error',
+          ...baseContext,
           err: error,
         });
 
@@ -251,15 +257,12 @@ export class HttpServer {
         });
       }
 
+      // Handle rate limiting
       if ('statusCode' in error && error.statusCode === 429) {
         this.loggerService.warn({
           message: 'Rate limit exceeded',
           event: 'http.request.rate_limited',
-          requestId,
-          method: request.method,
-          url: request.url,
-          ip: request.ip,
-          err: error,
+          ...baseContext,
         });
 
         return reply.status(429).send({
@@ -268,62 +271,100 @@ export class HttpServer {
         });
       }
 
-      this.loggerService.error({
-        message: 'HTTP request error',
-        event: 'http.request.error',
-        requestId,
-        method: request.method,
-        url: request.url,
-        err: error,
-      });
-
       const responseError = this.sanitizeErrorResponse(error);
 
-      if (error instanceof InputNotValidError) {
-        return reply.status(httpStatusCodes.badRequest).send(responseError);
-      }
-
-      if (error instanceof ResourceNotFoundError) {
-        return reply.status(httpStatusCodes.notFound).send(responseError);
-      }
-
-      if (error instanceof OperationNotValidError) {
-        return reply.status(httpStatusCodes.badRequest).send(responseError);
-      }
-
-      if (error instanceof ResourceAlreadyExistsError) {
-        return reply.status(httpStatusCodes.conflict).send(responseError);
-      }
-
+      // Handle authentication errors (warn level - expected in normal operation)
       if (error instanceof UnauthorizedAccessError) {
         this.loggerService.warn({
           message: 'Unauthorized access attempt',
-          event: 'http.request.error',
-          requestId,
-          method: request.method,
-          url: request.url,
-          ip: request.ip,
+          event: 'http.request.unauthorized',
+          ...baseContext,
+          errorContext: error.context,
         });
 
         return reply.status(httpStatusCodes.unauthorized).send(responseError);
       }
 
+      // Handle authorization errors (warn level - expected in normal operation)
       if (error instanceof ForbiddenAccessError) {
         this.loggerService.warn({
           message: 'Forbidden access attempt',
-          event: 'http.request.error',
-          requestId,
-          method: request.method,
-          url: request.url,
-          ip: request.ip,
+          event: 'http.request.forbidden',
+          ...baseContext,
+          errorContext: error.context,
         });
 
         return reply.status(httpStatusCodes.forbidden).send(responseError);
       }
 
+      // Handle validation errors (warn level - client errors)
+      if (error instanceof InputNotValidError) {
+        this.loggerService.warn({
+          message: 'Invalid input',
+          event: 'http.request.validation_error',
+          ...baseContext,
+          errorContext: error.context,
+        });
+
+        return reply.status(httpStatusCodes.badRequest).send(responseError);
+      }
+
+      // Handle business logic errors (warn level - expected domain errors)
+      if (error instanceof OperationNotValidError) {
+        this.loggerService.warn({
+          message: 'Invalid operation',
+          event: 'http.request.operation_error',
+          ...baseContext,
+          errorContext: error.context,
+        });
+
+        return reply.status(httpStatusCodes.badRequest).send(responseError);
+      }
+
+      // Handle not found errors (info level - common in normal operation)
+      if (error instanceof ResourceNotFoundError) {
+        this.loggerService.info({
+          message: 'Resource not found',
+          event: 'http.request.not_found',
+          ...baseContext,
+          errorContext: error.context,
+        });
+
+        return reply.status(httpStatusCodes.notFound).send(responseError);
+      }
+
+      // Handle conflict errors (warn level - client errors)
+      if (error instanceof ResourceAlreadyExistsError) {
+        this.loggerService.warn({
+          message: 'Resource conflict',
+          event: 'http.request.conflict',
+          ...baseContext,
+          errorContext: error.context,
+        });
+
+        return reply.status(httpStatusCodes.conflict).send(responseError);
+      }
+
+      // Handle external service errors (error level - infrastructure issues)
       if (error instanceof ExternalServiceError) {
+        this.loggerService.error({
+          message: 'External service error',
+          event: 'http.request.external_service_error',
+          ...baseContext,
+          err: error,
+        });
+
         return reply.status(httpStatusCodes.badGateway).send(responseError);
       }
+
+      // Handle unexpected errors (error level - needs investigation)
+      this.loggerService.error({
+        message: 'Unexpected error',
+        event: 'http.request.unexpected_error',
+        ...baseContext,
+        err: error,
+        errorName: error.name,
+      });
 
       return reply.status(httpStatusCodes.internalServerError).send({
         name: 'InternalServerError',
