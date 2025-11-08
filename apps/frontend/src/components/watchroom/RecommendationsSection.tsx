@@ -127,7 +127,7 @@ export function RecommendationsSection({
             const fetchedRecommendations = await fetchRecommendations();
 
             toast.success('Recommendations ready!', {
-              description: `Found ${fetchedRecommendations.length} series for your group.`,
+              description: `Found ${fetchedRecommendations.length} shows for your group.`,
             });
             setIsGenerating(false);
             return;
@@ -214,7 +214,7 @@ export function RecommendationsSection({
               <CardTitle className="text-2xl">Recommendations</CardTitle>
             </div>
             <CardDescription className="text-base">
-              Get personalized series recommendations based on everyone's preferences.
+              Get show suggestions based on what everyone likes.
               {isOwner && (
                 <span className="block text-xs mt-1.5 text-muted-foreground/80">
                   Each generation creates fresh recommendations based on current preferences.
@@ -290,7 +290,7 @@ export function RecommendationsSection({
                     </Button>
                   </>
                 ) : (
-                  'Click the "Generate" button above to get AI-powered series recommendations for your group!'
+                  'Click the "Generate" button above to get show suggestions for your group!'
                 )
               ) : (
                 'The room owner will generate recommendations when everyone has joined.'
@@ -305,7 +305,7 @@ export function RecommendationsSection({
                 <ThumbsUp className="w-4 h-4 text-primary" />
                 <span>Like or</span>
                 <Heart className="w-4 h-4 text-red-600" />
-                <span>Love the series you enjoy</span>
+                <span>Love the shows you enjoy</span>
                 <span className="text-muted-foreground/50">•</span>
                 <EyeOff className="w-4 h-4 text-muted-foreground" />
                 <span>Skip to exclude them from future recommendations</span>

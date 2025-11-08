@@ -42,7 +42,7 @@ export default function SearchSeries({
         const searchResult = await searchSeries(debouncedQuery);
         setResults(searchResult.data);
       } catch (err) {
-        setError('Failed to search series. Please try again.');
+        setError('Failed to search shows. Please try again.');
         console.error('Search error:', err);
       } finally {
         setIsLoading(false);
@@ -70,21 +70,21 @@ export default function SearchSeries({
             htmlFor="series-search"
             className="sr-only"
           >
-            Search for a TV series
+            Search for a TV show
           </label>
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
           <Input
             id="series-search"
             type="text"
-            placeholder="Search for a TV series by title..."
+            placeholder="Search for a TV show by title..."
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             className="w-full pl-12 pr-4 py-6 text-base sm:text-lg rounded-full bg-muted border-2 border-transparent focus:border-primary focus:bg-background"
           />
         </div>
         <p className="text-xs text-muted-foreground px-1">
-          <span className="font-medium">Like</span> or <span className="font-medium">Love</span> the series you enjoy •
-          <span className="font-medium"> Skip</span> to exclude them from recommendations
+          <span className="font-medium">Like</span> or <span className="font-medium">Love</span> shows you enjoy •
+          <span className="font-medium"> Skip</span> shows you don't want to see
         </p>
       </div>
 
@@ -137,7 +137,7 @@ export default function SearchSeries({
       )}
 
       {!isLoading && query.trim() && results.length === 0 && (
-        <div className="text-center py-8 text-muted-foreground">No series found for "{query}"</div>
+        <div className="text-center py-8 text-muted-foreground">No shows found for "{query}"</div>
       )}
     </div>
   );

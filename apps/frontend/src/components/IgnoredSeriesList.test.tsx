@@ -71,7 +71,7 @@ describe('IgnoredSeriesList', () => {
     expect(screen.getAllByTestId('skeleton')).toHaveLength(24); // 12 skeleton placeholders x 2 (image + text)
   });
 
-  it('should render empty state when no ignored series', () => {
+  it('should render empty state when no ignored shows', () => {
     render(
       <IgnoredSeriesList
         ignoredSeries={[]}
@@ -80,13 +80,13 @@ describe('IgnoredSeriesList', () => {
       />,
     );
 
-    expect(screen.getByText('No ignored series yet.')).toBeInTheDocument();
+    expect(screen.getByText('No skipped shows yet.')).toBeInTheDocument();
     expect(
-      screen.getByText('Series you "Skip" will appear here and will be excluded from AI recommendations.'),
+      screen.getByText('Shows you "Skip" will appear here and will be excluded from recommendations.'),
     ).toBeInTheDocument();
   });
 
-  it('should render ignored series list', async () => {
+  it('should render ignored shows list', async () => {
     render(
       <IgnoredSeriesList
         ignoredSeries={mockIgnoredSeries}

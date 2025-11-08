@@ -8,15 +8,15 @@ export default function HomePage() {
   const navigate = useNavigate();
 
   useSEO({
-    title: 'ShowSync - AI-Powered Series Recommendations for Groups',
+    title: 'ShowSync - Smart TV Show Suggestions for Groups',
     description:
-      'Find the perfect TV series for your watch party. Get AI-powered recommendations based on group preferences. Create watch rooms and discover series everyone will love.',
+      'Find the perfect TV show for your watch party. Get smart suggestions based on group preferences. Create watch rooms and discover shows everyone will love.',
     keywords: [
-      'tv series recommendations',
+      'tv show recommendations',
       'watch party',
       'group recommendations',
-      'ai recommendations',
-      'series matching',
+      'smart suggestions',
+      'show matching',
       'tv shows',
       'watch together',
       'streaming recommendations',
@@ -33,13 +33,12 @@ export default function HomePage() {
           <div className="animate-fade-in space-y-20 sm:space-y-32">
             {/* Hero Section */}
             <div className="text-center pt-12">
-              <h1 className="text-4xl sm:text-6xl lg:text-7xl font-bold text-foreground mb-6 tracking-tighter">
-                Never argue about what to watch again
-              </h1>
-              <p className="text-lg sm:text-xl text-muted-foreground font-light tracking-tight max-w-4xl mx-auto mb-10">
-                Find the perfect TV series for you and your friends. Rate your favorite series, create watch rooms, and
-                let our AI find the perfect match for your group.
-              </p>
+                        <h1 className="text-4xl sm:text-6xl lg:text-7xl font-bold text-foreground mb-6 tracking-tighter">
+            Find great TV shows to watch together
+          </h1>
+          <p className="text-lg sm:text-xl text-muted-foreground font-light tracking-tight max-w-4xl mx-auto mb-10">
+            Tell us which TV shows you like, invite your friends, and we'll suggest shows everyone will enjoy watching together.
+          </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
                 <Button
                   size="lg"
@@ -61,12 +60,12 @@ export default function HomePage() {
 
             {/* How It Works Section */}
             <div className="space-y-12">
-              <div className="text-center">
-                <h2 className="text-3xl sm:text-4xl font-bold text-foreground">How It Works</h2>
-                <p className="text-lg text-muted-foreground mt-3">
-                  Finding the perfect show for your group is as easy.
-                </p>
-              </div>
+                          <div className="text-center">
+              <h2 className="text-3xl sm:text-4xl font-bold text-foreground">How It Works</h2>
+              <p className="text-lg text-muted-foreground mt-3">
+                Just 3 simple steps to find your next favorite show.
+              </p>
+            </div>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
                 <div className="space-y-4">
                   <div className="flex justify-center">
@@ -74,8 +73,8 @@ export default function HomePage() {
                       <Heart className="h-8 w-8 text-primary" />
                     </div>
                   </div>
-                  <h3 className="text-xl font-semibold">1. Build Your Profile</h3>
-                  <p className="text-muted-foreground">Rate your favorite TV series to create a taste profile.</p>
+                  <h3 className="text-xl font-semibold">1. Tell Us What You Like</h3>
+                  <p className="text-muted-foreground">Rate TV shows you've watched - mark which ones you loved or liked.</p>
                 </div>
                 <div className="space-y-4">
                   <div className="flex justify-center">
@@ -84,7 +83,7 @@ export default function HomePage() {
                     </div>
                   </div>
                   <h3 className="text-xl font-semibold">2. Create a Watch Room</h3>
-                  <p className="text-muted-foreground">Create a watch room - invite friends or binge solo!</p>
+                  <p className="text-muted-foreground">Make a watch room and invite your friends - or just use it for yourself!</p>
                 </div>
                 <div className="space-y-4">
                   <div className="flex justify-center">
@@ -92,8 +91,8 @@ export default function HomePage() {
                       <PartyPopper className="h-8 w-8 text-primary" />
                     </div>
                   </div>
-                  <h3 className="text-xl font-semibold">3. Get Matches</h3>
-                  <p className="text-muted-foreground">Our AI analyzes your taste to suggest the perfect TV series.</p>
+                  <h3 className="text-xl font-semibold">3. Get Suggestions</h3>
+                  <p className="text-muted-foreground">We'll suggest TV shows that match what everyone in your group likes.</p>
                 </div>
               </div>
             </div>
@@ -101,8 +100,8 @@ export default function HomePage() {
             {/* Features Section */}
             <div className="space-y-12">
               <div className="text-center">
-                <h2 className="text-3xl sm:text-4xl font-bold text-foreground">Key Features</h2>
-                <p className="text-lg text-muted-foreground mt-3">Everything you need to make movie night a success.</p>
+                <h2 className="text-3xl sm:text-4xl font-bold text-foreground">Why You'll Love It</h2>
+                <p className="text-lg text-muted-foreground mt-3">Simple features that make choosing a show easy.</p>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <Card className="p-6 border-2">
@@ -111,9 +110,9 @@ export default function HomePage() {
                       <BrainCircuit className="h-6 w-6 text-primary" />
                     </div>
                     <div>
-                      <h3 className="text-lg font-semibold">AI-Powered Recommendations</h3>
+                      <h3 className="text-lg font-semibold">Smart Suggestions</h3>
                       <p className="text-muted-foreground mt-1">
-                        Leverage the power of AI to get unbiased recommendations based on your taste (or your group's).
+                        Our smart system learns what you like and suggests shows you'll probably enjoy.
                       </p>
                     </div>
                   </div>
@@ -124,10 +123,9 @@ export default function HomePage() {
                       <Users className="h-6 w-6 text-primary" />
                     </div>
                     <div>
-                      <h3 className="text-lg font-semibold">Solo or Social</h3>
+                      <h3 className="text-lg font-semibold">Watch Alone or With Friends</h3>
                       <p className="text-muted-foreground mt-1">
-                        Get personalized recommendations for yourself, or invite friends to find the perfect match for
-                        everyone.
+                        Use it just for yourself, or invite friends and family to find shows everyone will like.
                       </p>
                     </div>
                   </div>
@@ -138,10 +136,10 @@ export default function HomePage() {
             {/* CTA Section */}
             <div className="text-center py-12">
               <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-4">
-                Ready to find your next favorite show?
+                Ready to discover great shows?
               </h2>
               <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-8">
-                Sign up for free and say goodbye to endless scrolling and debates.
+                Sign up for free and stop wasting time arguing about what to watch.
               </p>
               <Button
                 size="lg"

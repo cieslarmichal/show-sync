@@ -13,7 +13,7 @@ interface User {
 
 const sections: NavSection[] = [
   { name: 'Home', href: '/', authHref: '/dashboard' },
-  { name: 'Series', href: '/series', requiresAuth: true },
+  { name: 'TV Shows', href: '/series', requiresAuth: true },
   { name: 'Watch Rooms', href: '/watchrooms', requiresAuth: true },
 ];
 

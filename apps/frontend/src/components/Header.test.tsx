@@ -108,7 +108,7 @@ describe('Header', () => {
     renderHeader(userData, true);
 
     expect(screen.getByText('Home')).toBeInTheDocument();
-    expect(screen.getByText('Series')).toBeInTheDocument();
+    expect(screen.getByText('TV Shows')).toBeInTheDocument();
     expect(screen.getByText('Watch Rooms')).toBeInTheDocument();
   });
 
@@ -116,7 +116,7 @@ describe('Header', () => {
     renderHeader(null, true);
 
     expect(screen.getByText('Home')).toBeInTheDocument();
-    expect(screen.queryByText('Series')).not.toBeInTheDocument();
+    expect(screen.queryByText('TV Shows')).not.toBeInTheDocument();
     expect(screen.queryByText('Watch Rooms')).not.toBeInTheDocument();
   });
 
@@ -140,7 +140,7 @@ describe('Header', () => {
     });
   });
 
-  it('should navigate to series page from user menu', async () => {
+  it('should navigate to shows page from user menu', async () => {
     const user = userEvent.setup();
     const userData: User = {
       id: '123',
@@ -150,9 +150,9 @@ describe('Header', () => {
     };
     renderHeader(userData, true);
 
-    // Series link is in desktop navigation, so just click it directly
-    const seriesLinks = screen.getAllByText('Series');
-    await user.click(seriesLinks[0]);
+    // TV Shows link is in desktop navigation, so just click it directly
+    const showsLinks = screen.getAllByText('TV Shows');
+    await user.click(showsLinks[0]);
 
     expect(mockNavigate).toHaveBeenCalledWith('/series');
   });
@@ -236,8 +236,8 @@ describe('Header', () => {
     };
     renderHeader(userData, true);
 
-    const seriesLink = screen.getByText('Series');
-    await user.click(seriesLink);
+    const showsLink = screen.getByText('TV Shows');
+    await user.click(showsLink);
 
     expect(mockNavigate).toHaveBeenCalledWith('/series');
   });

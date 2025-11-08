@@ -46,7 +46,7 @@ export function RecommendationCard({
       if (externalIds.imdbId) {
         window.open(`https://www.imdb.com/title/${externalIds.imdbId}`);
       } else {
-        toast.error('IMDb ID not available for this series');
+        toast.error('IMDb ID not available for this show');
       }
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Failed to get IMDb link';
@@ -65,7 +65,7 @@ export function RecommendationCard({
     try {
       await addIgnoredSeries(recommendation.seriesTmdbId);
       toast.success(`"${recommendation.seriesDetails?.name}" added to your ignored list`, {
-        description: "You won't see this series in future recommendations.",
+        description: "You won't see this show in future recommendations.",
       });
       onIgnore(recommendation.seriesTmdbId);
     } catch (error) {
@@ -86,7 +86,7 @@ export function RecommendationCard({
     try {
       await addFavoriteSeries(recommendation.seriesTmdbId, preferenceLevel);
       toast.success(`"${recommendation.seriesDetails?.name}" added to your favorites!`, {
-        description: "You won't see this series in future recommendations.",
+        description: "You won't see this show in future recommendations.",
       });
       onFavorite(recommendation.seriesTmdbId);
     } catch (error) {

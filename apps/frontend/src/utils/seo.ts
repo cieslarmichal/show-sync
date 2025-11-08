@@ -14,15 +14,15 @@ export interface SEOConfig {
 }
 
 const DEFAULT_SEO: SEOConfig = {
-  title: 'ShowSync - AI-Powered Series Recommendations for Groups',
+  title: 'ShowSync - AI-Powered Show Recommendations for Groups',
   description:
-    'Find the perfect TV series for your watch party. Get AI-powered recommendations based on group preferences. Create watch rooms and discover series everyone will love.',
+    'Find the perfect TV shows for your watch party. Get AI-powered recommendations based on group preferences. Create watch rooms and discover shows everyone will love.',
   keywords: [
-    'tv series recommendations',
+    'tv show recommendations',
     'watch party',
     'group recommendations',
     'ai recommendations',
-    'series matching',
+    'show matching',
     'tv shows',
     'watch together',
     'streaming recommendations',

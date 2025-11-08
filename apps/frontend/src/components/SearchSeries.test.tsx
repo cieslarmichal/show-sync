@@ -24,7 +24,7 @@ describe('SearchSeries', () => {
       />,
     );
 
-    expect(screen.getByPlaceholderText(/search for a tv series/i)).toBeInTheDocument();
+    expect(screen.getByPlaceholderText(/search for a tv show/i)).toBeInTheDocument();
   });
 
   it('should show search results', async () => {
@@ -38,7 +38,7 @@ describe('SearchSeries', () => {
       />,
     );
 
-    const searchInput = screen.getByPlaceholderText(/search for a tv series/i);
+    const searchInput = screen.getByPlaceholderText(/search for a tv show/i);
     await user.type(searchInput, 'Breaking Bad');
 
     // Loading skeletons might appear briefly but results will definitely show
@@ -61,7 +61,7 @@ describe('SearchSeries', () => {
       />,
     );
 
-    const searchInput = screen.getByPlaceholderText(/search for a tv series/i);
+    const searchInput = screen.getByPlaceholderText(/search for a tv show/i);
     await user.type(searchInput, 'Breaking');
 
     // Wait for debounce and API call
@@ -84,7 +84,7 @@ describe('SearchSeries', () => {
       />,
     );
 
-    const searchInput = screen.getByPlaceholderText(/search for a tv series/i);
+    const searchInput = screen.getByPlaceholderText(/search for a tv show/i);
     await user.type(searchInput, 'Better Call Saul');
 
     await waitFor(
@@ -107,7 +107,7 @@ describe('SearchSeries', () => {
       />,
     );
 
-    const searchInput = screen.getByPlaceholderText(/search for a tv series/i);
+    const searchInput = screen.getByPlaceholderText(/search for a tv show/i);
     await user.type(searchInput, 'Breaking');
 
     await waitFor(
@@ -132,7 +132,7 @@ describe('SearchSeries', () => {
       />,
     );
 
-    const searchInput = screen.getByPlaceholderText(/search for a tv series/i);
+    const searchInput = screen.getByPlaceholderText(/search for a tv show/i);
     await user.type(searchInput, 'Breaking');
 
     await waitFor(
@@ -155,7 +155,7 @@ describe('SearchSeries', () => {
     );
   });
 
-  it('should clear search input after liking series', async () => {
+  it('should clear search input after liking show', async () => {
     const user = userEvent.setup();
     await renderWithProviders(
       <SearchSeries
@@ -166,7 +166,7 @@ describe('SearchSeries', () => {
       />,
     );
 
-    const searchInput = screen.getByPlaceholderText(/search for a tv series/i);
+    const searchInput = screen.getByPlaceholderText(/search for a tv show/i);
     await user.type(searchInput, 'Breaking');
 
     await waitFor(
@@ -184,7 +184,7 @@ describe('SearchSeries', () => {
     });
   });
 
-  it('should show "Liked" for series already in profile', async () => {
+  it('should show "Liked" for show already in profile', async () => {
     const profileWithSeries = new Set<number>([1396]);
     const user = userEvent.setup();
 
@@ -197,7 +197,7 @@ describe('SearchSeries', () => {
       />,
     );
 
-    const searchInput = screen.getByPlaceholderText(/search for a tv series/i);
+    const searchInput = screen.getByPlaceholderText(/search for a tv show/i);
     await user.type(searchInput, 'Breaking');
 
     await waitFor(
@@ -209,7 +209,7 @@ describe('SearchSeries', () => {
     );
   });
 
-  it('should disable like button for series already in profile', async () => {
+  it('should disable like button for show already in profile', async () => {
     const profileWithSeries = new Set<number>([1396]);
     const user = userEvent.setup();
 
@@ -222,7 +222,7 @@ describe('SearchSeries', () => {
       />,
     );
 
-    const searchInput = screen.getByPlaceholderText(/search for a tv series/i);
+    const searchInput = screen.getByPlaceholderText(/search for a tv show/i);
     await user.type(searchInput, 'Breaking');
 
     await waitFor(
@@ -245,18 +245,18 @@ describe('SearchSeries', () => {
       />,
     );
 
-    const searchInput = screen.getByPlaceholderText(/search for a tv series/i);
+    const searchInput = screen.getByPlaceholderText(/search for a tv show/i);
     await user.type(searchInput, 'NonExistentSeries12345');
 
     await waitFor(
       () => {
-        expect(screen.getByText(/no series found for "NonExistentSeries12345"/i)).toBeInTheDocument();
+        expect(screen.getByText(/no shows found for "NonExistentSeries12345"/i)).toBeInTheDocument();
       },
       { timeout: 1000 },
     );
   });
 
-  it('should display series rating', async () => {
+  it('should display show rating', async () => {
     const user = userEvent.setup();
     await renderWithProviders(
       <SearchSeries
@@ -267,7 +267,7 @@ describe('SearchSeries', () => {
       />,
     );
 
-    const searchInput = screen.getByPlaceholderText(/search for a tv series/i);
+    const searchInput = screen.getByPlaceholderText(/search for a tv show/i);
     await user.type(searchInput, 'Breaking');
 
     await waitFor(
@@ -278,7 +278,7 @@ describe('SearchSeries', () => {
     );
   });
 
-  it('should display series year', async () => {
+  it('should display show year', async () => {
     const user = userEvent.setup();
     await renderWithProviders(
       <SearchSeries
@@ -289,7 +289,7 @@ describe('SearchSeries', () => {
       />,
     );
 
-    const searchInput = screen.getByPlaceholderText(/search for a tv series/i);
+    const searchInput = screen.getByPlaceholderText(/search for a tv show/i);
     await user.type(searchInput, 'Breaking');
 
     await waitFor(
@@ -311,7 +311,7 @@ describe('SearchSeries', () => {
       />,
     );
 
-    const searchInput = screen.getByPlaceholderText(/search for a tv series/i);
+    const searchInput = screen.getByPlaceholderText(/search for a tv show/i);
     await user.type(searchInput, 'Breaking');
 
     await waitFor(
@@ -342,7 +342,7 @@ describe('SearchSeries', () => {
       />,
     );
 
-    const searchInput = screen.getByPlaceholderText(/search for a tv series/i);
+    const searchInput = screen.getByPlaceholderText(/search for a tv show/i);
     await user.type(searchInput, 'Breaking');
 
     await waitFor(
@@ -364,7 +364,7 @@ describe('SearchSeries', () => {
     );
   });
 
-  it('should clear search input after marking series as not interested', async () => {
+  it('should clear search input after marking show as not interested', async () => {
     const user = userEvent.setup();
     await renderWithProviders(
       <SearchSeries
@@ -375,7 +375,7 @@ describe('SearchSeries', () => {
       />,
     );
 
-    const searchInput = screen.getByPlaceholderText(/search for a tv series/i);
+    const searchInput = screen.getByPlaceholderText(/search for a tv show/i);
     await user.type(searchInput, 'Breaking');
 
     await waitFor(
@@ -393,7 +393,7 @@ describe('SearchSeries', () => {
     });
   });
 
-  it('should show "Skipped" for series already ignored', async () => {
+  it('should show "Skipped" for show already ignored', async () => {
     const ignoredWithSeries = new Set<number>([1396]);
     const user = userEvent.setup();
 
@@ -406,7 +406,7 @@ describe('SearchSeries', () => {
       />,
     );
 
-    const searchInput = screen.getByPlaceholderText(/search for a tv series/i);
+    const searchInput = screen.getByPlaceholderText(/search for a tv show/i);
     await user.type(searchInput, 'Breaking');
 
     await waitFor(
@@ -417,7 +417,7 @@ describe('SearchSeries', () => {
     );
   });
 
-  it('should disable not interested button for series already ignored', async () => {
+  it('should disable not interested button for show already ignored', async () => {
     const ignoredWithSeries = new Set<number>([1396]);
     const user = userEvent.setup();
 
@@ -430,7 +430,7 @@ describe('SearchSeries', () => {
       />,
     );
 
-    const searchInput = screen.getByPlaceholderText(/search for a tv series/i);
+    const searchInput = screen.getByPlaceholderText(/search for a tv show/i);
     await user.type(searchInput, 'Breaking');
 
     await waitFor(

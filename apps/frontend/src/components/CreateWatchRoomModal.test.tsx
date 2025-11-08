@@ -43,7 +43,7 @@ describe('CreateWatchRoomModal', () => {
 
     await waitFor(() => {
       expect(screen.getByRole('dialog')).toBeInTheDocument();
-      expect(screen.getByText('Create a new watch room to discover your next favorite series.')).toBeInTheDocument();
+      expect(screen.getByText('Create a new watch room to discover your next favorite show.')).toBeInTheDocument();
     });
   });
 

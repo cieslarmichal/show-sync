@@ -34,7 +34,7 @@ describe('Footer', () => {
   it('should render app description', () => {
     renderFooter();
 
-    expect(screen.getByText(/Find the perfect series for your group/i)).toBeInTheDocument();
+    expect(screen.getByText(/Find the perfect show for your group/i)).toBeInTheDocument();
   });
 
   it('should render contact section', () => {
@@ -85,7 +85,7 @@ describe('Footer', () => {
     renderFooter(userData);
 
     expect(screen.getByText('Your Account')).toBeInTheDocument();
-    expect(screen.getByText('Series')).toBeInTheDocument();
+    expect(screen.getByText('TV Shows')).toBeInTheDocument();
     expect(screen.getByText('Watch Rooms')).toBeInTheDocument();
   });
 
@@ -93,11 +93,11 @@ describe('Footer', () => {
     renderFooter(null);
 
     expect(screen.queryByText('Your Account')).not.toBeInTheDocument();
-    expect(screen.queryByText('Series')).not.toBeInTheDocument();
+    expect(screen.queryByText('TV Shows')).not.toBeInTheDocument();
     expect(screen.queryByText('Watch Rooms')).not.toBeInTheDocument();
   });
 
-  it('should render Series link when authenticated', () => {
+  it('should render TV Shows link when authenticated', () => {
     const userData: User = {
       id: '123',
       email: 'test@example.com',
@@ -106,8 +106,8 @@ describe('Footer', () => {
     };
     renderFooter(userData);
 
-    const mySeriesLink = screen.getByText('Series');
-    expect(mySeriesLink.closest('a')).toHaveAttribute('href', '/series');
+    const myShowsLink = screen.getByText('TV Shows');
+    expect(myShowsLink.closest('a')).toHaveAttribute('href', '/series');
   });
 
   it('should render Watch Rooms link when authenticated', () => {

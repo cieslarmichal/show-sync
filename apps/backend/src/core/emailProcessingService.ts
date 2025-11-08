@@ -85,6 +85,9 @@ export class EmailProcessingService {
 
       this.loggerService.debug({
         message: 'Processing pending emails',
+        event: 'email.processing',
+        totalPending: pendingEmails.length,
+        toBeProcessed: readyEmails.length,
         count: readyEmails.length,
       });
 

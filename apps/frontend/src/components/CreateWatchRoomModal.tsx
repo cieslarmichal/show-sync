@@ -89,7 +89,7 @@ export function CreateWatchRoomModal({ onRoomCreated, disabled = false, disabled
         <DialogHeader>
           <DialogTitle>Create Watch Room</DialogTitle>
         </DialogHeader>
-        <DialogDescription>Create a new watch room to discover your next favorite series.</DialogDescription>
+        <DialogDescription>Create a watch room to get show suggestions based on everyone's favorites.</DialogDescription>
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
@@ -104,7 +104,7 @@ export function CreateWatchRoomModal({ onRoomCreated, disabled = false, disabled
                   <FormControl>
                     <Input
                       id="create-room-name"
-                      placeholder="Weekend Movie Night"
+                      placeholder="Family Movie Night"
                       {...field}
                     />
                   </FormControl>
@@ -121,7 +121,7 @@ export function CreateWatchRoomModal({ onRoomCreated, disabled = false, disabled
                   <FormControl>
                     <Textarea
                       id="create-room-description"
-                      placeholder="Describe what you're looking for to get better recommendations..."
+                      placeholder="Tell us what kind of shows you're looking for..."
                       {...field}
                     />
                   </FormControl>

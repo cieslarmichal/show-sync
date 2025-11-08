@@ -47,11 +47,11 @@ describe('FavoriteSeriesList', () => {
       />,
     );
 
-    expect(screen.getByText('No favorite series yet.')).toBeInTheDocument();
-    expect(screen.getByText(/Search for series above/i)).toBeInTheDocument();
+    expect(screen.getByText('No favorite shows yet.')).toBeInTheDocument();
+    expect(screen.getByText(/Search for shows above/i)).toBeInTheDocument();
   });
 
-  it('should render favorite series with details', async () => {
+  it('should render favorite shows with details', async () => {
     const mockFavorites: FavoriteSeries[] = [
       { seriesTmdbId: 1, preferenceLevel: 'like' },
       { seriesTmdbId: 2, preferenceLevel: 'love' },
@@ -366,7 +366,7 @@ describe('FavoriteSeriesList', () => {
       />,
     );
 
-    expect(screen.getByText('No favorite series yet.')).toBeInTheDocument();
+    expect(screen.getByText('No favorite shows yet.')).toBeInTheDocument();
     expect(screen.queryByText('Breaking Bad')).not.toBeInTheDocument();
   });
 

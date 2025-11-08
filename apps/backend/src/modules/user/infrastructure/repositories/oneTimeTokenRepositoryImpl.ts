@@ -11,14 +11,14 @@ import type {
 import type { OneTimeToken } from '../../domain/types/oneTimeToken.ts';
 
 export class OneTimeTokenRepositoryImpl implements OneTimeTokenRepository {
-  private readonly database: DatabaseClient;
+  private readonly databaseClient: DatabaseClient;
 
-  public constructor(database: DatabaseClient) {
-    this.database = database;
+  public constructor(databaseClient: DatabaseClient) {
+    this.databaseClient = databaseClient;
   }
 
   public async create(data: CreateOneTimeTokenData, tx?: Transaction): Promise<OneTimeToken> {
-    const db = tx ?? this.database.db;
+    const db = tx ?? this.databaseClient.db;
 
     const result = await db
       .insert(oneTimeTokens)
@@ -41,7 +41,7 @@ export class OneTimeTokenRepositoryImpl implements OneTimeTokenRepository {
   }
 
   public async findValidByHash(tokenHash: string, purpose: string, tx?: Transaction): Promise<OneTimeToken | null> {
-    const db = tx ?? this.database.db;
+    const db = tx ?? this.databaseClient.db;
 
     const conditions = [
       eq(oneTimeTokens.tokenHash, tokenHash),
@@ -60,7 +60,7 @@ export class OneTimeTokenRepositoryImpl implements OneTimeTokenRepository {
   }
 
   public async markUsed(id: string, tx?: Transaction): Promise<void> {
-    const db = tx ?? this.database.db;
+    const db = tx ?? this.databaseClient.db;
 
     const currentDate = new Date();
 
@@ -70,7 +70,7 @@ export class OneTimeTokenRepositoryImpl implements OneTimeTokenRepository {
   public async deleteExpired(): Promise<void> {
     const currentDate = new Date();
 
-    await this.database.db.delete(oneTimeTokens).where(lt(oneTimeTokens.expiresAt, currentDate));
+    await this.databaseClient.db.delete(oneTimeTokens).where(lt(oneTimeTokens.expiresAt, currentDate));
   }
 
   private map(row: typeof oneTimeTokens.$inferSelect): OneTimeToken {

@@ -38,7 +38,7 @@ export function IgnoredSeriesCard({ seriesTmdbId, details, isRemoving, onRemove 
               variant="secondary"
               size="icon"
               className="absolute top-2 right-2 w-7 h-7 bg-black/50 hover:bg-red-600 rounded-full transition-all duration-200 shadow-lg"
-              aria-label={`Remove ${details?.name || 'series'} from ignored list`}
+              aria-label={`Remove ${details?.name || 'show'} from skipped list`}
             >
               <X className="w-4 h-4 text-white" />
             </Button>
@@ -47,7 +47,7 @@ export function IgnoredSeriesCard({ seriesTmdbId, details, isRemoving, onRemove 
         </Tooltip>
         <div className="absolute bottom-0 left-0 right-0 p-2">
           <h3 className="text-xs font-bold text-white truncate text-center leading-tight">
-            {details?.name || `Series ${seriesTmdbId}`}
+            {details?.name || `Show ${seriesTmdbId}`}
           </h3>
         </div>
       </div>

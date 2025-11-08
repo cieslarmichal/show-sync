@@ -17,8 +17,8 @@ export default function WatchRoomsPage() {
   useSEO({
     title: 'Watch Rooms - ShowSync',
     description:
-      'Create watch rooms to get AI-powered series recommendations. Invite friends or discover series for solo binging.',
-    keywords: ['watch rooms', 'group recommendations', 'watch party', 'series recommendations', 'watch together'],
+      'Create watch rooms to get smart show suggestions. Invite friends or discover shows for solo binging.',
+    keywords: ['watch rooms', 'group recommendations', 'watch party', 'show recommendations', 'watch together'],
   });
 
   const [rooms, setRooms] = useState<Watchroom[]>([]);
@@ -52,7 +52,7 @@ export default function WatchRoomsPage() {
 
   const canCreateRoom = totalCount >= config.series.minTotalForRoom && lovedCount >= config.series.minLovedForRoom;
   const disabledReason = !canCreateRoom
-    ? `To create a watch room, you need at least ${config.series.minTotalForRoom} rated series (including ${config.series.minLovedForRoom} loved). Currently: ${totalCount} total, ${lovedCount} loved.`
+    ? `To create a watch room, you need at least ${config.series.minTotalForRoom} rated shows (including ${config.series.minLovedForRoom} loved). You have: ${totalCount} total, ${lovedCount} loved.`
     : undefined;
 
   const handleCopyLink = (publicLinkId: string) => {
@@ -74,7 +74,7 @@ export default function WatchRoomsPage() {
             <div>
               <h1 className="text-3xl font-bold tracking-tight">Watch Rooms</h1>
               <p className="text-muted-foreground mt-1.5">
-                Create rooms to get AI-powered series recommendations - invite friends or binge alone!
+                Create watch rooms to get show suggestions - invite friends or just use it yourself!
               </p>
             </div>
             <CreateWatchRoomModal
@@ -103,7 +103,7 @@ export default function WatchRoomsPage() {
                 <Tv className="w-16 h-16 text-muted-foreground/40 mx-auto mb-4" />
                 <h3 className="text-lg font-semibold text-foreground mb-2">No watch rooms yet</h3>
                 <p className="text-sm text-muted-foreground max-w-md mx-auto mb-6">
-                  Create your first room to start getting AI recommendations!
+                  Create your first watch room to start getting show suggestions!
                 </p>
                 <CreateWatchRoomModal
                   onRoomCreated={fetchRooms}
@@ -163,7 +163,7 @@ export default function WatchRoomsPage() {
                           </CardDescription>
                         ) : (
                           <p className="text-sm text-muted-foreground/50 italic">
-                            This room doesn't have a description yet.
+                            No description added yet.
                           </p>
                         )}
                       </CardContent>

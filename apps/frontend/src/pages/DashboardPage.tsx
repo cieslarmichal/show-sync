@@ -20,7 +20,7 @@ import { useSEO } from '../hooks/useSEO';
 export default function DashboardPage() {
   useSEO({
     title: 'Dashboard - ShowSync',
-    description: 'Your personal ShowSync dashboard. View your series ratings and create watch rooms.',
+    description: 'Your personal ShowSync dashboard. View your show ratings and create watch rooms.',
     noindex: true, // Private page, don't index
   });
 
@@ -99,12 +99,12 @@ export default function DashboardPage() {
             <div className="animate-fade-in space-y-10">
               {/* Welcome Section */}
               <div className="text-center">
-                <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-foreground mb-4 tracking-tighter">
-                  Never argue about what to watch again
-                </h1>
-                <p className="text-xl sm:text-2xl text-muted-foreground font-light tracking-tight max-w-4xl mx-auto">
-                  Rate your favorite series, create watch rooms, and find the perfect TV series for your group
-                </p>
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-foreground mb-4 tracking-tighter">
+                Find shows everyone will enjoy
+              </h1>
+              <p className="text-xl sm:text-2xl text-muted-foreground font-light tracking-tight max-w-4xl mx-auto">
+                Rate TV shows you like, create watch rooms with friends, and get suggestions perfect for everyone
+              </p>
               </div>
 
               {/* Main Actions Section */}
@@ -121,8 +121,8 @@ export default function DashboardPage() {
                           />
                         </div>
                         <div>
-                          <CardTitle className="text-xl">Build Your Taste Profile</CardTitle>
-                          <CardDescription>Your recommendations get smarter as you rate more series.</CardDescription>
+                          <CardTitle className="text-xl">Tell Us What You Like</CardTitle>
+                          <CardDescription>The more shows you rate, the better our suggestions become.</CardDescription>
                         </div>
                       </div>
                     </CardHeader>
@@ -130,7 +130,7 @@ export default function DashboardPage() {
                       {/* Progress Bar Section */}
                       <div className="space-y-3">
                         <div className="flex items-center justify-between">
-                          <div className="text-sm font-semibold text-foreground">Taste profile progress</div>
+                          <div className="text-sm font-semibold text-foreground">Your progress</div>
                           <div className="text-sm font-bold text-primary">
                             {totalCount}/{config.series.maxAccuracy}
                           </div>
@@ -159,17 +159,17 @@ export default function DashboardPage() {
                         <div className="flex items-center justify-center gap-1.5">
                           {totalCount < config.series.goodAccuracy ? (
                             <span className="text-xs text-muted-foreground">
-                              Rate {toReachGoodAccuracy} more series for good accuracy
+                              Rate {toReachGoodAccuracy} more shows for good suggestions
                             </span>
                           ) : totalCount < config.series.maxAccuracy ? (
                             <span className="text-xs text-violet-600 dark:text-violet-400 font-medium flex items-center gap-1">
                               <Check className="w-3 h-3" />
-                              Good accuracy • Rate {toReachMaxAccuracy} more series for max
+                              Good suggestions • Rate {toReachMaxAccuracy} more for even better ones
                             </span>
                           ) : (
                             <span className="text-xs text-emerald-600 dark:text-emerald-400 font-medium flex items-center gap-1">
                               <Check className="w-3 h-3" />
-                              Max accuracy unlocked
+                              Best suggestions unlocked
                               {totalCount > config.series.maxAccuracy &&
                                 ` • +${totalCount - config.series.maxAccuracy} bonus`}
                             </span>
@@ -179,7 +179,7 @@ export default function DashboardPage() {
 
                       {/* Setup Requirements */}
                       <div className="space-y-3 pt-2">
-                        <div className="text-sm font-medium text-foreground">Complete your setup:</div>
+                        <div className="text-sm font-medium text-foreground">Get started:</div>
                         <div className="space-y-2">
                           <div className="flex items-center gap-3 p-2 rounded-lg bg-muted/30">
                             <div
@@ -193,11 +193,11 @@ export default function DashboardPage() {
                             </div>
                             <div className="flex-1">
                               <div className="text-sm font-medium text-foreground">
-                                Love {config.series.minLovedSetup} series
+                                Mark {config.series.minLovedSetup} shows you love
                               </div>
                               <div className="text-xs text-muted-foreground">
                                 {Math.min(lovedCount, config.series.minLovedSetup)}/{config.series.minLovedSetup}{' '}
-                                completed
+                                done
                               </div>
                             </div>
                             {lovedCount >= config.series.minLovedSetup && (
@@ -217,11 +217,11 @@ export default function DashboardPage() {
                             </div>
                             <div className="flex-1">
                               <div className="text-sm font-medium text-foreground">
-                                Like {config.series.minLikedSetup} series
+                                Mark {config.series.minLikedSetup} shows you like
                               </div>
                               <div className="text-xs text-muted-foreground">
                                 {Math.min(likedCount, config.series.minLikedSetup)}/{config.series.minLikedSetup}{' '}
-                                completed
+                                done
                               </div>
                             </div>
                             {likedCount >= config.series.minLikedSetup && (
@@ -238,7 +238,7 @@ export default function DashboardPage() {
                         onClick={() => navigate('/series')}
                         data-testid="rate-more-series-button"
                       >
-                        {totalCount === 0 ? 'Start Rating Series' : 'Continue Rating'}
+                        {totalCount === 0 ? 'Start Rating Shows' : 'Rate More Shows'}
                       </Button>
                     </CardFooter>
                   </Card>
@@ -255,7 +255,7 @@ export default function DashboardPage() {
                         </div>
                         <div>
                           <CardTitle className="text-xl">Create a Watch Room</CardTitle>
-                          <CardDescription>Combine favorites for shared picks.</CardDescription>
+                          <CardDescription>Get show suggestions based on what everyone likes.</CardDescription>
                         </div>
                       </div>
                     </CardHeader>
@@ -269,8 +269,8 @@ export default function DashboardPage() {
                               1
                             </span>
                             <div>
-                              <p className="font-medium text-foreground">Create a watch room</p>
-                              <p className="text-xs text-muted-foreground">Get a unique shareable link</p>
+                              <p className="font-medium text-foreground">Create a group</p>
+                              <p className="text-xs text-muted-foreground">Get a link you can share with others</p>
                             </div>
                           </li>
                           <li className="flex items-start gap-3">
@@ -278,8 +278,8 @@ export default function DashboardPage() {
                               2
                             </span>
                             <div>
-                              <p className="font-medium text-foreground">Invite friends</p>
-                              <p className="text-xs text-muted-foreground">Join together for shared recommendations</p>
+                              <p className="font-medium text-foreground">Invite your friends</p>
+                              <p className="text-xs text-muted-foreground">They join and rate shows they like too</p>
                             </div>
                           </li>
                           <li className="flex items-start gap-3">
@@ -287,8 +287,8 @@ export default function DashboardPage() {
                               3
                             </span>
                             <div>
-                              <p className="font-medium text-foreground">Get recommendations</p>
-                              <p className="text-xs text-muted-foreground">Based on everyone's favorite series</p>
+                              <p className="font-medium text-foreground">Get suggestions</p>
+                              <p className="text-xs text-muted-foreground">We'll suggest shows everyone will enjoy</p>
                             </div>
                           </li>
                         </ul>
@@ -303,7 +303,7 @@ export default function DashboardPage() {
                             </span>
                             <div>
                               <p className="font-medium text-foreground">Create a watch room</p>
-                              <p className="text-xs text-muted-foreground">Get a unique shareable link</p>
+                              <p className="text-xs text-muted-foreground">Get a link you can share with others</p>
                             </div>
                           </li>
                           <li className="flex items-start gap-3">
@@ -311,8 +311,8 @@ export default function DashboardPage() {
                               2
                             </span>
                             <div>
-                              <p className="font-medium text-foreground">Invite friends</p>
-                              <p className="text-xs text-muted-foreground">Join together for shared recommendations</p>
+                              <p className="font-medium text-foreground">Invite your friends</p>
+                              <p className="text-xs text-muted-foreground">They join and rate shows they like too</p>
                             </div>
                           </li>
                           <li className="flex items-start gap-3">
@@ -320,8 +320,8 @@ export default function DashboardPage() {
                               3
                             </span>
                             <div>
-                              <p className="font-medium text-foreground">Get recommendations</p>
-                              <p className="text-xs text-muted-foreground">Based on everyone's favorite series</p>
+                              <p className="font-medium text-foreground">Get suggestions</p>
+                              <p className="text-xs text-muted-foreground">We'll suggest shows everyone will enjoy</p>
                             </div>
                           </li>
                         </ul>
@@ -330,7 +330,7 @@ export default function DashboardPage() {
                       <div className="pt-3 border-t border-border">
                         <p className="text-xs text-muted-foreground/80 flex items-start gap-1.5">
                           <span className="text-primary">💡</span>
-                          <span>You can also generate recommendations for yourself without inviting anyone!</span>
+                          <span>Tip: You can create a watch room just for yourself - no need to invite anyone!</span>
                         </p>
                       </div>
                     </CardContent>
@@ -373,9 +373,9 @@ export default function DashboardPage() {
       >
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Unlock Watch Rooms</DialogTitle>
+            <DialogTitle>Almost There!</DialogTitle>
             <DialogDescription>
-              Complete these requirements to create watch rooms and get recommendations.
+              Just rate a few more shows to unlock watch rooms and get suggestions.
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-3">
@@ -390,7 +390,7 @@ export default function DashboardPage() {
                 {lovedCount >= config.series.minLovedForRoom ? <Check className="w-3 h-3" /> : '1'}
               </span>
               <span>
-                Love {config.series.minLovedForRoom} series ({Math.min(lovedCount, config.series.minLovedForRoom)}/
+                Mark {config.series.minLovedForRoom} shows you love ({Math.min(lovedCount, config.series.minLovedForRoom)}/
                 {config.series.minLovedForRoom})
               </span>
             </div>
@@ -405,14 +405,13 @@ export default function DashboardPage() {
                 {totalCount >= config.series.minTotalForRoom ? <Check className="w-3 h-3" /> : '2'}
               </span>
               <span>
-                Rate {config.series.minTotalForRoom} total series ({Math.min(totalCount, config.series.minTotalForRoom)}
+                Rate {config.series.minTotalForRoom} total shows ({Math.min(totalCount, config.series.minTotalForRoom)}
                 /{config.series.minTotalForRoom})
               </span>
             </div>
             <div className="pt-2 border-t border-border">
               <p className="text-xs text-muted-foreground">
-                💡 For better recommendations, aim for {config.series.goodAccuracy}+ rated series with{' '}
-                {config.series.minLovedSetup} loved!
+                💡 Tip: Rating {config.series.goodAccuracy}+ shows (including {config.series.minLovedSetup} you love) gives better suggestions!
               </p>
             </div>
           </div>
@@ -421,9 +420,9 @@ export default function DashboardPage() {
               variant="secondary"
               onClick={() => setLockedDialogOpen(false)}
             >
-              Not now
+              Maybe later
             </Button>
-            <Button onClick={() => navigate('/series')}>Rate series</Button>
+            <Button onClick={() => navigate('/series')}>Rate shows now</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

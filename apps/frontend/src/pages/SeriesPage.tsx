@@ -18,10 +18,10 @@ import { useSEO } from '../hooks/useSEO';
 
 export default function SeriesPage() {
   useSEO({
-    title: 'Series - ShowSync',
+    title: 'Shows - ShowSync',
     description:
-      'Browse, rate, and manage your favorite TV series. Build your taste profile to get better AI-powered recommendations.',
-    keywords: ['tv series', 'rate series', 'favorite shows', 'tv recommendations', 'series list'],
+      'Browse, rate, and manage your favorite TV shows. Tell us what you like to get better suggestions.',
+    keywords: ['tv shows', 'rate shows', 'favorite shows', 'tv recommendations', 'show list'],
   });
 
   const { refreshCounts } = useContext(SeriesContext);
@@ -50,7 +50,7 @@ export default function SeriesPage() {
         setLikedCount(liked);
       } catch (error) {
         console.error('Failed to load series:', error);
-        toast.error('Failed to load your series');
+        toast.error('Failed to load your shows');
       } finally {
         setIsLoading(false);
       }
@@ -68,7 +68,7 @@ export default function SeriesPage() {
         setIgnoredSeriesIds(new Set(ignored.map((ign: IgnoredSeries) => ign.seriesTmdbId)));
       } catch (error) {
         console.error('Failed to load ignored series:', error);
-        toast.error('Failed to load your ignored series');
+        toast.error('Failed to load your skipped shows');
       } finally {
         setIsLoadingIgnored(false);
       }
@@ -107,7 +107,7 @@ export default function SeriesPage() {
       toast.success(`"${series.name}" added to your favorites!`);
     } catch (error) {
       console.error('Failed to add to favorites:', error);
-      toast.error('Failed to add series to your favorites');
+      toast.error('Failed to add show to your favorites');
     }
   };
 
@@ -130,10 +130,10 @@ export default function SeriesPage() {
       }
 
       await refreshCounts(); // Sync with context
-      toast.success('Series removed from your profile');
+      toast.success('Show removed from your favorites');
     } catch (error) {
       console.error('Failed to remove series:', error);
-      toast.error('Failed to remove series from your profile');
+      toast.error('Failed to remove show from your favorites');
     }
   };
 
@@ -172,10 +172,10 @@ export default function SeriesPage() {
         return newSet;
       });
       setMyIgnoredSeries((prev) => prev.filter((ignored) => ignored.seriesTmdbId !== seriesTmdbId));
-      toast.success('Series removed from ignored list');
+      toast.success('Show removed from skipped list');
     } catch (error) {
       console.error('Failed to remove ignored series:', error);
-      toast.error('Failed to remove series from ignored list');
+      toast.error('Failed to remove show from skipped list');
     }
   };
 
@@ -201,7 +201,7 @@ export default function SeriesPage() {
       toast.success(`"${series.name}" added to your ignored list`);
     } catch (error) {
       console.error('Failed to add to ignored:', error);
-      toast.error('Failed to add series to ignored list');
+      toast.error('Failed to add show to skipped list');
     }
   };
 
@@ -215,10 +215,9 @@ export default function SeriesPage() {
           <div className="space-y-12">
             {/* Header */}
             <div className="text-center">
-              <h1 className="text-4xl sm:text-5xl font-bold tracking-tight text-foreground">Series</h1>
+              <h1 className="text-4xl sm:text-5xl font-bold tracking-tight text-foreground">Rate TV Shows</h1>
               <p className="text-xl text-muted-foreground mt-3 max-w-2xl mx-auto">
-                Build your taste profile by adding series you love. The more you add, the better your group
-                recommendations will be.
+                Tell us which shows you like and love. The more you rate, the better our suggestions will be.
               </p>
             </div>
 
@@ -234,7 +233,7 @@ export default function SeriesPage() {
             <div>
               <div className="flex items-center gap-3 mb-6">
                 <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground">
-                  Favorite Series ({mySeries.length})
+                  Your Rated Shows ({mySeries.length})
                 </h2>
               </div>
 
@@ -281,8 +280,8 @@ export default function SeriesPage() {
                     onRemoveFavorite={handleRemoveSeries}
                     onUpdatePreference={handleUpdatePreference}
                     isLoading={isLoading}
-                    emptyMessage="No loved series yet."
-                    emptySubMessage="Click the heart icon on a series to mark it as loved!"
+                    emptyMessage="No loved shows yet."
+                    emptySubMessage="Click the heart icon on a show to mark it as loved!"
                   />
                 </TabsContent>
 
@@ -292,8 +291,8 @@ export default function SeriesPage() {
                     onRemoveFavorite={handleRemoveSeries}
                     onUpdatePreference={handleUpdatePreference}
                     isLoading={isLoading}
-                    emptyMessage="No liked series yet."
-                    emptySubMessage="Search for series above and add them to your favorites!"
+                    emptyMessage="No liked shows yet."
+                    emptySubMessage="Search for shows above and add them to your favorites!"
                   />
                 </TabsContent>
               </Tabs>
@@ -303,11 +302,11 @@ export default function SeriesPage() {
             <div>
               <div className="flex items-center gap-3 mb-6">
                 <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground">
-                  Ignored Series ({myIgnoredSeries.length})
+                  Skipped Shows ({myIgnoredSeries.length})
                 </h2>
               </div>
               <p className="text-sm text-muted-foreground mb-4">
-                These series won't appear in your watch room recommendations. You can remove them anytime to reconsider.
+                These shows won't be suggested to you. You can remove them from this list anytime.
               </p>
               <IgnoredSeriesList
                 ignoredSeries={myIgnoredSeries}

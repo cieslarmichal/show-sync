@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { useContext } from 'react';
 import { AuthContext } from '../context/AuthContext';
-import { Mail, Phone, MapPin, Heart, Tv, User, Github } from 'lucide-react';
+import { Mail, Phone, MapPin, Heart, Tv, User, Github, Users } from 'lucide-react';
 
 export default function Footer() {
   const { userData } = useContext(AuthContext);
@@ -33,7 +33,7 @@ export default function Footer() {
               </h2>
             </Link>
             <p className="text-sm text-muted-foreground leading-relaxed">
-              Find the perfect series for your group and get personalized recommendations based on everyone's tastes.
+              Find great TV shows to watch together. Get suggestions based on what everyone likes.
             </p>
           </div>
 
@@ -50,11 +50,11 @@ export default function Footer() {
                     to="/series"
                     className="flex items-center gap-3 text-muted-foreground hover:text-foreground transition-colors group"
                   >
-                    <Heart
+                    <Tv
                       className="h-4 w-4 group-hover:scale-110 transition-transform"
                       aria-hidden="true"
                     />
-                    <span>Series</span>
+                    <span>TV Shows</span>
                   </Link>
                 </li>
                 <li>
@@ -62,7 +62,7 @@ export default function Footer() {
                     to="/watchrooms"
                     className="flex items-center gap-3 text-muted-foreground hover:text-foreground transition-colors group"
                   >
-                    <Tv
+                    <Users
                       className="h-4 w-4 group-hover:scale-110 transition-transform"
                       aria-hidden="true"
                     />

@@ -5,7 +5,7 @@ import { useSEO } from '../hooks/useSEO';
 export default function LoginPage() {
   useSEO({
     title: 'Sign In - ShowSync',
-    description: 'Sign in to your ShowSync account to access your series ratings and watch rooms.',
+    description: 'Sign in to your ShowSync account to access your show ratings and watch rooms.',
     keywords: ['login', 'sign in', 'account access'],
   });
 
