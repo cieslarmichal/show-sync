@@ -15,11 +15,11 @@ export class Application {
   public static async start(): Promise<void> {
     const config = createConfig();
 
-    const loggerService = LoggerServiceFactory.create({ logLevel: config.logLevel });
-
     this.databaseClient = new DatabaseClient(config.database);
 
     await this.databaseClient.testConnection();
+
+    const loggerService = LoggerServiceFactory.create({ logLevel: config.logLevel });
 
     const emailRepository = new EmailRepositoryImpl(this.databaseClient);
     const emailService = new EmailServiceImpl(config);
