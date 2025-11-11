@@ -192,6 +192,7 @@ jobs:
         env:
           CI: true
           DATABASE_URL: postgres://postgres:postgres@localhost:5432/postgres
+          TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }}
 
       - name: Upload Playwright report
         if: failure()
