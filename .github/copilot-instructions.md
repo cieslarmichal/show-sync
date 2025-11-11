@@ -214,7 +214,7 @@ This is a monorepo using npm workspaces with Turborepo. The project consists of 
 - Use CDN for static assets
 - Log and monitor slow queries; optimize indexes regularly
 - Memoize expensive computations
-- Expose `/health` endpoints for orchestration
+- Expose `/health/live` and `/health/ready` endpoints for orchestration
 
 ## Build & Package Management
 

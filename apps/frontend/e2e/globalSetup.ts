@@ -10,7 +10,7 @@ async function globalSetup(config: FullConfig) {
   console.log('⏳ Waiting for services to be ready...');
 
   // Wait for backend health check
-  await waitForService(backendURL + '/health', 30000);
+  await waitForService(backendURL + '/health/live', 30000);
   console.log('✅ Backend is ready');
 
   // Wait for frontend
