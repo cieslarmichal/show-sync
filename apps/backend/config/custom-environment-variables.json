@@ -19,5 +19,8 @@
   },
   "openRouter": {
     "apiKey": "OPENROUTER_API_KEY"
+  },
+  "resend": {
+    "apiKey": "RESEND_API_KEY"
   }
 }
