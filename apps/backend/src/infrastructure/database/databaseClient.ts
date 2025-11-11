@@ -23,7 +23,7 @@ export class DatabaseClient {
       connectionString: config.url,
       ssl: config.ssl
         ? {
-            rejectUnauthorized: false,
+            rejectUnauthorized: true,
           }
         : false,
       min: config.pool.min,
