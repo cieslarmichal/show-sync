@@ -15,11 +15,11 @@ import { ResourceAlreadyExistsError } from '../common/errors/resourceAlreadyExis
 import { ResourceNotFoundError } from '../common/errors/resourceNotFoundError.ts';
 import { serializeError } from '../common/errors/serializeError.ts';
 import { UnauthorizedAccessError } from '../common/errors/unathorizedAccessError.ts';
-import { httpStatusCodes } from '../common/http/httpStatusCode.ts';
 import { IdService } from '../common/id/idService.ts';
 import { type LoggerService } from '../common/logger/loggerService.ts';
 import { OpenRouterService } from '../common/openRouter/openRouterService.ts';
 import type { DatabaseClient } from '../infrastructure/database/databaseClient.ts';
+import { healthRoutes } from '../modules/health/routes/healthRoutes.ts';
 import { recommendationRoutes } from '../modules/recommendation/routes/recommendationRoutes.ts';
 import { seriesRoutes } from '../modules/series/routes/seriesRoutes.ts';
 import { userRoutes } from '../modules/user/routes/userRoutes.ts';
@@ -95,8 +95,8 @@ export class HttpServer {
 
     const skipRequestLog = (request: FastifyRequest): boolean => {
       const isOptions = request.method === 'OPTIONS';
-      const isHealth = request.url.includes('/health');
-      return isOptions || isHealth;
+      const isHealthCheck = request.url === '/health/live' || request.url === '/health/ready';
+      return isOptions || isHealthCheck;
     };
 
     this.fastifyServer.addHook('onRequest', (request, reply, done) => {
@@ -168,7 +168,7 @@ export class HttpServer {
             error: error instanceof Error ? error.message : 'Unknown error',
           });
 
-          return reply.status(httpStatusCodes.badRequest).send({
+          return reply.status(400).send({
             name: 'InputNotValidError',
             message: 'Invalid input: object too deep or string too long',
           });
@@ -249,7 +249,7 @@ export class HttpServer {
           err: error,
         });
 
-        return reply.status(httpStatusCodes.internalServerError).send({
+        return reply.status(500).send({
           name: 'InternalServerError',
           message: 'Internal server error',
         });
@@ -280,7 +280,7 @@ export class HttpServer {
           errorContext: error.context,
         });
 
-        return reply.status(httpStatusCodes.unauthorized).send(responseError);
+        return reply.status(401).send(responseError);
       }
 
       // Handle authorization errors (warn level - expected in normal operation)
@@ -292,7 +292,7 @@ export class HttpServer {
           errorContext: error.context,
         });
 
-        return reply.status(httpStatusCodes.forbidden).send(responseError);
+        return reply.status(403).send(responseError);
       }
 
       // Handle validation errors (warn level - client errors)
@@ -304,7 +304,7 @@ export class HttpServer {
           errorContext: error.context,
         });
 
-        return reply.status(httpStatusCodes.badRequest).send(responseError);
+        return reply.status(400).send(responseError);
       }
 
       // Handle business logic errors (warn level - expected domain errors)
@@ -316,7 +316,7 @@ export class HttpServer {
           errorContext: error.context,
         });
 
-        return reply.status(httpStatusCodes.badRequest).send(responseError);
+        return reply.status(400).send(responseError);
       }
 
       // Handle not found errors (info level - common in normal operation)
@@ -328,7 +328,7 @@ export class HttpServer {
           errorContext: error.context,
         });
 
-        return reply.status(httpStatusCodes.notFound).send(responseError);
+        return reply.status(404).send(responseError);
       }
 
       // Handle conflict errors (warn level - client errors)
@@ -340,7 +340,7 @@ export class HttpServer {
           errorContext: error.context,
         });
 
-        return reply.status(httpStatusCodes.conflict).send(responseError);
+        return reply.status(409).send(responseError);
       }
 
       // Handle external service errors (error level - infrastructure issues)
@@ -352,7 +352,7 @@ export class HttpServer {
           err: error,
         });
 
-        return reply.status(httpStatusCodes.badGateway).send(responseError);
+        return reply.status(502).send(responseError);
       }
 
       // Handle unexpected errors (error level - needs investigation)
@@ -364,7 +364,7 @@ export class HttpServer {
         errorName: error.name,
       });
 
-      return reply.status(httpStatusCodes.internalServerError).send({
+      return reply.status(500).send({
         name: 'InternalServerError',
         message: 'Internal server error',
       });
@@ -438,6 +438,12 @@ export class HttpServer {
     const tokenService = new TokenService(this.config);
     const openRouterService = new OpenRouterService(this.config.openRouter, this.loggerService);
 
+    await this.fastifyServer.register(healthRoutes, {
+      config: this.config,
+      loggerService: this.loggerService,
+      databaseClient: this.databaseClient,
+    });
+
     await this.fastifyServer.register(userRoutes, {
       databaseClient: this.databaseClient,
       config: this.config,
@@ -465,53 +471,6 @@ export class HttpServer {
       loggerService: this.loggerService,
       openRouterService,
       config: this.config,
-    });
-
-    this.fastifyServer.get('/health', async (_request, reply) => {
-      const checks: Record<string, { status: 'healthy' | 'unhealthy'; latencyMs?: number; error?: string }> = {};
-
-      try {
-        const dbStart = Date.now();
-        await this.databaseClient.db.execute('SELECT 1');
-        checks['database'] = { status: 'healthy', latencyMs: Date.now() - dbStart };
-      } catch (error) {
-        checks['database'] = {
-          status: 'unhealthy',
-          error: error instanceof Error ? error.message : 'Unknown error',
-        };
-      }
-
-      try {
-        const tmdbStart = Date.now();
-        const response = await fetch(`${this.config.tmdb.baseUrl}/configuration?api_key=${this.config.tmdb.apiKey}`);
-        if (!response.ok) {
-          throw new Error(`TMDB API returned status ${String(response.status)}`);
-        }
-        checks['tmdb'] = { status: 'healthy', latencyMs: Date.now() - tmdbStart };
-      } catch (error) {
-        checks['tmdb'] = {
-          status: 'unhealthy',
-          error: error instanceof Error ? error.message : 'Unknown error',
-        };
-      }
-
-      const allHealthy = Object.values(checks).every((check) => check.status === 'healthy');
-      const statusCode = allHealthy ? httpStatusCodes.ok : httpStatusCodes.internalServerError;
-
-      const response = {
-        status: allHealthy ? 'healthy' : 'unhealthy',
-        checks,
-      };
-
-      if (!allHealthy) {
-        this.loggerService.warn({
-          message: 'Health check failed',
-          event: 'http.health_check.failed',
-          checks,
-        });
-      }
-
-      return reply.status(statusCode).send(response);
     });
   }
 }

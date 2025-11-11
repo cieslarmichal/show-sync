@@ -33,6 +33,7 @@ export class Application {
   }
 
   public static async stop(): Promise<void> {
+    this.emailProcessingService?.stop();
     await this.server?.stop();
     await this.databaseClient?.close();
   }

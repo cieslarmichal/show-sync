@@ -54,7 +54,7 @@ export const oneTimeTokens = pgTable(
 export const emails = pgTable(
   'emails',
   {
-    id: uuid('id').notNull(),
+    id: uuid('id').primaryKey(),
     payload: text('payload').notNull(),
     recipient: varchar('recipient', { length: 255 }).notNull(),
     status: varchar('status', { length: 20 }).notNull(),

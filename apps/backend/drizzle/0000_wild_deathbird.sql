@@ -1,5 +1,5 @@
 CREATE TABLE "emails" (
-	"id" uuid NOT NULL,
+	"id" uuid PRIMARY KEY NOT NULL,
 	"payload" text NOT NULL,
 	"recipient" varchar(255) NOT NULL,
 	"status" varchar(20) NOT NULL,

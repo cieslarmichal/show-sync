@@ -1,5 +1,5 @@
 {
-  "id": "221dd776-52fb-49f8-b474-026fdf1d0b9b",
+  "id": "0662ef10-1d84-4813-9d8c-a4a0e7e29dcb",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -11,7 +11,7 @@
         "id": {
           "name": "id",
           "type": "uuid",
-          "primaryKey": false,
+          "primaryKey": true,
           "notNull": true
         },
         "payload": {
