@@ -1,3 +1,11 @@
 {
+  "database": {
+    "ssl": true,
+    "pool": {
+      "min": 10,
+      "max": 100
+    }
+  },
+  "hashSaltRounds": 14,
   "logLevel": "info"
 }

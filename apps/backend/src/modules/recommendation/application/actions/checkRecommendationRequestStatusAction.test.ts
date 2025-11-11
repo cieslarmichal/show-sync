@@ -26,7 +26,7 @@ describe('CheckRecommendationRequestStatusAction', () => {
 
   beforeEach(async () => {
     const config = createConfig();
-    databaseClient = new DatabaseClient({ url: config.database.url });
+    databaseClient = new DatabaseClient(config.database);
     watchroomRepository = new WatchroomRepositoryImpl(databaseClient);
     recommendationRequestRepository = new RecommendationRequestRepositoryImpl(databaseClient);
     userRepository = new UserRepositoryImpl(databaseClient);

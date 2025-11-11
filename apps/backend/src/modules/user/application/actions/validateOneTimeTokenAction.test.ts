@@ -23,7 +23,7 @@ describe('ValidateOneTimeTokenAction', () => {
 
   beforeEach(async () => {
     const config = createConfig();
-    databaseClient = new DatabaseClient({ url: config.database.url });
+    databaseClient = new DatabaseClient(config.database);
     userRepository = new UserRepositoryImpl(databaseClient);
     oneTimeTokenRepository = new OneTimeTokenRepositoryImpl(databaseClient);
     passwordService = new PasswordService(config);

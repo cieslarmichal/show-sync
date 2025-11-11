@@ -11,7 +11,6 @@ export const registerUser = async (input: RegisterUserRequest): Promise<User> =>
   try {
     return await apiRequest<User>('/users/register', {
       method: 'POST',
-      requiresAuth: false,
       body: {
         name: input.name,
         email: input.email,

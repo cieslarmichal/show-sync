@@ -30,7 +30,6 @@ export const getMyWatchrooms = async (
 export const getPublicWatchroomDetails = async (publicLinkId: string): Promise<Watchroom> => {
   return apiRequest<Watchroom>(`/watchrooms/by-link/${publicLinkId}`, {
     method: 'GET',
-    requiresAuth: false,
   });
 };
 

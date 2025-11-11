@@ -28,7 +28,7 @@ describe('RefreshTokenAction', () => {
 
   beforeEach(async () => {
     config = createConfig();
-    databaseClient = new DatabaseClient({ url: config.database.url });
+    databaseClient = new DatabaseClient(config.database);
     userRepository = new UserRepositoryImpl(databaseClient);
     userSessionRepository = new UserSessionRepositoryImpl(databaseClient);
     tokenService = new TokenService(config);

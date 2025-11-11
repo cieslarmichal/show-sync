@@ -8,6 +8,5 @@ export const requestPasswordReset = async (payload: RequestPasswordResetPayload)
   await apiRequest('/users/reset-password', {
     method: 'POST',
     body: payload,
-    requiresAuth: false,
   });
 };

@@ -15,6 +15,5 @@ export const validateOneTimeToken = async (
   return apiRequest<ValidateOneTimeTokenResponse>('/one-time-tokens/validate', {
     method: 'POST',
     body: payload,
-    requiresAuth: false,
   });
 };

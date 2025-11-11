@@ -33,7 +33,7 @@ describe('SubmitRecommendationFeedbackAction', () => {
 
   beforeEach(async () => {
     const config = createConfig();
-    databaseClient = new DatabaseClient({ url: config.database.url });
+    databaseClient = new DatabaseClient(config.database);
     watchroomRepository = new WatchroomRepositoryImpl(databaseClient);
     recommendationRequestRepository = new RecommendationRequestRepositoryImpl(databaseClient);
     recommendationFeedbackRepository = new RecommendationFeedbackRepositoryImpl(databaseClient);

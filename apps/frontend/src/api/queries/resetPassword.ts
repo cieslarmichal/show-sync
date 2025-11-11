@@ -9,6 +9,5 @@ export const resetPassword = async (payload: ResetPasswordPayload): Promise<void
   await apiRequest('/users/change-password', {
     method: 'POST',
     body: payload,
-    requiresAuth: false,
   });
 };

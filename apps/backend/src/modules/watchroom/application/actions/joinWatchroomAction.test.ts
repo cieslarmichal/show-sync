@@ -26,7 +26,7 @@ describe('JoinWatchroomAction', () => {
 
   beforeEach(async () => {
     config = createConfig();
-    databaseClient = new DatabaseClient({ url: config.database.url });
+    databaseClient = new DatabaseClient(config.database);
     watchroomRepository = new WatchroomRepositoryImpl(databaseClient);
     userRepository = new UserRepositoryImpl(databaseClient);
 

@@ -21,7 +21,7 @@ describe('RemoveIgnoredSeriesAction', () => {
 
   beforeEach(async () => {
     const config = createConfig();
-    databaseClient = new DatabaseClient({ url: config.database.url });
+    databaseClient = new DatabaseClient(config.database);
     userRepository = new UserRepositoryImpl(databaseClient);
     ignoredSeriesRepository = new IgnoredSeriesRepositoryImpl(databaseClient);
     loggerService = {
