@@ -70,7 +70,7 @@ To run the project on your local machine, please follow these steps.
 
 ### Prerequisites
 
-- [Node.js](https://nodejs.org/) v24.9.0 or later (managed via [Volta](https://volta.sh/))
+- [Node.js](https://nodejs.org/) v24.11.1 or later (managed via [Volta](https://volta.sh/))
 - [npm](https://www.npmjs.com/) v11.6.1 or later
 - [PostgreSQL](https://www.postgresql.org/) 15 or later
 - [Docker](https://www.docker.com/) and Docker Compose (optional, for containerized setup)
