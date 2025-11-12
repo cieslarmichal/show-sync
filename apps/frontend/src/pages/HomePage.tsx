@@ -1,16 +1,16 @@
 import { useNavigate } from 'react-router-dom';
 import { Button } from '../components/ui/Button';
 import { Card } from '../components/ui/Card';
-import { Heart, BrainCircuit, PartyPopper, Tv, Users } from 'lucide-react';
+import { Heart, BrainCircuit, PartyPopper, Tv, Users, Sparkles, Clock, CheckCircle2 } from 'lucide-react';
 import { useSEO } from '../hooks/useSEO';
 
 export default function HomePage() {
   const navigate = useNavigate();
 
   useSEO({
-    title: 'ShowSync - Smart TV Show Suggestions for Groups',
+    title: 'ShowSync - Stop Arguing About What to Watch',
     description:
-      'Find the perfect TV show for your watch party. Get smart suggestions based on group preferences. Create watch rooms and discover shows everyone will love.',
+      'End the endless scrolling and debate. Get personalized TV show recommendations that match your group\'s taste. Find shows everyone actually wants to watch.',
     keywords: [
       'tv show recommendations',
       'watch party',
@@ -29,30 +29,45 @@ export default function HomePage() {
         {/* Subtle grid background */}
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808008_1px,transparent_1px),linear-gradient(to_bottom,#80808008_1px,transparent_1px)] bg-size-[4rem_4rem]" />
 
-        <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-32">
-          <div className="animate-fade-in space-y-20 sm:space-y-32">
+        <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-20">
+          <div className="animate-fade-in space-y-24 sm:space-y-32">
             {/* Hero Section */}
-            <div className="text-center pt-12">
-              <h1 className="text-4xl sm:text-6xl lg:text-7xl font-bold text-foreground mb-6 tracking-tighter">
-                Find great TV shows to watch together
+            <div className="text-center pt-8 sm:pt-12">
+              <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold text-foreground mb-6 tracking-tight leading-[1.1] max-w-4xl mx-auto px-4 animate-in fade-in slide-in-from-bottom-4 duration-700">
+                Find shows everyone{' '}
+                <span className="text-primary inline-block">actually wants to watch</span>
               </h1>
-              <p className="text-lg sm:text-xl text-muted-foreground font-light tracking-tight max-w-4xl mx-auto mb-10">
-                Tell us which TV shows you like, invite your friends, and we'll suggest shows everyone will enjoy
-                watching together.
+              <p className="text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto mb-10 leading-relaxed px-4 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-150">
+                No more wasting 30 minutes arguing. Get personalized recommendations that match your group's taste in
+                seconds.
               </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+              <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 mb-8 text-sm px-4">
+                <div className="flex items-center gap-2 px-3 py-1.5 bg-primary/5 rounded-full">
+                  <CheckCircle2 className="h-4 w-4 text-primary shrink-0" />
+                  <span className="text-foreground font-medium">Free to start</span>
+                </div>
+                <div className="flex items-center gap-2 px-3 py-1.5 bg-primary/5 rounded-full">
+                  <CheckCircle2 className="h-4 w-4 text-primary shrink-0" />
+                  <span className="text-foreground font-medium">No credit card needed</span>
+                </div>
+                <div className="flex items-center gap-2 px-3 py-1.5 bg-primary/5 rounded-full">
+                  <Clock className="h-4 w-4 text-primary shrink-0" />
+                  <span className="text-foreground font-medium">Setup in 2 minutes</span>
+                </div>
+              </div>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center items-center px-4 mt-10">
                 <Button
                   size="lg"
                   onClick={() => navigate('/register')}
-                  className="bg-foreground text-background hover:bg-foreground/90 transition-colors shadow-lg hover:shadow-xl w-full sm:w-auto"
+                  className="bg-foreground text-background hover:bg-foreground/90 transition-all shadow-lg hover:shadow-xl hover:scale-[1.02] w-full sm:w-auto text-base font-semibold px-8 h-12"
                 >
-                  Get Started for Free
+                  Get Started Free
                 </Button>
                 <Button
                   variant="outline"
                   size="lg"
                   onClick={() => navigate('/login')}
-                  className="border-border hover:bg-accent w-full sm:w-auto"
+                  className="border-border hover:bg-accent w-full sm:w-auto text-base h-12"
                 >
                   Sign In
                 </Button>
@@ -62,43 +77,46 @@ export default function HomePage() {
             {/* How It Works Section */}
             <div className="space-y-12">
               <div className="text-center">
-                <h2 className="text-3xl sm:text-4xl font-bold text-foreground">How It Works</h2>
-                <p className="text-lg text-muted-foreground mt-3">
-                  Just 3 simple steps to find your next favorite show.
+                <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground mb-4">How It Works</h2>
+                <p className="text-lg text-muted-foreground">
+                  Three simple steps. Zero arguments about what to watch.
                 </p>
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
-                <div className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12 text-center">
+                <div className="space-y-4 group">
                   <div className="flex justify-center">
-                    <div className="p-4 bg-primary/10 rounded-full">
+                    <div className="p-5 bg-primary/10 rounded-full group-hover:bg-primary/20 transition-colors">
                       <Heart className="h-8 w-8 text-primary" />
                     </div>
                   </div>
-                  <h3 className="text-xl font-semibold">1. Tell Us What You Like</h3>
-                  <p className="text-muted-foreground">
-                    Rate TV shows you've watched - mark which ones you loved or liked.
+                  <h3 className="text-xl font-semibold text-foreground">1. Rate Your Favorites</h3>
+                  <p className="text-muted-foreground leading-relaxed">
+                    Quickly rate shows you've watched. Love it, like it, or skip it. Takes less than a minute to build
+                    your taste profile.
                   </p>
                 </div>
-                <div className="space-y-4">
+                <div className="space-y-4 group">
                   <div className="flex justify-center">
-                    <div className="p-4 bg-primary/10 rounded-full">
+                    <div className="p-5 bg-primary/10 rounded-full group-hover:bg-primary/20 transition-colors">
                       <Tv className="h-8 w-8 text-primary" />
                     </div>
                   </div>
-                  <h3 className="text-xl font-semibold">2. Create a Watch Room</h3>
-                  <p className="text-muted-foreground">
-                    Make a watch room and invite your friends - or just use it for yourself!
+                  <h3 className="text-xl font-semibold text-foreground">2. Invite Your Crew</h3>
+                  <p className="text-muted-foreground leading-relaxed">
+                    Create a watch room and share it with friends, family, or your partner. Or keep it solo—your
+                    choice!
                   </p>
                 </div>
-                <div className="space-y-4">
+                <div className="space-y-4 group">
                   <div className="flex justify-center">
-                    <div className="p-4 bg-primary/10 rounded-full">
+                    <div className="p-5 bg-primary/10 rounded-full group-hover:bg-primary/20 transition-colors">
                       <PartyPopper className="h-8 w-8 text-primary" />
                     </div>
                   </div>
-                  <h3 className="text-xl font-semibold">3. Get Suggestions</h3>
-                  <p className="text-muted-foreground">
-                    We'll suggest TV shows that match what everyone in your group likes.
+                  <h3 className="text-xl font-semibold text-foreground">3. Watch the Magic Happen</h3>
+                  <p className="text-muted-foreground leading-relaxed">
+                    Get instant recommendations that balance everyone's taste. No scrolling for hours. No
+                    compromising.
                   </p>
                 </div>
               </div>
@@ -107,32 +125,66 @@ export default function HomePage() {
             {/* Features Section */}
             <div className="space-y-12">
               <div className="text-center">
-                <h2 className="text-3xl sm:text-4xl font-bold text-foreground">Why You'll Love It</h2>
-                <p className="text-lg text-muted-foreground mt-3">Simple features that make choosing a show easy.</p>
+                <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground mb-4">
+                  Why People Love ShowSync
+                </h2>
+                <p className="text-lg text-muted-foreground">
+                  The smartest way to decide what to watch next.
+                </p>
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <Card className="p-6 border-2">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
+                <Card className="p-8 border-2 hover:border-primary/50 hover:shadow-lg transition-all duration-300">
                   <div className="flex items-start gap-4">
-                    <div className="p-3 bg-primary/10 rounded-full">
+                    <div className="p-3 bg-primary/10 rounded-lg shrink-0">
                       <BrainCircuit className="h-6 w-6 text-primary" />
                     </div>
                     <div>
-                      <h3 className="text-lg font-semibold">Smart Suggestions</h3>
-                      <p className="text-muted-foreground mt-1">
-                        Our smart system learns what you like and suggests shows you'll probably enjoy.
+                      <h3 className="text-lg font-semibold text-foreground mb-2">Actually Smart Recommendations</h3>
+                      <p className="text-muted-foreground leading-relaxed">
+                        Our AI learns your unique taste and finds hidden gems you'll love—not just the same popular
+                        shows everyone recommends.
                       </p>
                     </div>
                   </div>
                 </Card>
-                <Card className="p-6 border-2">
+                <Card className="p-8 border-2 hover:border-primary/50 hover:shadow-lg transition-all duration-300">
                   <div className="flex items-start gap-4">
-                    <div className="p-3 bg-primary/10 rounded-full">
+                    <div className="p-3 bg-primary/10 rounded-lg shrink-0">
                       <Users className="h-6 w-6 text-primary" />
                     </div>
                     <div>
-                      <h3 className="text-lg font-semibold">Watch Alone or With Friends</h3>
-                      <p className="text-muted-foreground mt-1">
-                        Use it just for yourself, or invite friends and family to find shows everyone will like.
+                      <h3 className="text-lg font-semibold text-foreground mb-2">Perfect for Groups or Solo</h3>
+                      <p className="text-muted-foreground leading-relaxed">
+                        Whether it's date night, family time, or just you on the couch—get recommendations that work
+                        for any situation.
+                      </p>
+                    </div>
+                  </div>
+                </Card>
+                <Card className="p-8 border-2 hover:border-primary/50 hover:shadow-lg transition-all duration-300">
+                  <div className="flex items-start gap-4">
+                    <div className="p-3 bg-primary/10 rounded-lg shrink-0">
+                      <Clock className="h-6 w-6 text-primary" />
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-semibold text-foreground mb-2">Save Hours of Scrolling</h3>
+                      <p className="text-muted-foreground leading-relaxed">
+                        Stop spending more time choosing than watching. Get your perfect match in seconds, not
+                        minutes.
+                      </p>
+                    </div>
+                  </div>
+                </Card>
+                <Card className="p-8 border-2 hover:border-primary/50 hover:shadow-lg transition-all duration-300">
+                  <div className="flex items-start gap-4">
+                    <div className="p-3 bg-primary/10 rounded-lg shrink-0">
+                      <Sparkles className="h-6 w-6 text-primary" />
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-semibold text-foreground mb-2">No More Compromises</h3>
+                      <p className="text-muted-foreground leading-relaxed">
+                        Find shows that genuinely appeal to everyone. No settling for something half your group
+                        doesn't want to watch.
                       </p>
                     </div>
                   </div>
@@ -141,18 +193,22 @@ export default function HomePage() {
             </div>
 
             {/* CTA Section */}
-            <div className="text-center py-12">
-              <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-4">Ready to discover great shows?</h2>
-              <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-8">
-                Sign up for free and stop wasting time arguing about what to watch.
+            <div className="text-center py-16 px-4">
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground mb-6">
+                Ready to end the "what should we watch?" debate?
+              </h2>
+              <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-10 leading-relaxed">
+                Join thousands of people who've already stopped wasting time scrolling. Get your first recommendation
+                in under 2 minutes.
               </p>
               <Button
                 size="lg"
                 onClick={() => navigate('/register')}
-                className="bg-foreground text-background hover:bg-foreground/90 transition-colors shadow-lg hover:shadow-xl"
+                className="bg-foreground text-background hover:bg-foreground/90 transition-all shadow-lg hover:shadow-xl hover:scale-[1.02] text-base font-semibold px-8 h-12"
               >
-                Get Started for Free
+                Get Started Free
               </Button>
+              <p className="text-sm text-muted-foreground mt-6">No credit card required • Free trial included</p>
             </div>
           </div>
         </div>
