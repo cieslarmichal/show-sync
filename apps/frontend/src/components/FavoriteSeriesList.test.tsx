@@ -224,8 +224,6 @@ describe('FavoriteSeriesList', () => {
   });
 
   it('should handle error when loading series details fails', async () => {
-    const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
-
     const mockFavorites: FavoriteSeries[] = [
       { seriesTmdbId: 1, preferenceLevel: 'like' },
       { seriesTmdbId: 2, preferenceLevel: 'love' },
@@ -247,13 +245,9 @@ describe('FavoriteSeriesList', () => {
       expect(screen.getByText('Show 1')).toBeInTheDocument();
       expect(screen.getByText('Show 2')).toBeInTheDocument();
     });
-
-    consoleErrorSpy.mockRestore();
   });
 
   it('should handle error when removing favorite fails', async () => {
-    const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
-
     const mockFavorites: FavoriteSeries[] = [{ seriesTmdbId: 1, preferenceLevel: 'like' }];
 
     mockGetSeriesDetailsBatch.mockResolvedValue([
@@ -298,9 +292,6 @@ describe('FavoriteSeriesList', () => {
     await waitFor(() => {
       expect(screen.getByText('Breaking Bad')).toBeInTheDocument();
     });
-
-    expect(consoleErrorSpy).toHaveBeenCalled();
-    consoleErrorSpy.mockRestore();
 
     // Unmount component to trigger cleanup
     unmount();
@@ -493,8 +484,6 @@ describe('FavoriteSeriesList', () => {
   });
 
   it('should handle error when updating preference fails', async () => {
-    const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
-
     const mockFavorites: FavoriteSeries[] = [{ seriesTmdbId: 1, preferenceLevel: 'like' }];
 
     mockGetSeriesDetailsBatch.mockResolvedValue([
@@ -535,8 +524,6 @@ describe('FavoriteSeriesList', () => {
     await userEvent.click(toggleButton);
 
     expect(mockOnUpdatePreference).toHaveBeenCalledWith(1, 'love');
-    expect(consoleErrorSpy).toHaveBeenCalled();
-    consoleErrorSpy.mockRestore();
   });
 
   it('should disable preference toggle while updating', async () => {

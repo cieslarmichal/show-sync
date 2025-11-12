@@ -97,6 +97,8 @@ export default function FavoriteSeriesList({
 
     try {
       await onUpdatePreference(seriesTmdbId, preferenceLevel);
+    } catch {
+      // Silently handle errors - parent component should handle user feedback
     } finally {
       setUpdatingIds((prev) => {
         const newSet = new Set(prev);
