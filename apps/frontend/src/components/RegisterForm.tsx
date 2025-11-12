@@ -7,8 +7,9 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/Tooltip
 import { registerUser } from '../api/queries/register';
 import { useState } from 'react';
 import { z } from 'zod';
-import { EyeIcon, EyeOffIcon, InfoIcon, Mail, Lock, User } from 'lucide-react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { EyeIcon, EyeOffIcon, InfoIcon, Mail, Lock, User, Loader2 } from 'lucide-react';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import { ApiError } from '../api/ApiError';
 
 const formSchema = z
   .object({
@@ -41,6 +42,8 @@ export default function RegisterForm({ onSuccess }: Props) {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const redirectTo = searchParams.get('redirect');
+  const [existingEmail, setExistingEmail] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -54,6 +57,7 @@ export default function RegisterForm({ onSuccess }: Props) {
   });
 
   async function onSubmit(values: FormValues) {
+    setIsSubmitting(true);
     try {
       await registerUser({
         name: values.name,
@@ -68,9 +72,25 @@ export default function RegisterForm({ onSuccess }: Props) {
         navigate(redirectTo || '/dashboard');
       }
     } catch (error) {
+      if (error instanceof ApiError) {
+        if (error.isErrorType('ResourceAlreadyExistsError')) {
+          setExistingEmail(values.email);
+          return;
+        }
+
+        if (error.isErrorType('TooManyRequestsError')) {
+          form.setError('root', {
+            message: 'Too many requests. Please try again later.',
+          });
+          return;
+        }
+      }
+
       form.setError('root', {
-        message: error instanceof Error ? error.message : 'Registration error',
+        message: 'Error during registration',
       });
+    } finally {
+      setIsSubmitting(false);
     }
   }
 
@@ -230,7 +250,6 @@ export default function RegisterForm({ onSuccess }: Props) {
               </FormItem>
             )}
           />
-
           <div className="pt-2">
             <Button
               type="submit"
@@ -238,12 +257,35 @@ export default function RegisterForm({ onSuccess }: Props) {
               disabled={!form.formState.isValid || form.formState.isSubmitting}
               data-testid="register-submit-button"
             >
-              {form.formState.isSubmitting ? 'Creating account...' : 'Sign up'}
+              {isSubmitting ? (
+                <>
+                  <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                  Creating account..
+                </>
+              ) : (
+                'Sign up'
+              )}
             </Button>
           </div>
         </form>
       </Form>
-      {form.formState.errors.root && (
+
+      {existingEmail && (
+        <div className="bg-red-50 mt-4 border border-red-200 text-red-700 px-4 py-3 rounded-xl text-sm">
+          <p>
+            Account with email <span className="font-medium">{existingEmail}</span> already exists.
+          </p>
+          <div className="mt-2 flex items-center justify-center gap-1">
+            <Link
+              to="/forgot-password"
+              className="text-black font-medium"
+            >
+              Reset password
+            </Link>
+          </div>
+        </div>
+      )}
+      {!existingEmail && form.formState.errors.root && (
         <div className="text-destructive text-sm mt-4 text-center bg-destructive/10 border border-destructive/20 rounded-md p-3">
           {form.formState.errors.root.message}
         </div>

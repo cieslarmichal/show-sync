@@ -95,34 +95,34 @@ export default function DashboardPage() {
           {/* Subtle grid background */}
           <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808008_1px,transparent_1px),linear-gradient(to_bottom,#80808008_1px,transparent_1px)] bg-size-[4rem_4rem]" />
 
-          <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-32">
-            <div className="animate-fade-in space-y-10">
+          <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-20">
+            <div className="animate-fade-in space-y-12">
               {/* Welcome Section */}
               <div className="text-center">
-                <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-foreground mb-4 tracking-tighter">
-                  Find shows everyone will enjoy
+                <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-foreground mb-4 tracking-tight leading-[1.1]">
+                  Your ShowSync Dashboard
                 </h1>
-                <p className="text-xl sm:text-2xl text-muted-foreground font-light tracking-tight max-w-4xl mx-auto">
-                  Rate TV shows you like, create watch rooms with friends, and get suggestions perfect for everyone
+                <p className="text-lg sm:text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
+                  Rate shows to build your taste profile, then create watch rooms to get personalized recommendations
                 </p>
               </div>
 
               {/* Main Actions Section */}
               {userDataInitialized ? (
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
                   {/* Card 1: Your Profile / Match Power */}
-                  <Card className="flex flex-col h-full border-2 transition-shadow hover:shadow-lg hover:border-primary/30">
+                  <Card className="flex flex-col h-full border-2 hover:border-primary/50 hover:shadow-lg transition-all duration-300">
                     <CardHeader>
                       <div className="flex items-center gap-4">
-                        <div className="p-3 bg-primary/10 rounded-full">
+                        <div className="p-3 bg-primary/10 rounded-lg">
                           <Heart
                             className="h-6 w-6 text-primary"
                             aria-hidden="true"
                           />
                         </div>
                         <div>
-                          <CardTitle className="text-xl">Tell Us What You Like</CardTitle>
-                          <CardDescription>The more shows you rate, the better our suggestions become.</CardDescription>
+                          <CardTitle className="text-xl font-semibold">Build Your Taste Profile</CardTitle>
+                          <CardDescription className="text-sm">The more you rate, the better your recommendations</CardDescription>
                         </div>
                       </div>
                     </CardHeader>
@@ -130,7 +130,7 @@ export default function DashboardPage() {
                       {/* Progress Bar Section */}
                       <div className="space-y-3">
                         <div className="flex items-center justify-between">
-                          <div className="text-sm font-semibold text-foreground">Your progress</div>
+                          <div className="text-sm font-semibold text-foreground">Your Progress</div>
                           <div className="text-sm font-bold text-primary">
                             {totalCount}/{config.series.maxAccuracy}
                           </div>
@@ -159,31 +159,31 @@ export default function DashboardPage() {
                         <div className="flex items-center justify-center gap-1.5">
                           {totalCount < config.series.goodAccuracy ? (
                             <span className="text-xs text-muted-foreground">
-                              Rate {toReachGoodAccuracy} more shows for good suggestions
+                              Rate {toReachGoodAccuracy} more {toReachGoodAccuracy === 1 ? 'show' : 'shows'} for good recommendations
                             </span>
                           ) : totalCount < config.series.maxAccuracy ? (
                             <span className="text-xs text-violet-600 dark:text-violet-400 font-medium flex items-center gap-1">
                               <Check className="w-3 h-3" />
-                              Good suggestions • Rate {toReachMaxAccuracy} more for even better ones
+                              Good recommendations • Rate {toReachMaxAccuracy} more for best results
                             </span>
                           ) : (
                             <span className="text-xs text-emerald-600 dark:text-emerald-400 font-medium flex items-center gap-1">
                               <Check className="w-3 h-3" />
-                              Best suggestions unlocked
+                              Best recommendations unlocked
                               {totalCount > config.series.maxAccuracy &&
-                                ` • +${totalCount - config.series.maxAccuracy} bonus`}
+                                ` • +${totalCount - config.series.maxAccuracy} extra`}
                             </span>
                           )}
                         </div>
                       </div>
 
                       {/* Setup Requirements */}
-                      <div className="space-y-3 pt-2">
-                        <div className="text-sm font-medium text-foreground">Get started:</div>
+                      <div className="space-y-3">
+                        <div className="text-sm font-medium text-foreground">Quick Start Checklist:</div>
                         <div className="space-y-2">
-                          <div className="flex items-center gap-3 p-2 rounded-lg bg-muted/30">
+                          <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/30 transition-colors hover:bg-muted/50">
                             <div
-                              className={`shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${
+                              className={`shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold transition-colors ${
                                 lovedCount >= config.series.minLovedSetup
                                   ? 'bg-emerald-500 text-white'
                                   : 'bg-background text-muted-foreground border-2 border-border'
@@ -193,20 +193,20 @@ export default function DashboardPage() {
                             </div>
                             <div className="flex-1">
                               <div className="text-sm font-medium text-foreground">
-                                Mark {config.series.minLovedSetup} shows you love
+                                Love {config.series.minLovedSetup} shows
                               </div>
                               <div className="text-xs text-muted-foreground">
-                                {Math.min(lovedCount, config.series.minLovedSetup)}/{config.series.minLovedSetup} done
+                                {Math.min(lovedCount, config.series.minLovedSetup)}/{config.series.minLovedSetup} completed
                               </div>
                             </div>
                             {lovedCount >= config.series.minLovedSetup && (
-                              <span className="text-emerald-600 dark:text-emerald-400 text-xs font-medium">Done!</span>
+                              <span className="text-emerald-600 dark:text-emerald-400 text-xs font-semibold">✓ Done</span>
                             )}
                           </div>
 
-                          <div className="flex items-center gap-3 p-2 rounded-lg bg-muted/30">
+                          <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/30 transition-colors hover:bg-muted/50">
                             <div
-                              className={`shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${
+                              className={`shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold transition-colors ${
                                 likedCount >= config.series.minLikedSetup
                                   ? 'bg-emerald-500 text-white'
                                   : 'bg-background text-muted-foreground border-2 border-border'
@@ -216,14 +216,14 @@ export default function DashboardPage() {
                             </div>
                             <div className="flex-1">
                               <div className="text-sm font-medium text-foreground">
-                                Mark {config.series.minLikedSetup} shows you like
+                                Like {config.series.minLikedSetup} shows
                               </div>
                               <div className="text-xs text-muted-foreground">
-                                {Math.min(likedCount, config.series.minLikedSetup)}/{config.series.minLikedSetup} done
+                                {Math.min(likedCount, config.series.minLikedSetup)}/{config.series.minLikedSetup} completed
                               </div>
                             </div>
                             {likedCount >= config.series.minLikedSetup && (
-                              <span className="text-emerald-600 dark:text-emerald-400 text-xs font-medium">Done!</span>
+                              <span className="text-emerald-600 dark:text-emerald-400 text-xs font-semibold">✓ Done</span>
                             )}
                           </div>
                         </div>
@@ -231,7 +231,7 @@ export default function DashboardPage() {
                     </CardContent>
                     <CardFooter>
                       <Button
-                        className="w-full py-6"
+                        className="w-full h-12 font-semibold hover:scale-[1.02] transition-all"
                         size="lg"
                         onClick={() => navigate('/series')}
                         data-testid="rate-more-series-button"
@@ -242,100 +242,102 @@ export default function DashboardPage() {
                   </Card>
 
                   {/* Card 2: Create a Watch Room */}
-                  <Card className="flex flex-col h-full border-2 transition-shadow hover:shadow-lg hover:border-primary/30">
+                  <Card className="flex flex-col h-full border-2 hover:border-primary/50 hover:shadow-lg transition-all duration-300">
                     <CardHeader>
                       <div className="flex items-center gap-4">
-                        <div className="p-3 bg-primary/10 rounded-full">
+                        <div className="p-3 bg-primary/10 rounded-lg">
                           <Tv
                             className="h-6 w-6 text-primary"
                             aria-hidden="true"
                           />
                         </div>
                         <div>
-                          <CardTitle className="text-xl">Create a Watch Room</CardTitle>
-                          <CardDescription>Get show suggestions based on what everyone likes.</CardDescription>
+                          <CardTitle className="text-xl font-semibold">Create a Watch Room</CardTitle>
+                          <CardDescription className="text-sm">Get personalized recommendations for your group</CardDescription>
                         </div>
                       </div>
                     </CardHeader>
-                    <CardContent className="grow space-y-6 mt-1">
+                    <CardContent className="grow space-y-6">
                       {/* Desktop: keep expanded */}
                       <div className="space-y-4 hidden sm:block">
                         <p className="text-sm font-medium text-foreground">How it works:</p>
-                        <ul className="space-y-4 text-sm text-muted-foreground">
-                          <li className="flex items-start gap-3">
+                        <ul className="space-y-3 text-sm">
+                          <li className="flex items-start gap-3 p-2 rounded-lg hover:bg-muted/30 transition-colors">
                             <span className="shrink-0 flex items-center justify-center w-6 h-6 rounded-full bg-primary/10 text-primary font-bold text-xs">
                               1
                             </span>
                             <div>
-                              <p className="font-medium text-foreground">Create a watch room</p>
-                              <p className="text-xs text-muted-foreground">Get a link you can share with others</p>
+                              <p className="font-medium text-foreground">Create your room</p>
+                              <p className="text-xs text-muted-foreground leading-relaxed">Get a shareable link instantly</p>
                             </div>
                           </li>
-                          <li className="flex items-start gap-3">
+                          <li className="flex items-start gap-3 p-2 rounded-lg hover:bg-muted/30 transition-colors">
                             <span className="shrink-0 flex items-center justify-center w-6 h-6 rounded-full bg-primary/10 text-primary font-bold text-xs">
                               2
                             </span>
                             <div>
-                              <p className="font-medium text-foreground">Invite your friends</p>
-                              <p className="text-xs text-muted-foreground">They join and rate shows they like too</p>
+                              <p className="font-medium text-foreground">Invite friends</p>
+                              <p className="text-xs text-muted-foreground leading-relaxed">They join and rate their favorite shows</p>
                             </div>
                           </li>
-                          <li className="flex items-start gap-3">
+                          <li className="flex items-start gap-3 p-2 rounded-lg hover:bg-muted/30 transition-colors">
                             <span className="shrink-0 flex items-center justify-center w-6 h-6 rounded-full bg-primary/10 text-primary font-bold text-xs">
                               3
                             </span>
                             <div>
-                              <p className="font-medium text-foreground">Get suggestions</p>
-                              <p className="text-xs text-muted-foreground">We'll suggest shows everyone will enjoy</p>
+                              <p className="font-medium text-foreground">Get matched</p>
+                              <p className="text-xs text-muted-foreground leading-relaxed">Discover shows everyone will love</p>
                             </div>
                           </li>
                         </ul>
                       </div>
                       {/* Mobile: collapsed disclosure */}
-                      <details className="sm:hidden">
-                        <summary className="cursor-pointer text-sm font-medium text-foreground">How it works</summary>
-                        <ul className="mt-2 space-y-3 text-sm text-muted-foreground">
-                          <li className="flex items-start gap-3">
+                      <details className="sm:hidden group">
+                        <summary className="cursor-pointer text-sm font-medium text-foreground list-none flex items-center gap-2">
+                          <span className="text-primary">→</span> How it works
+                        </summary>
+                        <ul className="mt-3 space-y-3 text-sm">
+                          <li className="flex items-start gap-3 p-2 rounded-lg bg-muted/30">
                             <span className="shrink-0 flex items-center justify-center w-6 h-6 rounded-full bg-primary/10 text-primary font-bold text-xs">
                               1
                             </span>
                             <div>
-                              <p className="font-medium text-foreground">Create a watch room</p>
-                              <p className="text-xs text-muted-foreground">Get a link you can share with others</p>
+                              <p className="font-medium text-foreground">Create your room</p>
+                              <p className="text-xs text-muted-foreground leading-relaxed">Get a shareable link instantly</p>
                             </div>
                           </li>
-                          <li className="flex items-start gap-3">
+                          <li className="flex items-start gap-3 p-2 rounded-lg bg-muted/30">
                             <span className="shrink-0 flex items-center justify-center w-6 h-6 rounded-full bg-primary/10 text-primary font-bold text-xs">
                               2
                             </span>
                             <div>
-                              <p className="font-medium text-foreground">Invite your friends</p>
-                              <p className="text-xs text-muted-foreground">They join and rate shows they like too</p>
+                              <p className="font-medium text-foreground">Invite friends</p>
+                              <p className="text-xs text-muted-foreground leading-relaxed">They join and rate their favorite shows</p>
                             </div>
                           </li>
-                          <li className="flex items-start gap-3">
+                          <li className="flex items-start gap-3 p-2 rounded-lg bg-muted/30">
                             <span className="shrink-0 flex items-center justify-center w-6 h-6 rounded-full bg-primary/10 text-primary font-bold text-xs">
                               3
                             </span>
                             <div>
-                              <p className="font-medium text-foreground">Get suggestions</p>
-                              <p className="text-xs text-muted-foreground">We'll suggest shows everyone will enjoy</p>
+                              <p className="font-medium text-foreground">Get matched</p>
+                              <p className="text-xs text-muted-foreground leading-relaxed">Discover shows everyone will love</p>
                             </div>
                           </li>
                         </ul>
                       </details>
 
-                      <div className="pt-3 border-t border-border">
-                        <p className="text-xs text-muted-foreground/80 flex items-start gap-1.5">
-                          <span className="text-primary">💡</span>
-                          <span>Tip: You can create a watch room just for yourself - no need to invite anyone!</span>
+                      <div className="pt-4 border-t border-border">
+                        <p className="text-xs text-muted-foreground flex items-start gap-2 leading-relaxed">
+                          <span className="text-base">💡</span>
+                          <span><strong className="text-foreground">Pro tip:</strong> Create a room just for yourself—no sharing required!</span>
                         </p>
                       </div>
                     </CardContent>
-                    <CardFooter className="flex flex-col items-start gap-3 w-full pt-2">
+                    <CardFooter className="flex flex-col items-start gap-3 w-full">
                       <div className="w-full">
                         <Button
-                          className="w-full py-6"
+                          className="w-full h-12 font-semibold hover:scale-[1.02] transition-all"
                           onClick={() => (canCreateRoom ? navigate('/watchrooms') : setLockedDialogOpen(true))}
                           size="lg"
                           data-testid="create-room-button"
@@ -346,10 +348,10 @@ export default function DashboardPage() {
                                 className="w-4 h-4"
                                 aria-hidden="true"
                               />
-                              Create a Watch Room
+                              Create Watch Room
                             </span>
                           ) : (
-                            'Create a Watch Room'
+                            'Create Watch Room'
                           )}
                         </Button>
                       </div>
@@ -371,55 +373,75 @@ export default function DashboardPage() {
       >
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Almost There!</DialogTitle>
-            <DialogDescription>Just rate a few more shows to unlock watch rooms and get suggestions.</DialogDescription>
+            <DialogTitle className="text-2xl">Almost there!</DialogTitle>
+            <DialogDescription className="text-base">Rate a few more shows to unlock watch rooms and start getting recommendations.</DialogDescription>
           </DialogHeader>
-          <div className="space-y-3">
-            <div className="flex items-center gap-2 text-sm">
+          <div className="space-y-3 py-2">
+            <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/30">
               <span
-                className={`shrink-0 w-5 h-5 rounded-full flex items-center justify-center text-xs ${
+                className={`shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${
                   lovedCount >= config.series.minLovedForRoom
                     ? 'bg-emerald-500 text-white'
-                    : 'bg-muted text-muted-foreground border border-border'
+                    : 'bg-muted text-muted-foreground border-2 border-border'
                 }`}
               >
                 {lovedCount >= config.series.minLovedForRoom ? <Check className="w-3 h-3" /> : '1'}
               </span>
-              <span>
-                Mark {config.series.minLovedForRoom} shows you love (
-                {Math.min(lovedCount, config.series.minLovedForRoom)}/{config.series.minLovedForRoom})
-              </span>
+              <div className="flex-1">
+                <div className="text-sm font-medium text-foreground">
+                  Love {config.series.minLovedForRoom} shows
+                </div>
+                <div className="text-xs text-muted-foreground">
+                  {Math.min(lovedCount, config.series.minLovedForRoom)}/{config.series.minLovedForRoom} completed
+                </div>
+              </div>
+              {lovedCount >= config.series.minLovedForRoom && (
+                <span className="text-emerald-600 dark:text-emerald-400 text-xs font-semibold">✓</span>
+              )}
             </div>
-            <div className="flex items-center gap-2 text-sm">
+            <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/30">
               <span
-                className={`shrink-0 w-5 h-5 rounded-full flex items-center justify-center text-xs ${
+                className={`shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${
                   totalCount >= config.series.minTotalForRoom
                     ? 'bg-emerald-500 text-white'
-                    : 'bg-muted text-muted-foreground border border-border'
+                    : 'bg-muted text-muted-foreground border-2 border-border'
                 }`}
               >
                 {totalCount >= config.series.minTotalForRoom ? <Check className="w-3 h-3" /> : '2'}
               </span>
-              <span>
-                Rate {config.series.minTotalForRoom} total shows ({Math.min(totalCount, config.series.minTotalForRoom)}/
-                {config.series.minTotalForRoom})
-              </span>
+              <div className="flex-1">
+                <div className="text-sm font-medium text-foreground">
+                  Rate {config.series.minTotalForRoom} total shows
+                </div>
+                <div className="text-xs text-muted-foreground">
+                  {Math.min(totalCount, config.series.minTotalForRoom)}/{config.series.minTotalForRoom} completed
+                </div>
+              </div>
+              {totalCount >= config.series.minTotalForRoom && (
+                <span className="text-emerald-600 dark:text-emerald-400 text-xs font-semibold">✓</span>
+              )}
             </div>
-            <div className="pt-2 border-t border-border">
-              <p className="text-xs text-muted-foreground">
-                💡 Tip: Rating {config.series.goodAccuracy}+ shows (including {config.series.minLovedSetup} you love)
-                gives better suggestions!
+            <div className="pt-3 border-t border-border">
+              <p className="text-xs text-muted-foreground flex items-start gap-2 leading-relaxed">
+                <span className="text-base">💡</span>
+                <span><strong className="text-foreground">Pro tip:</strong> Rating {config.series.goodAccuracy}+ shows gives you the best recommendations!</span>
               </p>
             </div>
           </div>
-          <DialogFooter className="sm:justify-between">
+          <DialogFooter className="sm:justify-between gap-3">
             <Button
               variant="secondary"
               onClick={() => setLockedDialogOpen(false)}
+              className="w-full sm:w-auto"
             >
-              Maybe later
+              Maybe Later
             </Button>
-            <Button onClick={() => navigate('/series')}>Rate shows now</Button>
+            <Button 
+              onClick={() => navigate('/series')}
+              className="w-full sm:w-auto"
+            >
+              Rate Shows Now
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

@@ -203,13 +203,15 @@ export default function SeriesPage() {
         {/* Subtle grid background */}
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808008_1px,transparent_1px),linear-gradient(to_bottom,#80808008_1px,transparent_1px)] bg-size-[4rem_4rem]" />
 
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
           <div className="space-y-12">
             {/* Header */}
             <div className="text-center">
-              <h1 className="text-4xl sm:text-5xl font-bold tracking-tight text-foreground">Rate TV Shows</h1>
-              <p className="text-xl text-muted-foreground mt-3 max-w-2xl mx-auto">
-                Tell us which shows you like and love. The more you rate, the better our suggestions will be.
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-foreground leading-[1.1] mb-4">
+                Rate Your Shows
+              </h1>
+              <p className="text-lg sm:text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
+                Build your taste profile by rating shows. The more you rate, the better your recommendations.
               </p>
             </div>
 
@@ -223,10 +225,13 @@ export default function SeriesPage() {
 
             {/* Series Section */}
             <div>
-              <div className="flex items-center gap-3 mb-6">
-                <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground">
-                  Your Rated Shows ({mySeries.length})
+              <div className="flex items-center justify-between gap-3 mb-6">
+                <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-foreground">
+                  Your Ratings
                 </h2>
+                <span className="text-sm font-semibold text-muted-foreground px-3 py-1.5 bg-muted/50 rounded-full">
+                  {mySeries.length} {mySeries.length === 1 ? 'show' : 'shows'}
+                </span>
               </div>
 
               <Tabs
@@ -234,23 +239,23 @@ export default function SeriesPage() {
                 onValueChange={(value: string) => setPreferenceFilter(value as 'all' | PreferenceLevel)}
                 className="w-full"
               >
-                <TabsList className="mb-6 bg-muted/50 p-1.5 rounded-xl">
+                <TabsList className="mb-8 bg-muted/50 p-1.5 rounded-xl inline-flex">
                   <TabsTrigger
                     value="all"
-                    className="data-[state=active]:bg-background data-[state=active]:shadow-md rounded-lg px-4 py-2.5 font-medium transition-all"
+                    className="data-[state=active]:bg-background data-[state=active]:shadow-md rounded-lg px-5 py-2.5 font-semibold transition-all"
                   >
                     All ({mySeries.length})
                   </TabsTrigger>
                   <TabsTrigger
                     value="love"
-                    className="data-[state=active]:bg-red-50 data-[state=active]:text-red-600 data-[state=active]:shadow-md dark:data-[state=active]:bg-red-950/30 dark:data-[state=active]:text-red-400 rounded-lg px-4 py-2.5 font-medium transition-all"
+                    className="data-[state=active]:bg-red-50 data-[state=active]:text-red-600 data-[state=active]:shadow-md dark:data-[state=active]:bg-red-950/30 dark:data-[state=active]:text-red-400 rounded-lg px-5 py-2.5 font-semibold transition-all"
                   >
                     <Heart className="w-4 h-4 mr-1.5 fill-current" />
                     Loved ({lovedCount})
                   </TabsTrigger>
                   <TabsTrigger
                     value="like"
-                    className="data-[state=active]:bg-sky-50 data-[state=active]:text-sky-600 data-[state=active]:shadow-md dark:data-[state=active]:bg-sky-950/30 dark:data-[state=active]:text-sky-400 rounded-lg px-4 py-2.5 font-medium transition-all"
+                    className="data-[state=active]:bg-sky-50 data-[state=active]:text-sky-600 data-[state=active]:shadow-md dark:data-[state=active]:bg-sky-950/30 dark:data-[state=active]:text-sky-400 rounded-lg px-5 py-2.5 font-semibold transition-all"
                   >
                     <ThumbsUp className="w-4 h-4 mr-1.5" />
                     Liked ({likedCount})
@@ -272,8 +277,8 @@ export default function SeriesPage() {
                     onRemoveFavorite={handleRemoveSeries}
                     onUpdatePreference={handleUpdatePreference}
                     isLoading={isLoading}
-                    emptyMessage="No loved shows yet."
-                    emptySubMessage="Click the heart icon on a show to mark it as loved!"
+                    emptyMessage="No loved shows yet"
+                    emptySubMessage="Mark shows with ❤️ to see them here"
                   />
                 </TabsContent>
 
@@ -283,8 +288,8 @@ export default function SeriesPage() {
                     onRemoveFavorite={handleRemoveSeries}
                     onUpdatePreference={handleUpdatePreference}
                     isLoading={isLoading}
-                    emptyMessage="No liked shows yet."
-                    emptySubMessage="Search for shows above and add them to your favorites!"
+                    emptyMessage="No liked shows yet"
+                    emptySubMessage="Search and rate shows above to get started"
                   />
                 </TabsContent>
               </Tabs>
@@ -292,13 +297,16 @@ export default function SeriesPage() {
 
             {/* Ignored Series Section */}
             <div>
-              <div className="flex items-center gap-3 mb-6">
-                <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground">
-                  Skipped Shows ({myIgnoredSeries.length})
+              <div className="flex items-center justify-between gap-3 mb-6">
+                <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-foreground">
+                  Skipped Shows
                 </h2>
+                <span className="text-sm font-semibold text-muted-foreground px-3 py-1.5 bg-muted/50 rounded-full">
+                  {myIgnoredSeries.length} {myIgnoredSeries.length === 1 ? 'show' : 'shows'}
+                </span>
               </div>
-              <p className="text-sm text-muted-foreground mb-4">
-                These shows won't be suggested to you. You can remove them from this list anytime.
+              <p className="text-sm text-muted-foreground mb-6 leading-relaxed">
+                These shows won't appear in your recommendations. Remove them anytime to reconsider.
               </p>
               <IgnoredSeriesList
                 ignoredSeries={myIgnoredSeries}
