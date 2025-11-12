@@ -74,7 +74,7 @@ export const userRoutes: FastifyPluginAsyncTypebox<{
       sameSite: appEnvironment === 'production' ? ('lax' as const) : ('none' as const),
       path: '/',
       maxAge: config.token.refresh.expiresIn,
-      ...{ appEnvironment: appEnvironment === 'production' ? { domain: '.show-sync.com' } : {} },
+      ...(appEnvironment === 'production' ? { domain: '.show-sync.com' } : {}),
     },
   };
 
