@@ -14,7 +14,7 @@ export class RegisterPageModel extends BasePageModel {
   }
 
   get emailInput() {
-    return this.page.getByLabel('Email Address');
+    return this.page.getByLabel('Email address');
   }
 
   get passwordInput() {

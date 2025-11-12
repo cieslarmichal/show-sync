@@ -15,10 +15,10 @@ export class SeriesPageModel extends BasePageModel {
 
   constructor(page: Page) {
     super(page);
-    this.pageTitle = page.getByRole('heading', { name: /rate tv shows/i });
+    this.pageTitle = page.getByRole('heading', { name: /rate your shows/i });
     this.searchInput = page.getByPlaceholder(/search for a tv show by title/i);
     this.searchResults = page.getByTestId('search-results');
-    this.favoritesSection = page.getByRole('heading', { name: /your rated shows/i });
+    this.favoritesSection = page.getByRole('heading', { name: /your ratings/i });
     this.ignoredSection = page.getByRole('heading', { name: /skipped shows/i });
     this.filterTabAll = page.getByRole('tab', { name: /all \(/i });
     this.filterTabLoved = page.getByRole('tab', { name: /loved \(/i });

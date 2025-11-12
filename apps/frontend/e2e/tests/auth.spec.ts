@@ -32,7 +32,7 @@ test.describe('Authentication Flow', () => {
 
       // Should display validation error for invalid email format
       await expect(registerPage.errorMessage).toBeVisible();
-      await expect(registerPage.errorMessage).toContainText(/invalid email/i);
+      await expect(registerPage.errorMessage).toContainText(/invalid email address/i);
     });
 
     test('should show error for weak password', async ({ page }) => {
