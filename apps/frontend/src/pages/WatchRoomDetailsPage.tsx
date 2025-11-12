@@ -101,35 +101,35 @@ export default function WatchRoomDetailsPage() {
             Back to Rooms
           </Button>
 
-            {/* Room Header Card */}
-            <RoomHeader
-              room={room}
+          {/* Room Header Card */}
+          <RoomHeader
+            room={room}
+            isOwner={isOwner}
+            onCopyLink={handleCopyLink}
+            onRoomUpdated={() => fetchRoomDetails(watchroomId!)}
+            onRoomDeleted={handleRoomDeleted}
+          />
+
+          {/* Participants Card */}
+          <ParticipantsCard
+            room={room}
+            isOwner={isOwner}
+            currentUserId={userData?.id}
+            onRoomUpdated={() => fetchRoomDetails(watchroomId!)}
+            onLeaveRoom={handleLeaveRoom}
+          />
+
+          {/* Recommendations Section */}
+          {watchroomId && (
+            <RecommendationsSection
+              watchroomId={watchroomId}
               isOwner={isOwner}
+              participantCount={room.participants.length}
               onCopyLink={handleCopyLink}
-              onRoomUpdated={() => fetchRoomDetails(watchroomId!)}
-              onRoomDeleted={handleRoomDeleted}
             />
-
-            {/* Participants Card */}
-            <ParticipantsCard
-              room={room}
-              isOwner={isOwner}
-              currentUserId={userData?.id}
-              onRoomUpdated={() => fetchRoomDetails(watchroomId!)}
-              onLeaveRoom={handleLeaveRoom}
-            />
-
-            {/* Recommendations Section */}
-            {watchroomId && (
-              <RecommendationsSection
-                watchroomId={watchroomId}
-                isOwner={isOwner}
-                participantCount={room.participants.length}
-                onCopyLink={handleCopyLink}
-              />
-            )}
-          </div>
+          )}
         </div>
+      </div>
     </div>
   );
 }
