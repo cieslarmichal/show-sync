@@ -6,6 +6,7 @@
       "max": 100
     }
   },
+  "frontendUrl": "https://show-sync.com",
   "hashSaltRounds": 14,
   "logLevel": "info"
 }

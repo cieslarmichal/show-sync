@@ -7,7 +7,7 @@
   <!-- Home Page -->
   <url>
     <loc>https://show-sync.com/</loc>
-    <lastmod>2025-11-07</lastmod>
+    <lastmod>2025-11-12</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
@@ -15,7 +15,7 @@
   <!-- Login Page -->
   <url>
     <loc>https://show-sync.com/login</loc>
-    <lastmod>2025-11-07</lastmod>
+    <lastmod>2025-11-12</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -23,7 +23,7 @@
   <!-- Register Page -->
   <url>
     <loc>https://show-sync.com/register</loc>
-    <lastmod>2025-11-07</lastmod>
+    <lastmod>2025-11-12</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -31,7 +31,7 @@
   <!-- Forgot Password Page -->
   <url>
     <loc>https://show-sync.com/forgot-password</loc>
-    <lastmod>2025-11-07</lastmod>
+    <lastmod>2025-11-12</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.3</priority>
   </url>

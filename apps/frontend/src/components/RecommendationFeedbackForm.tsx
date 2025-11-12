@@ -58,8 +58,8 @@ export function RecommendationFeedbackForm({ watchroomId, recommendationRequestI
       try {
         const result = await checkRecommendationFeedback(watchroomId, recommendationRequestId);
         setFeedbackExists(result.exists);
-      } catch (error) {
-        console.error('Failed to check feedback status:', error);
+      } catch {
+        // Silently fail - not critical
       } finally {
         setIsLoading(false);
       }

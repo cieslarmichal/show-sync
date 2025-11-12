@@ -59,8 +59,7 @@ export default function ResetPasswordPage() {
         });
 
         setTokenStatus(response.valid ? 'valid' : 'invalid');
-      } catch (error) {
-        console.error('Token validation error:', error);
+      } catch {
         setTokenStatus('invalid');
       }
     };

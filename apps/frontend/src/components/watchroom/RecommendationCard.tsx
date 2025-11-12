@@ -69,7 +69,6 @@ export function RecommendationCard({
       });
       onIgnore(recommendation.seriesTmdbId);
     } catch (error) {
-      console.error('Failed to ignore series:', error);
       const errorMessage = error instanceof Error ? error.message : 'Failed to ignore series';
 
       if (errorMessage.includes('Too many requests') || errorMessage.includes('Rate limit')) {
@@ -90,7 +89,6 @@ export function RecommendationCard({
       });
       onFavorite(recommendation.seriesTmdbId);
     } catch (error) {
-      console.error('Failed to add to favorites:', error);
       const errorMessage = error instanceof Error ? error.message : 'Failed to add to favorites';
 
       if (errorMessage.includes('Too many requests') || errorMessage.includes('Rate limit')) {

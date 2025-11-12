@@ -80,14 +80,13 @@ export default function FavoriteSeriesList({
       }, 300);
 
       timeoutIds.current.set(seriesTmdbId, timeoutId);
-    } catch (err) {
+    } catch {
       // Remove from removing set if failed
       setRemovingIds((prev) => {
         const newSet = new Set(prev);
         newSet.delete(seriesTmdbId);
         return newSet;
       });
-      console.error('Failed to remove favorite:', err);
     }
   };
 
@@ -98,8 +97,6 @@ export default function FavoriteSeriesList({
 
     try {
       await onUpdatePreference(seriesTmdbId, preferenceLevel);
-    } catch (err) {
-      console.error('Failed to update preference:', err);
     } finally {
       setUpdatingIds((prev) => {
         const newSet = new Set(prev);

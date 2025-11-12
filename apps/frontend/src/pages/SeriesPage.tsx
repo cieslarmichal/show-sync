@@ -47,8 +47,7 @@ export default function SeriesPage() {
         const liked = series.filter((s: FavoriteSeries) => s.preferenceLevel === 'like').length;
         setLovedCount(loved);
         setLikedCount(liked);
-      } catch (error) {
-        console.error('Failed to load series:', error);
+      } catch {
         toast.error('Could not load your shows. Please refresh the page.');
       } finally {
         setIsLoading(false);
@@ -65,8 +64,7 @@ export default function SeriesPage() {
         const ignored = response.data;
         setMyIgnoredSeries(ignored);
         setIgnoredSeriesIds(new Set(ignored.map((ign: IgnoredSeries) => ign.seriesTmdbId)));
-      } catch (error) {
-        console.error('Failed to load ignored series:', error);
+      } catch {
         toast.error('Could not load your skipped shows. Please refresh the page.');
       } finally {
         setIsLoadingIgnored(false);
@@ -104,8 +102,7 @@ export default function SeriesPage() {
       }
       await refreshCounts(); // Sync with context
       toast.success(`"${series.name}" added to your favorites!`);
-    } catch (error) {
-      console.error('Failed to add to favorites:', error);
+    } catch {
       toast.error('Could not save your rating. Please check your connection and try again.');
     }
   };
@@ -130,8 +127,7 @@ export default function SeriesPage() {
 
       await refreshCounts(); // Sync with context
       toast.success('Show removed from your favorites');
-    } catch (error) {
-      console.error('Failed to remove series:', error);
+    } catch {
       toast.error('Could not remove show. Please try again.');
     }
   };
@@ -156,8 +152,7 @@ export default function SeriesPage() {
 
       await refreshCounts(); // Sync with context
       toast.success(`Preference updated to ${preferenceLevel === 'love' ? '❤️ Loved' : '👍 Liked'}`);
-    } catch (error) {
-      console.error('Failed to update preference:', error);
+    } catch {
       toast.error('Could not update your rating. Please try again.');
     }
   };
@@ -172,8 +167,7 @@ export default function SeriesPage() {
       });
       setMyIgnoredSeries((prev) => prev.filter((ignored) => ignored.seriesTmdbId !== seriesTmdbId));
       toast.success('Show removed from skipped list');
-    } catch (error) {
-      console.error('Failed to remove ignored series:', error);
+    } catch {
       toast.error('Could not restore show. Please try again.');
     }
   };
@@ -198,8 +192,7 @@ export default function SeriesPage() {
       };
       setMyIgnoredSeries((prev) => [...prev, newIgnored]);
       toast.success(`"${series.name}" added to your ignored list`);
-    } catch (error) {
-      console.error('Failed to add to ignored:', error);
+    } catch {
       toast.error('Could not skip show. Please try again.');
     }
   };

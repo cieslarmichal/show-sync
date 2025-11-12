@@ -1,4 +1,5 @@
 import { apiRequest } from '../apiRequest';
+import { logger } from '../../utils/logger';
 
 export const logoutUser = async (): Promise<void> => {
   try {
@@ -6,6 +7,6 @@ export const logoutUser = async (): Promise<void> => {
       method: 'POST',
     });
   } catch (error) {
-    console.warn('Logout request failed, but continuing with local cleanup:', error);
+    logger.warn('Logout request failed, but continuing with local cleanup:', error);
   }
 };

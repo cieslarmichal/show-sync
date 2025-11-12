@@ -1,7 +1,12 @@
 import { z } from 'zod';
+import { logger } from './utils/logger';
+
+const rawEnv = import.meta.env.MODE;
+
+const backendUrl = rawEnv === 'production' ? 'https://api.show-sync.com' : 'http://localhost:5000';
 
 const appConfig = {
-  backendUrl: import.meta.env.VITE_BACKEND_URL || 'http://localhost:5000',
+  backendUrl: import.meta.env.VITE_BACKEND_URL || backendUrl,
   watchroom: {
     maxParticipants: 6,
   },
@@ -41,7 +46,7 @@ export function createConfig(): Config {
   const parsedConfig = configSchema.safeParse(appConfig);
 
   if (!parsedConfig.success) {
-    console.error(parsedConfig.error);
+    logger.error(parsedConfig.error);
     throw new Error('Configuration error');
   }
 

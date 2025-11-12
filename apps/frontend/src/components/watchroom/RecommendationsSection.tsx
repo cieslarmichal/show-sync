@@ -80,8 +80,8 @@ export function RecommendationsSection({
         const response = await getMyIgnoredSeries();
         const ignoredIds = new Set(response.data.map((item) => item.seriesTmdbId));
         setIgnoredSeriesIds(ignoredIds);
-      } catch (error) {
-        console.error('Failed to load ignored series:', error);
+      } catch {
+        // Silently fail - not critical
       }
     };
 
@@ -94,8 +94,8 @@ export function RecommendationsSection({
         const response = await getMyFavoriteSeries();
         const favoriteIds = new Set(response.data.map((item) => item.seriesTmdbId));
         setProfileSeriesIds(favoriteIds);
-      } catch (error) {
-        console.error('Failed to load favorite series:', error);
+      } catch {
+        // Silently fail - not critical
       }
     };
 
@@ -140,8 +140,8 @@ export function RecommendationsSection({
             setIsGenerating(false);
             return;
           }
-        } catch (error) {
-          console.error('Status check failed:', error);
+        } catch {
+          // Silently fail and continue polling
         }
 
         if (attempts >= maxAttempts) {
@@ -157,7 +157,6 @@ export function RecommendationsSection({
 
       setTimeout(() => pollForStatus(), pollInterval);
     } catch (error) {
-      console.error('Failed to generate recommendations:', error);
       const errorMessage = error instanceof Error ? error.message : 'Could not generate suggestions.';
 
       if (errorMessage.includes('Too many requests') || errorMessage.includes('Rate limit')) {

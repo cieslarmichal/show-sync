@@ -2,6 +2,7 @@ import { ReactNode, useState, useCallback, useEffect } from 'react';
 import { SeriesContext } from './SeriesContext';
 import { getMyFavoriteSeries } from '../api/queries/getMyFavoriteSeries';
 import { FavoriteSeries } from '../api/types/series';
+import { logger } from '../utils/logger';
 
 export const SeriesContextProvider = ({ children }: { children: ReactNode }) => {
   const [lovedCount, setLovedCount] = useState(0);
@@ -20,7 +21,7 @@ export const SeriesContextProvider = ({ children }: { children: ReactNode }) => 
       setLikedCount(liked);
       setTotalCount(series.length);
     } catch (error) {
-      console.error('Failed to load series counts:', error);
+      logger.error('Failed to load series counts:', error);
     }
   }, []);
 
@@ -38,7 +39,7 @@ export const SeriesContextProvider = ({ children }: { children: ReactNode }) => 
         setLikedCount(liked);
         setTotalCount(series.length);
       } catch (error) {
-        console.error('Failed to load series counts:', error);
+        logger.error('Failed to load series counts:', error);
       }
     };
 

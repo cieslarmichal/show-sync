@@ -9,6 +9,7 @@ import {
   setTokenRefreshCallback,
   setAccessToken as setApiAccessToken,
 } from '../api/apiRequest';
+import { logger } from '../utils/logger';
 
 export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
   const [userData, setUserData] = useState<User | null>(null);
@@ -22,7 +23,7 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
         const user = await getMyUser();
         setUserData(user);
       } catch (error) {
-        console.error('Failed to refresh user data:', error);
+        logger.error('Failed to refresh user data:', error);
       }
     }
   }, [accessToken]);
@@ -49,7 +50,7 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
             const tokenResponse = await requestAccessTokenRefresh();
             setAccessToken(tokenResponse.accessToken);
           } catch (error) {
-            console.error('Silent refresh failed - clearing auth state:', error);
+            logger.warn('Silent refresh failed - clearing auth state:', error);
             // If silent refresh fails, clear the auth state to force re-login
             setAccessToken(null);
             setUserData(null);
@@ -106,7 +107,7 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
           setUserData(user);
           setUserDataInitialized(true);
         } catch (error) {
-          console.error('Failed to fetch user data:', error);
+          logger.error('Failed to fetch user data:', error);
           setUserData(null);
           setUserDataInitialized(true);
         }

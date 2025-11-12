@@ -67,8 +67,7 @@ export default function ProfilePage() {
         setFavoriteSeriesCount(stats.favoriteSeriesCount);
         setWatchRoomsCount(stats.watchRoomsCount);
         setRecommendationCount(stats.recommendationCount);
-      } catch (error) {
-        console.error('Failed to load user details:', error);
+      } catch {
         toast.error('Failed to load profile information');
       } finally {
         setIsLoading(false);
@@ -88,8 +87,7 @@ export default function ProfilePage() {
       toast.success('Account deleted successfully');
       await clearUserData();
       navigate('/');
-    } catch (error) {
-      console.error('Failed to delete account:', error);
+    } catch {
       toast.error('Failed to delete account');
     }
   };
@@ -102,8 +100,7 @@ export default function ProfilePage() {
       });
       toast.success('Password changed successfully');
       setIsChangePasswordDialogOpen(false);
-    } catch (error) {
-      console.error('Failed to change password:', error);
+    } catch {
       toast.error('Failed to change password');
     }
   };

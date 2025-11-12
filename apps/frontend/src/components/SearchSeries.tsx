@@ -41,9 +41,8 @@ export default function SearchSeries({
       try {
         const searchResult = await searchSeries(debouncedQuery);
         setResults(searchResult.data);
-      } catch (err) {
+      } catch {
         setError('Failed to search shows. Please try again.');
-        console.error('Search error:', err);
       } finally {
         setIsLoading(false);
       }
