@@ -122,7 +122,9 @@ export default function DashboardPage() {
                         </div>
                         <div>
                           <CardTitle className="text-xl font-semibold">Build Your Taste Profile</CardTitle>
-                          <CardDescription className="text-sm">The more you rate, the better your recommendations</CardDescription>
+                          <CardDescription className="text-sm">
+                            The more you rate, the better your recommendations
+                          </CardDescription>
                         </div>
                       </div>
                     </CardHeader>
@@ -159,7 +161,8 @@ export default function DashboardPage() {
                         <div className="flex items-center justify-center gap-1.5">
                           {totalCount < config.series.goodAccuracy ? (
                             <span className="text-xs text-muted-foreground">
-                              Rate {toReachGoodAccuracy} more {toReachGoodAccuracy === 1 ? 'show' : 'shows'} for good recommendations
+                              Rate {toReachGoodAccuracy} more {toReachGoodAccuracy === 1 ? 'show' : 'shows'} for good
+                              recommendations
                             </span>
                           ) : totalCount < config.series.maxAccuracy ? (
                             <span className="text-xs text-violet-600 dark:text-violet-400 font-medium flex items-center gap-1">
@@ -196,11 +199,14 @@ export default function DashboardPage() {
                                 Love {config.series.minLovedSetup} shows
                               </div>
                               <div className="text-xs text-muted-foreground">
-                                {Math.min(lovedCount, config.series.minLovedSetup)}/{config.series.minLovedSetup} completed
+                                {Math.min(lovedCount, config.series.minLovedSetup)}/{config.series.minLovedSetup}{' '}
+                                completed
                               </div>
                             </div>
                             {lovedCount >= config.series.minLovedSetup && (
-                              <span className="text-emerald-600 dark:text-emerald-400 text-xs font-semibold">✓ Done</span>
+                              <span className="text-emerald-600 dark:text-emerald-400 text-xs font-semibold">
+                                ✓ Done
+                              </span>
                             )}
                           </div>
 
@@ -219,11 +225,14 @@ export default function DashboardPage() {
                                 Like {config.series.minLikedSetup} shows
                               </div>
                               <div className="text-xs text-muted-foreground">
-                                {Math.min(likedCount, config.series.minLikedSetup)}/{config.series.minLikedSetup} completed
+                                {Math.min(likedCount, config.series.minLikedSetup)}/{config.series.minLikedSetup}{' '}
+                                completed
                               </div>
                             </div>
                             {likedCount >= config.series.minLikedSetup && (
-                              <span className="text-emerald-600 dark:text-emerald-400 text-xs font-semibold">✓ Done</span>
+                              <span className="text-emerald-600 dark:text-emerald-400 text-xs font-semibold">
+                                ✓ Done
+                              </span>
                             )}
                           </div>
                         </div>
@@ -253,7 +262,9 @@ export default function DashboardPage() {
                         </div>
                         <div>
                           <CardTitle className="text-xl font-semibold">Create a Watch Room</CardTitle>
-                          <CardDescription className="text-sm">Get personalized recommendations for your group</CardDescription>
+                          <CardDescription className="text-sm">
+                            Get personalized recommendations for your group
+                          </CardDescription>
                         </div>
                       </div>
                     </CardHeader>
@@ -268,7 +279,9 @@ export default function DashboardPage() {
                             </span>
                             <div>
                               <p className="font-medium text-foreground">Create your room</p>
-                              <p className="text-xs text-muted-foreground leading-relaxed">Get a shareable link instantly</p>
+                              <p className="text-xs text-muted-foreground leading-relaxed">
+                                Get a shareable link instantly
+                              </p>
                             </div>
                           </li>
                           <li className="flex items-start gap-3 p-2 rounded-lg hover:bg-muted/30 transition-colors">
@@ -277,7 +290,9 @@ export default function DashboardPage() {
                             </span>
                             <div>
                               <p className="font-medium text-foreground">Invite friends</p>
-                              <p className="text-xs text-muted-foreground leading-relaxed">They join and rate their favorite shows</p>
+                              <p className="text-xs text-muted-foreground leading-relaxed">
+                                They join and rate their favorite shows
+                              </p>
                             </div>
                           </li>
                           <li className="flex items-start gap-3 p-2 rounded-lg hover:bg-muted/30 transition-colors">
@@ -286,7 +301,9 @@ export default function DashboardPage() {
                             </span>
                             <div>
                               <p className="font-medium text-foreground">Get matched</p>
-                              <p className="text-xs text-muted-foreground leading-relaxed">Discover shows everyone will love</p>
+                              <p className="text-xs text-muted-foreground leading-relaxed">
+                                Discover shows everyone will love
+                              </p>
                             </div>
                           </li>
                         </ul>
@@ -303,7 +320,9 @@ export default function DashboardPage() {
                             </span>
                             <div>
                               <p className="font-medium text-foreground">Create your room</p>
-                              <p className="text-xs text-muted-foreground leading-relaxed">Get a shareable link instantly</p>
+                              <p className="text-xs text-muted-foreground leading-relaxed">
+                                Get a shareable link instantly
+                              </p>
                             </div>
                           </li>
                           <li className="flex items-start gap-3 p-2 rounded-lg bg-muted/30">
@@ -312,7 +331,9 @@ export default function DashboardPage() {
                             </span>
                             <div>
                               <p className="font-medium text-foreground">Invite friends</p>
-                              <p className="text-xs text-muted-foreground leading-relaxed">They join and rate their favorite shows</p>
+                              <p className="text-xs text-muted-foreground leading-relaxed">
+                                They join and rate their favorite shows
+                              </p>
                             </div>
                           </li>
                           <li className="flex items-start gap-3 p-2 rounded-lg bg-muted/30">
@@ -321,7 +342,9 @@ export default function DashboardPage() {
                             </span>
                             <div>
                               <p className="font-medium text-foreground">Get matched</p>
-                              <p className="text-xs text-muted-foreground leading-relaxed">Discover shows everyone will love</p>
+                              <p className="text-xs text-muted-foreground leading-relaxed">
+                                Discover shows everyone will love
+                              </p>
                             </div>
                           </li>
                         </ul>
@@ -330,7 +353,10 @@ export default function DashboardPage() {
                       <div className="pt-4 border-t border-border">
                         <p className="text-xs text-muted-foreground flex items-start gap-2 leading-relaxed">
                           <span className="text-base">💡</span>
-                          <span><strong className="text-foreground">Pro tip:</strong> Create a room just for yourself—no sharing required!</span>
+                          <span>
+                            <strong className="text-foreground">Pro tip:</strong> Create a room just for yourself—no
+                            sharing required!
+                          </span>
                         </p>
                       </div>
                     </CardContent>
@@ -374,7 +400,9 @@ export default function DashboardPage() {
         <DialogContent>
           <DialogHeader>
             <DialogTitle className="text-2xl">Almost there!</DialogTitle>
-            <DialogDescription className="text-base">Rate a few more shows to unlock watch rooms and start getting recommendations.</DialogDescription>
+            <DialogDescription className="text-base">
+              Rate a few more shows to unlock watch rooms and start getting recommendations.
+            </DialogDescription>
           </DialogHeader>
           <div className="space-y-3 py-2">
             <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/30">
@@ -388,9 +416,7 @@ export default function DashboardPage() {
                 {lovedCount >= config.series.minLovedForRoom ? <Check className="w-3 h-3" /> : '1'}
               </span>
               <div className="flex-1">
-                <div className="text-sm font-medium text-foreground">
-                  Love {config.series.minLovedForRoom} shows
-                </div>
+                <div className="text-sm font-medium text-foreground">Love {config.series.minLovedForRoom} shows</div>
                 <div className="text-xs text-muted-foreground">
                   {Math.min(lovedCount, config.series.minLovedForRoom)}/{config.series.minLovedForRoom} completed
                 </div>
@@ -424,7 +450,10 @@ export default function DashboardPage() {
             <div className="pt-3 border-t border-border">
               <p className="text-xs text-muted-foreground flex items-start gap-2 leading-relaxed">
                 <span className="text-base">💡</span>
-                <span><strong className="text-foreground">Pro tip:</strong> Rating {config.series.goodAccuracy}+ shows gives you the best recommendations!</span>
+                <span>
+                  <strong className="text-foreground">Pro tip:</strong> Rating {config.series.goodAccuracy}+ shows gives
+                  you the best recommendations!
+                </span>
               </p>
             </div>
           </div>
@@ -436,7 +465,7 @@ export default function DashboardPage() {
             >
               Maybe Later
             </Button>
-            <Button 
+            <Button
               onClick={() => navigate('/series')}
               className="w-full sm:w-auto"
             >

@@ -10,7 +10,7 @@ export default function HomePage() {
   useSEO({
     title: 'ShowSync - Stop Arguing About What to Watch',
     description:
-      'End the endless scrolling and debate. Get personalized TV show recommendations that match your group\'s taste. Find shows everyone actually wants to watch.',
+      "End the endless scrolling and debate. Get personalized TV show recommendations that match your group's taste. Find shows everyone actually wants to watch.",
     keywords: [
       'tv show recommendations',
       'watch party',
@@ -34,8 +34,7 @@ export default function HomePage() {
             {/* Hero Section */}
             <div className="text-center pt-8 sm:pt-12">
               <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold text-foreground mb-6 tracking-tight leading-[1.1] max-w-4xl mx-auto px-4 animate-in fade-in slide-in-from-bottom-4 duration-700">
-                Find shows everyone{' '}
-                <span className="text-primary inline-block">actually wants to watch</span>
+                Find shows everyone <span className="text-primary inline-block">actually wants to watch</span>
               </h1>
               <p className="text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto mb-10 leading-relaxed px-4 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-150">
                 No more wasting 30 minutes arguing. Get personalized recommendations that match your group's taste in
@@ -78,9 +77,7 @@ export default function HomePage() {
             <div className="space-y-12">
               <div className="text-center">
                 <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground mb-4">How It Works</h2>
-                <p className="text-lg text-muted-foreground">
-                  Three simple steps. Zero arguments about what to watch.
-                </p>
+                <p className="text-lg text-muted-foreground">Three simple steps. Zero arguments about what to watch.</p>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12 text-center">
                 <div className="space-y-4 group">
@@ -103,8 +100,7 @@ export default function HomePage() {
                   </div>
                   <h3 className="text-xl font-semibold text-foreground">2. Invite Your Crew</h3>
                   <p className="text-muted-foreground leading-relaxed">
-                    Create a watch room and share it with friends, family, or your partner. Or keep it solo—your
-                    choice!
+                    Create a watch room and share it with friends, family, or your partner. Or keep it solo—your choice!
                   </p>
                 </div>
                 <div className="space-y-4 group">
@@ -115,8 +111,7 @@ export default function HomePage() {
                   </div>
                   <h3 className="text-xl font-semibold text-foreground">3. Watch the Magic Happen</h3>
                   <p className="text-muted-foreground leading-relaxed">
-                    Get instant recommendations that balance everyone's taste. No scrolling for hours. No
-                    compromising.
+                    Get instant recommendations that balance everyone's taste. No scrolling for hours. No compromising.
                   </p>
                 </div>
               </div>
@@ -128,9 +123,7 @@ export default function HomePage() {
                 <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground mb-4">
                   Why People Love ShowSync
                 </h2>
-                <p className="text-lg text-muted-foreground">
-                  The smartest way to decide what to watch next.
-                </p>
+                <p className="text-lg text-muted-foreground">The smartest way to decide what to watch next.</p>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
                 <Card className="p-8 border-2 hover:border-primary/50 hover:shadow-lg transition-all duration-300">
@@ -155,8 +148,8 @@ export default function HomePage() {
                     <div>
                       <h3 className="text-lg font-semibold text-foreground mb-2">Perfect for Groups or Solo</h3>
                       <p className="text-muted-foreground leading-relaxed">
-                        Whether it's date night, family time, or just you on the couch—get recommendations that work
-                        for any situation.
+                        Whether it's date night, family time, or just you on the couch—get recommendations that work for
+                        any situation.
                       </p>
                     </div>
                   </div>
@@ -169,8 +162,7 @@ export default function HomePage() {
                     <div>
                       <h3 className="text-lg font-semibold text-foreground mb-2">Save Hours of Scrolling</h3>
                       <p className="text-muted-foreground leading-relaxed">
-                        Stop spending more time choosing than watching. Get your perfect match in seconds, not
-                        minutes.
+                        Stop spending more time choosing than watching. Get your perfect match in seconds, not minutes.
                       </p>
                     </div>
                   </div>
@@ -183,8 +175,8 @@ export default function HomePage() {
                     <div>
                       <h3 className="text-lg font-semibold text-foreground mb-2">No More Compromises</h3>
                       <p className="text-muted-foreground leading-relaxed">
-                        Find shows that genuinely appeal to everyone. No settling for something half your group
-                        doesn't want to watch.
+                        Find shows that genuinely appeal to everyone. No settling for something half your group doesn't
+                        want to watch.
                       </p>
                     </div>
                   </div>
@@ -198,8 +190,8 @@ export default function HomePage() {
                 Ready to end the "what should we watch?" debate?
               </h2>
               <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-10 leading-relaxed">
-                Join thousands of people who've already stopped wasting time scrolling. Get your first recommendation
-                in under 2 minutes.
+                Join thousands of people who've already stopped wasting time scrolling. Get your first recommendation in
+                under 2 minutes.
               </p>
               <Button
                 size="lg"

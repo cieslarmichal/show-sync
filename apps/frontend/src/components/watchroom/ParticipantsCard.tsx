@@ -76,14 +76,14 @@ export function ParticipantsCard({ room, isOwner, currentUserId, onRoomUpdated, 
 
   return (
     <>
-      <Card className="border shadow-lg hover:shadow-xl transition-shadow duration-300">
+      <Card className="border-2 shadow-sm hover:shadow-md transition-all duration-300">
         <CardHeader className="pb-6">
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-xl bg-linear-to-br from-primary to-primary/70 flex items-center justify-center shadow-md">
-              <Users className="w-6 h-6 text-primary-foreground" />
+            <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center">
+              <Users className="w-6 h-6 text-primary" />
             </div>
             <div>
-              <CardTitle className="text-2xl">Participants</CardTitle>
+              <CardTitle className="text-2xl font-bold tracking-tight">Participants</CardTitle>
               <p className="text-sm text-muted-foreground mt-1">
                 {room.participants.length} / {config.watchroom.maxParticipants}{' '}
                 {room.participants.length === 1 ? 'member' : 'members'}
@@ -96,17 +96,16 @@ export function ParticipantsCard({ room, isOwner, currentUserId, onRoomUpdated, 
             {room.participants.map((participant) => (
               <div
                 key={participant.id}
-                className="group flex items-center justify-between p-4 rounded-xl border bg-card hover:border-primary/40 hover:bg-primary/5 hover:shadow-md transition-all duration-200"
+                className="group flex items-center justify-between p-4 rounded-lg border bg-card hover:border-primary/40 hover:bg-muted/30 transition-all duration-200"
+                data-testid="participants-list"
               >
                 <div className="flex items-center gap-4">
                   <div className="relative">
-                    <div className="w-12 h-12 rounded-full bg-linear-to-br from-primary via-primary to-primary/70 flex items-center justify-center shadow-md ring-2 ring-background group-hover:ring-primary/20 transition-all">
-                      <span className="text-lg font-bold text-primary-foreground">
-                        {participant.name.charAt(0).toUpperCase()}
-                      </span>
+                    <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center ring-2 ring-background group-hover:ring-primary/20 transition-all">
+                      <span className="text-lg font-bold text-primary">{participant.name.charAt(0).toUpperCase()}</span>
                     </div>
                     {participant.id === room.ownerId && (
-                      <div className="absolute -bottom-1 -right-1 w-5 h-5 rounded-full bg-linear-to-br from-primary to-primary/80 flex items-center justify-center shadow-sm ring-2 ring-background">
+                      <div className="absolute -bottom-1 -right-1 w-5 h-5 rounded-full bg-primary flex items-center justify-center ring-2 ring-background">
                         <Users className="w-3 h-3 text-primary-foreground" />
                       </div>
                     )}
@@ -116,7 +115,7 @@ export function ParticipantsCard({ room, isOwner, currentUserId, onRoomUpdated, 
                     {participant.id === room.ownerId && (
                       <Badge
                         variant="outline"
-                        className="text-xs w-fit bg-primary/5 text-primary border-primary/30"
+                        className="text-xs w-fit bg-primary/5 text-primary border-primary/30 font-medium"
                       >
                         Room Owner
                       </Badge>
@@ -136,7 +135,7 @@ export function ParticipantsCard({ room, isOwner, currentUserId, onRoomUpdated, 
                             participantName: participant.name,
                           })
                         }
-                        className="h-10 w-10 hover:bg-destructive/10 hover:text-destructive rounded-lg opacity-0 group-hover:opacity-100 transition-opacity"
+                        className="h-10 w-10 hover:bg-destructive/10 hover:text-destructive rounded-lg opacity-0 group-hover:opacity-100 transition-all"
                       >
                         <UserMinus className="w-4 h-4" />
                       </Button>
@@ -153,7 +152,7 @@ export function ParticipantsCard({ room, isOwner, currentUserId, onRoomUpdated, 
             <div className="pt-4">
               <Button
                 variant="outline"
-                className="w-full hover:bg-destructive/10 hover:text-destructive hover:border-destructive/50 rounded-lg shadow-sm"
+                className="w-full hover:bg-destructive/10 hover:text-destructive hover:border-destructive/50 transition-all font-semibold"
                 onClick={() => setConfirmLeaveDialog(true)}
                 data-testid="leave-room-button"
               >
@@ -172,17 +171,19 @@ export function ParticipantsCard({ room, isOwner, currentUserId, onRoomUpdated, 
       >
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Remove Participant</DialogTitle>
-            <DialogDescription>
-              Are you sure you want to remove {confirmRemoveDialog.participantName} from this room? This action cannot
-              be undone.
+            <DialogTitle className="text-2xl mb-2">Remove Participant?</DialogTitle>
+            <DialogDescription className="text-base leading-relaxed">
+              Are you sure you want to remove{' '}
+              <span className="font-semibold text-foreground">{confirmRemoveDialog.participantName}</span> from this
+              room? They can rejoin using the invite link.
             </DialogDescription>
           </DialogHeader>
-          <DialogFooter>
+          <DialogFooter className="gap-2">
             <Button
               variant="outline"
               onClick={() => setConfirmRemoveDialog({ open: false })}
               disabled={isProcessing}
+              className="w-full sm:w-auto"
             >
               Cancel
             </Button>
@@ -190,8 +191,9 @@ export function ParticipantsCard({ room, isOwner, currentUserId, onRoomUpdated, 
               variant="destructive"
               onClick={handleRemoveParticipant}
               disabled={isProcessing}
+              className="w-full sm:w-auto font-semibold"
             >
-              {isProcessing ? 'Removing...' : 'Remove'}
+              {isProcessing ? 'Removing...' : 'Remove Participant'}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -204,16 +206,17 @@ export function ParticipantsCard({ room, isOwner, currentUserId, onRoomUpdated, 
       >
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Leave Room</DialogTitle>
-            <DialogDescription>
-              Are you sure you want to leave this room? You can rejoin later using the invite link.
+            <DialogTitle className="text-2xl mb-2">Leave Room?</DialogTitle>
+            <DialogDescription className="text-base leading-relaxed">
+              Are you sure you want to leave this room? You can rejoin anytime using the invite link.
             </DialogDescription>
           </DialogHeader>
-          <DialogFooter>
+          <DialogFooter className="gap-2">
             <Button
               variant="outline"
               onClick={() => setConfirmLeaveDialog(false)}
               disabled={isProcessing}
+              className="w-full sm:w-auto"
             >
               Cancel
             </Button>
@@ -221,6 +224,7 @@ export function ParticipantsCard({ room, isOwner, currentUserId, onRoomUpdated, 
               variant="destructive"
               onClick={handleLeaveRoom}
               disabled={isProcessing}
+              className="w-full sm:w-auto font-semibold"
             >
               {isProcessing ? 'Leaving...' : 'Leave Room'}
             </Button>

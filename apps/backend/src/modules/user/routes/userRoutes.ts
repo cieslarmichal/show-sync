@@ -70,7 +70,7 @@ export const userRoutes: FastifyPluginAsyncTypebox<{
     name: 'refresh-token',
     config: {
       httpOnly: true,
-      secure: appEnvironment === 'production',
+      secure: true,
       sameSite: appEnvironment === 'production' ? ('lax' as const) : ('none' as const),
       path: '/',
       maxAge: config.token.refresh.expiresIn,

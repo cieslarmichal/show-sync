@@ -45,40 +45,41 @@ export function RoomHeader({ room, isOwner, onCopyLink, onRoomUpdated, onRoomDel
 
   return (
     <>
-      <Card className="border shadow-lg hover:shadow-xl transition-shadow duration-300 overflow-hidden">
-        <div className="absolute inset-0 bg-linear-to-br from-primary/5 via-transparent to-transparent pointer-events-none" />
+      <Card className="border-2 shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden">
         <CardHeader className="relative pb-6 space-y-4">
           <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
             <div className="flex-1 min-w-0 space-y-3">
               <div className="flex items-center flex-wrap gap-3">
-                <CardTitle className="text-3xl sm:text-4xl font-bold bg-linear-to-br from-foreground to-foreground/70 bg-clip-text">
-                  {room.name}
-                </CardTitle>
+                <CardTitle className="text-3xl sm:text-4xl font-bold tracking-tight">{room.name}</CardTitle>
                 {isOwner && (
-                  <Badge className="bg-linear-to-r from-primary to-primary/80 text-primary-foreground border-0 shadow-sm">
+                  <Badge className="bg-primary/10 text-primary border border-primary/20 font-medium">
                     <Users className="w-3 h-3 mr-1" />
                     Owner
                   </Badge>
                 )}
               </div>
               {room.description && (
-                <CardDescription className="text-base leading-relaxed">{room.description}</CardDescription>
+                <CardDescription className="text-base leading-relaxed text-muted-foreground">
+                  {room.description}
+                </CardDescription>
               )}
-              <p className="text-sm text-muted-foreground">
-                <Calendar className="w-3 h-3 inline mr-1" />
-                Created{' '}
-                {new Date(room.createdAt).toLocaleDateString('en-US', {
-                  month: 'short',
-                  day: 'numeric',
-                  year: 'numeric',
-                })}
-              </p>
+              <div className="flex items-center text-sm text-muted-foreground">
+                <Calendar className="w-3.5 h-3.5 mr-1.5" />
+                <span>
+                  Created{' '}
+                  {new Date(room.createdAt).toLocaleDateString('en-US', {
+                    month: 'short',
+                    day: 'numeric',
+                    year: 'numeric',
+                  })}
+                </span>
+              </div>
             </div>
             <div className="flex flex-wrap gap-2">
               <Button
                 variant="default"
                 onClick={onCopyLink}
-                className="sm:self-start shadow-md hover:shadow-lg transition-all"
+                className="sm:self-start shadow-md hover:shadow-lg transition-all font-semibold"
                 data-testid="copy-invite-link-button"
               >
                 <Copy className="w-4 h-4 mr-2" />
@@ -95,7 +96,7 @@ export function RoomHeader({ room, isOwner, onCopyLink, onRoomUpdated, onRoomDel
                   <Button
                     variant="outline"
                     onClick={() => setConfirmDeleteDialog(true)}
-                    className="sm:self-start hover:bg-destructive/10 hover:text-destructive hover:border-destructive/50"
+                    className="sm:self-start hover:bg-destructive/10 hover:text-destructive hover:border-destructive/50 transition-all font-semibold"
                   >
                     <Trash2 className="w-4 h-4 mr-2" />
                     Delete Room
@@ -114,17 +115,18 @@ export function RoomHeader({ room, isOwner, onCopyLink, onRoomUpdated, onRoomDel
       >
         <DialogContent>
           <DialogHeader>
-            <DialogTitle className="pb-4">Delete Watch Room</DialogTitle>
-            <DialogDescription>
-              Are you sure you want to delete <span className="font-semibold text-foreground">{room.name}</span>? This
-              will remove all participants and cannot be undone.
+            <DialogTitle className="text-2xl mb-2">Delete Watch Room?</DialogTitle>
+            <DialogDescription className="text-base leading-relaxed">
+              Are you sure you want to delete <span className="font-semibold text-foreground">"{room.name}"</span>? This
+              will remove all participants and recommendations. This action cannot be undone.
             </DialogDescription>
           </DialogHeader>
-          <DialogFooter>
+          <DialogFooter className="gap-2">
             <Button
               variant="outline"
               onClick={() => setConfirmDeleteDialog(false)}
               disabled={isProcessing}
+              className="w-full sm:w-auto"
             >
               Cancel
             </Button>
@@ -132,6 +134,7 @@ export function RoomHeader({ room, isOwner, onCopyLink, onRoomUpdated, onRoomDel
               variant="destructive"
               onClick={handleDeleteRoom}
               disabled={isProcessing}
+              className="w-full sm:w-auto font-semibold"
             >
               {isProcessing ? 'Deleting...' : 'Delete Room'}
             </Button>

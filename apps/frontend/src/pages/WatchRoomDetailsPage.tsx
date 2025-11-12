@@ -87,49 +87,49 @@ export default function WatchRoomDetailsPage() {
   const isOwner = userData?.id === room.ownerId;
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-background via-background to-primary/5">
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10">
+    <div className="min-h-screen bg-background">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
         <div className="space-y-8">
           {/* Back Button */}
           <Button
             variant="ghost"
             size="sm"
             onClick={() => navigate('/watchrooms')}
-            className="group -ml-2 hover:bg-primary/5"
+            className="group -ml-2 hover:bg-primary/5 transition-all"
           >
             <ArrowLeft className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" />
             Back to Rooms
           </Button>
 
-          {/* Room Header Card */}
-          <RoomHeader
-            room={room}
-            isOwner={isOwner}
-            onCopyLink={handleCopyLink}
-            onRoomUpdated={() => fetchRoomDetails(watchroomId!)}
-            onRoomDeleted={handleRoomDeleted}
-          />
-
-          {/* Participants Card */}
-          <ParticipantsCard
-            room={room}
-            isOwner={isOwner}
-            currentUserId={userData?.id}
-            onRoomUpdated={() => fetchRoomDetails(watchroomId!)}
-            onLeaveRoom={handleLeaveRoom}
-          />
-
-          {/* Recommendations Section */}
-          {watchroomId && (
-            <RecommendationsSection
-              watchroomId={watchroomId}
+            {/* Room Header Card */}
+            <RoomHeader
+              room={room}
               isOwner={isOwner}
-              participantCount={room.participants.length}
               onCopyLink={handleCopyLink}
+              onRoomUpdated={() => fetchRoomDetails(watchroomId!)}
+              onRoomDeleted={handleRoomDeleted}
             />
-          )}
+
+            {/* Participants Card */}
+            <ParticipantsCard
+              room={room}
+              isOwner={isOwner}
+              currentUserId={userData?.id}
+              onRoomUpdated={() => fetchRoomDetails(watchroomId!)}
+              onLeaveRoom={handleLeaveRoom}
+            />
+
+            {/* Recommendations Section */}
+            {watchroomId && (
+              <RecommendationsSection
+                watchroomId={watchroomId}
+                isOwner={isOwner}
+                participantCount={room.participants.length}
+                onCopyLink={handleCopyLink}
+              />
+            )}
+          </div>
         </div>
-      </div>
     </div>
   );
 }
