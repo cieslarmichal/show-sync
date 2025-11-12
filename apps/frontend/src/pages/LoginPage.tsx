@@ -5,8 +5,9 @@ import { useSEO } from '../hooks/useSEO';
 export default function LoginPage() {
   useSEO({
     title: 'Sign In - ShowSync',
-    description: 'Sign in to your ShowSync account to access your show ratings and watch rooms.',
-    keywords: ['login', 'sign in', 'account access'],
+    description:
+      'Sign in to ShowSync and discover TV shows everyone will love. Access your ratings, watch rooms, and personalized recommendations.',
+    keywords: ['login', 'sign in', 'account access', 'tv show recommendations'],
   });
 
   const [searchParams] = useSearchParams();
@@ -19,8 +20,8 @@ export default function LoginPage() {
       <div className="w-full max-w-md space-y-8">
         {/* Header */}
         <div className="text-center">
-          <h2 className="text-3xl font-bold text-foreground tracking-tight">Welcome back</h2>
-          <p className="mt-2 text-sm text-muted-foreground">Sign in to your account to continue</p>
+          <h2 className="text-3xl font-bold text-foreground tracking-tight">Welcome Back</h2>
+          <p className="mt-2 text-sm text-muted-foreground">Continue discovering great shows together</p>
         </div>
 
         {/* Form Container */}

@@ -9,6 +9,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Input } from '@/components/ui/Input';
 import { validateOneTimeToken } from '@/api/queries/validateOneTimeToken';
 import { resetPassword } from '@/api/queries/resetPassword';
+import { useSEO } from '@/hooks/useSEO';
 
 const formSchema = z
   .object({
@@ -29,6 +30,12 @@ const formSchema = z
 type FormValues = z.infer<typeof formSchema>;
 
 export default function ResetPasswordPage() {
+  useSEO({
+    title: 'Set New Password - ShowSync',
+    description: 'Create a new password for your ShowSync account.',
+    keywords: ['reset password', 'new password', 'change password'],
+  });
+
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const token = searchParams.get('token');
@@ -119,7 +126,7 @@ export default function ResetPasswordPage() {
       <div className="min-h-screen bg-background flex justify-center py-12 px-4 sm:px-6 lg:px-8 pt-32">
         <div className="w-full max-w-md space-y-8">
           <div className="text-center">
-            <h2 className="text-3xl font-bold text-foreground tracking-tight">Invalid Reset Link</h2>
+            <h2 className="text-3xl font-bold text-foreground tracking-tight">Link Expired</h2>
           </div>
           <div className="bg-card rounded-xl border border-border p-8 shadow-sm">
             <div className="text-center space-y-6">
@@ -127,9 +134,9 @@ export default function ResetPasswordPage() {
                 <XCircle className="w-8 h-8 text-destructive" />
               </div>
               <div className="space-y-2">
-                <p className="text-foreground font-medium">This password reset link is invalid or has expired.</p>
+                <p className="text-foreground font-medium">This reset link is no longer valid.</p>
                 <p className="text-muted-foreground text-sm">
-                  Password reset links are valid for 1 hour. Please request a new one.
+                  Password reset links expire after 1 hour for security. Request a new one below.
                 </p>
               </div>
               <div className="space-y-3">
@@ -164,7 +171,7 @@ export default function ResetPasswordPage() {
       <div className="min-h-screen bg-background flex justify-center py-12 px-4 sm:px-6 lg:px-8 pt-32">
         <div className="w-full max-w-md space-y-8">
           <div className="text-center">
-            <h2 className="text-3xl font-bold text-foreground tracking-tight">Password Reset Successful</h2>
+            <h2 className="text-3xl font-bold text-foreground tracking-tight">Password Updated!</h2>
           </div>
           <div className="bg-card rounded-xl border border-border p-8 shadow-sm">
             <div className="text-center space-y-6">
@@ -172,8 +179,8 @@ export default function ResetPasswordPage() {
                 <CheckCircle className="w-8 h-8 text-green-500" />
               </div>
               <div className="space-y-2">
-                <p className="text-foreground font-medium">Your password has been successfully reset!</p>
-                <p className="text-muted-foreground text-sm">Redirecting you to the login page...</p>
+                <p className="text-foreground font-medium">Your new password is active!</p>
+                <p className="text-muted-foreground text-sm">Taking you to sign in...</p>
               </div>
               <Link to="/login">
                 <Button
@@ -196,10 +203,8 @@ export default function ResetPasswordPage() {
       <div className="w-full max-w-md space-y-8">
         {/* Header */}
         <div className="text-center">
-          <h2 className="text-3xl font-bold text-foreground tracking-tight">Set New Password</h2>
-          <p className="mt-2 text-sm text-muted-foreground">
-            Please enter your new password. Make sure it's strong and secure.
-          </p>
+          <h2 className="text-3xl font-bold text-foreground tracking-tight">Create New Password</h2>
+          <p className="mt-2 text-sm text-muted-foreground">Choose a strong password you haven't used before</p>
         </div>
 
         {/* Form Container */}
@@ -286,12 +291,11 @@ export default function ResetPasswordPage() {
 
           {/* Password requirements */}
           <div className="bg-muted/50 rounded-md p-4 space-y-2">
-            <p className="text-xs font-medium text-foreground">Password requirements:</p>
+            <p className="text-xs font-medium text-foreground">Your password must include:</p>
             <ul className="text-xs text-muted-foreground space-y-1 list-disc list-inside">
-              <li>At least 8 characters long</li>
-              <li>Contains uppercase and lowercase letters</li>
-              <li>Contains at least one number</li>
-              <li>Contains at least one special character</li>
+              <li>At least 8 characters</li>
+              <li>Uppercase and lowercase letters</li>
+              <li>At least one number</li>
             </ul>
           </div>
 

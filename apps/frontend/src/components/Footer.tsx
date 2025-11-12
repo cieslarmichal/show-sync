@@ -33,7 +33,7 @@ export default function Footer() {
               </h2>
             </Link>
             <p className="text-sm text-muted-foreground leading-relaxed">
-              Find great TV shows to watch together. Get suggestions based on what everyone likes.
+              Discover TV shows everyone will love. Smart recommendations powered by what your group actually watches.
             </p>
           </div>
 

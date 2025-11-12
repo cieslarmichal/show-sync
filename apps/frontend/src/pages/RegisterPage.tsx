@@ -8,8 +8,8 @@ export default function RegisterPage() {
   useSEO({
     title: 'Create Account - ShowSync',
     description:
-      'Create a free ShowSync account to start getting AI-powered TV series recommendations for you and your friends.',
-    keywords: ['sign up', 'register', 'create account', 'join showsync'],
+      'Join ShowSync for free and get AI-powered TV recommendations. Find shows everyone will love with smart matching for groups and solo viewers.',
+    keywords: ['sign up', 'register', 'create account', 'join showsync', 'free account'],
   });
 
   const [searchParams] = useSearchParams();
@@ -28,7 +28,7 @@ export default function RegisterPage() {
         <div className="w-full max-w-md space-y-8">
           {/* Header */}
           <div className="text-center">
-            <h2 className="text-3xl font-bold text-foreground tracking-tight">Account Created Successfully!</h2>
+            <h2 className="text-3xl font-bold text-foreground tracking-tight">You're All Set!</h2>
           </div>
 
           {/* Success Card */}
@@ -50,9 +50,9 @@ export default function RegisterPage() {
                     />
                   </svg>
                 </div>
-                <h3 className="text-xl font-semibold text-foreground tracking-tight">Welcome aboard!</h3>
+                <h3 className="text-xl font-semibold text-foreground tracking-tight">Welcome to ShowSync!</h3>
                 <p className="text-muted-foreground">
-                  Your account has been created successfully. You can now sign in with your credentials.
+                  Your account is ready. Sign in to start rating shows and creating watch rooms.
                 </p>
               </div>
               <Button
@@ -74,8 +74,8 @@ export default function RegisterPage() {
       <div className="w-full max-w-md space-y-8">
         {/* Header */}
         <div className="text-center">
-          <h2 className="text-3xl font-bold text-foreground tracking-tight">Create Account</h2>
-          <p className="mt-2 text-sm text-muted-foreground">Join us today and get started</p>
+          <h2 className="text-3xl font-bold text-foreground tracking-tight">Start Discovering</h2>
+          <p className="mt-2 text-sm text-muted-foreground">Create your free account in seconds</p>
         </div>
 
         {/* Form Container */}

@@ -25,10 +25,11 @@ import * as z from 'zod';
 import { Input } from '../components/ui/Input.tsx';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../components/ui/Form.tsx';
 import { changePassword } from '../api/queries/changePassword.ts';
+import { useSEO } from '../hooks/useSEO.ts';
 
 const changePasswordSchema = z
   .object({
-    oldPassword: z.string().min(1, 'Old password is required'),
+    oldPassword: z.string().min(1, 'Current password is required'),
     newPassword: z.string().min(8, 'New password must be at least 8 characters'),
     confirmPassword: z.string(),
   })
@@ -38,6 +39,12 @@ const changePasswordSchema = z
   });
 
 export default function ProfilePage() {
+  useSEO({
+    title: 'My Profile - ShowSync',
+    description: 'Manage your ShowSync account settings, view your activity statistics, and update your preferences.',
+    keywords: ['profile', 'account settings', 'user profile', 'account management'],
+  });
+
   const { userData, clearUserData } = useContext(AuthContext);
   const [userDetails, setUserDetails] = useState<UserType | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -139,8 +146,8 @@ export default function ProfilePage() {
       <div className="max-w-4xl mx-auto px-4 py-8">
         <div className="space-y-8">
           <div>
-            <h1 className="text-3xl font-bold tracking-tight">Profile</h1>
-            <p className="text-muted-foreground mt-2">Manage your account information and preferences</p>
+            <h1 className="text-3xl font-bold tracking-tight">Your Profile</h1>
+            <p className="text-muted-foreground mt-2">View your activity and manage account settings</p>
           </div>
 
           {/* Profile Overview */}
@@ -152,7 +159,7 @@ export default function ProfilePage() {
                 </div>
                 <div>
                   <h2 className="text-xl">{user.name}</h2>
-                  <p className="text-muted-foreground">Member since {new Date(user.createdAt).toLocaleDateString()}</p>
+                  <p className="text-muted-foreground">Joined {new Date(user.createdAt).toLocaleDateString()}</p>
                 </div>
               </CardTitle>
             </CardHeader>
@@ -174,14 +181,14 @@ export default function ProfilePage() {
           {/* Account Statistics */}
           <Card>
             <CardHeader>
-              <CardTitle>Account Statistics</CardTitle>
-              <CardDescription>Your activity on ShowSync</CardDescription>
+              <CardTitle>Your Activity</CardTitle>
+              <CardDescription>Track your ShowSync engagement</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                 <div className="text-center">
                   <div className="text-2xl font-bold text-primary">{favoriteSeriesCount}</div>
-                  <p className="text-sm text-muted-foreground">Favorite Shows</p>
+                  <p className="text-sm text-muted-foreground">Loved Shows</p>
                 </div>
                 <div className="text-center">
                   <div className="text-2xl font-bold text-primary">{watchRoomsCount}</div>
@@ -189,7 +196,7 @@ export default function ProfilePage() {
                 </div>
                 <div className="text-center">
                   <div className="text-2xl font-bold text-primary">{recommendationCount}</div>
-                  <p className="text-sm text-muted-foreground">Recommendation Requests</p>
+                  <p className="text-sm text-muted-foreground">Recommendations</p>
                 </div>
               </div>
             </CardContent>
@@ -198,8 +205,8 @@ export default function ProfilePage() {
           {/* Account Actions */}
           <Card>
             <CardHeader>
-              <CardTitle>Account Actions</CardTitle>
-              <CardDescription>Manage your account settings and preferences</CardDescription>
+              <CardTitle>Security & Data</CardTitle>
+              <CardDescription>Manage your password and account data</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="flex flex-col sm:flex-row gap-3">
@@ -350,10 +357,9 @@ export default function ProfilePage() {
                   </DialogTrigger>
                   <DialogContent>
                     <DialogHeader>
-                      <DialogTitle>Are you absolutely sure?</DialogTitle>
+                      <DialogTitle>Are you sure?</DialogTitle>
                       <DialogDescription>
-                        This action cannot be undone. This will permanently delete your account and remove your data
-                        from our servers.
+                        This will permanently delete your account and all associated data. This action cannot be undone.
                       </DialogDescription>
                     </DialogHeader>
                     <DialogFooter>
@@ -373,12 +379,12 @@ export default function ProfilePage() {
               <hr className="border-border" />
               <div className="text-sm text-muted-foreground">
                 <p>
-                  Need help? Contact our support team at{' '}
+                  Need help?{' '}
                   <a
                     href="mailto:support@show-sync.com"
                     className="text-primary hover:underline"
                   >
-                    support@show-sync.com
+                    Contact support
                   </a>
                 </p>
               </div>

@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/Button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/Form';
 import { Input } from '@/components/ui/Input';
 import { requestPasswordReset } from '@/api/queries/requestPasswordReset';
+import { useSEO } from '@/hooks/useSEO';
 
 const formSchema = z.object({
   email: z.string().email('Invalid email address').max(64),
@@ -16,6 +17,12 @@ const formSchema = z.object({
 type FormValues = z.infer<typeof formSchema>;
 
 export default function ForgotPasswordPage() {
+  useSEO({
+    title: 'Reset Password - ShowSync',
+    description: 'Forgot your password? Request a password reset link for your ShowSync account.',
+    keywords: ['reset password', 'forgot password', 'password recovery'],
+  });
+
   const [isSubmitted, setIsSubmitted] = useState(false);
 
   const form = useForm<FormValues>({
@@ -43,7 +50,7 @@ export default function ForgotPasswordPage() {
         <div className="w-full max-w-md space-y-8">
           {/* Header */}
           <div className="text-center">
-            <h2 className="text-3xl font-bold text-foreground tracking-tight">Check Your Email</h2>
+            <h2 className="text-3xl font-bold text-foreground tracking-tight">Check Your Inbox</h2>
           </div>
 
           {/* Success Card */}
@@ -54,8 +61,7 @@ export default function ForgotPasswordPage() {
                   <Mail className="w-8 h-8 text-foreground" />
                 </div>
                 <p className="text-muted-foreground">
-                  If an account exists with the email you provided, you will receive password reset instructions
-                  shortly.
+                  If an account exists with that email, we've sent password reset instructions. Check your inbox!
                 </p>
               </div>
               <Link to="/login">
@@ -78,9 +84,9 @@ export default function ForgotPasswordPage() {
       <div className="w-full max-w-md space-y-8">
         {/* Header */}
         <div className="text-center">
-          <h2 className="text-3xl font-bold text-foreground tracking-tight">Reset Your Password</h2>
+          <h2 className="text-3xl font-bold text-foreground tracking-tight">Forgot Password?</h2>
           <p className="mt-2 text-sm text-muted-foreground">
-            Enter your email and we'll send you instructions to reset your password.
+            No worries. Enter your email and we'll send you reset instructions.
           </p>
         </div>
 
