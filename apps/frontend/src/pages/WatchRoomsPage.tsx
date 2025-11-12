@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from '../components/ui/Button.tsx';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '../components/ui/Card.tsx';
 import { Badge } from '../components/ui/Badge.tsx';
+import { Skeleton } from '../components/ui/Skeleton.tsx';
 import { Users, Copy, ExternalLink, ChevronLeft, ChevronRight, Calendar, Tv } from 'lucide-react';
 import { toast } from 'sonner';
 import { getMyWatchrooms } from '../api/queries/watchroom.ts';
@@ -43,6 +44,40 @@ export default function WatchRoomsPage() {
       setIsLoading(false);
     }
   };
+
+  const renderSkeletons = () => (
+    <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      {Array.from({ length: 6 }).map((_, i) => (
+        <Card
+          key={i}
+          className="flex flex-col h-full border-2"
+        >
+          <CardHeader className="px-6 pb-4">
+            <Skeleton className="h-6 w-3/4 mb-3" />
+            <div className="flex items-center flex-wrap gap-2 mb-2">
+              <Skeleton className="h-5 w-16" />
+              <Skeleton className="h-5 w-14" />
+            </div>
+            <Skeleton className="h-4 w-32" />
+          </CardHeader>
+
+          <CardContent className="grow px-6 py-4">
+            <div className="space-y-2">
+              <Skeleton className="h-4 w-full" />
+              <Skeleton className="h-4 w-5/6" />
+            </div>
+          </CardContent>
+
+          <CardFooter className="px-6 py-4 pt-0">
+            <div className="w-full flex items-center gap-2">
+              <Skeleton className="h-9 flex-1" />
+              <Skeleton className="h-9 flex-1" />
+            </div>
+          </CardFooter>
+        </Card>
+      ))}
+    </div>
+  );
 
   useEffect(() => {
     fetchRooms();
@@ -92,16 +127,7 @@ export default function WatchRoomsPage() {
             </div>
 
             {/* Loading State */}
-            {isLoading && (
-              <div className="flex items-center justify-center py-20">
-                <div className="text-center space-y-4">
-                  <div className="w-16 h-16 rounded-full bg-linear-to-br from-primary/20 to-primary/5 mx-auto flex items-center justify-center animate-pulse">
-                    <Tv className="w-8 h-8 text-primary" />
-                  </div>
-                  <p className="text-muted-foreground font-medium">Loading your rooms...</p>
-                </div>
-              </div>
-            )}
+            {isLoading && renderSkeletons()}
 
             {/* Empty State */}
             {!isLoading && rooms.length === 0 && (
