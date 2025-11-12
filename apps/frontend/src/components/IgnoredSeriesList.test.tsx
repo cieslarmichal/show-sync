@@ -68,7 +68,7 @@ describe('IgnoredSeriesList', () => {
       />,
     );
 
-    expect(screen.getAllByTestId('skeleton')).toHaveLength(24); // 12 skeleton placeholders x 2 (image + text)
+    expect(screen.getAllByTestId('skeleton')).toHaveLength(12); // 12 skeleton placeholders
   });
 
   it('should render empty state when no ignored shows', () => {

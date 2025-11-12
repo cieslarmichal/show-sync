@@ -58,10 +58,10 @@ describe('ResetPasswordPage', () => {
     );
 
     await waitFor(() => {
-      expect(screen.getByText('Invalid Reset Link')).toBeInTheDocument();
+      expect(screen.getByText('Link Expired')).toBeInTheDocument();
     });
 
-    expect(screen.getByText(/This password reset link is invalid or has expired/)).toBeInTheDocument();
+    expect(screen.getByText(/This reset link is no longer valid/)).toBeInTheDocument();
     expect(screen.getByTestId('request-new-link-button')).toBeInTheDocument();
     expect(screen.getByTestId('back-to-login-button')).toBeInTheDocument();
   });
@@ -82,7 +82,7 @@ describe('ResetPasswordPage', () => {
     );
 
     await waitFor(() => {
-      expect(screen.getByText('Invalid Reset Link')).toBeInTheDocument();
+      expect(screen.getByText('Link Expired')).toBeInTheDocument();
     });
   });
 
@@ -102,7 +102,7 @@ describe('ResetPasswordPage', () => {
     );
 
     await waitFor(() => {
-      expect(screen.getByText('Set New Password')).toBeInTheDocument();
+      expect(screen.getByText('Create New Password')).toBeInTheDocument();
     });
 
     expect(screen.getByLabelText('New Password')).toBeInTheDocument();
@@ -128,7 +128,7 @@ describe('ResetPasswordPage', () => {
     );
 
     await waitFor(() => {
-      expect(screen.getByText('Set New Password')).toBeInTheDocument();
+      expect(screen.getByText('Create New Password')).toBeInTheDocument();
     });
 
     const newPasswordInput = screen.getByLabelText('New Password');
@@ -169,7 +169,7 @@ describe('ResetPasswordPage', () => {
     );
 
     await waitFor(() => {
-      expect(screen.getByText('Set New Password')).toBeInTheDocument();
+      expect(screen.getByText('Create New Password')).toBeInTheDocument();
     });
 
     const newPasswordInput = screen.getByLabelText('New Password');
@@ -202,7 +202,7 @@ describe('ResetPasswordPage', () => {
     );
 
     await waitFor(() => {
-      expect(screen.getByText('Set New Password')).toBeInTheDocument();
+      expect(screen.getByText('Create New Password')).toBeInTheDocument();
     });
 
     const newPasswordInput = screen.getByLabelText('New Password');
@@ -236,7 +236,7 @@ describe('ResetPasswordPage', () => {
     );
 
     await waitFor(() => {
-      expect(screen.getByText('Set New Password')).toBeInTheDocument();
+      expect(screen.getByText('Create New Password')).toBeInTheDocument();
     });
 
     const newPasswordInput = screen.getByLabelText('New Password');
@@ -260,7 +260,7 @@ describe('ResetPasswordPage', () => {
     });
 
     await waitFor(() => {
-      expect(screen.getByText('Password Reset Successful')).toBeInTheDocument();
+      expect(screen.getByText('Password Updated!')).toBeInTheDocument();
     });
   });
 
@@ -283,7 +283,7 @@ describe('ResetPasswordPage', () => {
     );
 
     await waitFor(() => {
-      expect(screen.getByText('Set New Password')).toBeInTheDocument();
+      expect(screen.getByText('Create New Password')).toBeInTheDocument();
     });
 
     const newPasswordInput = screen.getByLabelText('New Password');

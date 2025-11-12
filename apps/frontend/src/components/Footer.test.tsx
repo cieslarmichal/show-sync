@@ -36,7 +36,7 @@ describe('Footer', () => {
   it('should render app description', () => {
     renderFooter();
 
-    expect(screen.getByText(/Find great TV shows to watch together/i)).toBeInTheDocument();
+    expect(screen.getByText(/Discover TV shows everyone will love/i)).toBeInTheDocument();
   });
 
   it('should render contact section', () => {
