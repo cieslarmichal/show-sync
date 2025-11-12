@@ -256,7 +256,7 @@ export class HttpServer {
       }
 
       // Handle rate limiting
-      if ('statusCode' in error && error.statusCode === 429) {
+      if (error instanceof Error && 'statusCode' in error && error.statusCode === 429) {
         this.loggerService.warn({
           message: 'Rate limit exceeded',
           event: 'http.request.rate_limited',
@@ -361,7 +361,6 @@ export class HttpServer {
         event: 'http.request.unexpected_error',
         ...baseContext,
         err: error,
-        errorName: error.name,
       });
 
       return reply.status(500).send({
@@ -371,7 +370,7 @@ export class HttpServer {
     });
   }
 
-  private sanitizeErrorResponse(errorRaw: Error): Record<string, unknown> {
+  private sanitizeErrorResponse(errorRaw: unknown): Record<string, unknown> {
     const error = serializeError(errorRaw);
     const allowedFields = ['name', 'message'];
     const sanitized: Record<string, unknown> = {};
