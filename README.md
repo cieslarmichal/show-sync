@@ -2,7 +2,7 @@
 
 **End the streaming debate. Start watching together.**
 
-ShowSync is an intelligent TV series recommendation platform that eliminates the frustration of group decision-making. Using advanced AI analysis, it discovers the perfect shows that match everyone's taste—turning hours of scrolling and debating into minutes of confident choices.
+ShowSync is an intelligent TV series recommendation platform that eliminates the frustration of group decision-making. Using advanced AI analysis, it discovers the perfect shows that match everyone's taste.
 
 ## Table of Contents
 
