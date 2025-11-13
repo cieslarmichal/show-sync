@@ -9,7 +9,7 @@ describe('LoginForm', () => {
 
     expect(screen.getByLabelText(/email/i)).toBeInTheDocument();
     // Password field has a wrapper div due to the show/hide icon
-    expect(screen.getByPlaceholderText(/your password/i)).toBeInTheDocument();
+    expect(screen.getByPlaceholderText(/enter your password/i)).toBeInTheDocument();
   });
 
   it('should render sign in button', async () => {
@@ -30,7 +30,7 @@ describe('LoginForm', () => {
     await renderWithProviders(<LoginForm />);
 
     const emailInput = screen.getByLabelText(/email/i);
-    const passwordInput = screen.getByPlaceholderText(/your password/i);
+    const passwordInput = screen.getByPlaceholderText(/enter your password/i);
     const submitButton = screen.getByRole('button', { name: /sign in/i });
 
     await user.type(emailInput, 'test@example.com');
@@ -45,7 +45,7 @@ describe('LoginForm', () => {
     const user = userEvent.setup();
     await renderWithProviders(<LoginForm />);
 
-    const passwordInput = screen.getByPlaceholderText(/your password/i);
+    const passwordInput = screen.getByPlaceholderText(/enter your password/i);
     const toggleButton = screen.getAllByRole('button')[0]; // First button is the eye icon
 
     expect(passwordInput).toHaveAttribute('type', 'password');
