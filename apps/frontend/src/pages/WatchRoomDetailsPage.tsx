@@ -76,7 +76,7 @@ export default function WatchRoomDetailsPage() {
               onClick={() => navigate('/watchrooms')}
               className="w-full"
             >
-              Back to Rooms
+              Back to Watch Rooms
             </Button>
           </CardContent>
         </Card>
@@ -98,7 +98,7 @@ export default function WatchRoomDetailsPage() {
             className="group -ml-2 hover:bg-primary/5 transition-all"
           >
             <ArrowLeft className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" />
-            Back to Rooms
+            Back to Watch Rooms
           </Button>
 
           {/* Room Header Card */}

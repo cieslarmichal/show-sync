@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { toast } from 'sonner';
-import { Copy, Users, Trash2, Calendar } from 'lucide-react';
+import { Copy, Trash2, Calendar, Users } from 'lucide-react';
 
 import { deleteWatchroom } from '../../api/queries/watchroom.ts';
 import type { WatchroomDetails } from '../../api/types/watchroom.ts';
@@ -46,64 +46,67 @@ export function RoomHeader({ room, isOwner, onCopyLink, onRoomUpdated, onRoomDel
   return (
     <>
       <Card className="border-2 shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden">
-        <CardHeader className="relative pb-6 space-y-4">
-          <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
-            <div className="flex-1 min-w-0 space-y-3">
-              <div className="flex items-center flex-wrap gap-3">
-                <CardTitle className="text-3xl sm:text-4xl font-bold tracking-tight">{room.name}</CardTitle>
-                {isOwner && (
-                  <Badge className="bg-primary/10 text-primary border border-primary/20 font-medium">
-                    <Users className="w-3 h-3 mr-1" />
-                    Owner
-                  </Badge>
-                )}
-              </div>
-              {room.description && (
-                <CardDescription className="text-base leading-relaxed text-muted-foreground">
-                  {room.description}
-                </CardDescription>
-              )}
-              <div className="flex items-center text-sm text-muted-foreground">
-                <Calendar className="w-3.5 h-3.5 mr-1.5" />
-                <span>
-                  Created{' '}
-                  {new Date(room.createdAt).toLocaleDateString('en-US', {
-                    month: 'short',
-                    day: 'numeric',
-                    year: 'numeric',
-                  })}
-                </span>
-              </div>
-            </div>
-            <div className="flex flex-wrap gap-2">
-              <Button
-                variant="default"
-                onClick={onCopyLink}
-                className="shadow-sm hover:shadow-md transition-all"
-                data-testid="copy-invite-link-button"
-              >
-                <Copy className="w-4 h-4 mr-2" />
-                Copy Link
-              </Button>
+        <CardHeader className="relative space-y-6">
+          <div className="space-y-4">
+            <div className="flex items-center justify-between gap-4">
+              <CardTitle className="text-3xl sm:text-4xl font-bold tracking-tight truncate flex-1 min-w-0">
+                {room.name}
+              </CardTitle>
               {isOwner && (
-                <>
-                  <EditWatchRoomModal
-                    watchroomId={room.id}
-                    currentName={room.name}
-                    currentDescription={room.description}
-                    onRoomUpdated={onRoomUpdated}
-                  />
-                  <Button
-                    variant="outline"
-                    onClick={() => setConfirmDeleteDialog(true)}
-                    className="shadow-sm hover:shadow-md hover:bg-destructive/10 hover:text-destructive hover:border-destructive transition-all"
-                  >
-                    <Trash2 className="w-4 h-4 mr-2" />
-                    Delete Room
-                  </Button>
-                </>
+                <Badge className="shrink-0 bg-primary/10 text-primary border border-primary/20 font-medium whitespace-nowrap">
+                  <Users className="w-3 h-3 mr-1" />
+                  Owner
+                </Badge>
               )}
             </div>
+
+            {room.description && (
+              <CardDescription className="text-base leading-relaxed text-muted-foreground">
+                {room.description}
+              </CardDescription>
+            )}
+
+            <div className="flex items-center text-sm text-muted-foreground">
+              <Calendar className="w-3.5 h-3.5 mr-1.5" />
+              <span>
+                Created{' '}
+                {new Date(room.createdAt).toLocaleDateString('en-US', {
+                  month: 'short',
+                  day: 'numeric',
+                  year: 'numeric',
+                })}
+              </span>
+            </div>
+          </div>
+
+          <div className="flex flex-wrap gap-2 pt-2 border-t border-border/40">
+            <Button
+              variant="default"
+              onClick={onCopyLink}
+              className="shadow-sm hover:shadow-md transition-all"
+              data-testid="copy-invite-link-button"
+            >
+              <Copy className="w-4 h-4 mr-2" />
+              Copy Link
+            </Button>
+            {isOwner && (
+              <>
+                <EditWatchRoomModal
+                  watchroomId={room.id}
+                  currentName={room.name}
+                  currentDescription={room.description}
+                  onRoomUpdated={onRoomUpdated}
+                />
+                <Button
+                  variant="outline"
+                  onClick={() => setConfirmDeleteDialog(true)}
+                  className="shadow-sm hover:shadow-md hover:bg-destructive/10 hover:text-destructive hover:border-destructive transition-all"
+                >
+                  <Trash2 className="w-4 h-4 mr-2" />
+                  Delete Room
+                </Button>
+              </>
+            )}
           </div>
         </CardHeader>
       </Card>

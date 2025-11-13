@@ -162,44 +162,41 @@ export default function WatchRoomsPage() {
                     return (
                       <Card
                         key={room.id}
-                        className="flex flex-col h-full border-2 hover:border-primary/50 hover:shadow-lg transition-all duration-300 group"
+                        className="flex flex-col h-full border-2 hover:border-primary/50 hover:shadow-lg transition-all duration-300 group overflow-hidden"
                       >
-                        <CardHeader className="px-6 pb-4">
-                          <CardTitle className="text-xl font-semibold line-clamp-1 mb-3 group-hover:text-primary transition-colors">
+                        <CardHeader className="px-6 py-5 space-y-4 border-b border-border/40">
+                          <CardTitle className="text-xl font-bold truncate group-hover:text-primary transition-colors">
                             {room.name}
                           </CardTitle>
-                          <div className="flex items-center flex-wrap gap-2 mb-2">
+                          <div className="flex items-center flex-wrap gap-2">
                             <Badge
                               variant="secondary"
                               className="shrink-0 text-xs bg-secondary/50 font-medium"
                             >
                               <Users className="w-3 h-3 mr-1.5" />
-                              {room.participants.length} / {config.watchroom.maxParticipants}
+                              {room.participants.length}/{config.watchroom.maxParticipants}
                             </Badge>
                             {isOwner && (
-                              <Badge
-                                variant="outline"
-                                className="shrink-0 text-xs border-muted-foreground/30 font-medium"
-                              >
+                              <Badge className="shrink-0 bg-primary/10 text-primary border border-primary/20 font-medium text-xs whitespace-nowrap">
                                 Owner
                               </Badge>
                             )}
-                          </div>
-                          <div className="flex items-center text-xs text-muted-foreground">
-                            <Calendar className="w-3 h-3 mr-1.5 shrink-0" />
-                            <span>
-                              {new Date(room.createdAt).toLocaleDateString('en-US', {
-                                month: 'short',
-                                day: 'numeric',
-                                year: 'numeric',
-                              })}
-                            </span>
+                            <div className="flex items-center text-xs text-muted-foreground ml-auto">
+                              <Calendar className="w-3 h-3 mr-1.5 shrink-0" />
+                              <span className="whitespace-nowrap">
+                                {new Date(room.createdAt).toLocaleDateString('en-US', {
+                                  month: 'short',
+                                  day: 'numeric',
+                                  year: 'numeric',
+                                })}
+                              </span>
+                            </div>
                           </div>
                         </CardHeader>
 
                         <CardContent className="grow px-6 py-4">
                           {room.description ? (
-                            <CardDescription className="line-clamp-2 text-sm leading-relaxed">
+                            <CardDescription className="line-clamp-4 text-sm leading-relaxed">
                               {room.description}
                             </CardDescription>
                           ) : (
@@ -212,7 +209,7 @@ export default function WatchRoomsPage() {
                             <Button
                               size="sm"
                               onClick={() => handleOpenWatchRoom(room.id)}
-                              className="flex-1 font-semibold"
+                              className="flex-1 shadow-sm hover:shadow-md transition-all"
                             >
                               Open
                               <ExternalLink className="w-4 h-4 ml-2" />
@@ -221,7 +218,7 @@ export default function WatchRoomsPage() {
                               variant="outline"
                               size="sm"
                               onClick={() => handleCopyLink(room.publicLinkId)}
-                              className="flex-1 font-semibold"
+                              className="flex-1 shadow-sm hover:shadow-md transition-all"
                             >
                               <Copy className="w-4 h-4 mr-2" />
                               Share
