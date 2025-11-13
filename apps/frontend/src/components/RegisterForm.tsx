@@ -117,7 +117,7 @@ export default function RegisterForm({ onSuccess }: Props) {
                     <User className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                     <Input
                       id="name"
-                      placeholder="John Doe"
+                      placeholder="Enter your name"
                       className="pl-10 h-11"
                       {...field}
                     />
@@ -187,7 +187,7 @@ export default function RegisterForm({ onSuccess }: Props) {
                     <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                     <Input
                       id="password"
-                      placeholder="At least 8 characters"
+                      placeholder="Enter your password"
                       type={showPassword ? 'text' : 'password'}
                       className="pl-10 h-11"
                       {...field}
