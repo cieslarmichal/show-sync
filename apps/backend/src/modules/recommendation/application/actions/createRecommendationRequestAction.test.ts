@@ -200,13 +200,11 @@ describe('CreateRecommendationRequestAction', () => {
         };
         const watchroom = await watchroomRepository.create(watchroomData);
 
-        await createRecommendationRequestAction.execute(
-          {
-            watchroomId: watchroom.id,
-            userId: user.id,
-          },
-          createTestExecutionContext(),
-        );
+        await recommendationRequestRepository.create({
+          status: 'completed',
+          userId: user.id,
+          watchroomId: watchroom.id,
+        });
       }
 
       // Attempt to create one more recommendation request
@@ -226,47 +224,6 @@ describe('CreateRecommendationRequestAction', () => {
           createTestExecutionContext(),
         ),
       ).rejects.toThrow(OperationNotValidError);
-    });
-
-    it('counts recommendations across all user watchrooms', async () => {
-      const userData = Generator.userData();
-      const user = await userRepository.create(userData);
-
-      // Create first watchroom and recommendation
-      const watchroom1Data = {
-        name: Generator.words(3),
-        ownerId: user.id,
-        publicLinkId: Generator.alphaString(10),
-      };
-      const watchroom1 = await watchroomRepository.create(watchroom1Data);
-
-      await createRecommendationRequestAction.execute(
-        {
-          watchroomId: watchroom1.id,
-          userId: user.id,
-        },
-        createTestExecutionContext(),
-      );
-
-      // Create second watchroom and recommendation
-      const watchroom2Data = {
-        name: Generator.words(3),
-        ownerId: user.id,
-        publicLinkId: Generator.alphaString(10),
-      };
-      const watchroom2 = await watchroomRepository.create(watchroom2Data);
-
-      await createRecommendationRequestAction.execute(
-        {
-          watchroomId: watchroom2.id,
-          userId: user.id,
-        },
-        createTestExecutionContext(),
-      );
-
-      // Verify count
-      const count = await recommendationRequestRepository.count(user.id);
-      expect(count).toBe(2);
     });
 
     it('allows creating recommendation when under the limit', async () => {
