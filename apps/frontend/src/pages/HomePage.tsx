@@ -34,11 +34,10 @@ export default function HomePage() {
             {/* Hero Section */}
             <div className="text-center pt-8 sm:pt-12">
               <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold text-foreground mb-6 tracking-tight leading-[1.1] max-w-4xl mx-auto px-4 animate-in fade-in slide-in-from-bottom-4 duration-700">
-                Find shows everyone <span className="text-primary inline-block">actually wants to watch</span>
+                Stop arguing about <span className="text-primary inline-block">what to watch</span>
               </h1>
               <p className="text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto mb-10 leading-relaxed px-4 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-150">
-                No more wasting 30 minutes arguing. Get personalized recommendations that match your group's taste in
-                seconds.
+                Get personalized recommendations that everyone agrees on.
               </p>
               <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 mb-8 text-sm px-4">
                 <div className="flex items-center gap-2 px-3 py-1.5 bg-primary/5 rounded-full">
@@ -162,7 +161,7 @@ export default function HomePage() {
                     <div>
                       <h3 className="text-lg font-semibold text-foreground mb-2">Save Hours of Scrolling</h3>
                       <p className="text-muted-foreground leading-relaxed">
-                        Stop spending more time choosing than watching. Get your perfect match in seconds, not minutes.
+                        Stop spending more time choosing than watching. Get your perfect match in seconds, not hours.
                       </p>
                     </div>
                   </div>
