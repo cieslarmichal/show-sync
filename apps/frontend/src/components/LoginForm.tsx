@@ -36,6 +36,9 @@ export default function LoginForm() {
     try {
       await loginUser({ email: values.email, password: values.password });
 
+      // add 1 second delay to show the submitting state
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
       navigate(redirectTo || '/dashboard');
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Invalid email or password';

@@ -20,6 +20,7 @@ import WatchRoomsPage from './pages/WatchRoomsPage.tsx';
 import ProfilePage from './pages/ProfilePage.tsx';
 import JoinWatchRoomPage from './pages/JoinWatchRoomPage.tsx';
 import WatchRoomDetailsPage from './pages/WatchRoomDetailsPage.tsx';
+import NotFoundPage from './pages/NotFoundPage.tsx';
 
 const router = createBrowserRouter([
   {
@@ -97,6 +98,10 @@ const router = createBrowserRouter([
             <ProfilePage />
           </PrivateRoute>
         ),
+      },
+      {
+        path: '*',
+        element: <NotFoundPage />,
       },
     ],
   },
