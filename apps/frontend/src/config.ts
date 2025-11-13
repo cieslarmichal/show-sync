@@ -11,16 +11,11 @@ const appConfig = {
     maxParticipants: 6,
   },
   series: {
-    // Minimum requirements to create a watch room
-    minTotalForRoom: 5,
-    minLovedForRoom: 2,
+    minRatedShowsToCreateWatchRoom: 3,
     // Accuracy tiers for recommendations
-    basicAccuracy: 5, // Minimum to get recommendations
+    basicAccuracy: 3, // Minimum to get recommendations
     goodAccuracy: 8, // Good quality matches
     maxAccuracy: 15, // Best possible matches
-    // Setup requirements (shown in onboarding flow)
-    minLovedSetup: 3, // Required loved series
-    minLikedSetup: 5, // Required liked series
   },
 };
 
@@ -30,13 +25,10 @@ const configSchema = z.object({
     maxParticipants: z.number().min(1).max(100),
   }),
   series: z.object({
-    minTotalForRoom: z.number().min(1),
-    minLovedForRoom: z.number().min(1),
+    minRatedShowsToCreateWatchRoom: z.number().min(1),
     basicAccuracy: z.number().min(1),
     goodAccuracy: z.number().min(1),
     maxAccuracy: z.number().min(1),
-    minLovedSetup: z.number().min(1),
-    minLikedSetup: z.number().min(1),
   }),
 });
 

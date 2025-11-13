@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { Button } from '../components/ui/Button';
 import { Card } from '../components/ui/Card';
-import { Heart, BrainCircuit, PartyPopper, Tv, Users, Sparkles, Clock, CheckCircle2 } from 'lucide-react';
+import { Heart, BrainCircuit, PartyPopper, Users, Sparkles, Clock, CheckCircle2 } from 'lucide-react';
 import { useSEO } from '../hooks/useSEO';
 
 export default function HomePage() {
@@ -95,7 +95,7 @@ export default function HomePage() {
                 <div className="space-y-4 group">
                   <div className="flex justify-center">
                     <div className="p-5 bg-primary/10 rounded-full group-hover:bg-primary/20 transition-colors">
-                      <Tv className="h-8 w-8 text-primary" />
+                      <Users className="h-8 w-8 text-primary" />
                     </div>
                   </div>
                   <h3 className="text-xl font-semibold text-foreground">2. Invite Your Crew</h3>
@@ -134,8 +134,8 @@ export default function HomePage() {
                     <div>
                       <h3 className="text-lg font-semibold text-foreground mb-2">Actually Smart Recommendations</h3>
                       <p className="text-muted-foreground leading-relaxed">
-                        Our AI learns your unique taste and finds hidden gems you'll love—not just the same popular
-                        shows everyone recommends.
+                        We analyze your unique taste and find hidden gems you'll love — not just the same popular shows
+                        everyone recommends.
                       </p>
                     </div>
                   </div>
@@ -148,8 +148,8 @@ export default function HomePage() {
                     <div>
                       <h3 className="text-lg font-semibold text-foreground mb-2">Perfect for Groups or Solo</h3>
                       <p className="text-muted-foreground leading-relaxed">
-                        Whether it's date night, family time, or just you on the couch—get recommendations that work for
-                        any situation.
+                        Whether it's date night, family time, or just you on the couch — get recommendations that work
+                        for any situation.
                       </p>
                     </div>
                   </div>

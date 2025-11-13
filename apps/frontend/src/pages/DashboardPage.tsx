@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react';
+import { useContext, useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import { SeriesContext } from '../context/SeriesContext';
@@ -13,9 +13,12 @@ import {
   DialogTitle,
 } from '../components/ui/Dialog';
 import { Skeleton } from '../components/ui/Skeleton';
-import { Heart, Tv, Check, Lock } from 'lucide-react';
+import { Progress } from '../components/ui/Progress';
+import { ChecklistItem } from '../components/ui/ChecklistItem';
+import { Heart, Lock, Sparkles, Users, ArrowRight, Lightbulb, UserPlus } from 'lucide-react';
 import { config } from '../config';
 import { useSEO } from '../hooks/useSEO';
+import { useConfetti } from '../hooks/useConfetti';
 
 export default function DashboardPage() {
   useSEO({
@@ -25,15 +28,49 @@ export default function DashboardPage() {
   });
 
   const { userDataInitialized } = useContext(AuthContext);
-  const { lovedCount, likedCount, totalCount } = useContext(SeriesContext);
+  const { totalCount } = useContext(SeriesContext);
   const navigate = useNavigate();
   const [lockedDialogOpen, setLockedDialogOpen] = useState(false);
+  const confetti = useConfetti();
+  const previousTotalCount = useRef(totalCount);
 
-  const canCreateRoom = totalCount >= config.series.minTotalForRoom && lovedCount >= config.series.minLovedForRoom;
+  const canCreateRoom = totalCount >= config.series.minRatedShowsToCreateWatchRoom;
 
   // Derived values used for display
   const toReachGoodAccuracy = Math.max(config.series.goodAccuracy - totalCount, 0);
   const toReachMaxAccuracy = Math.max(config.series.maxAccuracy - totalCount, 0);
+
+  // Trigger confetti when milestones are reached
+  useEffect(() => {
+    if (!userDataInitialized) return;
+
+    const justReachedGood =
+      previousTotalCount.current < config.series.goodAccuracy && totalCount >= config.series.goodAccuracy;
+    const justReachedMax =
+      previousTotalCount.current < config.series.maxAccuracy && totalCount >= config.series.maxAccuracy;
+
+    if (justReachedMax) {
+      confetti.trigger({ particleCount: 100, spread: 120, origin: { x: 0.5, y: 0.4 } });
+    } else if (justReachedGood) {
+      confetti.trigger({ particleCount: 50, spread: 100, origin: { x: 0.5, y: 0.4 } });
+    }
+
+    previousTotalCount.current = totalCount;
+  }, [totalCount, userDataInitialized, confetti]);
+
+  // Progress milestones for visual markers
+  const progressMilestones = [
+    {
+      value: config.series.goodAccuracy,
+      label: 'Good',
+      color: 'bg-gradient-to-r from-violet-500 to-purple-400',
+    },
+    {
+      value: config.series.maxAccuracy,
+      label: 'Best',
+      color: 'bg-gradient-to-r from-emerald-500 to-emerald-400',
+    },
+  ];
 
   // Lightweight, card-level skeletons while data initializes (keeps layout stable)
   const renderSkeletons = () => (
@@ -98,20 +135,85 @@ export default function DashboardPage() {
           <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-20">
             <div className="animate-fade-in space-y-12">
               {/* Welcome Section */}
-              <div className="text-center">
+              <div className="text-center space-y-4">
                 <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-foreground mb-4 tracking-tight leading-[1.1]">
                   Your ShowSync Dashboard
                 </h1>
-                <p className="text-lg sm:text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-                  Rate shows to build your taste profile, then create watch rooms to get personalized recommendations
-                </p>
+
+                {/* Visual flow indicator - Desktop */}
+                <div className="hidden md:flex items-center justify-center gap-3 pt-10">
+                  <button
+                    onClick={() => navigate('/series')}
+                    className="flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 transition-all hover:bg-primary/15 hover:scale-105 cursor-pointer"
+                  >
+                    <Heart className="w-4 h-4 text-primary" />
+                    <span className="text-sm font-medium text-foreground">Rate Shows</span>
+                  </button>
+                  <ArrowRight className="w-5 h-5 text-muted-foreground animate-pulse" />
+                  <button
+                    onClick={() => (canCreateRoom ? navigate('/watchrooms') : setLockedDialogOpen(true))}
+                    className="flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 transition-all hover:bg-primary/15 hover:scale-105 cursor-pointer"
+                  >
+                    <Users className="w-4 h-4 text-primary" />
+                    <span className="text-sm font-medium text-foreground">Create Watch Room</span>
+                  </button>
+                  <ArrowRight className="w-5 h-5 text-muted-foreground animate-pulse" />
+                  <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20">
+                    <UserPlus className="w-4 h-4 text-primary" />
+                    <span className="text-sm font-medium text-foreground">Invite Friends (or not)</span>
+                  </div>
+                  <ArrowRight className="w-5 h-5 text-muted-foreground animate-pulse" />
+                  <button
+                    onClick={() => (canCreateRoom ? navigate('/watchrooms') : setLockedDialogOpen(true))}
+                    className="flex items-center gap-2 px-4 py-2 rounded-full bg-linear-to-r from-violet-500/10 to-purple-500/10 border border-violet-500/30 shadow-sm transition-all hover:shadow-md hover:scale-105 cursor-pointer"
+                  >
+                    <Sparkles className="w-4 h-4 text-violet-600 dark:text-violet-400" />
+                    <span className="text-sm font-medium text-violet-700 dark:text-violet-300">
+                      Get Recommendations
+                    </span>
+                  </button>
+                </div>
+
+                {/* Visual flow indicator - Mobile (vertical) */}
+                <div className="flex md:hidden flex-col items-center gap-2 pt-2">
+                  <button
+                    onClick={() => navigate('/series')}
+                    className="flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 cursor-pointer transition-all hover:bg-primary/15 hover:scale-105"
+                  >
+                    <Heart className="w-4 h-4 text-primary" />
+                    <span className="text-sm font-medium text-foreground">Rate Shows</span>
+                  </button>
+                  <ArrowRight className="w-4 h-4 text-muted-foreground rotate-90 animate-pulse" />
+                  <button
+                    onClick={() => (canCreateRoom ? navigate('/watchrooms') : setLockedDialogOpen(true))}
+                    className="flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 cursor-pointer transition-all hover:bg-primary/15 hover:scale-105"
+                  >
+                    <Users className="w-4 h-4 text-primary" />
+                    <span className="text-sm font-medium text-foreground">Create Watch Room</span>
+                  </button>
+                  <ArrowRight className="w-4 h-4 text-muted-foreground rotate-90 animate-pulse" />
+                  <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20">
+                    <UserPlus className="w-4 h-4 text-primary" />
+                    <span className="text-sm font-medium text-foreground">Invite Friends</span>
+                  </div>
+                  <ArrowRight className="w-4 h-4 text-muted-foreground rotate-90 animate-pulse" />
+                  <button
+                    onClick={() => (canCreateRoom ? navigate('/watchrooms') : setLockedDialogOpen(true))}
+                    className="flex items-center gap-2 px-4 py-2 rounded-full bg-linear-to-r from-violet-500/10 to-purple-500/10 border border-violet-500/30 shadow-sm cursor-pointer transition-all hover:shadow-md hover:scale-105"
+                  >
+                    <Sparkles className="w-4 h-4 text-violet-600 dark:text-violet-400" />
+                    <span className="text-sm font-medium text-violet-700 dark:text-violet-300">
+                      Get Recommendations
+                    </span>
+                  </button>
+                </div>
               </div>
 
               {/* Main Actions Section */}
               {userDataInitialized ? (
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8 mt-15">
                   {/* Card 1: Your Profile / Match Power */}
-                  <Card className="flex flex-col h-full border-2 hover:border-primary/50 hover:shadow-lg transition-all duration-300">
+                  <Card className="flex flex-col h-full border-2 hover:border-primary/50 transition-all duration-300 hover:shadow-xl hover:-translate-y-0.5">
                     <CardHeader>
                       <div className="flex items-center gap-4">
                         <div className="p-3 bg-primary/10 rounded-lg">
@@ -121,9 +223,9 @@ export default function DashboardPage() {
                           />
                         </div>
                         <div>
-                          <CardTitle className="text-xl font-semibold">Build Your Taste Profile</CardTitle>
+                          <CardTitle className="text-xl font-semibold">Build Your Profile</CardTitle>
                           <CardDescription className="text-sm">
-                            The more you rate, the better your recommendations
+                            Rate shows you love to get better recommendations
                           </CardDescription>
                         </div>
                       </div>
@@ -137,42 +239,38 @@ export default function DashboardPage() {
                             {totalCount}/{config.series.maxAccuracy}
                           </div>
                         </div>
-                        <div
-                          className="w-full rounded-full h-3 bg-gray-200 dark:bg-gray-700 border border-black/5 dark:border-white/10 overflow-hidden"
-                          role="progressbar"
-                          aria-label="Taste profile progress"
-                          aria-valuemin={0}
-                          aria-valuemax={config.series.maxAccuracy}
-                          aria-valuenow={totalCount}
-                        >
-                          <div
-                            className={`h-3 rounded-full transition-all duration-500 motion-reduce:transition-none ${
-                              totalCount < config.series.goodAccuracy
-                                ? 'bg-linear-to-r from-amber-500 to-amber-400'
-                                : totalCount < config.series.maxAccuracy
-                                  ? 'bg-linear-to-r from-violet-500 to-purple-400'
-                                  : 'bg-linear-to-r from-emerald-500 to-emerald-400'
-                            }`}
-                            style={{
-                              width: `${Math.min((totalCount / config.series.maxAccuracy) * 100, 100)}%`,
-                            }}
-                          />
-                        </div>
-                        <div className="flex items-center justify-center gap-1.5">
-                          {totalCount < config.series.goodAccuracy ? (
+                        <Progress
+                          value={totalCount}
+                          max={config.series.maxAccuracy}
+                          milestones={progressMilestones}
+                          showMilestones={true}
+                          className="my-2"
+                        />
+                        <div className="flex items-center justify-center gap-1.5 pt-2">
+                          {totalCount === 0 ? (
+                            <div className="text-center space-y-2 py-2">
+                              <p className="text-sm text-muted-foreground flex items-center justify-center gap-2">
+                                <Lightbulb className="w-4 h-4 text-amber-500" />
+                                <span className="font-medium text-foreground">Start by rating your first show!</span>
+                              </p>
+                              <p className="text-xs text-muted-foreground">
+                                The more shows you rate, the better your recommendations will be
+                              </p>
+                            </div>
+                          ) : totalCount < config.series.goodAccuracy ? (
                             <span className="text-xs text-muted-foreground">
                               Rate {toReachGoodAccuracy} more {toReachGoodAccuracy === 1 ? 'show' : 'shows'} for good
                               recommendations
                             </span>
                           ) : totalCount < config.series.maxAccuracy ? (
-                            <span className="text-xs text-violet-600 dark:text-violet-400 font-medium flex items-center gap-1">
-                              <Check className="w-3 h-3" />
-                              Good recommendations • Rate {toReachMaxAccuracy} more for best results
+                            <span className="text-xs text-violet-600 dark:text-violet-400 font-medium flex items-center gap-1.5">
+                              <Sparkles className="w-3 h-3 animate-pulse" />
+                              Good recommendations unlocked • Rate {toReachMaxAccuracy} more for best results
                             </span>
                           ) : (
-                            <span className="text-xs text-emerald-600 dark:text-emerald-400 font-medium flex items-center gap-1">
-                              <Check className="w-3 h-3" />
-                              Best recommendations unlocked
+                            <span className="text-xs text-emerald-600 dark:text-emerald-400 font-medium flex items-center gap-1.5">
+                              <Sparkles className="w-3 h-3" />
+                              🎉 Best recommendations unlocked!
                               {totalCount > config.series.maxAccuracy &&
                                 ` • +${totalCount - config.series.maxAccuracy} extra`}
                             </span>
@@ -182,188 +280,107 @@ export default function DashboardPage() {
 
                       {/* Setup Requirements */}
                       <div className="space-y-3">
-                        <div className="text-sm font-medium text-foreground">Quick Start Checklist:</div>
-                        <div className="space-y-2">
-                          <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/30 transition-colors hover:bg-muted/50">
-                            <div
-                              className={`shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold transition-colors ${
-                                lovedCount >= config.series.minLovedSetup
-                                  ? 'bg-emerald-500 text-white'
-                                  : 'bg-background text-muted-foreground border-2 border-border'
-                              }`}
-                            >
-                              {lovedCount >= config.series.minLovedSetup ? <Check className="w-3.5 h-3.5" /> : '1'}
-                            </div>
-                            <div className="flex-1">
-                              <div className="text-sm font-medium text-foreground">
-                                Love {config.series.minLovedSetup} shows
-                              </div>
-                              <div className="text-xs text-muted-foreground">
-                                {Math.min(lovedCount, config.series.minLovedSetup)}/{config.series.minLovedSetup}{' '}
-                                completed
-                              </div>
-                            </div>
-                            {lovedCount >= config.series.minLovedSetup && (
-                              <span className="text-emerald-600 dark:text-emerald-400 text-xs font-semibold">
-                                ✓ Done
-                              </span>
-                            )}
-                          </div>
-
-                          <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/30 transition-colors hover:bg-muted/50">
-                            <div
-                              className={`shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold transition-colors ${
-                                likedCount >= config.series.minLikedSetup
-                                  ? 'bg-emerald-500 text-white'
-                                  : 'bg-background text-muted-foreground border-2 border-border'
-                              }`}
-                            >
-                              {likedCount >= config.series.minLikedSetup ? <Check className="w-3.5 h-3.5" /> : '2'}
-                            </div>
-                            <div className="flex-1">
-                              <div className="text-sm font-medium text-foreground">
-                                Like {config.series.minLikedSetup} shows
-                              </div>
-                              <div className="text-xs text-muted-foreground">
-                                {Math.min(likedCount, config.series.minLikedSetup)}/{config.series.minLikedSetup}{' '}
-                                completed
-                              </div>
-                            </div>
-                            {likedCount >= config.series.minLikedSetup && (
-                              <span className="text-emerald-600 dark:text-emerald-400 text-xs font-semibold">
-                                ✓ Done
-                              </span>
-                            )}
-                          </div>
-                        </div>
+                        <div className="text-sm font-medium text-foreground">To unlock watch rooms:</div>
+                        <ChecklistItem
+                          number={1}
+                          title={`Rate ${config.series.minRatedShowsToCreateWatchRoom} shows`}
+                          subtitle={`${Math.min(totalCount, config.series.minRatedShowsToCreateWatchRoom)}/${config.series.minRatedShowsToCreateWatchRoom} completed`}
+                          completed={totalCount >= config.series.minRatedShowsToCreateWatchRoom}
+                          onClick={() => navigate('/series')}
+                        />
                       </div>
                     </CardContent>
                     <CardFooter>
                       <Button
-                        className="w-full h-12 font-semibold hover:scale-[1.02] transition-all"
+                        className="w-full h-12 font-semibold hover:scale-[1.02] active:scale-[0.98] transition-all shadow-md hover:shadow-lg"
                         size="lg"
                         onClick={() => navigate('/series')}
                         data-testid="rate-more-series-button"
                       >
-                        {totalCount === 0 ? 'Start Rating Shows' : 'Rate More Shows'}
+                        {totalCount === 0 ? (
+                          <span className="flex items-center gap-2">
+                            <Heart className="w-4 h-4" />
+                            Start Rating Shows
+                          </span>
+                        ) : (
+                          'Rate More Shows'
+                        )}
                       </Button>
                     </CardFooter>
                   </Card>
 
                   {/* Card 2: Create a Watch Room */}
-                  <Card className="flex flex-col h-full border-2 hover:border-primary/50 hover:shadow-lg transition-all duration-300">
-                    <CardHeader>
+                  <Card className="flex flex-col h-full border-2 hover:border-primary/50 transition-all duration-300 hover:shadow-xl hover:-translate-y-0.5 relative overflow-hidden">
+                    {/* Subtle badge for "recommendations happen here" */}
+                    <div className="absolute top-4 right-4 z-10">
+                      <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-violet-500/10 dark:bg-violet-400/10 border border-violet-500/20 dark:border-violet-400/20 text-violet-700 dark:text-violet-300 shadow-sm text-xs font-medium animate-fade-in backdrop-blur-sm">
+                        <Sparkles className="w-3 h-3" />
+                        AI-Powered
+                      </div>
+                    </div>
+
+                    <CardHeader className="relative pb-3">
                       <div className="flex items-center gap-4">
-                        <div className="p-3 bg-primary/10 rounded-lg">
-                          <Tv
+                        <div className="p-3 bg-linear-to-br from-primary/10 to-primary/5 rounded-xl shadow-sm">
+                          <Users
                             className="h-6 w-6 text-primary"
                             aria-hidden="true"
                           />
                         </div>
-                        <div>
+                        <div className="flex-1 pr-20">
                           <CardTitle className="text-xl font-semibold">Create a Watch Room</CardTitle>
-                          <CardDescription className="text-sm">
-                            Get personalized recommendations for your group
-                          </CardDescription>
+                          <CardDescription className="text-sm">Find shows everyone will love</CardDescription>
                         </div>
                       </div>
                     </CardHeader>
-                    <CardContent className="grow space-y-6">
-                      {/* Desktop: keep expanded */}
-                      <div className="space-y-4 hidden sm:block">
-                        <p className="text-sm font-medium text-foreground">How it works:</p>
-                        <ul className="space-y-3 text-sm">
-                          <li className="flex items-start gap-3 p-2 rounded-lg hover:bg-muted/30 transition-colors">
-                            <span className="shrink-0 flex items-center justify-center w-6 h-6 rounded-full bg-primary/10 text-primary font-bold text-xs">
-                              1
-                            </span>
-                            <div>
-                              <p className="font-medium text-foreground">Create your room</p>
-                              <p className="text-xs text-muted-foreground leading-relaxed">
-                                Get a shareable link instantly
-                              </p>
-                            </div>
-                          </li>
-                          <li className="flex items-start gap-3 p-2 rounded-lg hover:bg-muted/30 transition-colors">
-                            <span className="shrink-0 flex items-center justify-center w-6 h-6 rounded-full bg-primary/10 text-primary font-bold text-xs">
-                              2
-                            </span>
-                            <div>
-                              <p className="font-medium text-foreground">Invite friends</p>
-                              <p className="text-xs text-muted-foreground leading-relaxed">
-                                They join and rate their favorite shows
-                              </p>
-                            </div>
-                          </li>
-                          <li className="flex items-start gap-3 p-2 rounded-lg hover:bg-muted/30 transition-colors">
-                            <span className="shrink-0 flex items-center justify-center w-6 h-6 rounded-full bg-primary/10 text-primary font-bold text-xs">
-                              3
-                            </span>
-                            <div>
-                              <p className="font-medium text-foreground">Get matched</p>
-                              <p className="text-xs text-muted-foreground leading-relaxed">
-                                Discover shows everyone will love
-                              </p>
-                            </div>
-                          </li>
-                        </ul>
-                      </div>
-                      {/* Mobile: collapsed disclosure */}
-                      <details className="sm:hidden group">
-                        <summary className="cursor-pointer text-sm font-medium text-foreground list-none flex items-center gap-2">
-                          <span className="text-primary">→</span> How it works
-                        </summary>
-                        <ul className="mt-3 space-y-3 text-sm">
-                          <li className="flex items-start gap-3 p-2 rounded-lg bg-muted/30">
-                            <span className="shrink-0 flex items-center justify-center w-6 h-6 rounded-full bg-primary/10 text-primary font-bold text-xs">
-                              1
-                            </span>
-                            <div>
-                              <p className="font-medium text-foreground">Create your room</p>
-                              <p className="text-xs text-muted-foreground leading-relaxed">
-                                Get a shareable link instantly
-                              </p>
-                            </div>
-                          </li>
-                          <li className="flex items-start gap-3 p-2 rounded-lg bg-muted/30">
-                            <span className="shrink-0 flex items-center justify-center w-6 h-6 rounded-full bg-primary/10 text-primary font-bold text-xs">
-                              2
-                            </span>
-                            <div>
-                              <p className="font-medium text-foreground">Invite friends</p>
-                              <p className="text-xs text-muted-foreground leading-relaxed">
-                                They join and rate their favorite shows
-                              </p>
-                            </div>
-                          </li>
-                          <li className="flex items-start gap-3 p-2 rounded-lg bg-muted/30">
-                            <span className="shrink-0 flex items-center justify-center w-6 h-6 rounded-full bg-primary/10 text-primary font-bold text-xs">
-                              3
-                            </span>
-                            <div>
-                              <p className="font-medium text-foreground">Get matched</p>
-                              <p className="text-xs text-muted-foreground leading-relaxed">
-                                Discover shows everyone will love
-                              </p>
-                            </div>
-                          </li>
-                        </ul>
-                      </details>
-
-                      <div className="pt-4 border-t border-border">
-                        <p className="text-xs text-muted-foreground flex items-start gap-2 leading-relaxed">
-                          <span className="text-base">💡</span>
-                          <span>
-                            <strong className="text-foreground">Pro tip:</strong> Create a room just for yourself—no
-                            sharing required!
-                          </span>
-                        </p>
+                    <CardContent className="grow relative pt-1 pb-6">
+                      {/* Feature highlights with icons */}
+                      <div className="space-y-3.5">
+                        <div className="flex items-start gap-3 group">
+                          <div className="p-1.5 bg-primary/10 rounded-lg shrink-0 mt-0.5 group-hover:bg-primary/15 transition-colors">
+                            <Sparkles className="w-4 h-4 text-primary" />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className="text-sm text-foreground font-semibold leading-snug mb-1">
+                              Solo or Group Recommendations
+                            </p>
+                            <p className="text-xs text-muted-foreground leading-relaxed">
+                              Generate suggestions for yourself or invite friends
+                            </p>
+                          </div>
+                        </div>
+                        <div className="flex items-start gap-3 group">
+                          <div className="p-1.5 bg-primary/10 rounded-lg shrink-0 mt-0.5 group-hover:bg-primary/15 transition-colors">
+                            <Heart className="w-4 h-4 text-primary" />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className="text-sm text-foreground font-semibold leading-snug mb-1">
+                              Personalized Results
+                            </p>
+                            <p className="text-xs text-muted-foreground leading-relaxed">
+                              Skip shows you're not interested in to improve future recommendations
+                            </p>
+                          </div>
+                        </div>
+                        <div className="flex items-start gap-3 group">
+                          <div className="p-1.5 bg-primary/10 rounded-lg shrink-0 mt-0.5 group-hover:bg-primary/15 transition-colors">
+                            <Lightbulb className="w-4 h-4 text-primary" />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className="text-sm text-foreground font-semibold leading-snug mb-1">
+                              Smart Customization
+                            </p>
+                            <p className="text-xs text-muted-foreground leading-relaxed">
+                              Adjust room descriptions to get more targeted suggestions
+                            </p>
+                          </div>
+                        </div>
                       </div>
                     </CardContent>
-                    <CardFooter className="flex flex-col items-start gap-3 w-full">
+                    <CardFooter className="flex flex-col items-start gap-3 w-full relative">
                       <div className="w-full">
                         <Button
-                          className="w-full h-12 font-semibold hover:scale-[1.02] transition-all"
+                          className="w-full h-12 font-semibold hover:scale-[1.02] active:scale-[0.98] transition-all shadow-md hover:shadow-lg"
                           onClick={() => (canCreateRoom ? navigate('/watchrooms') : setLockedDialogOpen(true))}
                           size="lg"
                           data-testid="create-room-button"
@@ -377,7 +394,10 @@ export default function DashboardPage() {
                               Create Watch Room
                             </span>
                           ) : (
-                            'Create Watch Room'
+                            <span className="inline-flex items-center gap-2">
+                              <Sparkles className="w-4 h-4" />
+                              Create Watch Room
+                            </span>
                           )}
                         </Button>
                       </div>
@@ -399,60 +419,27 @@ export default function DashboardPage() {
       >
         <DialogContent>
           <DialogHeader>
-            <DialogTitle className="text-2xl">Almost there!</DialogTitle>
+            <DialogTitle className="text-2xl flex items-center gap-2">
+              <Sparkles className="w-6 h-6 text-primary" />
+              Almost there!
+            </DialogTitle>
             <DialogDescription className="text-base">
-              Rate a few more shows to unlock watch rooms and start getting recommendations.
+              Just rate a few shows to unlock watch rooms and get AI-powered recommendations!
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-3 py-2">
-            <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/30">
-              <span
-                className={`shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${
-                  lovedCount >= config.series.minLovedForRoom
-                    ? 'bg-emerald-500 text-white'
-                    : 'bg-muted text-muted-foreground border-2 border-border'
-                }`}
-              >
-                {lovedCount >= config.series.minLovedForRoom ? <Check className="w-3 h-3" /> : '1'}
-              </span>
-              <div className="flex-1">
-                <div className="text-sm font-medium text-foreground">Love {config.series.minLovedForRoom} shows</div>
-                <div className="text-xs text-muted-foreground">
-                  {Math.min(lovedCount, config.series.minLovedForRoom)}/{config.series.minLovedForRoom} completed
-                </div>
-              </div>
-              {lovedCount >= config.series.minLovedForRoom && (
-                <span className="text-emerald-600 dark:text-emerald-400 text-xs font-semibold">✓</span>
-              )}
-            </div>
-            <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/30">
-              <span
-                className={`shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${
-                  totalCount >= config.series.minTotalForRoom
-                    ? 'bg-emerald-500 text-white'
-                    : 'bg-muted text-muted-foreground border-2 border-border'
-                }`}
-              >
-                {totalCount >= config.series.minTotalForRoom ? <Check className="w-3 h-3" /> : '2'}
-              </span>
-              <div className="flex-1">
-                <div className="text-sm font-medium text-foreground">
-                  Rate {config.series.minTotalForRoom} total shows
-                </div>
-                <div className="text-xs text-muted-foreground">
-                  {Math.min(totalCount, config.series.minTotalForRoom)}/{config.series.minTotalForRoom} completed
-                </div>
-              </div>
-              {totalCount >= config.series.minTotalForRoom && (
-                <span className="text-emerald-600 dark:text-emerald-400 text-xs font-semibold">✓</span>
-              )}
-            </div>
+            <ChecklistItem
+              number={1}
+              title={`Rate ${config.series.minRatedShowsToCreateWatchRoom} shows`}
+              subtitle={`${Math.min(totalCount, config.series.minRatedShowsToCreateWatchRoom)}/${config.series.minRatedShowsToCreateWatchRoom} completed`}
+              completed={totalCount >= config.series.minRatedShowsToCreateWatchRoom}
+            />
             <div className="pt-3 border-t border-border">
               <p className="text-xs text-muted-foreground flex items-start gap-2 leading-relaxed">
                 <span className="text-base">💡</span>
                 <span>
-                  <strong className="text-foreground">Pro tip:</strong> Rating {config.series.goodAccuracy}+ shows gives
-                  you the best recommendations!
+                  <strong className="text-foreground">Tip:</strong> Rate {config.series.goodAccuracy}+ shows for even
+                  better recommendations!
                 </span>
               </p>
             </div>

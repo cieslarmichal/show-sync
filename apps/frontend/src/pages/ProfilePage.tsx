@@ -188,7 +188,7 @@ export default function ProfilePage() {
               <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                 <div className="text-center">
                   <div className="text-2xl font-bold text-primary">{favoriteSeriesCount}</div>
-                  <p className="text-sm text-muted-foreground">Loved Shows</p>
+                  <p className="text-sm text-muted-foreground">Rated Shows</p>
                 </div>
                 <div className="text-center">
                   <div className="text-2xl font-bold text-primary">{watchRoomsCount}</div>

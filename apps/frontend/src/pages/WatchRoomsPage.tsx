@@ -4,7 +4,7 @@ import { Button } from '../components/ui/Button.tsx';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '../components/ui/Card.tsx';
 import { Badge } from '../components/ui/Badge.tsx';
 import { Skeleton } from '../components/ui/Skeleton.tsx';
-import { Users, Copy, ExternalLink, ChevronLeft, ChevronRight, Calendar, Tv } from 'lucide-react';
+import { Copy, ExternalLink, ChevronLeft, ChevronRight, Calendar, Users } from 'lucide-react';
 import { toast } from 'sonner';
 import { getMyWatchrooms } from '../api/queries/watchroom.ts';
 import type { Watchroom } from '../api/types/watchroom.ts';
@@ -29,7 +29,7 @@ export default function WatchRoomsPage() {
   const pageSize = 20;
   const navigate = useNavigate();
   const { userData } = useContext(AuthContext);
-  const { lovedCount, totalCount } = useContext(SeriesContext);
+  const { totalCount } = useContext(SeriesContext);
 
   const fetchRooms = async () => {
     try {
@@ -84,9 +84,9 @@ export default function WatchRoomsPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page]);
 
-  const canCreateRoom = totalCount >= config.series.minTotalForRoom && lovedCount >= config.series.minLovedForRoom;
+  const canCreateRoom = totalCount >= config.series.minRatedShowsToCreateWatchRoom;
   const disabledReason = !canCreateRoom
-    ? `To create a watch room, you need at least ${config.series.minTotalForRoom} rated shows (including ${config.series.minLovedForRoom} loved). You have: ${totalCount} total, ${lovedCount} loved.`
+    ? `To create a watch room, you need at least ${config.series.minRatedShowsToCreateWatchRoom} rated shows. You have: ${totalCount} total.`
     : undefined;
 
   const handleCopyLink = (publicLinkId: string) => {
@@ -114,7 +114,7 @@ export default function WatchRoomsPage() {
                   Watch Rooms
                 </h1>
                 <p className="text-lg sm:text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-                  Get personalized recommendations for your group—or just for yourself
+                  Get personalized recommendations for your group or just for yourself
                 </p>
               </div>
               <div>
@@ -135,7 +135,7 @@ export default function WatchRoomsPage() {
                 <CardContent className="text-center py-20 px-6">
                   <div className="max-w-md mx-auto space-y-6">
                     <div className="w-20 h-20 rounded-full bg-primary/10 mx-auto flex items-center justify-center">
-                      <Tv className="w-10 h-10 text-primary" />
+                      <Users className="w-10 h-10 text-primary" />
                     </div>
                     <div className="space-y-2">
                       <h3 className="text-2xl font-bold text-foreground">No watch rooms yet</h3>
