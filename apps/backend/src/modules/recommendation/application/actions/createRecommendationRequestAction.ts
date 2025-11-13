@@ -63,7 +63,7 @@ export class CreateRecommendationRequestAction {
     }
 
     // Check if user has exceeded the maximum recommendation limit
-    const currentCount = await this.recommendationRequestRepository.countByUserId(userId);
+    const currentCount = await this.recommendationRequestRepository.count(userId);
 
     if (currentCount >= this.maxRequestsPerUser) {
       this.loggerService.warn({
@@ -81,6 +81,7 @@ export class CreateRecommendationRequestAction {
     }
 
     const recommendationRequest = await this.recommendationRequestRepository.create({
+      userId,
       watchroomId,
       status: 'pending',
     });

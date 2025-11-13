@@ -141,6 +141,9 @@ export const recommendationRequests = pgTable(
   {
     id: uuid('id').primaryKey(),
     watchroomId: uuid('watchroom_id').references(() => watchrooms.id, { onDelete: 'set null' }),
+    userId: uuid('user_id')
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' }), // user who made the request
     status: varchar('status', { length: 16 }).notNull(), // 'pending' | 'completed' | 'failed'
     createdAt: timestamp('created_at').notNull().defaultNow(),
   },

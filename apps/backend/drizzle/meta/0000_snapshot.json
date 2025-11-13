@@ -1,5 +1,5 @@
 {
-  "id": "0662ef10-1d84-4813-9d8c-a4a0e7e29dcb",
+  "id": "dab4e686-2186-4587-bea7-5d3198e01749",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -381,6 +381,12 @@
           "primaryKey": false,
           "notNull": false
         },
+        "user_id": {
+          "name": "user_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
         "status": {
           "name": "status",
           "type": "varchar(16)",
@@ -439,6 +445,19 @@
             "id"
           ],
           "onDelete": "set null",
+          "onUpdate": "no action"
+        },
+        "recommendation_requests_user_id_users_id_fk": {
+          "name": "recommendation_requests_user_id_users_id_fk",
+          "tableFrom": "recommendation_requests",
+          "tableTo": "users",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
           "onUpdate": "no action"
         }
       },

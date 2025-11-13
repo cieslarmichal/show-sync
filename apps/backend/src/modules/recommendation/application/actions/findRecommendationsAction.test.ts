@@ -75,6 +75,7 @@ describe('FindRecommendationsAction', () => {
       await watchroomRepository.addParticipant(watchroom.id, participant.id);
 
       const recommendationRequest = await recommendationRequestRepository.create({
+        userId: owner.id,
         watchroomId: watchroom.id,
         status: 'completed',
       });
@@ -122,6 +123,7 @@ describe('FindRecommendationsAction', () => {
       const watchroom = await watchroomRepository.create(watchroomData);
 
       const recommendationRequest = await recommendationRequestRepository.create({
+        userId: owner.id,
         watchroomId: watchroom.id,
         status: 'completed',
       });
@@ -191,6 +193,7 @@ describe('FindRecommendationsAction', () => {
 
       // First (older) request
       const oldRequest = await recommendationRequestRepository.create({
+        userId: owner.id,
         watchroomId: watchroom.id,
         status: 'completed',
       });
@@ -212,6 +215,7 @@ describe('FindRecommendationsAction', () => {
       await new Promise((resolve) => setTimeout(resolve, 10));
 
       const latestRequest = await recommendationRequestRepository.create({
+        userId: owner.id,
         watchroomId: watchroom.id,
         status: 'completed',
       });

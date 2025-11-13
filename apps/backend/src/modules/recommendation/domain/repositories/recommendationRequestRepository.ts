@@ -2,8 +2,9 @@ import type { Transaction } from '../../../../infrastructure/database/transactio
 import type { RecommendationRequest, RecommendationRequestStatus } from '../types/recommendationRequest.ts';
 
 export interface CreateRecommendationRequestData {
-  watchroomId: string;
-  status: RecommendationRequestStatus;
+  readonly userId: string;
+  readonly watchroomId: string;
+  readonly status: RecommendationRequestStatus;
 }
 
 export interface RecommendationRequestRepository {
@@ -11,5 +12,5 @@ export interface RecommendationRequestRepository {
   findById(id: string): Promise<RecommendationRequest | null>;
   updateStatus(id: string, status: RecommendationRequestStatus, tx?: Transaction): Promise<void>;
   findLatestByWatchroomId(watchroomId: string): Promise<RecommendationRequest | null>;
-  countByUserId(userId: string): Promise<number>;
+  count(userId: string): Promise<number>;
 }

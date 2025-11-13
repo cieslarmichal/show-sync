@@ -1,8 +1,8 @@
-import { eq, desc, count, inArray } from 'drizzle-orm';
+import { eq, desc, count } from 'drizzle-orm';
 
 import { IdService } from '../../../../common/id/idService.ts';
 import type { DatabaseClient } from '../../../../infrastructure/database/databaseClient.ts';
-import { recommendationRequests, watchroomParticipants } from '../../../../infrastructure/database/schema.ts';
+import { recommendationRequests } from '../../../../infrastructure/database/schema.ts';
 import type { Transaction } from '../../../../infrastructure/database/transaction.ts';
 import type {
   CreateRecommendationRequestData,
@@ -22,6 +22,7 @@ export class RecommendationRequestRepositoryImpl implements RecommendationReques
       .insert(recommendationRequests)
       .values({
         id: IdService.generateUuid(),
+        userId: data.userId,
         watchroomId: data.watchroomId,
         status: data.status,
       })
@@ -69,24 +70,11 @@ export class RecommendationRequestRepositoryImpl implements RecommendationReques
     return this.mapToRecommendationRequest(request);
   }
 
-  public async countByUserId(userId: string): Promise<number> {
-    // Find all watchrooms where the user is a participant
-    const userWatchrooms = await this.databaseClient.db
-      .select({ watchroomId: watchroomParticipants.watchroomId })
-      .from(watchroomParticipants)
-      .where(eq(watchroomParticipants.userId, userId));
-
-    if (userWatchrooms.length === 0) {
-      return 0;
-    }
-
-    const watchroomIds = userWatchrooms.map((w) => w.watchroomId);
-
-    // Count recommendation requests for those watchrooms
+  public async count(userId: string): Promise<number> {
     const [result] = await this.databaseClient.db
       .select({ count: count() })
       .from(recommendationRequests)
-      .where(inArray(recommendationRequests.watchroomId, watchroomIds));
+      .where(eq(recommendationRequests.userId, userId));
 
     return result?.count ?? 0;
   }
@@ -95,6 +83,7 @@ export class RecommendationRequestRepositoryImpl implements RecommendationReques
     return {
       id: row.id,
       watchroomId: row.watchroomId ?? undefined,
+      userId: row.userId,
       status: row.status as RecommendationRequestStatus,
       createdAt: row.createdAt,
     };

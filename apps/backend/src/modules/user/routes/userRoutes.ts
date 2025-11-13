@@ -15,6 +15,7 @@ import { ChangePasswordByTokenAction } from '../application/actions/changePasswo
 import { CreateUserAction } from '../application/actions/createUserAction.ts';
 import { DeleteUserAction } from '../application/actions/deleteUserAction.ts';
 import { FindUserAction } from '../application/actions/findUserAction.ts';
+import { GetUserQuotaAction } from '../application/actions/getUserQuotaAction.ts';
 import { GetUserStatsAction } from '../application/actions/getUserStatsAction.ts';
 import { LoginUserAction } from '../application/actions/loginUserAction.ts';
 import { LogoutUserAction } from '../application/actions/logoutUserAction.ts';
@@ -111,6 +112,7 @@ export const userRoutes: FastifyPluginAsyncTypebox<{
     watchroomRepository,
     recommendationRequestRepository,
   );
+  const getUserQuotaAction = new GetUserQuotaAction(recommendationRequestRepository, config);
   const resetUserPasswordAction = new SendResetPasswordEmailAction(
     userRepository,
     loggerService,
@@ -452,6 +454,34 @@ export const userRoutes: FastifyPluginAsyncTypebox<{
       const stats = await getUserStatsAction.execute({ userId });
 
       return reply.send(stats);
+    },
+  });
+
+  fastify.get('/users/me/quota', {
+    schema: {
+      response: {
+        200: Type.Object({
+          recommendationCount: Type.Integer(),
+          maxRecommendationCount: Type.Integer(),
+        }),
+      },
+    },
+    config: {
+      rateLimit: config.rateLimit.profile,
+    },
+    preHandler: [authenticationMiddleware],
+    handler: async (request, reply) => {
+      if (!request.user) {
+        throw new UnauthorizedAccessError({
+          reason: 'User not authenticated',
+        });
+      }
+
+      const { userId } = request.user;
+
+      const quota = await getUserQuotaAction.execute({ userId });
+
+      return reply.send(quota);
     },
   });
 };

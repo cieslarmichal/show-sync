@@ -265,7 +265,7 @@ describe('CreateRecommendationRequestAction', () => {
       );
 
       // Verify count
-      const count = await recommendationRequestRepository.countByUserId(user.id);
+      const count = await recommendationRequestRepository.count(user.id);
       expect(count).toBe(2);
     });
 

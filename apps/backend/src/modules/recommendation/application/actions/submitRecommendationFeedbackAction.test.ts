@@ -87,6 +87,7 @@ describe('SubmitRecommendationFeedbackAction', () => {
       await watchroomRepository.addParticipant(watchroom.id, participant.id);
 
       const recommendationRequest = await recommendationRequestRepository.create({
+        userId: owner.id,
         watchroomId: watchroom.id,
         status: 'completed',
       });
@@ -128,6 +129,7 @@ describe('SubmitRecommendationFeedbackAction', () => {
       await watchroomRepository.addParticipant(watchroom.id, participant.id);
 
       const recommendationRequest = await recommendationRequestRepository.create({
+        userId: owner.id,
         watchroomId: watchroom.id,
         status: 'completed',
       });
@@ -161,6 +163,7 @@ describe('SubmitRecommendationFeedbackAction', () => {
       const watchroom = await watchroomRepository.create(watchroomData);
 
       const recommendationRequest = await recommendationRequestRepository.create({
+        userId: owner.id,
         watchroomId: watchroom.id,
         status: 'completed',
       });
@@ -195,6 +198,7 @@ describe('SubmitRecommendationFeedbackAction', () => {
       const watchroom = await watchroomRepository.create(watchroomData);
 
       const recommendationRequest = await recommendationRequestRepository.create({
+        userId: owner.id,
         watchroomId: watchroom.id,
         status: 'completed',
       });
@@ -259,6 +263,7 @@ describe('SubmitRecommendationFeedbackAction', () => {
       const watchroom2 = await watchroomRepository.create(watchroom2Data);
 
       const recommendationRequest = await recommendationRequestRepository.create({
+        userId: owner.id,
         watchroomId: watchroom1.id,
         status: 'completed',
       });
@@ -294,6 +299,7 @@ describe('SubmitRecommendationFeedbackAction', () => {
       await watchroomRepository.addParticipant(watchroom.id, participant.id);
 
       const recommendationRequest = await recommendationRequestRepository.create({
+        userId: owner.id,
         watchroomId: watchroom.id,
         status: 'completed',
       });

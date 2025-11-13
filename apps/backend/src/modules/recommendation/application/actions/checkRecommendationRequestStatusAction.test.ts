@@ -63,6 +63,7 @@ describe('CheckRecommendationRequestStatusAction', () => {
       const watchroom = await watchroomRepository.create(watchroomData);
 
       const recommendationRequest = await recommendationRequestRepository.create({
+        userId: user.id,
         watchroomId: watchroom.id,
         status: 'pending',
       });
@@ -89,6 +90,7 @@ describe('CheckRecommendationRequestStatusAction', () => {
       const watchroom = await watchroomRepository.create(watchroomData);
 
       const recommendationRequest = await recommendationRequestRepository.create({
+        userId: user.id,
         watchroomId: watchroom.id,
         status: 'pending',
       });
@@ -117,6 +119,7 @@ describe('CheckRecommendationRequestStatusAction', () => {
       const watchroom = await watchroomRepository.create(watchroomData);
 
       const recommendationRequest = await recommendationRequestRepository.create({
+        userId: user.id,
         watchroomId: watchroom.id,
         status: 'pending',
       });
@@ -164,6 +167,7 @@ describe('CheckRecommendationRequestStatusAction', () => {
       const watchroom = await watchroomRepository.create(watchroomData);
 
       const recommendationRequest = await recommendationRequestRepository.create({
+        userId: owner.id,
         watchroomId: watchroom.id,
         status: 'pending',
       });
@@ -218,6 +222,7 @@ describe('CheckRecommendationRequestStatusAction', () => {
       const watchroom2 = await watchroomRepository.create(watchroom2Data);
 
       const recommendationRequest = await recommendationRequestRepository.create({
+        userId: owner.id,
         watchroomId: watchroom1.id,
         status: 'pending',
       });

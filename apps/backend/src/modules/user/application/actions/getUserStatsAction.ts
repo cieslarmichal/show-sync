@@ -33,7 +33,7 @@ export class GetUserStatsAction {
     const [favoriteSeriesCount, watchRoomsCount, recommendationCount] = await Promise.all([
       this.favoriteSeriesRepository.count(userId),
       this.watchroomRepository.count(userId),
-      this.recommendationRequestRepository.countByUserId(userId),
+      this.recommendationRequestRepository.count(userId),
     ]);
 
     return {
