@@ -99,7 +99,6 @@ export class SendResetPasswordEmailAction {
         message: 'Password reset email requested',
         event: 'password.reset.email.requested',
         userId: user.id,
-        email: user.email,
         transactionDuration: duration,
       });
     } catch (error) {
@@ -109,7 +108,6 @@ export class SendResetPasswordEmailAction {
         message: 'Failed to create password reset token and email',
         event: 'password.reset.email.transaction.failure',
         userId: user.id,
-        email: user.email,
         transactionDuration: duration,
         error: error instanceof Error ? error.message : String(error),
       });

@@ -79,7 +79,7 @@ export function RoomHeader({ room, isOwner, onCopyLink, onRoomUpdated, onRoomDel
               <Button
                 variant="default"
                 onClick={onCopyLink}
-                className="sm:self-start shadow-md hover:shadow-lg transition-all font-semibold"
+                className="shadow-sm hover:shadow-md transition-all"
                 data-testid="copy-invite-link-button"
               >
                 <Copy className="w-4 h-4 mr-2" />
@@ -96,7 +96,7 @@ export function RoomHeader({ room, isOwner, onCopyLink, onRoomUpdated, onRoomDel
                   <Button
                     variant="outline"
                     onClick={() => setConfirmDeleteDialog(true)}
-                    className="sm:self-start hover:bg-destructive/10 hover:text-destructive hover:border-destructive/50 transition-all font-semibold"
+                    className="shadow-sm hover:shadow-md hover:bg-destructive/10 hover:text-destructive hover:border-destructive transition-all"
                   >
                     <Trash2 className="w-4 h-4 mr-2" />
                     Delete Room

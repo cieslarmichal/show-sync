@@ -82,7 +82,6 @@ export class LoginUserAction {
       event: 'user.login.success',
       requestId: context.requestId,
       userId: user.id,
-      email: user.email,
     });
 
     return { accessToken, refreshToken };

@@ -1,4 +1,4 @@
-import { eq, desc, count } from 'drizzle-orm';
+import { eq, desc, count, and } from 'drizzle-orm';
 
 import { IdService } from '../../../../common/id/idService.ts';
 import type { DatabaseClient } from '../../../../infrastructure/database/databaseClient.ts';
@@ -74,7 +74,7 @@ export class RecommendationRequestRepositoryImpl implements RecommendationReques
     const [result] = await this.databaseClient.db
       .select({ count: count() })
       .from(recommendationRequests)
-      .where(eq(recommendationRequests.userId, userId));
+      .where(and(eq(recommendationRequests.userId, userId), eq(recommendationRequests.status, 'completed')));
 
     return result?.count ?? 0;
   }

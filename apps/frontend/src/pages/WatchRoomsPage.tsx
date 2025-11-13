@@ -203,7 +203,7 @@ export default function WatchRoomsPage() {
                               {room.description}
                             </CardDescription>
                           ) : (
-                            <p className="text-sm text-muted-foreground/50 italic">No description</p>
+                            <p className="text-sm text-muted-foreground/50 italic">No description yet</p>
                           )}
                         </CardContent>
 

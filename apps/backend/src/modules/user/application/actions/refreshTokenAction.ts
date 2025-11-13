@@ -116,7 +116,6 @@ export class RefreshTokenAction {
         event: 'user.token.refresh.success',
         requestId: context.requestId,
         userId: user.id,
-        email: user.email,
         transactionDuration: duration,
       });
     } catch (error) {
@@ -127,7 +126,6 @@ export class RefreshTokenAction {
         event: 'user.token.refresh.transaction.failure',
         requestId: context.requestId,
         userId: user.id,
-        email: user.email,
         transactionDuration: duration,
         error: error instanceof Error ? error.message : String(error),
       });

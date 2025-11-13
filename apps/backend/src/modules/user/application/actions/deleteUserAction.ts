@@ -37,7 +37,6 @@ export class DeleteUserAction {
       event: 'user.delete.success',
       requestId: context.requestId,
       userId: id,
-      email: user.email,
     });
   }
 }

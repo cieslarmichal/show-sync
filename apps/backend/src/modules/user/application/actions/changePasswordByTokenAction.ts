@@ -80,7 +80,6 @@ export class ChangePasswordByTokenAction {
             message: 'Password changed successfully',
             event: 'password.change.success',
             userId: user.id,
-            email: user.email,
             transactionDuration: duration,
           });
         },

@@ -1,17 +1,19 @@
 import { useState, useEffect } from 'react';
 import { toast } from 'sonner';
-import { Sparkles, TvMinimalPlay, ThumbsUp, Heart, EyeOff } from 'lucide-react';
+import { Sparkles, TvMinimalPlay, ThumbsUp, Heart, EyeOff, Info } from 'lucide-react';
 
 import { generateRecommendations, checkRecommendationStatus, getRecommendations } from '../../api/queries/watchroom.ts';
 import { getSeriesDetailsBatch } from '../../api/queries/getSeriesDetailsBatch.ts';
 import { getMyIgnoredSeries } from '../../api/queries/getMyIgnoredSeries.ts';
 import { getMyFavoriteSeries } from '../../api/queries/getMyFavoriteSeries.ts';
+import { getMyQuota } from '../../api/queries/getMyQuota.ts';
 import type { Recommendation } from '../../api/types/recommendation.ts';
 import type { SeriesDetails } from '../../api/types/series.ts';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/Card.tsx';
 import { Button } from '../ui/Button.tsx';
 import { Badge } from '../ui/Badge.tsx';
 import { Skeleton } from '../ui/Skeleton.tsx';
+import { Tooltip, TooltipTrigger, TooltipContent } from '../ui/Tooltip.tsx';
 import { RecommendationCard } from './RecommendationCard.tsx';
 import { RecommendationFeedbackForm } from '../RecommendationFeedbackForm.tsx';
 
@@ -38,6 +40,8 @@ export function RecommendationsSection({
   const [ignoredSeriesIds, setIgnoredSeriesIds] = useState<Set<number>>(new Set());
   const [profileSeriesIds, setProfileSeriesIds] = useState<Set<number>>(new Set());
   const [fadingOutCards, setFadingOutCards] = useState<Set<string>>(new Set());
+  const [quota, setQuota] = useState<{ current: number; max: number } | null>(null);
+  const [isLoadingQuota, setIsLoadingQuota] = useState(false);
 
   const fetchRecommendations = async () => {
     try {
@@ -75,6 +79,27 @@ export function RecommendationsSection({
   }, [watchroomId]);
 
   useEffect(() => {
+    const fetchQuota = async () => {
+      if (!isOwner) return;
+
+      try {
+        setIsLoadingQuota(true);
+        const quotaData = await getMyQuota();
+        setQuota({
+          current: quotaData.recommendationCount,
+          max: quotaData.maxRecommendationCount,
+        });
+      } catch {
+        // Silently fail - not critical
+      } finally {
+        setIsLoadingQuota(false);
+      }
+    };
+
+    fetchQuota();
+  }, [isOwner]);
+
+  useEffect(() => {
     const loadIgnoredSeries = async () => {
       try {
         const response = await getMyIgnoredSeries();
@@ -103,6 +128,14 @@ export function RecommendationsSection({
   }, []);
 
   const handleGenerateRecommendations = async () => {
+    // Check quota before attempting
+    if (isQuotaExhausted) {
+      toast.error('Recommendation limit reached', {
+        description: `You've used all ${quota?.max} available generations. This limit helps us manage AI costs.`,
+      });
+      return;
+    }
+
     try {
       setIsGenerating(true);
 
@@ -125,6 +158,17 @@ export function RecommendationsSection({
 
           if (statusResult.status === 'completed') {
             const fetchedRecommendations = await fetchRecommendations();
+
+            // Refresh quota after successful generation
+            try {
+              const quotaData = await getMyQuota();
+              setQuota({
+                current: quotaData.recommendationCount,
+                max: quotaData.maxRecommendationCount,
+              });
+            } catch {
+              // Silently fail - not critical
+            }
 
             toast.success('Suggestions ready!', {
               description: `Found ${fetchedRecommendations.length} shows for your watch room.`,
@@ -163,6 +207,20 @@ export function RecommendationsSection({
         toast.error('Slow down!', {
           description: 'Wait a moment before generating again (limit: 5 times per minute).',
         });
+      } else if (errorMessage.includes('quota') || errorMessage.includes('limit exceeded')) {
+        toast.error('Recommendation limit reached', {
+          description: 'You have reached your maximum number of recommendation generations.',
+        });
+        // Refresh quota to update UI
+        try {
+          const quotaData = await getMyQuota();
+          setQuota({
+            current: quotaData.recommendationCount,
+            max: quotaData.maxRecommendationCount,
+          });
+        } catch {
+          // Silently fail
+        }
       } else {
         toast.error('Could not generate suggestions. Please try again.');
       }
@@ -200,6 +258,10 @@ export function RecommendationsSection({
     (rec) => !ignoredSeriesIds.has(rec.seriesTmdbId) && !profileSeriesIds.has(rec.seriesTmdbId),
   );
 
+  const isQuotaExhausted = quota ? quota.current >= quota.max : false;
+  const isNearLimit = quota ? quota.current >= quota.max - 2 : false;
+  const remainingGenerations = quota ? Math.max(0, quota.max - quota.current) : null;
+
   return (
     <Card className="border shadow-lg hover:shadow-xl transition-shadow duration-300 overflow-hidden">
       <div className="absolute inset-0 bg-linear-to-br from-primary/5 via-transparent to-transparent pointer-events-none" />
@@ -222,24 +284,79 @@ export function RecommendationsSection({
             </CardDescription>
           </div>
           {isOwner && (
-            <Button
-              onClick={handleGenerateRecommendations}
-              disabled={isGenerating}
-              className="sm:self-start shadow-md hover:shadow-lg transition-all disabled:opacity-50"
-              data-testid="generate-recommendations-button"
-            >
-              {isGenerating ? (
-                <>
-                  <Sparkles className="w-4 h-4 mr-2 animate-spin" />
-                  Generating...
-                </>
-              ) : (
-                <>
-                  <Sparkles className="w-4 h-4 mr-2" />
-                  Generate
-                </>
+            <div className="sm:self-start flex flex-col items-end gap-2">
+              <Button
+                onClick={handleGenerateRecommendations}
+                disabled={isGenerating || isQuotaExhausted}
+                className="shadow-md hover:shadow-lg transition-all disabled:opacity-50"
+                data-testid="generate-recommendations-button"
+              >
+                {isGenerating ? (
+                  <>
+                    <Sparkles className="w-4 h-4 mr-2 animate-spin" />
+                    Generating...
+                  </>
+                ) : (
+                  <>
+                    <Sparkles className="w-4 h-4 mr-2" />
+                    Generate
+                  </>
+                )}
+              </Button>
+              {!isLoadingQuota && quota && (
+                <div className="flex items-center gap-1.5 text-xs">
+                  {isQuotaExhausted ? (
+                    <span className="text-destructive font-medium flex items-center gap-1">
+                      <span>
+                        Limit reached ({quota.current}/{quota.max})
+                      </span>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <button className="inline-flex">
+                            <Info className="w-3.5 h-3.5" />
+                          </button>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>Limit helps manage AI costs</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </span>
+                  ) : isNearLimit ? (
+                    <span className="text-amber-600 dark:text-amber-500 font-medium flex items-center gap-1">
+                      <span>
+                        {remainingGenerations} {remainingGenerations === 1 ? 'generation' : 'generations'} left
+                      </span>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <button className="inline-flex">
+                            <Info className="w-3.5 h-3.5" />
+                          </button>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>Close to your {quota.max} generation limit</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </span>
+                  ) : (
+                    <span className="text-muted-foreground flex items-center gap-1">
+                      <span>
+                        {quota.current}/{quota.max} generations used
+                      </span>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <button className="inline-flex">
+                            <Info className="w-3.5 h-3.5" />
+                          </button>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>{quota.max} total generations across all watch rooms</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </span>
+                  )}
+                </div>
               )}
-            </Button>
+            </div>
           )}
         </div>
       </CardHeader>

@@ -76,7 +76,7 @@ export function EditWatchRoomModal({
       <DialogTrigger asChild>
         <Button
           variant="outline"
-          className="sm:self-start shadow-md hover:shadow-lg transition-all"
+          className="shadow-sm hover:shadow-md transition-all"
         >
           <Pencil className="w-4 h-4 mr-2" />
           Edit Room
