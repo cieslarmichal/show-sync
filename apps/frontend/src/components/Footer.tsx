@@ -10,15 +10,15 @@ export default function Footer() {
 
   return (
     <footer
-      className="border-t border-border bg-background py-6 sm:py-12 mt-auto"
+      className="border-t border-border bg-background py-5 sm:py-12 mt-auto"
       aria-label="Site footer"
     >
       {/* Mobile: Compact Footer */}
-      <div className="sm:hidden max-w-6xl mx-auto px-4">
-        <div className="flex flex-col items-center gap-4 text-center">
+      <div className="sm:hidden max-w-6xl mx-auto px-3">
+        <div className="flex flex-col items-center gap-3 text-center">
           <Link
             to="/"
-            className="flex items-center gap-2.5 group"
+            className="flex items-center gap-2 group"
             aria-label="ShowSync home"
           >
             <img
@@ -33,7 +33,7 @@ export default function Footer() {
           </Link>
           <a
             href="mailto:contact@show-sync.com"
-            className="text-sm text-muted-foreground hover:text-foreground transition-colors hover:underline underline-offset-4"
+            className="text-xs text-muted-foreground hover:text-foreground transition-colors hover:underline underline-offset-4"
           >
             contact@show-sync.com
           </a>
@@ -161,14 +161,14 @@ export default function Footer() {
       </div>
 
       {/* Bottom Bar */}
-      <div className="border-t border-border mt-6 sm:mt-10 pt-5 sm:pt-6 max-w-6xl mx-auto px-4">
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-2 sm:gap-4 text-xs text-muted-foreground">
+      <div className="border-t border-border mt-4 sm:mt-10 pt-4 sm:pt-6 max-w-6xl mx-auto px-3 sm:px-4">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-2 sm:gap-4 text-[10px] sm:text-xs text-muted-foreground">
           <div className="flex flex-wrap items-center justify-center sm:justify-start gap-x-1.5 gap-y-1 text-center sm:text-left">
             <span className="whitespace-nowrap">© {currentYear} ShowSync.</span>
-            <span className="inline-flex items-center gap-1.5">
+            <span className="inline-flex items-center gap-1 sm:gap-1.5">
               <span>Made with</span>
               <Heart
-                className="h-3 w-3 inline fill-current text-red-500 animate-pulse"
+                className="h-2.5 w-2.5 sm:h-3 sm:w-3 inline fill-current text-red-500 animate-pulse"
                 aria-label="love"
               />
               <span>by</span>
@@ -177,10 +177,10 @@ export default function Footer() {
               href="https://github.com/cieslarmichal"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1 hover:text-foreground transition-colors font-medium group whitespace-nowrap"
+              className="inline-flex items-center gap-0.5 sm:gap-1 hover:text-foreground transition-colors font-medium group whitespace-nowrap"
             >
               <Github
-                className="h-3 w-3 group-hover:rotate-12 transition-transform"
+                className="h-2.5 w-2.5 sm:h-3 sm:w-3 group-hover:rotate-12 transition-transform"
                 aria-hidden="true"
               />
               <span>Michał Cieślar</span>

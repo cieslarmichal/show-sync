@@ -10,22 +10,23 @@ export function MobileMenu() {
   return (
     <>
       {/* Mobile Menu Button */}
-      <div className="md:hidden flex items-center gap-2">
+      <div className="md:hidden flex items-center gap-1.5 sm:gap-2">
         <MobileAuthSection />
 
         <Button
           variant="ghost"
           size="sm"
           onClick={() => setIsOpen(!isOpen)}
-          className="h-8 w-8 p-0"
+          className="h-8 w-8 p-0 active:scale-95 transition-transform"
+          aria-label={isOpen ? 'Close menu' : 'Open menu'}
         >
-          {isOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
+          {isOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
         </Button>
       </div>
 
       {/* Mobile Navigation Menu */}
       {isOpen && (
-        <div className="md:hidden border-t border-border bg-background absolute top-full left-0 right-0 shadow-lg">
+        <div className="md:hidden border-t border-border bg-background absolute top-full left-0 right-0 shadow-lg animate-in slide-in-from-top-2 duration-200">
           <MobileNavigation onItemClick={() => setIsOpen(false)} />
         </div>
       )}

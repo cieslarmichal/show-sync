@@ -30,7 +30,7 @@ export function MobileAuthSection() {
     <Button
       size="sm"
       onClick={() => navigate('/register')}
-      className="text-xs bg-foreground hover:bg-foreground/90 text-background font-semibold h-8 px-4 rounded-md shadow-sm transition-all"
+      className="text-xs bg-foreground hover:bg-foreground/90 text-background font-semibold h-8 px-3 sm:px-4 rounded-md shadow-sm transition-all active:scale-95"
     >
       Sign Up
     </Button>
