@@ -27,10 +27,13 @@ describe('Footer', () => {
   it('should render logo and app name', () => {
     renderFooter();
 
-    expect(screen.getByText('ShowSync')).toBeInTheDocument();
+    // ShowSync appears twice: mobile and desktop versions
+    const showSyncElements = screen.getAllByText('ShowSync');
+    expect(showSyncElements.length).toBe(2);
+    
     // Logo has aria-hidden, so we just check it exists in the DOM
-    const logo = document.querySelector('img[alt=""][aria-hidden="true"]');
-    expect(logo).toBeInTheDocument();
+    const logos = document.querySelectorAll('img[alt=""][aria-hidden="true"]');
+    expect(logos.length).toBeGreaterThanOrEqual(1);
   });
 
   it('should render app description', () => {
@@ -42,8 +45,12 @@ describe('Footer', () => {
   it('should render contact section', () => {
     renderFooter();
 
+    // Email appears in both mobile and desktop versions
+    const emailLinks = screen.getAllByText('contact@show-sync.com');
+    expect(emailLinks.length).toBeGreaterThanOrEqual(1);
+    
+    // Full contact section only on desktop
     expect(screen.getByText('Contact')).toBeInTheDocument();
-    expect(screen.getByText('contact@show-sync.com')).toBeInTheDocument();
     expect(screen.getByText('+48 792 448 282')).toBeInTheDocument();
     expect(screen.getByText('Cracow, Poland')).toBeInTheDocument();
   });
@@ -66,8 +73,14 @@ describe('Footer', () => {
   it('should render contact email as mailto link', () => {
     renderFooter();
 
-    const emailLink = screen.getByText('contact@show-sync.com');
-    expect(emailLink.closest('a')).toHaveAttribute('href', 'mailto:contact@show-sync.com');
+    // Email appears twice: mobile and desktop versions
+    const emailLinks = screen.getAllByText('contact@show-sync.com');
+    expect(emailLinks.length).toBe(2);
+    
+    // All email links should have mailto href
+    emailLinks.forEach(emailLink => {
+      expect(emailLink.closest('a')).toHaveAttribute('href', 'mailto:contact@show-sync.com');
+    });
   });
 
   it('should render phone number as tel link', () => {
