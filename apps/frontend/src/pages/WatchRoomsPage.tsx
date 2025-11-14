@@ -133,7 +133,7 @@ export default function WatchRoomsPage() {
             {!isLoading && rooms.length === 0 && (
               <Card className="border-2 border-dashed hover:border-primary/30 transition-colors">
                 <CardContent className="text-center py-20 px-6">
-                  <div className="max-w-md mx-auto space-y-6">
+                  <div className="max-w-md mx-auto">
                     <div className="w-20 h-20 rounded-full bg-primary/10 mx-auto flex items-center justify-center">
                       <Users className="w-10 h-10 text-primary" />
                     </div>
@@ -143,11 +143,6 @@ export default function WatchRoomsPage() {
                         Create your first room to get personalized show recommendations
                       </p>
                     </div>
-                    <CreateWatchRoomModal
-                      onRoomCreated={fetchRooms}
-                      disabled={!canCreateRoom}
-                      disabledReason={disabledReason}
-                    />
                   </div>
                 </CardContent>
               </Card>

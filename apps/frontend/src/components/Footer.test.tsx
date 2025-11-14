@@ -48,6 +48,21 @@ describe('Footer', () => {
     expect(screen.getByText('Cracow, Poland')).toBeInTheDocument();
   });
 
+  it('should have responsive padding classes', () => {
+    renderFooter();
+
+    const footer = screen.getByRole('contentinfo');
+    expect(footer).toHaveClass('py-6', 'sm:py-12');
+  });
+
+  it('should have responsive grid layout on desktop', () => {
+    renderFooter();
+
+    const footer = screen.getByRole('contentinfo');
+    const gridContainer = footer.querySelector('.grid');
+    expect(gridContainer).toHaveClass('grid-cols-2', 'lg:grid-cols-3');
+  });
+
   it('should render contact email as mailto link', () => {
     renderFooter();
 
@@ -77,7 +92,7 @@ describe('Footer', () => {
     expect(screen.getByText(/© 2025 ShowSync/i)).toBeInTheDocument();
   });
 
-  it('should show user account section when authenticated', () => {
+  it('should show user account section when authenticated (desktop only)', () => {
     const userData: User = {
       id: '123',
       email: 'test@example.com',
@@ -86,6 +101,7 @@ describe('Footer', () => {
     };
     renderFooter(userData);
 
+    // Navigation section is hidden on mobile (sm:hidden class not tested here, but visible in DOM)
     expect(screen.getByText('Your Account')).toBeInTheDocument();
     expect(screen.getByText('TV Shows')).toBeInTheDocument();
     expect(screen.getByText('Watch Rooms')).toBeInTheDocument();
@@ -97,6 +113,24 @@ describe('Footer', () => {
     expect(screen.queryByText('Your Account')).not.toBeInTheDocument();
     expect(screen.queryByText('TV Shows')).not.toBeInTheDocument();
     expect(screen.queryByText('Watch Rooms')).not.toBeInTheDocument();
+  });
+
+  it('should render compact mobile footer', () => {
+    renderFooter();
+
+    const footer = screen.getByRole('contentinfo');
+    const mobileSection = footer.querySelector('.sm\\:hidden');
+    expect(mobileSection).toBeInTheDocument();
+    expect(mobileSection).toHaveClass('sm:hidden');
+  });
+
+  it('should render full desktop footer', () => {
+    renderFooter();
+
+    const footer = screen.getByRole('contentinfo');
+    const desktopSection = footer.querySelector('.sm\\:block');
+    expect(desktopSection).toBeInTheDocument();
+    expect(desktopSection).toHaveClass('hidden', 'sm:block');
   });
 
   it('should render TV Shows link when authenticated', () => {
