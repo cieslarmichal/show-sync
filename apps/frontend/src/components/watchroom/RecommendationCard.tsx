@@ -218,7 +218,7 @@ export function RecommendationCard({
             <Button
               size="sm"
               variant="outline"
-              className={`flex-1 min-h-9 sm:min-h-10 md:min-h-11 text-xs sm:text-sm shadow-sm hover:shadow-md active:scale-95 transition-all duration-300 group ${
+              className={`flex-1 min-h-9 sm:min-h-10 md:min-h-11 text-[11px] sm:text-sm shadow-sm hover:shadow-md active:scale-95 transition-all duration-300 group ${
                 isFavorite
                   ? 'bg-linear-to-br from-red-400 to-red-500 text-white border-red-400 hover:from-red-500 hover:to-red-600'
                   : 'bg-red-50 border-red-200 hover:bg-red-100 hover:border-red-400 dark:bg-red-950/20 dark:border-red-900/50 dark:hover:bg-red-900/30 dark:hover:border-red-700'
@@ -229,20 +229,20 @@ export function RecommendationCard({
               aria-pressed={isFavorite}
             >
               <Heart
-                className={`w-4 h-4 sm:mr-1.5 transition-all duration-300 text-red-500 dark:text-red-400 ${
+                className={`w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1 sm:mr-1.5 transition-all duration-300 text-red-500 dark:text-red-400 ${
                   isFavorite
                     ? 'fill-current text-white!'
                     : 'group-hover:scale-110 group-hover:text-red-600 dark:group-hover:text-red-300'
                 }`}
               />
-              <span className="hidden sm:inline">Love</span>
+              Love
             </Button>
 
             {/* Like Button - Secondary Action */}
             <Button
               size="sm"
               variant="outline"
-              className={`flex-1 min-h-9 sm:min-h-10 md:min-h-11 text-xs sm:text-sm shadow-sm hover:shadow-md active:scale-95 transition-all duration-300 group ${
+              className={`flex-1 min-h-9 sm:min-h-10 md:min-h-11 text-[11px] sm:text-sm shadow-sm hover:shadow-md active:scale-95 transition-all duration-300 group ${
                 isFavorite
                   ? 'bg-linear-to-br from-sky-400 to-sky-500 text-white border-sky-400 hover:from-sky-500 hover:to-sky-600'
                   : 'bg-sky-50 border-sky-200 hover:bg-sky-100 hover:border-sky-400 dark:bg-sky-950/20 dark:border-sky-900/50 dark:hover:bg-sky-900/30 dark:hover:border-sky-700'
@@ -253,20 +253,20 @@ export function RecommendationCard({
               aria-pressed={isFavorite}
             >
               <ThumbsUp
-                className={`w-4 h-4 sm:mr-1.5 transition-all duration-300 text-sky-500 dark:text-sky-400 ${
+                className={`w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1 sm:mr-1.5 transition-all duration-300 text-sky-500 dark:text-sky-400 ${
                   isFavorite
                     ? 'text-white!'
                     : 'group-hover:scale-110 group-hover:text-sky-600 dark:group-hover:text-sky-300'
                 }`}
               />
-              <span className="hidden sm:inline">Like</span>
+              Like
             </Button>
 
             {/* Skip Button - Neutral Action */}
             <Button
               size="sm"
               variant="outline"
-              className={`flex-1 min-h-9 sm:min-h-10 md:min-h-11 text-xs sm:text-sm shadow-sm hover:shadow-md active:scale-95 transition-all duration-300 group ${
+              className={`flex-1 min-h-9 sm:min-h-10 md:min-h-11 text-[11px] sm:text-sm shadow-sm hover:shadow-md active:scale-95 transition-all duration-300 group ${
                 isIgnored
                   ? 'bg-muted text-muted-foreground border-muted-foreground/50'
                   : 'bg-muted/30 hover:bg-muted/60 hover:border-muted-foreground/40'
@@ -276,8 +276,8 @@ export function RecommendationCard({
               aria-label="Mark as not interested"
               aria-pressed={isIgnored}
             >
-              <EyeOff className={`w-4 h-4 sm:mr-1.5 transition-all duration-300 ${isIgnored ? 'opacity-50' : ''}`} />
-              <span className="hidden sm:inline">{isIgnored ? 'Skipped' : 'Skip'}</span>
+              <EyeOff className={`w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1 sm:mr-1.5 transition-all duration-300 ${isIgnored ? 'opacity-50' : ''}`} />
+              {isIgnored ? 'Skipped' : 'Skip'}
             </Button>
           </div>
         </div>

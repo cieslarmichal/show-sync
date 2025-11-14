@@ -101,35 +101,40 @@ export function RecommendationFeedbackForm({ watchroomId, recommendationRequestI
   return (
     <Card>
       <CardHeader>
-        <CardTitle>📊 How would you rate these recommendations?</CardTitle>
-        <CardDescription>Your feedback helps us improve our recommendation algorithm</CardDescription>
+        <CardTitle className="text-base sm:text-lg md:text-xl flex items-center gap-2">
+          <span>📊</span>
+          <span>How would you rate these recommendations?</span>
+        </CardTitle>
+        <CardDescription className="text-xs sm:text-sm">
+          Your feedback helps us improve our recommendation algorithm
+        </CardDescription>
       </CardHeader>
-      <CardContent>
+      <CardContent className="pt-3 sm:pt-0">
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
-            className="space-y-6"
+            className="space-y-3 sm:space-y-5"
           >
             {/* Star Rating */}
             <FormField
               control={form.control}
               name="rating"
               render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Rating</FormLabel>
+                <FormItem className="space-y-2">
+                  <FormLabel className="text-sm sm:text-base">Rating</FormLabel>
                   <FormControl>
-                    <div className="flex gap-2">
+                    <div className="flex gap-1.5 sm:gap-2">
                       {[1, 2, 3, 4, 5].map((star) => (
                         <button
                           key={star}
                           type="button"
-                          className="focus:outline-none focus:ring-2 focus:ring-primary rounded cursor-pointer"
+                          className="focus:outline-none focus:ring-2 focus:ring-primary rounded cursor-pointer transition-transform active:scale-90"
                           onClick={() => field.onChange(star)}
                           onMouseEnter={() => setHoveredStar(star)}
                           onMouseLeave={() => setHoveredStar(null)}
                         >
                           <Star
-                            className={`w-8 h-8 transition-colors ${
+                            className={`w-7 h-7 sm:w-8 sm:h-8 transition-colors ${
                               star <= (hoveredStar ?? field.value)
                                 ? 'fill-yellow-400 text-yellow-400'
                                 : 'text-gray-300 dark:text-gray-600'
@@ -150,7 +155,7 @@ export function RecommendationFeedbackForm({ watchroomId, recommendationRequestI
               name="foundSomething"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Did you find something to watch?</FormLabel>
+                  <FormLabel className="text-sm sm:text-base">Did you find something to watch?</FormLabel>
                   <FormControl>
                     <RadioGroup
                       value={field.value}
@@ -163,7 +168,7 @@ export function RecommendationFeedbackForm({ watchroomId, recommendationRequestI
                         />
                         <Label
                           htmlFor="found-yes"
-                          className="cursor-pointer"
+                          className="cursor-pointer text-sm sm:text-base"
                         >
                           Yes
                         </Label>
@@ -175,7 +180,7 @@ export function RecommendationFeedbackForm({ watchroomId, recommendationRequestI
                         />
                         <Label
                           htmlFor="found-no"
-                          className="cursor-pointer"
+                          className="cursor-pointer text-sm sm:text-base"
                         >
                           No
                         </Label>
@@ -192,11 +197,12 @@ export function RecommendationFeedbackForm({ watchroomId, recommendationRequestI
               control={form.control}
               name="comment"
               render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Tell us more (optional)</FormLabel>
+                <FormItem className="space-y-2">
+                  <FormLabel className="text-sm sm:text-base">Tell us more (optional)</FormLabel>
                   <FormControl>
                     <Textarea
                       placeholder="What did you like or dislike about these recommendations?"
+                      className="text-xs sm:text-sm min-h-20 sm:min-h-[100px] resize-none"
                       {...field}
                     />
                   </FormControl>
@@ -208,7 +214,7 @@ export function RecommendationFeedbackForm({ watchroomId, recommendationRequestI
             <Button
               type="submit"
               disabled={form.formState.isSubmitting || !rating || !foundSomething}
-              className="w-full"
+              className="w-full h-10 sm:h-11 text-sm sm:text-base font-semibold"
             >
               {form.formState.isSubmitting ? 'Submitting...' : 'Submit Feedback'}
             </Button>
