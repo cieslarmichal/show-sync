@@ -98,8 +98,8 @@ export default function WatchRoomDetailsPage() {
             className="group -ml-2 hover:bg-primary/5 transition-all text-xs sm:text-sm"
           >
             <ArrowLeft className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1.5 sm:mr-2 group-hover:-translate-x-1 transition-transform" />
-            <span className="hidden xs:inline">Back to Watch Rooms</span>
-            <span className="inline xs:hidden">Back</span>
+            <span className="hidden sm:inline">Back to Watch Rooms</span>
+            <span className="inline sm:hidden">Back</span>
           </Button>
 
           {/* Room Header Card */}

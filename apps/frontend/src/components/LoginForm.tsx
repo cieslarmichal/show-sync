@@ -11,7 +11,7 @@ import { z } from 'zod';
 import { EyeIcon, EyeOffIcon, Mail, Lock } from 'lucide-react';
 
 const formSchema = z.object({
-  email: z.string().email().max(64),
+  email: z.string().email().max(254),
   password: z.string().min(8).max(64),
 });
 

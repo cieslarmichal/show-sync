@@ -80,8 +80,8 @@ export function EditWatchRoomModal({
           className="shadow-sm hover:shadow-md transition-all h-9"
         >
           <Pencil className="w-3 h-3 mr-1" />
-          <span className="hidden xs:inline">Edit Room</span>
-          <span className="inline xs:hidden">Edit</span>
+          <span className="hidden sm:inline">Edit Room</span>
+          <span className="inline sm:hidden">Edit</span>
         </Button>
       </DialogTrigger>
       <DialogContent>

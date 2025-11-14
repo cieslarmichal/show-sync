@@ -88,8 +88,8 @@ export function RoomHeader({ room, isOwner, onCopyLink, onRoomUpdated, onRoomDel
               data-testid="copy-invite-link-button"
             >
               <Copy className="w-3 h-3 mr-1" />
-              <span className="hidden xs:inline">Copy Link</span>
-              <span className="inline xs:hidden">Share</span>
+              <span className="hidden sm:inline">Copy Link</span>
+              <span className="inline sm:hidden">Share</span>
             </Button>
             {isOwner && (
               <>
@@ -106,8 +106,8 @@ export function RoomHeader({ room, isOwner, onCopyLink, onRoomUpdated, onRoomDel
                   className="shadow-sm hover:shadow-md hover:bg-destructive/10 hover:text-destructive hover:border-destructive transition-all h-9"
                 >
                   <Trash2 className="w-3 h-3 mr-1" />
-                  <span className="hidden xs:inline">Delete Room</span>
-                  <span className="inline xs:hidden">Delete</span>
+                  <span className="hidden sm:inline">Delete Room</span>
+                  <span className="inline sm:hidden">Delete</span>
                 </Button>
               </>
             )}

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import { toast } from 'sonner';
 import { Sparkles, TvMinimalPlay, EyeOff, ThumbsUp, Heart, Star, ExternalLink } from 'lucide-react';
 
@@ -10,6 +10,7 @@ import type { SeriesDetails } from '../../api/types/series.ts';
 import { Button } from '../ui/Button.tsx';
 import { Badge } from '../ui/Badge.tsx';
 import { Skeleton } from '../ui/Skeleton.tsx';
+import { SeriesContext } from '../../context/SeriesContext.tsx';
 
 interface RecommendationWithDetails extends Recommendation {
   seriesDetails?: SeriesDetails;
@@ -32,6 +33,7 @@ export function RecommendationCard({
   onIgnore,
   onFavorite,
 }: RecommendationCardProps) {
+  const { refreshCounts } = useContext(SeriesContext);
   const [isImageLoading, setIsImageLoading] = useState(true);
 
   const handleOpenImdb = async (seriesTmdbId: number, event?: React.MouseEvent) => {
@@ -68,6 +70,7 @@ export function RecommendationCard({
         description: "You won't see this show in future recommendations.",
       });
       onIgnore(recommendation.seriesTmdbId);
+      await refreshCounts();
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Failed to ignore series';
 
@@ -88,6 +91,7 @@ export function RecommendationCard({
         description: "You won't see this show in future recommendations.",
       });
       onFavorite(recommendation.seriesTmdbId);
+      await refreshCounts();
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Failed to add to favorites';
 
