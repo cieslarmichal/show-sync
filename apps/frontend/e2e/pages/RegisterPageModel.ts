@@ -18,11 +18,7 @@ export class RegisterPageModel extends BasePageModel {
   }
 
   get passwordInput() {
-    return this.page.getByLabel('Password', { exact: true });
-  }
-
-  get repeatPasswordInput() {
-    return this.page.getByLabel('Repeat Password');
+    return this.page.getByPlaceholder('Enter your password');
   }
 
   get registerButton() {
@@ -53,11 +49,12 @@ export class RegisterPageModel extends BasePageModel {
     await super.goto('/register');
   }
 
-  async register(name: string, email: string, password: string, confirmPassword?: string): Promise<void> {
+  async register(name: string, email: string, password: string): Promise<void> {
     await this.fillField(this.nameInput, name);
     await this.fillField(this.emailInput, email);
     await this.fillField(this.passwordInput, password);
-    await this.fillField(this.repeatPasswordInput, confirmPassword || password);
+    // Trigger validation by blurring the password field
+    await this.passwordInput.blur();
     await this.registerButton.click();
   }
 

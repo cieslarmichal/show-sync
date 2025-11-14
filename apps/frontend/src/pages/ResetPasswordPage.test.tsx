@@ -209,8 +209,8 @@ describe('ResetPasswordPage', () => {
     const confirmPasswordInput = screen.getByLabelText('Confirm Password');
     const submitButton = screen.getByTestId('reset-password-button');
 
-    await user.type(newPasswordInput, 'ValidPassword123');
-    await user.type(confirmPasswordInput, 'ValidPassword123');
+    await user.type(newPasswordInput, 'ValidPassword123!');
+    await user.type(confirmPasswordInput, 'ValidPassword123!');
 
     await waitFor(() => {
       expect(submitButton).not.toBeDisabled();
@@ -243,8 +243,8 @@ describe('ResetPasswordPage', () => {
     const confirmPasswordInput = screen.getByLabelText('Confirm Password');
     const submitButton = screen.getByTestId('reset-password-button');
 
-    await user.type(newPasswordInput, 'ValidPassword123');
-    await user.type(confirmPasswordInput, 'ValidPassword123');
+    await user.type(newPasswordInput, 'ValidPassword123!');
+    await user.type(confirmPasswordInput, 'ValidPassword123!');
 
     await waitFor(() => {
       expect(submitButton).not.toBeDisabled();
@@ -255,7 +255,7 @@ describe('ResetPasswordPage', () => {
     await waitFor(() => {
       expect(resetPasswordSpy).toHaveBeenCalledWith({
         token: 'valid-token',
-        newPassword: 'ValidPassword123',
+        newPassword: 'ValidPassword123!',
       });
     });
 
@@ -290,8 +290,8 @@ describe('ResetPasswordPage', () => {
     const confirmPasswordInput = screen.getByLabelText('Confirm Password');
     const submitButton = screen.getByTestId('reset-password-button');
 
-    await user.type(newPasswordInput, 'ValidPassword123');
-    await user.type(confirmPasswordInput, 'ValidPassword123');
+    await user.type(newPasswordInput, 'ValidPassword123!');
+    await user.type(confirmPasswordInput, 'ValidPassword123!');
 
     await waitFor(() => {
       expect(submitButton).not.toBeDisabled();

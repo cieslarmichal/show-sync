@@ -25,7 +25,6 @@ test.describe('Authentication Flow', () => {
       await registerPage.nameInput.fill('Test User');
       await registerPage.emailInput.fill('invalid-email');
       await registerPage.passwordInput.fill('TestPassword123!');
-      await registerPage.repeatPasswordInput.fill('TestPassword123!');
 
       // Trigger validation by blurring the email field
       await registerPage.emailInput.blur();
@@ -34,7 +33,6 @@ test.describe('Authentication Flow', () => {
       await expect(registerPage.errorMessage).toBeVisible();
       await expect(registerPage.errorMessage).toContainText(/invalid email address/i);
     });
-
     test('should show error for weak password', async ({ page }) => {
       const registerPage = new RegisterPageModel(page);
 
@@ -50,25 +48,6 @@ test.describe('Authentication Flow', () => {
 
       // Should display validation error for weak password
       await expect(registerPage.errorMessage).toBeVisible();
-    });
-
-    test('should show error when passwords do not match', async ({ page }) => {
-      const registerPage = new RegisterPageModel(page);
-
-      await registerPage.goto();
-
-      const uniqueEmail = generateUniqueEmail();
-      await registerPage.nameInput.fill('Test User');
-      await registerPage.emailInput.fill(uniqueEmail);
-      await registerPage.passwordInput.fill('TestPassword123!');
-      await registerPage.repeatPasswordInput.fill('DifferentPassword123!');
-
-      // Trigger validation by blurring the repeat password field
-      await registerPage.repeatPasswordInput.blur();
-
-      // Should display validation error for password mismatch
-      await expect(registerPage.errorMessage).toBeVisible();
-      await expect(registerPage.errorMessage).toContainText(/passwords must match/i);
     });
   });
 

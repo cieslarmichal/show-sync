@@ -2,10 +2,10 @@
 
 ## Frontend - React
 
-- React 18.3 dla nowoczesnej, reaktywnej architektury UI
+- React dla nowoczesnej, reaktywnej architektury UI
 - TypeScript w strict mode dla pełnej bezpieczeństwa typów
-- React Router 7.2 do zarządzania routingiem i nawigacją
-- Tailwind CSS 4.0 z @tailwindcss/vite do szybkiego stylowania
+- React Router do zarządzania routingiem i nawigacją
+- Tailwind CSS z @tailwindcss/vite do szybkiego stylowania
 - Radix UI dla komponentów primitywnych
 - React Hook Form z Zod do walidacji formularzy
 
@@ -26,3 +26,4 @@
 
 - Github Actions do tworzenia pipeline’ów CI/CD
 - Fly.io do hostowania aplikacji za pośrednictwem obrazu docker
+- Cloudlare do zarządzania DNS i CDN

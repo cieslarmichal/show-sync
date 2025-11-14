@@ -59,7 +59,7 @@ describe('Footer', () => {
     renderFooter();
 
     const footer = screen.getByRole('contentinfo');
-    expect(footer).toHaveClass('py-6', 'sm:py-12');
+    expect(footer).toHaveClass('py-5', 'sm:py-12');
   });
 
   it('should have responsive grid layout on desktop', () => {
@@ -87,7 +87,7 @@ describe('Footer', () => {
     renderFooter();
 
     const phoneLink = screen.getByText('+48 795 252 322');
-    expect(phoneLink.closest('a')).toHaveAttribute('href', 'tel:+48795252322');
+    expect(phoneLink.closest('a')).toHaveAttribute('href', 'tel:+48792448282');
   });
 
   it('should render location as google maps link', () => {

@@ -142,6 +142,7 @@ describe('RegisterForm', () => {
     await user.type(nameInput, 'Test User');
     await user.type(emailInput, 'test@example.com');
     await user.type(passwordInput, 'Password123!');
+    await user.tab(); // Trigger validation on blur
 
     await waitFor(() => {
       expect(submitButton).not.toBeDisabled();
@@ -176,6 +177,7 @@ describe('RegisterForm', () => {
     await user.type(nameInput, 'Test User');
     await user.type(emailInput, 'test@example.com');
     await user.type(passwordInput, 'Password123!');
+    await user.tab(); // Trigger validation on blur
 
     await waitFor(() => {
       expect(submitButton).not.toBeDisabled();
@@ -200,6 +202,7 @@ describe('RegisterForm', () => {
     await user.type(nameInput, 'Test User');
     await user.type(emailInput, 'test@example.com');
     await user.type(passwordInput, 'Password123!');
+    await user.tab(); // Trigger validation on blur
 
     await waitFor(() => {
       expect(submitButton).not.toBeDisabled();
