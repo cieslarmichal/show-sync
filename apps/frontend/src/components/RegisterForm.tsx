@@ -39,8 +39,8 @@ export default function RegisterForm({ onSuccess }: Props) {
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
-    mode: 'onBlur',
-    reValidateMode: 'onBlur',
+    mode: 'onChange',
+    reValidateMode: 'onChange',
     defaultValues: {
       name: '',
       email: '',

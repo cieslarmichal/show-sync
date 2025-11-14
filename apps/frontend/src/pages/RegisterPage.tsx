@@ -1,10 +1,13 @@
-import { useState } from 'react';
-import { Link, useSearchParams } from 'react-router-dom';
+import { useState, useContext } from 'react';
+import { Link, useSearchParams, Navigate } from 'react-router-dom';
 import RegisterForm from '../components/RegisterForm';
 import { Button } from '@/components/ui/Button';
 import { useSEO } from '../hooks/useSEO';
+import { AuthContext } from '../context/AuthContext';
 
 export default function RegisterPage() {
+  const { userData, userDataInitialized } = useContext(AuthContext);
+
   useSEO({
     title: 'Create Account - ShowSync',
     description:
@@ -21,6 +24,25 @@ export default function RegisterPage() {
   };
 
   const signInUrl = redirect ? `/login?redirect=${encodeURIComponent(redirect)}` : '/login';
+
+  // Show loading state while checking authentication
+  if (!userDataInitialized) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <div className="text-lg text-muted-foreground">Loading...</div>
+      </div>
+    );
+  }
+
+  // Redirect to dashboard if already authenticated
+  if (userData) {
+    return (
+      <Navigate
+        to="/dashboard"
+        replace
+      />
+    );
+  }
 
   if (isRegistrationSuccess) {
     return (

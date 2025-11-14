@@ -1,11 +1,14 @@
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Navigate } from 'react-router-dom';
+import { useContext } from 'react';
 import { Button } from '../components/ui/Button';
 import { Card } from '../components/ui/Card';
 import { Heart, BrainCircuit, PartyPopper, Users, Sparkles, Clock, CheckCircle2 } from 'lucide-react';
 import { useSEO } from '../hooks/useSEO';
+import { AuthContext } from '../context/AuthContext';
 
 export default function HomePage() {
   const navigate = useNavigate();
+  const { userData, userDataInitialized } = useContext(AuthContext);
 
   useSEO({
     title: 'ShowSync - Stop Arguing About What to Watch',
@@ -22,6 +25,25 @@ export default function HomePage() {
       'streaming recommendations',
     ],
   });
+
+  // Show loading state while checking authentication
+  if (!userDataInitialized) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <div className="text-lg text-muted-foreground">Loading...</div>
+      </div>
+    );
+  }
+
+  // Redirect to dashboard if already authenticated
+  if (userData) {
+    return (
+      <Navigate
+        to="/dashboard"
+        replace
+      />
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">
