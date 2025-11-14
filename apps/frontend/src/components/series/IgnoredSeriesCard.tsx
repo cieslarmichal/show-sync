@@ -43,7 +43,12 @@ export function IgnoredSeriesCard({ seriesTmdbId, details, isRemoving, onRemove 
               <X className="w-4 h-4 text-white" />
             </Button>
           </TooltipTrigger>
-          <TooltipContent side="bottom">Remove from ignored list</TooltipContent>
+          <TooltipContent
+            side="bottom"
+            className="hidden sm:block"
+          >
+            Remove from ignored list
+          </TooltipContent>
         </Tooltip>
         <div className="absolute bottom-0 left-0 right-0 p-2">
           <h3 className="text-xs font-bold text-white truncate text-center leading-tight">

@@ -65,7 +65,7 @@ export default function LoginForm() {
           <FormField
             control={form.control}
             name="email"
-            render={({ field }) => (
+            render={({ field, fieldState }) => (
               <FormItem>
                 <FormLabel
                   htmlFor="email"
@@ -73,17 +73,18 @@ export default function LoginForm() {
                 >
                   Email address
                 </FormLabel>
-                <FormControl>
-                  <div className="relative">
-                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                <div className="relative">
+                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                  <FormControl>
                     <Input
                       id="email"
                       placeholder="Enter your email"
                       className="pl-10 h-11"
+                      aria-invalid={!!fieldState.error}
                       {...field}
                     />
-                  </div>
-                </FormControl>
+                  </FormControl>
+                </div>
                 <FormMessage />
               </FormItem>
             )}
@@ -91,7 +92,7 @@ export default function LoginForm() {
           <FormField
             control={form.control}
             name="password"
-            render={({ field }) => (
+            render={({ field, fieldState }) => (
               <FormItem>
                 <FormLabel
                   htmlFor="password"
@@ -99,29 +100,30 @@ export default function LoginForm() {
                 >
                   Password
                 </FormLabel>
-                <FormControl>
-                  <div className="relative">
-                    <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                <div className="relative">
+                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                  <FormControl>
                     <Input
                       id="password"
                       placeholder="Enter your password"
                       type={showPassword ? 'text' : 'password'}
                       className="pl-10 h-11"
+                      aria-invalid={!!fieldState.error}
                       {...field}
                     />
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="sm"
-                      className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent text-muted-foreground"
-                      onClick={() => setShowPassword(!showPassword)}
-                      tabIndex={-1}
-                      aria-label={showPassword ? 'Hide password' : 'Show password'}
-                    >
-                      {showPassword ? <EyeOffIcon className="h-4 w-4" /> : <EyeIcon className="h-4 w-4" />}
-                    </Button>
-                  </div>
-                </FormControl>
+                  </FormControl>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent text-muted-foreground"
+                    onClick={() => setShowPassword(!showPassword)}
+                    tabIndex={-1}
+                    aria-label={showPassword ? 'Hide password' : 'Show password'}
+                  >
+                    {showPassword ? <EyeOffIcon className="h-4 w-4" /> : <EyeIcon className="h-4 w-4" />}
+                  </Button>
+                </div>
                 <FormMessage />
               </FormItem>
             )}

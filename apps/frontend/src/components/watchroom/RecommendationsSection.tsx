@@ -366,9 +366,9 @@ export function RecommendationsSection({
           )}
         </div>
       </CardHeader>
-      <CardContent className="pt-3 sm:pt-4">
+      <CardContent className="pt-2 sm:pt-3">
         {isLoadingRecommendations ? (
-          <div className="space-y-4 sm:space-y-4">
+          <div className="space-y-3 sm:space-y-4">
             <p className="text-xs sm:text-sm text-muted-foreground px-1">Loading recommendations...</p>
             {[...Array(3)].map((_, i) => (
               <div
@@ -419,9 +419,9 @@ export function RecommendationsSection({
             </p>
           </div>
         ) : (
-          <div className="space-y-4 sm:space-y-4">
+          <div className="space-y-3 sm:space-y-4">
             {/* Instructions Callout */}
-            <div className="rounded-lg border border-primary/20 bg-primary/5 px-3 py-2.5 sm:px-4 sm:py-3">
+            <div className="rounded-lg border border-primary/20 bg-primary/5 px-3 py-2 sm:px-4 sm:py-2.5">
               <p className="text-xs sm:text-sm text-muted-foreground flex items-center gap-1.5 sm:gap-2 flex-wrap leading-relaxed">
                 <ThumbsUp className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary" />
                 <span>Like or</span>
@@ -434,7 +434,7 @@ export function RecommendationsSection({
             </div>
 
             {/* Recommendations Count Badge */}
-            <div className="flex items-center gap-2 flex-wrap pt-1">
+            <div className="flex items-center gap-2 flex-wrap">
               <Badge
                 variant="secondary"
                 className="text-xs sm:text-sm font-semibold"
@@ -447,7 +447,7 @@ export function RecommendationsSection({
               </span>
             </div>
 
-            <div className="grid gap-5 sm:gap-8 pt-1">
+            <div className="grid gap-4 sm:gap-6">
               {visibleRecommendations.map((recommendation) => (
                 <RecommendationCard
                   key={recommendation.id}
@@ -463,7 +463,7 @@ export function RecommendationsSection({
 
             {/* Feedback Form */}
             {recommendations.length > 0 && recommendations[0]?.requestId && (
-              <div className="mt-5 sm:mt-8">
+              <div className="mt-4 sm:mt-6">
                 <RecommendationFeedbackForm
                   watchroomId={watchroomId}
                   recommendationRequestId={recommendations[0].requestId}

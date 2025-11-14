@@ -65,6 +65,7 @@ export default function ProfilePage() {
   const navigate = useNavigate();
 
   const form = useForm<z.infer<typeof changePasswordSchema>>({
+    mode: 'onTouched',
     resolver: zodResolver(changePasswordSchema),
     defaultValues: {
       oldPassword: '',
@@ -246,27 +247,28 @@ export default function ProfilePage() {
                         <FormField
                           control={form.control}
                           name="oldPassword"
-                          render={({ field }) => (
+                          render={({ field, fieldState }) => (
                             <FormItem>
                               <FormLabel>Old Password</FormLabel>
-                              <FormControl>
-                                <div className="relative">
+                              <div className="relative">
+                                <FormControl>
                                   <Input
                                     type={showOldPassword ? 'text' : 'password'}
+                                    aria-invalid={!!fieldState.error}
                                     {...field}
                                   />
-                                  <Button
-                                    type="button"
-                                    variant="ghost"
-                                    size="sm"
-                                    className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent text-muted-foreground"
-                                    onClick={() => setShowOldPassword(!showOldPassword)}
-                                    tabIndex={-1}
-                                  >
-                                    {showOldPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                                  </Button>
-                                </div>
-                              </FormControl>
+                                </FormControl>
+                                <Button
+                                  type="button"
+                                  variant="ghost"
+                                  size="sm"
+                                  className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent text-muted-foreground"
+                                  onClick={() => setShowOldPassword(!showOldPassword)}
+                                  tabIndex={-1}
+                                >
+                                  {showOldPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                                </Button>
+                              </div>
                               <FormMessage className="text-destructive" />
                             </FormItem>
                           )}
@@ -274,27 +276,28 @@ export default function ProfilePage() {
                         <FormField
                           control={form.control}
                           name="newPassword"
-                          render={({ field }) => (
+                          render={({ field, fieldState }) => (
                             <FormItem>
                               <FormLabel>New Password</FormLabel>
-                              <FormControl>
-                                <div className="relative">
+                              <div className="relative">
+                                <FormControl>
                                   <Input
                                     type={showNewPassword ? 'text' : 'password'}
+                                    aria-invalid={!!fieldState.error}
                                     {...field}
                                   />
-                                  <Button
-                                    type="button"
-                                    variant="ghost"
-                                    size="sm"
-                                    className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent text-muted-foreground"
-                                    onClick={() => setShowNewPassword(!showNewPassword)}
-                                    tabIndex={-1}
-                                  >
-                                    {showNewPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                                  </Button>
-                                </div>
-                              </FormControl>
+                                </FormControl>
+                                <Button
+                                  type="button"
+                                  variant="ghost"
+                                  size="sm"
+                                  className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent text-muted-foreground"
+                                  onClick={() => setShowNewPassword(!showNewPassword)}
+                                  tabIndex={-1}
+                                >
+                                  {showNewPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                                </Button>
+                              </div>
                               <FormMessage className="text-destructive" />
                             </FormItem>
                           )}
@@ -302,27 +305,28 @@ export default function ProfilePage() {
                         <FormField
                           control={form.control}
                           name="confirmPassword"
-                          render={({ field }) => (
+                          render={({ field, fieldState }) => (
                             <FormItem>
                               <FormLabel>Confirm New Password</FormLabel>
-                              <FormControl>
-                                <div className="relative">
+                              <div className="relative">
+                                <FormControl>
                                   <Input
                                     type={showConfirmPassword ? 'text' : 'password'}
+                                    aria-invalid={!!fieldState.error}
                                     {...field}
                                   />
-                                  <Button
-                                    type="button"
-                                    variant="ghost"
-                                    size="sm"
-                                    className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent text-muted-foreground"
-                                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                                    tabIndex={-1}
-                                  >
-                                    {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                                  </Button>
-                                </div>
-                              </FormControl>
+                                </FormControl>
+                                <Button
+                                  type="button"
+                                  variant="ghost"
+                                  size="sm"
+                                  className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent text-muted-foreground"
+                                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                                  tabIndex={-1}
+                                >
+                                  {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                                </Button>
+                              </div>
                               <FormMessage className="text-destructive" />
                             </FormItem>
                           )}

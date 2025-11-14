@@ -137,12 +137,16 @@ export function ParticipantsCard({ room, isOwner, currentUserId, onRoomUpdated, 
                             participantName: participant.name,
                           })
                         }
-                        className="h-10 w-10 hover:bg-destructive/10 hover:text-destructive rounded-lg opacity-0 group-hover:opacity-100 transition-all"
+                        className="h-10 w-10 hover:bg-destructive/10 hover:text-destructive rounded-lg opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-all"
+                        aria-label={`Remove ${participant.name} from room`}
                       >
                         <UserMinus className="w-4 h-4" />
                       </Button>
                     </TooltipTrigger>
-                    <TooltipContent side="bottom">
+                    <TooltipContent
+                      side="bottom"
+                      className="hidden sm:block"
+                    >
                       <p>Remove {participant.name} from room</p>
                     </TooltipContent>
                   </Tooltip>

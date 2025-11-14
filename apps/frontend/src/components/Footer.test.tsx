@@ -51,7 +51,7 @@ describe('Footer', () => {
 
     // Full contact section only on desktop
     expect(screen.getByText('Contact')).toBeInTheDocument();
-    expect(screen.getByText('+48 792 448 282')).toBeInTheDocument();
+    expect(screen.getByText('+48 795 252 322')).toBeInTheDocument();
     expect(screen.getByText('Cracow, Poland')).toBeInTheDocument();
   });
 
@@ -86,8 +86,8 @@ describe('Footer', () => {
   it('should render phone number as tel link', () => {
     renderFooter();
 
-    const phoneLink = screen.getByText('+48 792 448 282');
-    expect(phoneLink.closest('a')).toHaveAttribute('href', 'tel:+48792448282');
+    const phoneLink = screen.getByText('+48 795 252 322');
+    expect(phoneLink.closest('a')).toHaveAttribute('href', 'tel:+48795252322');
   });
 
   it('should render location as google maps link', () => {

@@ -41,7 +41,12 @@ export function PreferenceToggle({ preferenceLevel, onToggle, disabled = false }
           />
         </Button>
       </TooltipTrigger>
-      <TooltipContent side="bottom">{label}</TooltipContent>
+      <TooltipContent
+        side="bottom"
+        className="hidden sm:block"
+      >
+        {label}
+      </TooltipContent>
     </Tooltip>
   );
 }

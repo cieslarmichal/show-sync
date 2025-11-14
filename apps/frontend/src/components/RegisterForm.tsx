@@ -3,32 +3,25 @@ import { useForm } from 'react-hook-form';
 import { Button } from '@/components/ui/Button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/Form';
 import { Input } from '@/components/ui/Input';
-import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/Tooltip';
 import { registerUser } from '../api/queries/register';
 import { useState } from 'react';
 import { z } from 'zod';
-import { EyeIcon, EyeOffIcon, InfoIcon, Mail, Lock, User, Loader2 } from 'lucide-react';
+import { EyeIcon, EyeOffIcon, Mail, Lock, User, Loader2 } from 'lucide-react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { ApiError } from '../api/ApiError';
 
-const formSchema = z
-  .object({
-    name: z.string().min(1, 'Name is required').max(64),
-    email: z.string().email('Invalid email address').max(255),
-    password: z
-      .string()
-      .min(8, 'Password must be at least 8 characters')
-      .max(64)
-      .regex(/[a-z]/, 'Password must contain at least one lowercase letter')
-      .regex(/[A-Z]/, 'Password must contain at least one uppercase letter')
-      .regex(/\d/, 'Password must contain at least one digit')
-      .regex(/[!@#$%^&*(),.?":{}|<>]/, 'Password must contain at least one special character'),
-    passwordConfirmation: z.string(),
-  })
-  .refine((data) => data.password === data.passwordConfirmation, {
-    message: 'Passwords must match',
-    path: ['passwordConfirmation'],
-  });
+const formSchema = z.object({
+  name: z.string().min(1, 'Name is required').max(64),
+  email: z.string().email('Invalid email address').max(255),
+  password: z
+    .string()
+    .min(8, 'Password must be at least 8 characters')
+    .max(64)
+    .regex(/[a-z]/, 'Password must contain at least one lowercase letter')
+    .regex(/[A-Z]/, 'Password must contain at least one uppercase letter')
+    .regex(/\d/, 'Password must contain at least one digit')
+    .regex(/[!@#$%^&*(),.?":{}|<>]/, 'Password must contain at least one special character'),
+});
 
 type FormValues = z.infer<typeof formSchema>;
 
@@ -38,7 +31,6 @@ interface Props {
 
 export default function RegisterForm({ onSuccess }: Props) {
   const [showPassword, setShowPassword] = useState(false);
-  const [showPasswordConfirmation, setShowPasswordConfirmation] = useState(false);
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const redirectTo = searchParams.get('redirect');
@@ -47,12 +39,12 @@ export default function RegisterForm({ onSuccess }: Props) {
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
-    mode: 'onTouched',
+    mode: 'onBlur',
+    reValidateMode: 'onBlur',
     defaultValues: {
       name: '',
       email: '',
       password: '',
-      passwordConfirmation: '',
     },
   });
 
@@ -104,7 +96,7 @@ export default function RegisterForm({ onSuccess }: Props) {
           <FormField
             control={form.control}
             name="name"
-            render={({ field }) => (
+            render={({ field, fieldState }) => (
               <FormItem>
                 <FormLabel
                   htmlFor="name"
@@ -112,17 +104,18 @@ export default function RegisterForm({ onSuccess }: Props) {
                 >
                   Name
                 </FormLabel>
-                <FormControl>
-                  <div className="relative">
-                    <User className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                <div className="relative">
+                  <User className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                  <FormControl>
                     <Input
                       id="name"
                       placeholder="Enter your name"
                       className="pl-10 h-11"
+                      aria-invalid={!!fieldState.error}
                       {...field}
                     />
-                  </div>
-                </FormControl>
+                  </FormControl>
+                </div>
                 <FormMessage />
               </FormItem>
             )}
@@ -131,7 +124,7 @@ export default function RegisterForm({ onSuccess }: Props) {
           <FormField
             control={form.control}
             name="email"
-            render={({ field }) => (
+            render={({ field, fieldState }) => (
               <FormItem>
                 <FormLabel
                   htmlFor="email"
@@ -139,17 +132,18 @@ export default function RegisterForm({ onSuccess }: Props) {
                 >
                   Email address
                 </FormLabel>
-                <FormControl>
-                  <div className="relative">
-                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                <div className="relative">
+                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                  <FormControl>
                     <Input
                       id="email"
                       placeholder="Enter your email"
                       className="pl-10 h-11"
+                      aria-invalid={!!fieldState.error}
                       {...field}
                     />
-                  </div>
-                </FormControl>
+                  </FormControl>
+                </div>
                 <FormMessage />
               </FormItem>
             )}
@@ -158,40 +152,53 @@ export default function RegisterForm({ onSuccess }: Props) {
           <FormField
             control={form.control}
             name="password"
-            render={({ field }) => (
-              <FormItem>
-                <div className="flex items-center gap-2">
+            render={({ field, fieldState }) => {
+              const password = field.value || '';
+              const hasMinLength = password.length >= 8;
+              const hasLowercase = /[a-z]/.test(password);
+              const hasUppercase = /[A-Z]/.test(password);
+              const hasDigit = /\d/.test(password);
+              const hasSpecial = /[^a-zA-Z0-9]/.test(password);
+
+              const requirementsMet = [hasMinLength, hasLowercase, hasUppercase, hasDigit, hasSpecial].filter(
+                Boolean,
+              ).length;
+              const strengthPercentage = (requirementsMet / 5) * 100;
+
+              let strengthColor = 'bg-destructive';
+              let strengthText = 'Weak';
+
+              if (requirementsMet >= 5) {
+                strengthColor = 'bg-green-500';
+                strengthText = 'Strong';
+              } else if (requirementsMet >= 4) {
+                strengthColor = 'bg-yellow-500';
+                strengthText = 'Good';
+              } else if (requirementsMet >= 3) {
+                strengthColor = 'bg-orange-500';
+                strengthText = 'Fair';
+              }
+
+              return (
+                <FormItem>
                   <FormLabel
                     htmlFor="password"
                     className="text-sm font-medium text-foreground"
                   >
                     Password
                   </FormLabel>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <InfoIcon className="w-4 h-4 text-muted-foreground hover:text-foreground cursor-help" />
-                    </TooltipTrigger>
-                    <TooltipContent
-                      side="top"
-                      className="max-w-xs"
-                    >
-                      <p>
-                        Password must contain at least 8 characters, one lowercase letter, one uppercase letter, one
-                        digit and one special character.
-                      </p>
-                    </TooltipContent>
-                  </Tooltip>
-                </div>
-                <FormControl>
                   <div className="relative">
                     <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                    <Input
-                      id="password"
-                      placeholder="Enter your password"
-                      type={showPassword ? 'text' : 'password'}
-                      className="pl-10 h-11"
-                      {...field}
-                    />
+                    <FormControl>
+                      <Input
+                        id="password"
+                        placeholder="Enter your password"
+                        type={showPassword ? 'text' : 'password'}
+                        className="pl-10 h-11"
+                        aria-invalid={!!fieldState.error}
+                        {...field}
+                      />
+                    </FormControl>
                     <Button
                       type="button"
                       variant="ghost"
@@ -204,51 +211,40 @@ export default function RegisterForm({ onSuccess }: Props) {
                       {showPassword ? <EyeOffIcon className="h-4 w-4" /> : <EyeIcon className="h-4 w-4" />}
                     </Button>
                   </div>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="passwordConfirmation"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel
-                  htmlFor="passwordConfirmation"
-                  className="text-sm font-medium text-foreground"
-                >
-                  Repeat Password
-                </FormLabel>
-                <FormControl>
-                  <div className="relative">
-                    <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                    <Input
-                      id="passwordConfirmation"
-                      placeholder="Repeat password"
-                      type={showPasswordConfirmation ? 'text' : 'password'}
-                      className="pl-10 h-11"
-                      {...field}
-                    />
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="sm"
-                      className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent text-muted-foreground"
-                      onClick={() => setShowPasswordConfirmation(!showPasswordConfirmation)}
-                      tabIndex={-1}
-                      aria-label={
-                        showPasswordConfirmation ? 'Hide password confirmation' : 'Show password confirmation'
-                      }
-                    >
-                      {showPasswordConfirmation ? <EyeOffIcon className="h-4 w-4" /> : <EyeIcon className="h-4 w-4" />}
-                    </Button>
-                  </div>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
+                  {password && (
+                    <div className="space-y-1.5 mt-2">
+                      <div className="flex items-center gap-2">
+                        <div className="flex-1 h-1.5 bg-muted rounded-full overflow-hidden">
+                          <div
+                            className={`h-full ${strengthColor} transition-all duration-300`}
+                            style={{ width: `${strengthPercentage}%` }}
+                          />
+                        </div>
+                        <span className="text-xs font-medium text-muted-foreground min-w-[45px]">{strengthText}</span>
+                      </div>
+                      <div className="flex flex-wrap gap-x-3 gap-y-0.5 text-[11px]">
+                        <span className={hasMinLength ? 'text-green-600 dark:text-green-500' : 'text-muted-foreground'}>
+                          {hasMinLength ? '✓' : '○'} 8+ chars
+                        </span>
+                        <span className={hasLowercase ? 'text-green-600 dark:text-green-500' : 'text-muted-foreground'}>
+                          {hasLowercase ? '✓' : '○'} lowercase
+                        </span>
+                        <span className={hasUppercase ? 'text-green-600 dark:text-green-500' : 'text-muted-foreground'}>
+                          {hasUppercase ? '✓' : '○'} uppercase
+                        </span>
+                        <span className={hasDigit ? 'text-green-600 dark:text-green-500' : 'text-muted-foreground'}>
+                          {hasDigit ? '✓' : '○'} digit
+                        </span>
+                        <span className={hasSpecial ? 'text-green-600 dark:text-green-500' : 'text-muted-foreground'}>
+                          {hasSpecial ? '✓' : '○'} special character
+                        </span>
+                      </div>
+                    </div>
+                  )}
+                  <FormMessage />
+                </FormItem>
+              );
+            }}
           />
           <div className="pt-2">
             <Button

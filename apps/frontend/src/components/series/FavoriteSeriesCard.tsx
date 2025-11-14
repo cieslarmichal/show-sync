@@ -68,7 +68,12 @@ export function FavoriteSeriesCard({
               <X className="w-4 h-4 text-white" />
             </Button>
           </TooltipTrigger>
-          <TooltipContent side="bottom">Remove from favorites</TooltipContent>
+          <TooltipContent
+            side="bottom"
+            className="hidden sm:block"
+          >
+            Remove from favorites
+          </TooltipContent>
         </Tooltip>
 
         <div className="absolute bottom-0 left-0 right-0 p-2">

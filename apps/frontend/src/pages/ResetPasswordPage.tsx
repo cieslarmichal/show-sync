@@ -218,7 +218,7 @@ export default function ResetPasswordPage() {
               <FormField
                 control={form.control}
                 name="newPassword"
-                render={({ field }) => (
+                render={({ field, fieldState }) => (
                   <FormItem>
                     <FormLabel
                       htmlFor="newPassword"
@@ -226,18 +226,19 @@ export default function ResetPasswordPage() {
                     >
                       New Password
                     </FormLabel>
-                    <FormControl>
-                      <div className="relative">
-                        <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                    <div className="relative">
+                      <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                      <FormControl>
                         <Input
                           id="newPassword"
                           type="password"
                           placeholder="Enter new password"
                           className="pl-10 h-11"
+                          aria-invalid={!!fieldState.error}
                           {...field}
                         />
-                      </div>
-                    </FormControl>
+                      </FormControl>
+                    </div>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -246,7 +247,7 @@ export default function ResetPasswordPage() {
               <FormField
                 control={form.control}
                 name="confirmPassword"
-                render={({ field }) => (
+                render={({ field, fieldState }) => (
                   <FormItem>
                     <FormLabel
                       htmlFor="confirmPassword"
@@ -254,18 +255,19 @@ export default function ResetPasswordPage() {
                     >
                       Confirm Password
                     </FormLabel>
-                    <FormControl>
-                      <div className="relative">
-                        <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                    <div className="relative">
+                      <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                      <FormControl>
                         <Input
                           id="confirmPassword"
                           type="password"
                           placeholder="Confirm new password"
                           className="pl-10 h-11"
+                          aria-invalid={!!fieldState.error}
                           {...field}
                         />
-                      </div>
-                    </FormControl>
+                      </FormControl>
+                    </div>
                     <FormMessage />
                   </FormItem>
                 )}

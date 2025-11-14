@@ -100,7 +100,7 @@ export default function ForgotPasswordPage() {
               <FormField
                 control={form.control}
                 name="email"
-                render={({ field }) => (
+                render={({ field, fieldState }) => (
                   <FormItem>
                     <FormLabel
                       htmlFor="email"
@@ -108,17 +108,18 @@ export default function ForgotPasswordPage() {
                     >
                       Email address
                     </FormLabel>
-                    <FormControl>
-                      <div className="relative">
-                        <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                    <div className="relative">
+                      <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                      <FormControl>
                         <Input
                           id="email"
                           placeholder="Enter your email"
                           className="pl-10 h-11"
+                          aria-invalid={!!fieldState.error}
                           {...field}
                         />
-                      </div>
-                    </FormControl>
+                      </FormControl>
+                    </div>
                     <FormMessage />
                   </FormItem>
                 )}

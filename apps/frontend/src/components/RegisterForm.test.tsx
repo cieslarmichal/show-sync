@@ -16,7 +16,6 @@ describe('RegisterForm', () => {
     expect(screen.getByLabelText(/name/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/email/i)).toBeInTheDocument();
     expect(screen.getByPlaceholderText(/enter your password/i)).toBeInTheDocument();
-    expect(screen.getByPlaceholderText(/repeat password/i)).toBeInTheDocument();
   });
 
   it('should render sign up button', async () => {
@@ -118,23 +117,16 @@ describe('RegisterForm', () => {
     });
   });
 
-  it('should show validation error when passwords do not match', async () => {
+  it('should show password strength indicator when typing', async () => {
     const user = userEvent.setup();
     await renderWithProviders(<RegisterForm onSuccess={mockOnSuccess} />);
 
     const passwordInput = screen.getByPlaceholderText(/enter your password/i);
-    const confirmPasswordInput = screen.getByPlaceholderText(/repeat password/i);
-    const nameInput = screen.getByLabelText(/name/i);
-    const emailInput = screen.getByLabelText(/email/i);
 
-    await user.type(nameInput, 'Test User');
-    await user.type(emailInput, 'test@example.com');
     await user.type(passwordInput, 'Password123!');
-    await user.type(confirmPasswordInput, 'DifferentPass123!');
-    await user.tab();
 
     await waitFor(() => {
-      expect(screen.getByText(/passwords/i)).toBeInTheDocument();
+      expect(screen.getByText(/strong/i)).toBeInTheDocument();
     });
   });
 
@@ -145,13 +137,11 @@ describe('RegisterForm', () => {
     const nameInput = screen.getByLabelText(/name/i);
     const emailInput = screen.getByLabelText(/email/i);
     const passwordInput = screen.getByPlaceholderText(/enter your password/i);
-    const confirmPasswordInput = screen.getByPlaceholderText(/repeat password/i);
     const submitButton = screen.getByRole('button', { name: /sign up/i });
 
     await user.type(nameInput, 'Test User');
     await user.type(emailInput, 'test@example.com');
     await user.type(passwordInput, 'Password123!');
-    await user.type(confirmPasswordInput, 'Password123!');
 
     await waitFor(() => {
       expect(submitButton).not.toBeDisabled();
@@ -163,8 +153,7 @@ describe('RegisterForm', () => {
     await renderWithProviders(<RegisterForm onSuccess={mockOnSuccess} />);
 
     const passwordInput = screen.getByPlaceholderText(/enter your password/i);
-    const toggleButtons = screen.getAllByRole('button').filter((btn) => btn.getAttribute('tabindex') === '-1');
-    const passwordToggle = toggleButtons[0];
+    const passwordToggle = screen.getByLabelText(/hide password|show password/i);
 
     expect(passwordInput).toHaveAttribute('type', 'password');
 
@@ -175,23 +164,6 @@ describe('RegisterForm', () => {
     expect(passwordInput).toHaveAttribute('type', 'password');
   });
 
-  it('should toggle confirm password visibility', async () => {
-    const user = userEvent.setup();
-    await renderWithProviders(<RegisterForm onSuccess={mockOnSuccess} />);
-
-    const confirmPasswordInput = screen.getByPlaceholderText(/repeat password/i);
-    const toggleButtons = screen.getAllByRole('button').filter((btn) => btn.getAttribute('tabindex') === '-1');
-    const confirmPasswordToggle = toggleButtons[1];
-
-    expect(confirmPasswordInput).toHaveAttribute('type', 'password');
-
-    await user.click(confirmPasswordToggle);
-    expect(confirmPasswordInput).toHaveAttribute('type', 'text');
-
-    await user.click(confirmPasswordToggle);
-    expect(confirmPasswordInput).toHaveAttribute('type', 'password');
-  });
-
   it('should call onSuccess callback after successful registration', async () => {
     const user = userEvent.setup();
     await renderWithProviders(<RegisterForm onSuccess={mockOnSuccess} />);
@@ -199,13 +171,11 @@ describe('RegisterForm', () => {
     const nameInput = screen.getByLabelText(/name/i);
     const emailInput = screen.getByLabelText(/email/i);
     const passwordInput = screen.getByPlaceholderText(/enter your password/i);
-    const confirmPasswordInput = screen.getByPlaceholderText(/repeat password/i);
     const submitButton = screen.getByRole('button', { name: /sign up/i });
 
     await user.type(nameInput, 'Test User');
     await user.type(emailInput, 'test@example.com');
     await user.type(passwordInput, 'Password123!');
-    await user.type(confirmPasswordInput, 'Password123!');
 
     await waitFor(() => {
       expect(submitButton).not.toBeDisabled();
@@ -225,13 +195,11 @@ describe('RegisterForm', () => {
     const nameInput = screen.getByLabelText(/name/i);
     const emailInput = screen.getByLabelText(/email/i);
     const passwordInput = screen.getByPlaceholderText(/enter your password/i);
-    const confirmPasswordInput = screen.getByPlaceholderText(/repeat password/i);
     const submitButton = screen.getByRole('button', { name: /sign up/i });
 
     await user.type(nameInput, 'Test User');
     await user.type(emailInput, 'test@example.com');
     await user.type(passwordInput, 'Password123!');
-    await user.type(confirmPasswordInput, 'Password123!');
 
     await waitFor(() => {
       expect(submitButton).not.toBeDisabled();
@@ -250,17 +218,5 @@ describe('RegisterForm', () => {
     ).catch(() => {
       // It's okay if this is too fast, the test passed
     });
-  });
-
-  it('should have password requirements tooltip icon', async () => {
-    await renderWithProviders(<RegisterForm onSuccess={mockOnSuccess} />);
-
-    // Look for the info icon - it should be present near the password label
-    const passwordLabel = screen.getByText(/^password$/i);
-    expect(passwordLabel).toBeInTheDocument();
-
-    // The info icon exists in the same container
-    const passwordSection = passwordLabel.closest('div');
-    expect(passwordSection).toBeInTheDocument();
   });
 });

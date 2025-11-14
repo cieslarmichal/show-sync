@@ -74,14 +74,20 @@ export function CreateWatchRoomModal({ onRoomCreated, disabled = false, disabled
       onOpenChange={setOpen}
     >
       {disabled && disabledReason ? (
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <div className="inline-block">{buttonElement}</div>
-          </TooltipTrigger>
-          <TooltipContent side="bottom">
-            <p>{disabledReason}</p>
-          </TooltipContent>
-        </Tooltip>
+        <div className="inline-flex flex-col gap-2">
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <div className="inline-block">{buttonElement}</div>
+            </TooltipTrigger>
+            <TooltipContent
+              side="bottom"
+              className="hidden sm:block"
+            >
+              <p>{disabledReason}</p>
+            </TooltipContent>
+          </Tooltip>
+          <p className="text-xs text-muted-foreground sm:hidden">{disabledReason}</p>
+        </div>
       ) : (
         <DialogTrigger asChild>{buttonElement}</DialogTrigger>
       )}
@@ -98,13 +104,14 @@ export function CreateWatchRoomModal({ onRoomCreated, disabled = false, disabled
             <FormField
               control={form.control}
               name="name"
-              render={({ field }) => (
+              render={({ field, fieldState }) => (
                 <FormItem>
                   <FormLabel htmlFor="create-room-name">Room Name</FormLabel>
                   <FormControl>
                     <Input
                       id="create-room-name"
                       placeholder="Family Movie Night"
+                      aria-invalid={!!fieldState.error}
                       {...field}
                     />
                   </FormControl>
@@ -115,13 +122,14 @@ export function CreateWatchRoomModal({ onRoomCreated, disabled = false, disabled
             <FormField
               control={form.control}
               name="description"
-              render={({ field }) => (
+              render={({ field, fieldState }) => (
                 <FormItem>
                   <FormLabel htmlFor="create-room-description">Description (optional)</FormLabel>
                   <FormControl>
                     <Textarea
                       id="create-room-description"
                       placeholder="Tell us what kind of shows you're looking for..."
+                      aria-invalid={!!fieldState.error}
                       {...field}
                     />
                   </FormControl>
