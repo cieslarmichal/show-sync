@@ -75,11 +75,13 @@ export function EditWatchRoomModal({
     >
       <DialogTrigger asChild>
         <Button
+          size="sm"
           variant="outline"
-          className="shadow-sm hover:shadow-md transition-all"
+          className="shadow-sm hover:shadow-md transition-all h-9"
         >
-          <Pencil className="w-4 h-4 mr-2" />
-          Edit Room
+          <Pencil className="w-3 h-3 mr-1" />
+          <span className="hidden xs:inline">Edit Room</span>
+          <span className="inline xs:hidden">Edit</span>
         </Button>
       </DialogTrigger>
       <DialogContent>

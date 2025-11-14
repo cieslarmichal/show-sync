@@ -77,45 +77,47 @@ export function ParticipantsCard({ room, isOwner, currentUserId, onRoomUpdated, 
   return (
     <>
       <Card className="border-2 shadow-sm hover:shadow-md transition-all duration-300">
-        <CardHeader className="pb-6">
-          <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center">
-              <Users className="w-6 h-6 text-primary" />
+        <CardHeader className="pb-2.5 sm:pb-3">
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+              <Users className="w-4 h-4 sm:w-5.5 sm:h-5.5 text-primary" />
             </div>
             <div>
-              <CardTitle className="text-2xl font-bold tracking-tight">Participants</CardTitle>
-              <p className="text-sm text-muted-foreground mt-1">
+              <CardTitle className="text-base sm:text-lg md:text-xl font-bold tracking-tight">Participants</CardTitle>
+              <p className="text-xs text-muted-foreground mt-0.5">
                 {room.participants.length} / {config.watchroom.maxParticipants}{' '}
                 {room.participants.length === 1 ? 'member' : 'members'}
               </p>
             </div>
           </div>
         </CardHeader>
-        <CardContent className="space-y-3">
-          <div className="grid gap-3">
+        <CardContent className="space-y-0">
+          <div className="grid gap-2">
             {room.participants.map((participant) => (
               <div
                 key={participant.id}
-                className="group flex items-center justify-between p-4 rounded-lg border bg-card hover:border-primary/40 hover:bg-muted/30 transition-all duration-200"
+                className="group flex items-center justify-between p-2 sm:p-2.5 md:p-3 rounded-lg border bg-card hover:border-primary/40 hover:bg-muted/30 transition-all duration-200"
                 data-testid="participants-list"
               >
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-2 sm:gap-2.5">
                   <div className="relative">
-                    <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center ring-2 ring-background group-hover:ring-primary/20 transition-all">
-                      <span className="text-lg font-bold text-primary">{participant.name.charAt(0).toUpperCase()}</span>
+                    <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-primary/10 flex items-center justify-center ring-2 ring-background group-hover:ring-primary/20 transition-all">
+                      <span className="text-sm sm:text-base font-bold text-primary">
+                        {participant.name.charAt(0).toUpperCase()}
+                      </span>
                     </div>
                     {participant.id === room.ownerId && (
-                      <div className="absolute -bottom-1 -right-1 w-5 h-5 rounded-full bg-primary flex items-center justify-center ring-2 ring-background">
-                        <Users className="w-3 h-3 text-primary-foreground" />
+                      <div className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full bg-primary flex items-center justify-center ring-2 ring-background">
+                        <Users className="w-2 h-2 sm:w-2.5 sm:h-2.5 text-primary-foreground" />
                       </div>
                     )}
                   </div>
-                  <div className="flex flex-col gap-1">
-                    <span className="font-semibold text-foreground">{participant.name}</span>
+                  <div className="flex flex-col gap-0.5">
+                    <span className="font-semibold text-sm text-foreground">{participant.name}</span>
                     {participant.id === room.ownerId && (
                       <Badge
                         variant="outline"
-                        className="text-xs w-fit bg-primary/5 text-primary border-primary/30 font-medium"
+                        className="text-[10px] sm:text-xs w-fit bg-primary/5 text-primary border-primary/30 font-medium px-1.5 py-0"
                       >
                         Room Owner
                       </Badge>

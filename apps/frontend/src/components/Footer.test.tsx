@@ -30,7 +30,7 @@ describe('Footer', () => {
     // ShowSync appears twice: mobile and desktop versions
     const showSyncElements = screen.getAllByText('ShowSync');
     expect(showSyncElements.length).toBe(2);
-    
+
     // Logo has aria-hidden, so we just check it exists in the DOM
     const logos = document.querySelectorAll('img[alt=""][aria-hidden="true"]');
     expect(logos.length).toBeGreaterThanOrEqual(1);
@@ -48,7 +48,7 @@ describe('Footer', () => {
     // Email appears in both mobile and desktop versions
     const emailLinks = screen.getAllByText('contact@show-sync.com');
     expect(emailLinks.length).toBeGreaterThanOrEqual(1);
-    
+
     // Full contact section only on desktop
     expect(screen.getByText('Contact')).toBeInTheDocument();
     expect(screen.getByText('+48 792 448 282')).toBeInTheDocument();
@@ -76,9 +76,9 @@ describe('Footer', () => {
     // Email appears twice: mobile and desktop versions
     const emailLinks = screen.getAllByText('contact@show-sync.com');
     expect(emailLinks.length).toBe(2);
-    
+
     // All email links should have mailto href
-    emailLinks.forEach(emailLink => {
+    emailLinks.forEach((emailLink) => {
       expect(emailLink.closest('a')).toHaveAttribute('href', 'mailto:contact@show-sync.com');
     });
   });

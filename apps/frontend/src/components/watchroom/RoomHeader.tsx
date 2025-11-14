@@ -46,14 +46,14 @@ export function RoomHeader({ room, isOwner, onCopyLink, onRoomUpdated, onRoomDel
   return (
     <>
       <Card className="border-2 shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden">
-        <CardHeader className="relative space-y-6">
-          <div className="space-y-4">
-            <div className="flex items-center justify-between gap-4">
-              <CardTitle className="text-3xl sm:text-4xl font-bold tracking-tight truncate flex-1 min-w-0">
+        <CardHeader className="relative space-y-3 pb-5">
+          <div className="space-y-2.5">
+            <div className="flex items-center justify-between gap-3">
+              <CardTitle className="text-2xl sm:text-3xl font-bold tracking-tight wrap-break-word flex-1 min-w-0 pr-2">
                 {room.name}
               </CardTitle>
               {isOwner && (
-                <Badge className="shrink-0 bg-primary/10 text-primary border border-primary/20 font-medium whitespace-nowrap">
+                <Badge className="hidden sm:inline-flex shrink-0 bg-primary/10 text-primary border border-primary/20 font-medium whitespace-nowrap">
                   <Users className="w-3 h-3 mr-1" />
                   Owner
                 </Badge>
@@ -61,12 +61,12 @@ export function RoomHeader({ room, isOwner, onCopyLink, onRoomUpdated, onRoomDel
             </div>
 
             {room.description && (
-              <CardDescription className="text-base leading-relaxed text-muted-foreground">
+              <CardDescription className="text-sm sm:text-base leading-relaxed text-muted-foreground">
                 {room.description}
               </CardDescription>
             )}
 
-            <div className="flex items-center text-sm text-muted-foreground">
+            <div className="flex items-center text-xs sm:text-sm text-muted-foreground">
               <Calendar className="w-3.5 h-3.5 mr-1.5" />
               <span>
                 Created{' '}
@@ -81,13 +81,15 @@ export function RoomHeader({ room, isOwner, onCopyLink, onRoomUpdated, onRoomDel
 
           <div className="flex flex-wrap gap-2 pt-2 border-t border-border/40">
             <Button
+              size="sm"
               variant="default"
               onClick={onCopyLink}
-              className="shadow-sm hover:shadow-md transition-all"
+              className="shadow-sm hover:shadow-md transition-all h-9"
               data-testid="copy-invite-link-button"
             >
-              <Copy className="w-4 h-4 mr-2" />
-              Copy Link
+              <Copy className="w-3 h-3 mr-1" />
+              <span className="hidden xs:inline">Copy Link</span>
+              <span className="inline xs:hidden">Share</span>
             </Button>
             {isOwner && (
               <>
@@ -98,12 +100,14 @@ export function RoomHeader({ room, isOwner, onCopyLink, onRoomUpdated, onRoomDel
                   onRoomUpdated={onRoomUpdated}
                 />
                 <Button
+                  size="sm"
                   variant="outline"
                   onClick={() => setConfirmDeleteDialog(true)}
-                  className="shadow-sm hover:shadow-md hover:bg-destructive/10 hover:text-destructive hover:border-destructive transition-all"
+                  className="shadow-sm hover:shadow-md hover:bg-destructive/10 hover:text-destructive hover:border-destructive transition-all h-9"
                 >
-                  <Trash2 className="w-4 h-4 mr-2" />
-                  Delete Room
+                  <Trash2 className="w-3 h-3 mr-1" />
+                  <span className="hidden xs:inline">Delete Room</span>
+                  <span className="inline xs:hidden">Delete</span>
                 </Button>
               </>
             )}

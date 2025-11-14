@@ -43,7 +43,7 @@ describe('CreateWatchRoomModal', () => {
 
     await waitFor(() => {
       expect(screen.getByRole('dialog')).toBeInTheDocument();
-      expect(screen.getByText('Get show suggestions based on what you (and your friends) like.')).toBeInTheDocument();
+      expect(screen.getByText('Get show suggestions based on what you like.')).toBeInTheDocument();
     });
   });
 

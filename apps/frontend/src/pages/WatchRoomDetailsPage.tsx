@@ -88,17 +88,18 @@ export default function WatchRoomDetailsPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
-        <div className="space-y-8">
+      <div className="max-w-5xl mx-auto px-3 sm:px-6 lg:px-8 py-3 sm:py-5">
+        <div className="space-y-3 sm:space-y-4">
           {/* Back Button */}
           <Button
             variant="ghost"
             size="sm"
             onClick={() => navigate('/watchrooms')}
-            className="group -ml-2 hover:bg-primary/5 transition-all"
+            className="group -ml-2 hover:bg-primary/5 transition-all text-xs sm:text-sm"
           >
-            <ArrowLeft className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" />
-            Back to Watch Rooms
+            <ArrowLeft className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1.5 sm:mr-2 group-hover:-translate-x-1 transition-transform" />
+            <span className="hidden xs:inline">Back to Watch Rooms</span>
+            <span className="inline xs:hidden">Back</span>
           </Button>
 
           {/* Room Header Card */}

@@ -89,7 +89,7 @@ export function CreateWatchRoomModal({ onRoomCreated, disabled = false, disabled
         <DialogHeader>
           <DialogTitle>Create Watch Room</DialogTitle>
         </DialogHeader>
-        <DialogDescription>Get show suggestions based on what you (and your friends) like.</DialogDescription>
+        <DialogDescription>Get TV show suggestions based on what you like.</DialogDescription>
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}

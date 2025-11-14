@@ -265,30 +265,30 @@ export function RecommendationsSection({
   return (
     <Card className="border shadow-lg hover:shadow-xl transition-shadow duration-300 overflow-hidden">
       <div className="absolute inset-0 bg-linear-to-br from-primary/5 via-transparent to-transparent pointer-events-none" />
-      <CardHeader className="relative pb-6">
-        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
-          <div className="space-y-3">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-lg bg-linear-to-br from-primary to-primary/70 flex items-center justify-center shadow-md">
-                <Sparkles className="w-5 h-5 text-primary-foreground" />
+      <CardHeader className="relative pb-5 sm:pb-5">
+        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 sm:gap-3">
+          <div className="space-y-2 sm:space-y-2">
+            <div className="flex items-center gap-2.5">
+              <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-linear-to-br from-primary to-primary/70 flex items-center justify-center shadow-md">
+                <Sparkles className="w-4 h-4 sm:w-4.5 sm:h-4.5 text-primary-foreground" />
               </div>
-              <CardTitle className="text-2xl">Recommendations</CardTitle>
+              <CardTitle className="text-base sm:text-lg md:text-xl">Recommendations</CardTitle>
             </div>
-            <CardDescription className="text-base">
+            <CardDescription className="text-xs sm:text-sm">
               Get show suggestions based on what everyone likes.
               {isOwner && (
-                <span className="block text-xs mt-1.5 text-muted-foreground/80">
+                <span className="hidden sm:block text-xs mt-1 text-muted-foreground/80">
                   Each generation creates fresh recommendations based on current preferences.
                 </span>
               )}
             </CardDescription>
           </div>
           {isOwner && (
-            <div className="sm:self-start flex flex-col items-end gap-2">
+            <div className="sm:self-start flex flex-col items-center sm:items-end gap-2">
               <Button
                 onClick={handleGenerateRecommendations}
                 disabled={isGenerating || isQuotaExhausted}
-                className="shadow-md hover:shadow-lg transition-all disabled:opacity-50"
+                className="shadow-md hover:shadow-lg transition-all disabled:opacity-50 h-9 text-sm w-full sm:w-auto"
                 data-testid="generate-recommendations-button"
               >
                 {isGenerating ? (
@@ -304,55 +304,61 @@ export function RecommendationsSection({
                 )}
               </Button>
               {!isLoadingQuota && quota && (
-                <div className="flex items-center gap-1.5 text-xs">
+                <div className="flex flex-col sm:flex-row items-center gap-1 text-xs">
                   {isQuotaExhausted ? (
-                    <span className="text-destructive font-medium flex items-center gap-1">
-                      <span>
+                    <>
+                      <span className="text-destructive font-medium text-center sm:text-left">
                         Limit reached ({quota.current}/{quota.max})
                       </span>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <button className="inline-flex">
-                            <Info className="w-3.5 h-3.5" />
-                          </button>
-                        </TooltipTrigger>
-                        <TooltipContent>
-                          <p>Limit helps manage AI costs</p>
-                        </TooltipContent>
-                      </Tooltip>
-                    </span>
+                      <span className="hidden sm:inline-flex">
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <button className="inline-flex">
+                              <Info className="w-3.5 h-3.5" />
+                            </button>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p>Limit helps manage AI costs</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </span>
+                    </>
                   ) : isNearLimit ? (
-                    <span className="text-amber-600 dark:text-amber-500 font-medium flex items-center gap-1">
-                      <span>
+                    <>
+                      <span className="text-amber-600 dark:text-amber-500 font-medium text-center sm:text-left">
                         {remainingGenerations} {remainingGenerations === 1 ? 'generation' : 'generations'} left
                       </span>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <button className="inline-flex">
-                            <Info className="w-3.5 h-3.5" />
-                          </button>
-                        </TooltipTrigger>
-                        <TooltipContent>
-                          <p>Close to your {quota.max} generation limit</p>
-                        </TooltipContent>
-                      </Tooltip>
-                    </span>
+                      <span className="hidden sm:inline-flex">
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <button className="inline-flex">
+                              <Info className="w-3.5 h-3.5" />
+                            </button>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p>Close to your {quota.max} generation limit</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </span>
+                    </>
                   ) : (
-                    <span className="text-muted-foreground flex items-center gap-1">
-                      <span>
+                    <>
+                      <span className="text-muted-foreground text-center sm:text-left">
                         {quota.current}/{quota.max} generations used
                       </span>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <button className="inline-flex">
-                            <Info className="w-3.5 h-3.5" />
-                          </button>
-                        </TooltipTrigger>
-                        <TooltipContent>
-                          <p>{quota.max} total generations across all watch rooms</p>
-                        </TooltipContent>
-                      </Tooltip>
-                    </span>
+                      <span className="hidden sm:inline-flex">
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <button className="inline-flex">
+                              <Info className="w-3.5 h-3.5" />
+                            </button>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p>{quota.max} total generations across all watch rooms</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </span>
+                    </>
                   )}
                 </div>
               )}
@@ -360,50 +366,49 @@ export function RecommendationsSection({
           )}
         </div>
       </CardHeader>
-      <CardContent>
+      <CardContent className="pt-5 sm:pt-5">
         {isLoadingRecommendations ? (
-          <div className="space-y-4">
-            <p className="text-sm text-muted-foreground px-1">Loading recommendations...</p>
+          <div className="space-y-4 sm:space-y-4">
+            <p className="text-xs sm:text-sm text-muted-foreground px-1">Loading recommendations...</p>
             {[...Array(3)].map((_, i) => (
               <div
                 key={i}
-                className="rounded-xl border bg-card p-5"
+                className="rounded-xl border bg-card p-3 sm:p-5"
               >
-                <div className="flex flex-col sm:flex-row gap-4">
-                  <Skeleton className="h-36 w-full sm:w-24 shrink-0 rounded-lg" />
-                  <div className="flex-1 space-y-3">
-                    <Skeleton className="h-6 w-3/4" />
+                <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
+                  <Skeleton className="h-32 sm:h-36 w-full sm:w-24 shrink-0 rounded-lg" />
+                  <div className="flex-1 space-y-2 sm:space-y-3">
+                    <Skeleton className="h-5 sm:h-6 w-3/4" />
                     <div className="flex gap-2">
-                      <Skeleton className="h-5 w-16" />
-                      <Skeleton className="h-5 w-12" />
-                      <Skeleton className="h-5 w-16" />
+                      <Skeleton className="h-4 sm:h-5 w-16" />
+                      <Skeleton className="h-4 sm:h-5 w-12" />
+                      <Skeleton className="h-4 sm:h-5 w-16" />
                     </div>
-                    <Skeleton className="h-4 w-full" />
-                    <Skeleton className="h-4 w-full" />
-                    <Skeleton className="h-4 w-2/3" />
+                    <Skeleton className="h-3 sm:h-4 w-full" />
+                    <Skeleton className="h-3 sm:h-4 w-full" />
+                    <Skeleton className="h-3 sm:h-4 w-2/3" />
                   </div>
                 </div>
               </div>
             ))}
           </div>
         ) : recommendations.length === 0 ? (
-          <div className="text-center py-16 px-6">
-            <div className="w-24 h-24 rounded-2xl bg-linear-to-br from-primary/20 via-primary/10 to-primary/5 mx-auto mb-8 flex items-center justify-center shadow-inner">
-              <TvMinimalPlay className="w-12 h-12 text-primary animate-pulse" />
+          <div className="text-center py-10 sm:py-12 md:py-16 px-4 sm:px-6">
+            <div className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-2xl bg-linear-to-br from-primary/20 via-primary/10 to-primary/5 mx-auto mb-4 sm:mb-6 md:mb-8 flex items-center justify-center shadow-inner">
+              <TvMinimalPlay className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 text-primary animate-pulse" />
             </div>
-            <h3 className="text-xl font-bold text-foreground mb-3">No recommendations yet</h3>
-            <p className="text-muted-foreground max-w-lg mx-auto leading-relaxed">
+            <h3 className="text-base sm:text-lg md:text-xl font-bold text-foreground mb-3">No recommendations yet</h3>
+            <p className="text-xs sm:text-sm md:text-base text-muted-foreground max-w-lg mx-auto leading-relaxed">
               {isOwner ? (
                 participantCount < 2 ? (
                   <>
-                    Invite at least one more person to generate recommendations.{' '}
-                    <Button
-                      variant="link"
+                    Invite at least one more person to generate group recommendations.{' '}
+                    <button
                       onClick={onCopyLink}
-                      className="text-primary hover:text-primary/80 underline underline-offset-2 font-semibold p-0 h-auto"
+                      className="text-primary hover:text-primary/80 underline underline-offset-2 font-semibold transition-colors inline-flex items-center gap-1"
                     >
                       Copy invite link
-                    </Button>
+                    </button>
                   </>
                 ) : (
                   'Click the "Generate" button above to get show suggestions for your group!'
@@ -414,25 +419,25 @@ export function RecommendationsSection({
             </p>
           </div>
         ) : (
-          <div className="space-y-4">
+          <div className="space-y-4 sm:space-y-4">
             {/* Instructions Callout */}
-            <div className="rounded-lg border border-primary/20 bg-primary/5 px-4 py-3">
-              <p className="text-sm text-muted-foreground flex items-center gap-2 flex-wrap">
-                <ThumbsUp className="w-4 h-4 text-primary" />
+            <div className="rounded-lg border border-primary/20 bg-primary/5 px-3 py-2.5 sm:px-4 sm:py-3">
+              <p className="text-xs sm:text-sm text-muted-foreground flex items-center gap-1.5 sm:gap-2 flex-wrap leading-relaxed">
+                <ThumbsUp className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary" />
                 <span>Like or</span>
-                <Heart className="w-4 h-4 text-red-600" />
-                <span>Love the shows you enjoy</span>
+                <Heart className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-red-600" />
+                <span>Love shows</span>
                 <span className="text-muted-foreground/50">•</span>
-                <EyeOff className="w-4 h-4 text-muted-foreground" />
-                <span>Skip to exclude them from future recommendations</span>
+                <EyeOff className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-muted-foreground" />
+                <span>Skip to exclude</span>
               </p>
             </div>
 
             {/* Recommendations Count Badge */}
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 flex-wrap pt-1">
               <Badge
                 variant="secondary"
-                className="text-sm font-semibold"
+                className="text-xs sm:text-sm font-semibold"
               >
                 {visibleRecommendations.length}{' '}
                 {visibleRecommendations.length === 1 ? 'recommendation' : 'recommendations'}
@@ -442,7 +447,7 @@ export function RecommendationsSection({
               </span>
             </div>
 
-            <div className="grid gap-8">
+            <div className="grid gap-5 sm:gap-8 pt-1">
               {visibleRecommendations.map((recommendation) => (
                 <RecommendationCard
                   key={recommendation.id}
@@ -458,7 +463,7 @@ export function RecommendationsSection({
 
             {/* Feedback Form */}
             {recommendations.length > 0 && recommendations[0]?.requestId && (
-              <div className="mt-8">
+              <div className="mt-5 sm:mt-8">
                 <RecommendationFeedbackForm
                   watchroomId={watchroomId}
                   recommendationRequestId={recommendations[0].requestId}
