@@ -276,7 +276,9 @@ export function RecommendationCard({
               aria-label="Mark as not interested"
               aria-pressed={isIgnored}
             >
-              <EyeOff className={`w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1 sm:mr-1.5 transition-all duration-300 ${isIgnored ? 'opacity-50' : ''}`} />
+              <EyeOff
+                className={`w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1 sm:mr-1.5 transition-all duration-300 ${isIgnored ? 'opacity-50' : ''}`}
+              />
               {isIgnored ? 'Skipped' : 'Skip'}
             </Button>
           </div>

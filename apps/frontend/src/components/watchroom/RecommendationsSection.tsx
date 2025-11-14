@@ -366,7 +366,7 @@ export function RecommendationsSection({
           )}
         </div>
       </CardHeader>
-      <CardContent className="pt-5 sm:pt-5">
+      <CardContent className="pt-3 sm:pt-4">
         {isLoadingRecommendations ? (
           <div className="space-y-4 sm:space-y-4">
             <p className="text-xs sm:text-sm text-muted-foreground px-1">Loading recommendations...</p>
