@@ -2,11 +2,9 @@ import { beforeEach, afterEach, describe, expect, it } from 'vitest';
 
 import { Generator } from '../../../../../tests/generator.ts';
 import { createTestExecutionContext } from '../../../../../tests/helpers/executionContext.ts';
+import { createTestContext, type TestContext } from '../../../../../tests/helpers/testContext.ts';
 import { TokenService } from '../../../../common/auth/tokenService.ts';
 import { UnauthorizedAccessError } from '../../../../common/errors/unathorizedAccessError.ts';
-import type { LoggerService } from '../../../../common/logger/loggerService.ts';
-import { createConfig, type Config } from '../../../../core/config.ts';
-import { DatabaseClient } from '../../../../infrastructure/database/databaseClient.ts';
 import { userSessions, users } from '../../../../infrastructure/database/schema.ts';
 import { UserRepositoryImpl } from '../../infrastructure/repositories/userRepositoryImpl.ts';
 import { UserSessionRepositoryImpl } from '../../infrastructure/repositories/userSessionRepositoryImpl.ts';
@@ -16,34 +14,24 @@ import { LoginUserAction } from './loginUserAction.ts';
 import { RefreshTokenAction } from './refreshTokenAction.ts';
 
 describe('RefreshTokenAction', () => {
-  let databaseClient: DatabaseClient;
+  let testContext: TestContext;
   let userRepository: UserRepositoryImpl;
   let userSessionRepository: UserSessionRepositoryImpl;
   let loginUserAction: LoginUserAction;
   let refreshTokenAction: RefreshTokenAction;
-  let loggerService: LoggerService;
   let tokenService: TokenService;
   let passwordService: PasswordService;
-  let config: Config;
 
   beforeEach(async () => {
-    config = createConfig();
-    databaseClient = new DatabaseClient(config.database);
-    userRepository = new UserRepositoryImpl(databaseClient);
-    userSessionRepository = new UserSessionRepositoryImpl(databaseClient);
-    tokenService = new TokenService(config);
-    passwordService = new PasswordService(config);
-
-    loggerService = {
-      debug: () => {},
-      info: () => {},
-      warn: () => {},
-      error: () => {},
-    } as unknown as LoggerService;
+    testContext = createTestContext();
+    userRepository = new UserRepositoryImpl(testContext.databaseClient);
+    userSessionRepository = new UserSessionRepositoryImpl(testContext.databaseClient);
+    tokenService = new TokenService(testContext.config);
+    passwordService = new PasswordService(testContext.config);
 
     loginUserAction = new LoginUserAction(
       userRepository,
-      loggerService,
+      testContext.loggerService,
       tokenService,
       passwordService,
       userSessionRepository,
@@ -51,20 +39,20 @@ describe('RefreshTokenAction', () => {
     refreshTokenAction = new RefreshTokenAction(
       userRepository,
       userSessionRepository,
-      loggerService,
+      testContext.loggerService,
       tokenService,
-      config,
-      databaseClient,
+      testContext.config,
+      testContext.databaseClient,
     );
 
-    await databaseClient.db.delete(userSessions);
-    await databaseClient.db.delete(users);
+    await testContext.databaseClient.db.delete(userSessions);
+    await testContext.databaseClient.db.delete(users);
   });
 
   afterEach(async () => {
-    await databaseClient.db.delete(userSessions);
-    await databaseClient.db.delete(users);
-    await databaseClient.close();
+    await testContext.databaseClient.db.delete(userSessions);
+    await testContext.databaseClient.db.delete(users);
+    await testContext.databaseClient.close();
   });
 
   describe('execute', () => {

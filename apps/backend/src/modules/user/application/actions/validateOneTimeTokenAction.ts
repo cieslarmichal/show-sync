@@ -53,7 +53,7 @@ export class ValidateOneTimeTokenAction {
       this.loggerService.warn({
         message: 'Failed to validate one time token',
         event: 'oneTimeToken.validation.failure',
-        error: err instanceof Error ? err.message : String(err),
+        err,
       });
       return false;
     }

@@ -50,7 +50,7 @@ export class GetReadinessCheckAction {
   private async checkDatabase(checks: Record<string, ServiceCheck>): Promise<void> {
     try {
       const dbStart = Date.now();
-      await this.databaseClient.db.execute('SELECT 1');
+      await this.databaseClient.testConnection();
       checks['database'] = { status: 'healthy', latencyMs: Date.now() - dbStart };
     } catch (error) {
       checks['database'] = {

@@ -3,7 +3,7 @@ import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 
 import { Generator } from '../../../../tests/generator.ts';
 import { truncateTables } from '../../../../tests/helpers/dbCleanup.ts';
-import { closeTestServer, createTestContext } from '../../../../tests/helpers/testServer.ts';
+import { closeTestServer, createTestServerContext } from '../../../../tests/helpers/testServer.ts';
 import type { DatabaseClient } from '../../../infrastructure/database/databaseClient.ts';
 
 import type {
@@ -22,7 +22,7 @@ describe('Series Routes Integration Tests', () => {
   let databaseClient: DatabaseClient;
 
   beforeAll(async () => {
-    const testContext = await createTestContext();
+    const testContext = await createTestServerContext();
     server = testContext.server;
     databaseClient = testContext.databaseClient;
   });

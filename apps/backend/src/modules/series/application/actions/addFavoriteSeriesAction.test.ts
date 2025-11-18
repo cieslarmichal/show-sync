@@ -2,10 +2,8 @@ import { beforeEach, afterEach, describe, expect, it } from 'vitest';
 
 import { Generator } from '../../../../../tests/generator.ts';
 import { createTestExecutionContext } from '../../../../../tests/helpers/executionContext.ts';
+import { createTestContext, type TestContext } from '../../../../../tests/helpers/testContext.ts';
 import { ResourceAlreadyExistsError } from '../../../../common/errors/resourceAlreadyExistsError.ts';
-import type { LoggerService } from '../../../../common/logger/loggerService.ts';
-import { createConfig } from '../../../../core/config.ts';
-import { DatabaseClient } from '../../../../infrastructure/database/databaseClient.ts';
 import { users, userFavoriteSeries, userIgnoredSeries } from '../../../../infrastructure/database/schema.ts';
 import { UserRepositoryImpl } from '../../../user/infrastructure/repositories/userRepositoryImpl.ts';
 import { FavoriteSeriesRepositoryImpl } from '../../infrastructure/repositories/favoriteSeriesRepositoryImpl.ts';
@@ -14,43 +12,35 @@ import { IgnoredSeriesRepositoryImpl } from '../../infrastructure/repositories/i
 import { AddFavoriteSeriesAction } from './addFavoriteSeriesAction.ts';
 
 describe('AddFavoriteSeriesAction', () => {
-  let databaseClient: DatabaseClient;
+  let testContext: TestContext;
   let userRepository: UserRepositoryImpl;
   let favoriteSeriesRepository: FavoriteSeriesRepositoryImpl;
   let ignoredSeriesRepository: IgnoredSeriesRepositoryImpl;
   let addFavoriteSeriesAction: AddFavoriteSeriesAction;
-  let loggerService: LoggerService;
 
   beforeEach(async () => {
-    const config = createConfig();
-    databaseClient = new DatabaseClient(config.database);
-    userRepository = new UserRepositoryImpl(databaseClient);
-    favoriteSeriesRepository = new FavoriteSeriesRepositoryImpl(databaseClient);
-    ignoredSeriesRepository = new IgnoredSeriesRepositoryImpl(databaseClient);
-    loggerService = {
-      debug: () => {},
-      info: () => {},
-      warn: () => {},
-      error: () => {},
-    } as unknown as LoggerService;
+    testContext = createTestContext();
+    userRepository = new UserRepositoryImpl(testContext.databaseClient);
+    favoriteSeriesRepository = new FavoriteSeriesRepositoryImpl(testContext.databaseClient);
+    ignoredSeriesRepository = new IgnoredSeriesRepositoryImpl(testContext.databaseClient);
 
     addFavoriteSeriesAction = new AddFavoriteSeriesAction(
       favoriteSeriesRepository,
       ignoredSeriesRepository,
-      databaseClient,
-      loggerService,
+      testContext.databaseClient,
+      testContext.loggerService,
     );
 
-    await databaseClient.db.delete(userIgnoredSeries);
-    await databaseClient.db.delete(userFavoriteSeries);
-    await databaseClient.db.delete(users);
+    await testContext.databaseClient.db.delete(userIgnoredSeries);
+    await testContext.databaseClient.db.delete(userFavoriteSeries);
+    await testContext.databaseClient.db.delete(users);
   });
 
   afterEach(async () => {
-    await databaseClient.db.delete(userIgnoredSeries);
-    await databaseClient.db.delete(userFavoriteSeries);
-    await databaseClient.db.delete(users);
-    await databaseClient.close();
+    await testContext.databaseClient.db.delete(userIgnoredSeries);
+    await testContext.databaseClient.db.delete(userFavoriteSeries);
+    await testContext.databaseClient.db.delete(users);
+    await testContext.databaseClient.close();
   });
 
   describe('execute', () => {

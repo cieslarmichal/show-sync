@@ -1,8 +1,7 @@
 import { beforeEach, afterEach, describe, expect, it } from 'vitest';
 
 import { Generator } from '../../../../../tests/generator.ts';
-import { createConfig } from '../../../../core/config.ts';
-import { DatabaseClient } from '../../../../infrastructure/database/databaseClient.ts';
+import { createTestContext, type TestContext } from '../../../../../tests/helpers/testContext.ts';
 import { users, userIgnoredSeries } from '../../../../infrastructure/database/schema.ts';
 import { UserRepositoryImpl } from '../../../user/infrastructure/repositories/userRepositoryImpl.ts';
 import { IgnoredSeriesRepositoryImpl } from '../../infrastructure/repositories/ignoredSeriesRepositoryImpl.ts';
@@ -10,27 +9,26 @@ import { IgnoredSeriesRepositoryImpl } from '../../infrastructure/repositories/i
 import { GetIgnoredSeriesAction } from './getIgnoredSeriesAction.ts';
 
 describe('GetIgnoredSeriesAction', () => {
-  let databaseClient: DatabaseClient;
+  let testContext: TestContext;
   let userRepository: UserRepositoryImpl;
   let ignoredSeriesRepository: IgnoredSeriesRepositoryImpl;
   let getIgnoredSeriesAction: GetIgnoredSeriesAction;
 
   beforeEach(async () => {
-    const config = createConfig();
-    databaseClient = new DatabaseClient(config.database);
-    userRepository = new UserRepositoryImpl(databaseClient);
-    ignoredSeriesRepository = new IgnoredSeriesRepositoryImpl(databaseClient);
+    testContext = createTestContext();
+    userRepository = new UserRepositoryImpl(testContext.databaseClient);
+    ignoredSeriesRepository = new IgnoredSeriesRepositoryImpl(testContext.databaseClient);
 
     getIgnoredSeriesAction = new GetIgnoredSeriesAction(ignoredSeriesRepository);
 
-    await databaseClient.db.delete(userIgnoredSeries);
-    await databaseClient.db.delete(users);
+    await testContext.databaseClient.db.delete(userIgnoredSeries);
+    await testContext.databaseClient.db.delete(users);
   });
 
   afterEach(async () => {
-    await databaseClient.db.delete(userIgnoredSeries);
-    await databaseClient.db.delete(users);
-    await databaseClient.close();
+    await testContext.databaseClient.db.delete(userIgnoredSeries);
+    await testContext.databaseClient.db.delete(users);
+    await testContext.databaseClient.close();
   });
 
   describe('execute', () => {

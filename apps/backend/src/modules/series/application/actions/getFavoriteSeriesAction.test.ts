@@ -1,8 +1,7 @@
 import { beforeEach, afterEach, describe, expect, it } from 'vitest';
 
 import { Generator } from '../../../../../tests/generator.ts';
-import { createConfig } from '../../../../core/config.ts';
-import { DatabaseClient } from '../../../../infrastructure/database/databaseClient.ts';
+import { createTestContext, type TestContext } from '../../../../../tests/helpers/testContext.ts';
 import { users, userFavoriteSeries } from '../../../../infrastructure/database/schema.ts';
 import { UserRepositoryImpl } from '../../../user/infrastructure/repositories/userRepositoryImpl.ts';
 import { FavoriteSeriesRepositoryImpl } from '../../infrastructure/repositories/favoriteSeriesRepositoryImpl.ts';
@@ -10,27 +9,26 @@ import { FavoriteSeriesRepositoryImpl } from '../../infrastructure/repositories/
 import { GetFavoriteSeriesAction } from './getFavoriteSeriesAction.ts';
 
 describe('GetFavoriteSeriesAction', () => {
-  let databaseClient: DatabaseClient;
+  let testContext: TestContext;
   let userRepository: UserRepositoryImpl;
   let favoriteSeriesRepository: FavoriteSeriesRepositoryImpl;
   let getFavoriteSeriesAction: GetFavoriteSeriesAction;
 
   beforeEach(async () => {
-    const config = createConfig();
-    databaseClient = new DatabaseClient(config.database);
-    userRepository = new UserRepositoryImpl(databaseClient);
-    favoriteSeriesRepository = new FavoriteSeriesRepositoryImpl(databaseClient);
+    testContext = createTestContext();
+    userRepository = new UserRepositoryImpl(testContext.databaseClient);
+    favoriteSeriesRepository = new FavoriteSeriesRepositoryImpl(testContext.databaseClient);
 
     getFavoriteSeriesAction = new GetFavoriteSeriesAction(favoriteSeriesRepository);
 
-    await databaseClient.db.delete(userFavoriteSeries);
-    await databaseClient.db.delete(users);
+    await testContext.databaseClient.db.delete(userFavoriteSeries);
+    await testContext.databaseClient.db.delete(users);
   });
 
   afterEach(async () => {
-    await databaseClient.db.delete(userFavoriteSeries);
-    await databaseClient.db.delete(users);
-    await databaseClient.close();
+    await testContext.databaseClient.db.delete(userFavoriteSeries);
+    await testContext.databaseClient.db.delete(users);
+    await testContext.databaseClient.close();
   });
 
   describe('execute', () => {

@@ -94,7 +94,7 @@ export class ChangePasswordByTokenAction {
         message: 'Password change with token transaction failed',
         event: 'password.change.transaction.failure',
         transactionDuration: duration,
-        error: error instanceof Error ? error.message : String(error),
+        err: error,
       });
 
       throw error;

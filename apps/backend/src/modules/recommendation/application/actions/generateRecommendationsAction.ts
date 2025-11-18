@@ -202,7 +202,7 @@ export class GenerateRecommendationsAction {
           watchroomId,
           recommendationRequestId,
           transactionDuration,
-          error: error instanceof Error ? error.message : String(error),
+          err: error,
         });
 
         throw error;
@@ -214,7 +214,7 @@ export class GenerateRecommendationsAction {
         requestId: context.requestId,
         watchroomId,
         recommendationRequestId,
-        error: error instanceof Error ? error.message : String(error),
+        err: error,
       });
 
       await this.recommendationRequestRepository.updateStatus(recommendationRequestId, 'failed');

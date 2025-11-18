@@ -2,11 +2,9 @@ import { beforeEach, afterEach, describe, expect, it } from 'vitest';
 
 import { Generator } from '../../../../../tests/generator.ts';
 import { createTestExecutionContext } from '../../../../../tests/helpers/executionContext.ts';
+import { createTestContext, type TestContext } from '../../../../../tests/helpers/testContext.ts';
 import { OperationNotValidError } from '../../../../common/errors/operationNotValidError.ts';
 import { ResourceNotFoundError } from '../../../../common/errors/resourceNotFoundError.ts';
-import type { LoggerService } from '../../../../common/logger/loggerService.ts';
-import { createConfig } from '../../../../core/config.ts';
-import { DatabaseClient } from '../../../../infrastructure/database/databaseClient.ts';
 import { users, watchrooms, watchroomParticipants } from '../../../../infrastructure/database/schema.ts';
 import { UserRepositoryImpl } from '../../../user/infrastructure/repositories/userRepositoryImpl.ts';
 import { WatchroomRepositoryImpl } from '../../infrastructure/repositories/watchroomRepositoryImpl.ts';
@@ -16,41 +14,41 @@ import { JoinWatchroomAction } from './joinWatchroomAction.ts';
 import { RemoveParticipantAction } from './removeParticipantAction.ts';
 
 describe('RemoveParticipantAction', () => {
-  let databaseClient: DatabaseClient;
+  let testContext: TestContext;
   let watchroomRepository: WatchroomRepositoryImpl;
   let userRepository: UserRepositoryImpl;
   let createWatchroomAction: CreateWatchroomAction;
   let joinWatchroomAction: JoinWatchroomAction;
   let removeParticipantAction: RemoveParticipantAction;
-  let loggerService: LoggerService;
 
   beforeEach(async () => {
-    const config = createConfig();
-    databaseClient = new DatabaseClient(config.database);
-    watchroomRepository = new WatchroomRepositoryImpl(databaseClient);
-    userRepository = new UserRepositoryImpl(databaseClient);
+    testContext = createTestContext();
+    watchroomRepository = new WatchroomRepositoryImpl(testContext.databaseClient);
+    userRepository = new UserRepositoryImpl(testContext.databaseClient);
 
-    loggerService = {
-      debug: () => {},
-      info: () => {},
-      warn: () => {},
-      error: () => {},
-    } as unknown as LoggerService;
+    createWatchroomAction = new CreateWatchroomAction(watchroomRepository, testContext.loggerService);
+    joinWatchroomAction = new JoinWatchroomAction(
+      watchroomRepository,
+      testContext.loggerService,
+      testContext.databaseClient,
+      testContext.config,
+    );
+    removeParticipantAction = new RemoveParticipantAction(
+      watchroomRepository,
+      testContext.loggerService,
+      testContext.databaseClient,
+    );
 
-    createWatchroomAction = new CreateWatchroomAction(watchroomRepository, loggerService);
-    joinWatchroomAction = new JoinWatchroomAction(watchroomRepository, loggerService, databaseClient, config);
-    removeParticipantAction = new RemoveParticipantAction(watchroomRepository, loggerService, databaseClient);
-
-    await databaseClient.db.delete(watchroomParticipants);
-    await databaseClient.db.delete(watchrooms);
-    await databaseClient.db.delete(users);
+    await testContext.databaseClient.db.delete(watchroomParticipants);
+    await testContext.databaseClient.db.delete(watchrooms);
+    await testContext.databaseClient.db.delete(users);
   });
 
   afterEach(async () => {
-    await databaseClient.db.delete(watchroomParticipants);
-    await databaseClient.db.delete(watchrooms);
-    await databaseClient.db.delete(users);
-    await databaseClient.close();
+    await testContext.databaseClient.db.delete(watchroomParticipants);
+    await testContext.databaseClient.db.delete(watchrooms);
+    await testContext.databaseClient.db.delete(users);
+    await testContext.databaseClient.close();
   });
 
   describe('execute', () => {

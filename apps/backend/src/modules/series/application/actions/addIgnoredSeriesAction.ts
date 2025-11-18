@@ -91,7 +91,7 @@ export class AddIgnoredSeriesAction {
         userId,
         seriesTmdbId,
         transactionDuration: duration,
-        error: error instanceof Error ? error.message : String(error),
+        err: error,
       });
 
       throw error;

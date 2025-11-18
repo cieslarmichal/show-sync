@@ -2,12 +2,10 @@ import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 
 import { Generator } from '../../../../../tests/generator.ts';
 import { createTestExecutionContext } from '../../../../../tests/helpers/executionContext.ts';
+import { createTestContext, type TestContext } from '../../../../../tests/helpers/testContext.ts';
 import { ForbiddenAccessError } from '../../../../common/errors/forbiddenAccessError.ts';
 import { ResourceAlreadyExistsError } from '../../../../common/errors/resourceAlreadyExistsError.ts';
 import { ResourceNotFoundError } from '../../../../common/errors/resourceNotFoundError.ts';
-import type { LoggerService } from '../../../../common/logger/loggerService.ts';
-import { createConfig } from '../../../../core/config.ts';
-import { DatabaseClient } from '../../../../infrastructure/database/databaseClient.ts';
 import {
   recommendationFeedback,
   recommendationRequests,
@@ -23,50 +21,41 @@ import { RecommendationRequestRepositoryImpl } from '../../infrastructure/reposi
 import { SubmitRecommendationFeedbackAction } from './submitRecommendationFeedbackAction.ts';
 
 describe('SubmitRecommendationFeedbackAction', () => {
-  let databaseClient: DatabaseClient;
+  let testContext: TestContext;
   let watchroomRepository: WatchroomRepositoryImpl;
   let recommendationRequestRepository: RecommendationRequestRepositoryImpl;
   let recommendationFeedbackRepository: RecommendationFeedbackRepositoryImpl;
   let userRepository: UserRepositoryImpl;
   let submitRecommendationFeedbackAction: SubmitRecommendationFeedbackAction;
-  let loggerService: LoggerService;
 
   beforeEach(async () => {
-    const config = createConfig();
-    databaseClient = new DatabaseClient(config.database);
-    watchroomRepository = new WatchroomRepositoryImpl(databaseClient);
-    recommendationRequestRepository = new RecommendationRequestRepositoryImpl(databaseClient);
-    recommendationFeedbackRepository = new RecommendationFeedbackRepositoryImpl(databaseClient);
-    userRepository = new UserRepositoryImpl(databaseClient);
-
-    loggerService = {
-      debug: () => {},
-      info: () => {},
-      warn: () => {},
-      error: () => {},
-    } as unknown as LoggerService;
+    testContext = createTestContext();
+    watchroomRepository = new WatchroomRepositoryImpl(testContext.databaseClient);
+    recommendationRequestRepository = new RecommendationRequestRepositoryImpl(testContext.databaseClient);
+    recommendationFeedbackRepository = new RecommendationFeedbackRepositoryImpl(testContext.databaseClient);
+    userRepository = new UserRepositoryImpl(testContext.databaseClient);
 
     submitRecommendationFeedbackAction = new SubmitRecommendationFeedbackAction(
       watchroomRepository,
       recommendationRequestRepository,
       recommendationFeedbackRepository,
-      loggerService,
+      testContext.loggerService,
     );
 
-    await databaseClient.db.delete(recommendationFeedback);
-    await databaseClient.db.delete(recommendationRequests);
-    await databaseClient.db.delete(watchroomParticipants);
-    await databaseClient.db.delete(watchrooms);
-    await databaseClient.db.delete(users);
+    await testContext.databaseClient.db.delete(recommendationFeedback);
+    await testContext.databaseClient.db.delete(recommendationRequests);
+    await testContext.databaseClient.db.delete(watchroomParticipants);
+    await testContext.databaseClient.db.delete(watchrooms);
+    await testContext.databaseClient.db.delete(users);
   });
 
   afterEach(async () => {
-    await databaseClient.db.delete(recommendationFeedback);
-    await databaseClient.db.delete(recommendationRequests);
-    await databaseClient.db.delete(watchroomParticipants);
-    await databaseClient.db.delete(watchrooms);
-    await databaseClient.db.delete(users);
-    await databaseClient.close();
+    await testContext.databaseClient.db.delete(recommendationFeedback);
+    await testContext.databaseClient.db.delete(recommendationRequests);
+    await testContext.databaseClient.db.delete(watchroomParticipants);
+    await testContext.databaseClient.db.delete(watchrooms);
+    await testContext.databaseClient.db.delete(users);
+    await testContext.databaseClient.close();
   });
 
   describe('execute', () => {

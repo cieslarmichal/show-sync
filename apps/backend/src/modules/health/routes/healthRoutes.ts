@@ -1,6 +1,8 @@
 import type { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox';
 import { Type, type Static } from '@fastify/type-provider-typebox';
 
+import { createAuthenticationMiddleware } from '../../../common/auth/authMiddleware.ts';
+import type { TokenService } from '../../../common/auth/tokenService.ts';
 import type { LoggerService } from '../../../common/logger/loggerService.ts';
 import type { Config } from '../../../core/config.ts';
 import type { DatabaseClient } from '../../../infrastructure/database/databaseClient.ts';
@@ -24,11 +26,14 @@ export const healthRoutes: FastifyPluginAsyncTypebox<{
   config: Config;
   loggerService: LoggerService;
   databaseClient: DatabaseClient;
+  tokenService: TokenService;
 }> = async function (fastify, opts) {
-  const { config, loggerService, databaseClient } = opts;
+  const { config, loggerService, databaseClient, tokenService } = opts;
 
-  const getLivenessCheckAction = new GetLivenessCheckAction();
+  const getLivenessCheckAction = new GetLivenessCheckAction(databaseClient, loggerService);
   const getReadinessCheckAction = new GetReadinessCheckAction(databaseClient, config, loggerService);
+
+  const authenticationMiddleware = createAuthenticationMiddleware(tokenService);
 
   fastify.get('/health/live', {
     schema: {
@@ -51,6 +56,13 @@ export const healthRoutes: FastifyPluginAsyncTypebox<{
       response: {
         200: healthCheckResponseSchema,
         503: healthCheckResponseSchema,
+      },
+    },
+    preHandler: [authenticationMiddleware],
+    config: {
+      rateLimit: {
+        max: 5,
+        timeWindow: 60000,
       },
     },
     handler: async (_request, reply) => {

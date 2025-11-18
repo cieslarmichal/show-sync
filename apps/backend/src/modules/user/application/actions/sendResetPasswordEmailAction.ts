@@ -109,7 +109,7 @@ export class SendResetPasswordEmailAction {
         event: 'password.reset.email.transaction.failure',
         userId: user.id,
         transactionDuration: duration,
-        error: error instanceof Error ? error.message : String(error),
+        err: error,
       });
 
       throw error;

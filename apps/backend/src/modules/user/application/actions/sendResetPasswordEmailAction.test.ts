@@ -2,10 +2,8 @@ import { eq } from 'drizzle-orm';
 import { beforeEach, afterEach, describe, expect, it } from 'vitest';
 
 import { Generator } from '../../../../../tests/generator.ts';
+import { createTestContext, type TestContext } from '../../../../../tests/helpers/testContext.ts';
 import { CryptoService } from '../../../../common/crypto/cryptoService.ts';
-import type { LoggerService } from '../../../../common/logger/loggerService.ts';
-import { createConfig } from '../../../../core/config.ts';
-import { DatabaseClient } from '../../../../infrastructure/database/databaseClient.ts';
 import { emails, oneTimeTokens, users } from '../../../../infrastructure/database/schema.ts';
 import { EmailRepositoryImpl } from '../../infrastructure/repositories/emailRepositoryImpl.ts';
 import { OneTimeTokenRepositoryImpl } from '../../infrastructure/repositories/oneTimeTokenRepositoryImpl.ts';
@@ -15,48 +13,39 @@ import { PasswordService } from '../services/passwordService.ts';
 import { SendResetPasswordEmailAction } from './sendResetPasswordEmailAction.ts';
 
 describe('SendResetPasswordEmailAction', () => {
-  let databaseClient: DatabaseClient;
+  let testContext: TestContext;
   let userRepository: UserRepositoryImpl;
   let emailRepository: EmailRepositoryImpl;
   let oneTimeTokenRepository: OneTimeTokenRepositoryImpl;
   let sendResetPasswordEmailAction: SendResetPasswordEmailAction;
-  let loggerService: LoggerService;
   let passwordService: PasswordService;
 
   beforeEach(async () => {
-    const config = createConfig();
-    databaseClient = new DatabaseClient(config.database);
-    userRepository = new UserRepositoryImpl(databaseClient);
-    emailRepository = new EmailRepositoryImpl(databaseClient);
-    oneTimeTokenRepository = new OneTimeTokenRepositoryImpl(databaseClient);
-    passwordService = new PasswordService(config);
-
-    loggerService = {
-      debug: () => {},
-      info: () => {},
-      warn: () => {},
-      error: () => {},
-    } as unknown as LoggerService;
+    testContext = createTestContext();
+    userRepository = new UserRepositoryImpl(testContext.databaseClient);
+    emailRepository = new EmailRepositoryImpl(testContext.databaseClient);
+    oneTimeTokenRepository = new OneTimeTokenRepositoryImpl(testContext.databaseClient);
+    passwordService = new PasswordService(testContext.config);
 
     sendResetPasswordEmailAction = new SendResetPasswordEmailAction(
       userRepository,
-      loggerService,
-      config,
+      testContext.loggerService,
+      testContext.config,
       emailRepository,
       oneTimeTokenRepository,
-      databaseClient,
+      testContext.databaseClient,
     );
 
-    await databaseClient.db.delete(emails);
-    await databaseClient.db.delete(oneTimeTokens);
-    await databaseClient.db.delete(users);
+    await testContext.databaseClient.db.delete(emails);
+    await testContext.databaseClient.db.delete(oneTimeTokens);
+    await testContext.databaseClient.db.delete(users);
   });
 
   afterEach(async () => {
-    await databaseClient.db.delete(emails);
-    await databaseClient.db.delete(oneTimeTokens);
-    await databaseClient.db.delete(users);
-    await databaseClient.close();
+    await testContext.databaseClient.db.delete(emails);
+    await testContext.databaseClient.db.delete(oneTimeTokens);
+    await testContext.databaseClient.db.delete(users);
+    await testContext.databaseClient.close();
   });
 
   describe('execute', () => {
@@ -81,7 +70,7 @@ describe('SendResetPasswordEmailAction', () => {
       expect(payload.resetLink).toBeDefined();
       expect(payload.resetLink).toContain('/new-password?token=');
 
-      const tokenRecords = await databaseClient.db
+      const tokenRecords = await testContext.databaseClient.db
         .select()
         .from(oneTimeTokens)
         .where(eq(oneTimeTokens.userId, user.id));
@@ -121,7 +110,6 @@ describe('SendResetPasswordEmailAction', () => {
     });
 
     it('creates token with correct expiration time', async () => {
-      const config = createConfig();
       const userData = Generator.userData();
       const hashedPassword = await passwordService.hashPassword(userData.password);
       const user = await userRepository.create({ ...userData, password: hashedPassword });
@@ -130,15 +118,15 @@ describe('SendResetPasswordEmailAction', () => {
       await sendResetPasswordEmailAction.execute({ email: user.email });
       const afterExecution = Date.now();
 
-      const tokenRecords = await databaseClient.db
+      const tokenRecords = await testContext.databaseClient.db
         .select()
         .from(oneTimeTokens)
         .where(eq(oneTimeTokens.userId, user.id));
 
       expect(tokenRecords).toHaveLength(1);
 
-      const expectedMinExpiration = beforeExecution + config.token.resetPassword.expiresIn * 1000;
-      const expectedMaxExpiration = afterExecution + config.token.resetPassword.expiresIn * 1000;
+      const expectedMinExpiration = beforeExecution + testContext.config.token.resetPassword.expiresIn * 1000;
+      const expectedMaxExpiration = afterExecution + testContext.config.token.resetPassword.expiresIn * 1000;
 
       expect(tokenRecords[0]?.expiresAt.getTime()).toBeGreaterThanOrEqual(expectedMinExpiration);
       expect(tokenRecords[0]?.expiresAt.getTime()).toBeLessThanOrEqual(expectedMaxExpiration);
@@ -168,7 +156,7 @@ describe('SendResetPasswordEmailAction', () => {
 
       const tokenHash = CryptoService.hashData(token);
 
-      const tokenRecords = await databaseClient.db
+      const tokenRecords = await testContext.databaseClient.db
         .select()
         .from(oneTimeTokens)
         .where(eq(oneTimeTokens.userId, user.id));
@@ -184,7 +172,7 @@ describe('SendResetPasswordEmailAction', () => {
       await sendResetPasswordEmailAction.execute({ email: user.email });
       await sendResetPasswordEmailAction.execute({ email: user.email });
 
-      const tokenRecords = await databaseClient.db
+      const tokenRecords = await testContext.databaseClient.db
         .select()
         .from(oneTimeTokens)
         .where(eq(oneTimeTokens.userId, user.id));

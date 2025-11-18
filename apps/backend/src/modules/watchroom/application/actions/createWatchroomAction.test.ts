@@ -2,9 +2,7 @@ import { beforeEach, afterEach, describe, expect, it } from 'vitest';
 
 import { Generator } from '../../../../../tests/generator.ts';
 import { createTestExecutionContext } from '../../../../../tests/helpers/executionContext.ts';
-import type { LoggerService } from '../../../../common/logger/loggerService.ts';
-import { createConfig } from '../../../../core/config.ts';
-import { DatabaseClient } from '../../../../infrastructure/database/databaseClient.ts';
+import { createTestContext, type TestContext } from '../../../../../tests/helpers/testContext.ts';
 import { users, watchrooms, watchroomParticipants } from '../../../../infrastructure/database/schema.ts';
 import { UserRepositoryImpl } from '../../../user/infrastructure/repositories/userRepositoryImpl.ts';
 import { WatchroomRepositoryImpl } from '../../infrastructure/repositories/watchroomRepositoryImpl.ts';
@@ -12,37 +10,28 @@ import { WatchroomRepositoryImpl } from '../../infrastructure/repositories/watch
 import { CreateWatchroomAction } from './createWatchroomAction.ts';
 
 describe('CreateWatchroomAction', () => {
-  let databaseClient: DatabaseClient;
+  let testContext: TestContext;
   let watchroomRepository: WatchroomRepositoryImpl;
   let userRepository: UserRepositoryImpl;
   let createWatchroomAction: CreateWatchroomAction;
-  let loggerService: LoggerService;
 
   beforeEach(async () => {
-    const config = createConfig();
-    databaseClient = new DatabaseClient(config.database);
-    watchroomRepository = new WatchroomRepositoryImpl(databaseClient);
-    userRepository = new UserRepositoryImpl(databaseClient);
+    testContext = createTestContext();
+    watchroomRepository = new WatchroomRepositoryImpl(testContext.databaseClient);
+    userRepository = new UserRepositoryImpl(testContext.databaseClient);
 
-    loggerService = {
-      debug: () => {},
-      info: () => {},
-      warn: () => {},
-      error: () => {},
-    } as unknown as LoggerService;
+    createWatchroomAction = new CreateWatchroomAction(watchroomRepository, testContext.loggerService);
 
-    createWatchroomAction = new CreateWatchroomAction(watchroomRepository, loggerService);
-
-    await databaseClient.db.delete(watchroomParticipants);
-    await databaseClient.db.delete(watchrooms);
-    await databaseClient.db.delete(users);
+    await testContext.databaseClient.db.delete(watchroomParticipants);
+    await testContext.databaseClient.db.delete(watchrooms);
+    await testContext.databaseClient.db.delete(users);
   });
 
   afterEach(async () => {
-    await databaseClient.db.delete(watchroomParticipants);
-    await databaseClient.db.delete(watchrooms);
-    await databaseClient.db.delete(users);
-    await databaseClient.close();
+    await testContext.databaseClient.db.delete(watchroomParticipants);
+    await testContext.databaseClient.db.delete(watchrooms);
+    await testContext.databaseClient.db.delete(users);
+    await testContext.databaseClient.close();
   });
 
   describe('execute', () => {

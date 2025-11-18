@@ -1,10 +1,9 @@
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 
 import { Generator } from '../../../../../tests/generator.ts';
+import { createTestContext, type TestContext } from '../../../../../tests/helpers/testContext.ts';
 import { ForbiddenAccessError } from '../../../../common/errors/forbiddenAccessError.ts';
 import { ResourceNotFoundError } from '../../../../common/errors/resourceNotFoundError.ts';
-import { createConfig } from '../../../../core/config.ts';
-import { DatabaseClient } from '../../../../infrastructure/database/databaseClient.ts';
 import {
   recommendations,
   recommendationRequests,
@@ -20,7 +19,7 @@ import { RecommendationRequestRepositoryImpl } from '../../infrastructure/reposi
 import { FindRecommendationsAction } from './findRecommendationsAction.ts';
 
 describe('FindRecommendationsAction', () => {
-  let databaseClient: DatabaseClient;
+  let testContext: TestContext;
   let findRecommendationsAction: FindRecommendationsAction;
   let watchroomRepository: WatchroomRepositoryImpl;
   let recommendationRepository: RecommendationRepositoryImpl;
@@ -28,12 +27,11 @@ describe('FindRecommendationsAction', () => {
   let userRepository: UserRepositoryImpl;
 
   beforeEach(async () => {
-    const config = createConfig();
-    databaseClient = new DatabaseClient(config.database);
-    watchroomRepository = new WatchroomRepositoryImpl(databaseClient);
-    recommendationRepository = new RecommendationRepositoryImpl(databaseClient);
-    recommendationRequestRepository = new RecommendationRequestRepositoryImpl(databaseClient);
-    userRepository = new UserRepositoryImpl(databaseClient);
+    testContext = createTestContext();
+    watchroomRepository = new WatchroomRepositoryImpl(testContext.databaseClient);
+    recommendationRepository = new RecommendationRepositoryImpl(testContext.databaseClient);
+    recommendationRequestRepository = new RecommendationRequestRepositoryImpl(testContext.databaseClient);
+    userRepository = new UserRepositoryImpl(testContext.databaseClient);
 
     findRecommendationsAction = new FindRecommendationsAction(
       watchroomRepository,
@@ -41,20 +39,20 @@ describe('FindRecommendationsAction', () => {
       recommendationRequestRepository,
     );
 
-    await databaseClient.db.delete(recommendations);
-    await databaseClient.db.delete(recommendationRequests);
-    await databaseClient.db.delete(watchroomParticipants);
-    await databaseClient.db.delete(watchrooms);
-    await databaseClient.db.delete(users);
+    await testContext.databaseClient.db.delete(recommendations);
+    await testContext.databaseClient.db.delete(recommendationRequests);
+    await testContext.databaseClient.db.delete(watchroomParticipants);
+    await testContext.databaseClient.db.delete(watchrooms);
+    await testContext.databaseClient.db.delete(users);
   });
 
   afterEach(async () => {
-    await databaseClient.db.delete(recommendations);
-    await databaseClient.db.delete(recommendationRequests);
-    await databaseClient.db.delete(watchroomParticipants);
-    await databaseClient.db.delete(watchrooms);
-    await databaseClient.db.delete(users);
-    await databaseClient.close();
+    await testContext.databaseClient.db.delete(recommendations);
+    await testContext.databaseClient.db.delete(recommendationRequests);
+    await testContext.databaseClient.db.delete(watchroomParticipants);
+    await testContext.databaseClient.db.delete(watchrooms);
+    await testContext.databaseClient.db.delete(users);
+    await testContext.databaseClient.close();
   });
 
   describe('execute', () => {
@@ -81,7 +79,7 @@ describe('FindRecommendationsAction', () => {
       });
 
       // Create recommendations directly in the database within a transaction
-      await databaseClient.db.transaction(async (tx) => {
+      await testContext.databaseClient.db.transaction(async (tx) => {
         await recommendationRepository.create(
           [
             {
@@ -128,7 +126,7 @@ describe('FindRecommendationsAction', () => {
         status: 'completed',
       });
 
-      await databaseClient.db.transaction(async (tx) => {
+      await testContext.databaseClient.db.transaction(async (tx) => {
         await recommendationRepository.create(
           [
             {
@@ -198,7 +196,7 @@ describe('FindRecommendationsAction', () => {
         status: 'completed',
       });
 
-      await databaseClient.db.transaction(async (tx) => {
+      await testContext.databaseClient.db.transaction(async (tx) => {
         await recommendationRepository.create(
           [
             {
@@ -220,7 +218,7 @@ describe('FindRecommendationsAction', () => {
         status: 'completed',
       });
 
-      await databaseClient.db.transaction(async (tx) => {
+      await testContext.databaseClient.db.transaction(async (tx) => {
         await recommendationRepository.create(
           [
             {

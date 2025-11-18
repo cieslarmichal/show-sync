@@ -114,7 +114,7 @@ export class JoinWatchroomAction {
         watchroomId: watchroom.id,
         userId,
         transactionDuration: duration,
-        error: error instanceof Error ? error.message : String(error),
+        err: error,
       });
 
       throw error;

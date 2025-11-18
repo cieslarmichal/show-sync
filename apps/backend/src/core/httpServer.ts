@@ -441,6 +441,7 @@ export class HttpServer {
       config: this.config,
       loggerService: this.loggerService,
       databaseClient: this.databaseClient,
+      tokenService,
     });
 
     await this.fastifyServer.register(userRoutes, {

@@ -37,7 +37,7 @@ export class EmailProcessingService {
       return;
     }
 
-    this.loggerService.info({
+    this.loggerService.debug({
       message: 'Starting email processing service',
       intervalMs: this.intervalMs,
       maxRetries: this.maxRetries,
@@ -48,7 +48,7 @@ export class EmailProcessingService {
         this.loggerService.error({
           message: 'Error processing emails',
           event: 'email.processing.error',
-          error: error instanceof Error ? error.message : String(error),
+          err: error,
         });
       });
     }, this.intervalMs);
@@ -60,7 +60,7 @@ export class EmailProcessingService {
       this.intervalId = null;
       this.retryAttempts.clear();
       this.nextRetryAt.clear();
-      this.loggerService.info({ message: 'Email processing service stopped' });
+      this.loggerService.debug({ message: 'Email processing service stopped' });
     }
   }
 
@@ -99,7 +99,8 @@ export class EmailProcessingService {
     } catch (error) {
       this.loggerService.error({
         message: 'Failed to fetch pending emails',
-        error: error instanceof Error ? error.message : String(error),
+        event: 'email.fetch.pending.failure',
+        err: error,
       });
     }
   }

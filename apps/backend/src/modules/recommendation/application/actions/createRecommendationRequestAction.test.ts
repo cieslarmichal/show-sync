@@ -2,12 +2,10 @@ import { beforeEach, afterEach, describe, expect, it } from 'vitest';
 
 import { Generator } from '../../../../../tests/generator.ts';
 import { createTestExecutionContext } from '../../../../../tests/helpers/executionContext.ts';
+import { createTestContext, type TestContext } from '../../../../../tests/helpers/testContext.ts';
 import { ForbiddenAccessError } from '../../../../common/errors/forbiddenAccessError.ts';
 import { OperationNotValidError } from '../../../../common/errors/operationNotValidError.ts';
 import { ResourceNotFoundError } from '../../../../common/errors/resourceNotFoundError.ts';
-import type { LoggerService } from '../../../../common/logger/loggerService.ts';
-import { createConfig } from '../../../../core/config.ts';
-import { DatabaseClient } from '../../../../infrastructure/database/databaseClient.ts';
 import {
   users,
   watchrooms,
@@ -21,47 +19,38 @@ import { RecommendationRequestRepositoryImpl } from '../../infrastructure/reposi
 import { CreateRecommendationRequestAction } from './createRecommendationRequestAction.ts';
 
 describe('CreateRecommendationRequestAction', () => {
-  let databaseClient: DatabaseClient;
+  let testContext: TestContext;
   let watchroomRepository: WatchroomRepositoryImpl;
   let recommendationRequestRepository: RecommendationRequestRepositoryImpl;
   let userRepository: UserRepositoryImpl;
   let createRecommendationRequestAction: CreateRecommendationRequestAction;
-  let loggerService: LoggerService;
   const maxRecommendationsPerUser = 5;
 
   beforeEach(async () => {
-    const config = createConfig();
-    databaseClient = new DatabaseClient(config.database);
-    watchroomRepository = new WatchroomRepositoryImpl(databaseClient);
-    recommendationRequestRepository = new RecommendationRequestRepositoryImpl(databaseClient);
-    userRepository = new UserRepositoryImpl(databaseClient);
-
-    loggerService = {
-      debug: () => {},
-      info: () => {},
-      warn: () => {},
-      error: () => {},
-    } as unknown as LoggerService;
+    testContext = createTestContext();
+    watchroomRepository = new WatchroomRepositoryImpl(testContext.databaseClient);
+    recommendationRequestRepository = new RecommendationRequestRepositoryImpl(testContext.databaseClient);
+    userRepository = new UserRepositoryImpl(testContext.databaseClient);
 
     createRecommendationRequestAction = new CreateRecommendationRequestAction(
       watchroomRepository,
       recommendationRequestRepository,
-      loggerService,
+      testContext.loggerService,
       maxRecommendationsPerUser,
     );
 
-    await databaseClient.db.delete(recommendationRequests);
-    await databaseClient.db.delete(watchroomParticipants);
-    await databaseClient.db.delete(watchrooms);
-    await databaseClient.db.delete(users);
+    await testContext.databaseClient.db.delete(recommendationRequests);
+    await testContext.databaseClient.db.delete(watchroomParticipants);
+    await testContext.databaseClient.db.delete(watchrooms);
+    await testContext.databaseClient.db.delete(users);
   });
 
   afterEach(async () => {
-    await databaseClient.db.delete(recommendationRequests);
-    await databaseClient.db.delete(watchroomParticipants);
-    await databaseClient.db.delete(watchrooms);
-    await databaseClient.db.delete(users);
-    await databaseClient.close();
+    await testContext.databaseClient.db.delete(recommendationRequests);
+    await testContext.databaseClient.db.delete(watchroomParticipants);
+    await testContext.databaseClient.db.delete(watchrooms);
+    await testContext.databaseClient.db.delete(users);
+    await testContext.databaseClient.close();
   });
 
   describe('execute', () => {

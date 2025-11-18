@@ -1,11 +1,9 @@
 import { beforeEach, afterEach, describe, expect, it } from 'vitest';
 
 import { Generator } from '../../../../../tests/generator.ts';
+import { createTestContext, type TestContext } from '../../../../../tests/helpers/testContext.ts';
 import { CryptoService } from '../../../../common/crypto/cryptoService.ts';
 import { IdService } from '../../../../common/id/idService.ts';
-import type { LoggerService } from '../../../../common/logger/loggerService.ts';
-import { createConfig } from '../../../../core/config.ts';
-import { DatabaseClient } from '../../../../infrastructure/database/databaseClient.ts';
 import { oneTimeTokens, users } from '../../../../infrastructure/database/schema.ts';
 import { OneTimeTokenRepositoryImpl } from '../../infrastructure/repositories/oneTimeTokenRepositoryImpl.ts';
 import { UserRepositoryImpl } from '../../infrastructure/repositories/userRepositoryImpl.ts';
@@ -14,37 +12,32 @@ import { PasswordService } from '../services/passwordService.ts';
 import { ValidateOneTimeTokenAction } from './validateOneTimeTokenAction.ts';
 
 describe('ValidateOneTimeTokenAction', () => {
-  let databaseClient: DatabaseClient;
+  let testContext: TestContext;
   let userRepository: UserRepositoryImpl;
   let oneTimeTokenRepository: OneTimeTokenRepositoryImpl;
   let validateOneTimeTokenAction: ValidateOneTimeTokenAction;
-  let loggerService: LoggerService;
   let passwordService: PasswordService;
 
   beforeEach(async () => {
-    const config = createConfig();
-    databaseClient = new DatabaseClient(config.database);
-    userRepository = new UserRepositoryImpl(databaseClient);
-    oneTimeTokenRepository = new OneTimeTokenRepositoryImpl(databaseClient);
-    passwordService = new PasswordService(config);
+    testContext = createTestContext();
+    userRepository = new UserRepositoryImpl(testContext.databaseClient);
+    oneTimeTokenRepository = new OneTimeTokenRepositoryImpl(testContext.databaseClient);
+    passwordService = new PasswordService(testContext.config);
 
-    loggerService = {
-      debug: () => {},
-      info: () => {},
-      warn: () => {},
-      error: () => {},
-    } as unknown as LoggerService;
+    validateOneTimeTokenAction = new ValidateOneTimeTokenAction(
+      userRepository,
+      testContext.loggerService,
+      oneTimeTokenRepository,
+    );
 
-    validateOneTimeTokenAction = new ValidateOneTimeTokenAction(userRepository, loggerService, oneTimeTokenRepository);
-
-    await databaseClient.db.delete(oneTimeTokens);
-    await databaseClient.db.delete(users);
+    await testContext.databaseClient.db.delete(oneTimeTokens);
+    await testContext.databaseClient.db.delete(users);
   });
 
   afterEach(async () => {
-    await databaseClient.db.delete(oneTimeTokens);
-    await databaseClient.db.delete(users);
-    await databaseClient.close();
+    await testContext.databaseClient.db.delete(oneTimeTokens);
+    await testContext.databaseClient.db.delete(users);
+    await testContext.databaseClient.close();
   });
 
   describe('execute', () => {
@@ -185,10 +178,10 @@ describe('ValidateOneTimeTokenAction', () => {
 
     it('returns false on database error', async () => {
       const token = IdService.generateNanoid();
-      const originalDb = databaseClient.db;
+      const originalDb = testContext.databaseClient.db;
 
       try {
-        Object.defineProperty(databaseClient, 'db', {
+        Object.defineProperty(testContext.databaseClient, 'db', {
           get: () => {
             throw new Error('Database connection error');
           },
@@ -202,7 +195,7 @@ describe('ValidateOneTimeTokenAction', () => {
 
         expect(result).toBe(false);
       } finally {
-        Object.defineProperty(databaseClient, 'db', {
+        Object.defineProperty(testContext.databaseClient, 'db', {
           value: originalDb,
           configurable: true,
           writable: true,

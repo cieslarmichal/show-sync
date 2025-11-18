@@ -2,12 +2,10 @@ import { beforeEach, afterEach, describe, expect, it } from 'vitest';
 
 import { Generator } from '../../../../../tests/generator.ts';
 import { createTestExecutionContext } from '../../../../../tests/helpers/executionContext.ts';
+import { createTestContext, type TestContext } from '../../../../../tests/helpers/testContext.ts';
 import { OperationNotValidError } from '../../../../common/errors/operationNotValidError.ts';
 import { ResourceAlreadyExistsError } from '../../../../common/errors/resourceAlreadyExistsError.ts';
 import { ResourceNotFoundError } from '../../../../common/errors/resourceNotFoundError.ts';
-import type { LoggerService } from '../../../../common/logger/loggerService.ts';
-import { createConfig, type Config } from '../../../../core/config.ts';
-import { DatabaseClient } from '../../../../infrastructure/database/databaseClient.ts';
 import { users, watchrooms, watchroomParticipants } from '../../../../infrastructure/database/schema.ts';
 import { UserRepositoryImpl } from '../../../user/infrastructure/repositories/userRepositoryImpl.ts';
 import { WatchroomRepositoryImpl } from '../../infrastructure/repositories/watchroomRepositoryImpl.ts';
@@ -16,40 +14,35 @@ import { CreateWatchroomAction } from './createWatchroomAction.ts';
 import { JoinWatchroomAction } from './joinWatchroomAction.ts';
 
 describe('JoinWatchroomAction', () => {
-  let databaseClient: DatabaseClient;
+  let testContext: TestContext;
   let watchroomRepository: WatchroomRepositoryImpl;
   let userRepository: UserRepositoryImpl;
   let createWatchroomAction: CreateWatchroomAction;
   let joinWatchroomAction: JoinWatchroomAction;
-  let loggerService: LoggerService;
-  let config: Config;
 
   beforeEach(async () => {
-    config = createConfig();
-    databaseClient = new DatabaseClient(config.database);
-    watchroomRepository = new WatchroomRepositoryImpl(databaseClient);
-    userRepository = new UserRepositoryImpl(databaseClient);
+    testContext = createTestContext();
+    watchroomRepository = new WatchroomRepositoryImpl(testContext.databaseClient);
+    userRepository = new UserRepositoryImpl(testContext.databaseClient);
 
-    loggerService = {
-      debug: () => {},
-      info: () => {},
-      warn: () => {},
-      error: () => {},
-    } as unknown as LoggerService;
+    createWatchroomAction = new CreateWatchroomAction(watchroomRepository, testContext.loggerService);
+    joinWatchroomAction = new JoinWatchroomAction(
+      watchroomRepository,
+      testContext.loggerService,
+      testContext.databaseClient,
+      testContext.config,
+    );
 
-    createWatchroomAction = new CreateWatchroomAction(watchroomRepository, loggerService);
-    joinWatchroomAction = new JoinWatchroomAction(watchroomRepository, loggerService, databaseClient, config);
-
-    await databaseClient.db.delete(watchroomParticipants);
-    await databaseClient.db.delete(watchrooms);
-    await databaseClient.db.delete(users);
+    await testContext.databaseClient.db.delete(watchroomParticipants);
+    await testContext.databaseClient.db.delete(watchrooms);
+    await testContext.databaseClient.db.delete(users);
   });
 
   afterEach(async () => {
-    await databaseClient.db.delete(watchroomParticipants);
-    await databaseClient.db.delete(watchrooms);
-    await databaseClient.db.delete(users);
-    await databaseClient.close();
+    await testContext.databaseClient.db.delete(watchroomParticipants);
+    await testContext.databaseClient.db.delete(watchrooms);
+    await testContext.databaseClient.db.delete(users);
+    await testContext.databaseClient.close();
   });
 
   describe('execute', () => {
@@ -206,7 +199,7 @@ describe('JoinWatchroomAction', () => {
       );
 
       // Add participants up to the maximum (maxParticipants - 1 since owner is already a participant)
-      for (let i = 0; i < config.watchroom.maxParticipants - 1; i++) {
+      for (let i = 0; i < testContext.config.watchroom.maxParticipants - 1; i++) {
         const participantData = Generator.userData();
         const participant = await userRepository.create(participantData);
 
