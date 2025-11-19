@@ -41,7 +41,9 @@ export const healthRoutes: FastifyPluginAsyncTypebox<{
     },
     handler: async (_request, reply) => {
       const result = await getReadinessCheckAction.execute();
+
       const statusCode = result.status === 'healthy' ? 200 : 503;
+
       return reply.status(statusCode).send(result);
     },
   });
