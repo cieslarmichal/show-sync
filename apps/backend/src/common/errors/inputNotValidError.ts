@@ -9,4 +9,8 @@ export class InputNotValidError extends BaseError<Context> {
   public constructor(context: Context) {
     super('InputNotValidError', 'Input not valid.', context);
   }
+
+  protected override getExposableContextFields(): string[] {
+    return ['reason', 'value'];
+  }
 }

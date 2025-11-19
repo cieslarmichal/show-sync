@@ -28,7 +28,6 @@ export class DatabaseClient {
       keepAliveInitialDelayMillis: config.pool.keepAliveInitialDelayMillis,
     });
 
-    // Handle pool errors to prevent unhandled rejections
     this.pool.on('error', (error) => {
       this.loggerService.error({
         message: 'Unexpected database pool error',

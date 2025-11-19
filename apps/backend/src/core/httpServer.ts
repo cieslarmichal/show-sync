@@ -1,6 +1,5 @@
 import fastifyCookie from '@fastify/cookie';
 import fastifyCors from '@fastify/cors';
-import fastifyHelmet from '@fastify/helmet';
 import fastifyRateLimit from '@fastify/rate-limit';
 import { type TypeBoxTypeProvider } from '@fastify/type-provider-typebox';
 import { fastify, type FastifyInstance, type FastifyRequest } from 'fastify';
@@ -13,7 +12,6 @@ import { InputNotValidError } from '../common/errors/inputNotValidError.ts';
 import { OperationNotValidError } from '../common/errors/operationNotValidError.ts';
 import { ResourceAlreadyExistsError } from '../common/errors/resourceAlreadyExistsError.ts';
 import { ResourceNotFoundError } from '../common/errors/resourceNotFoundError.ts';
-import { serializeError } from '../common/errors/serializeError.ts';
 import { UnauthorizedAccessError } from '../common/errors/unathorizedAccessError.ts';
 import { IdService } from '../common/id/idService.ts';
 import { type LoggerService } from '../common/logger/loggerService.ts';
@@ -37,8 +35,6 @@ export class HttpServer {
   private readonly loggerService: LoggerService;
   private readonly config: Config;
   private readonly databaseClient: DatabaseClient;
-  private isShuttingDown = false;
-  private activeConnections = 0;
 
   public constructor(config: Config, loggerService: LoggerService, databaseClient: DatabaseClient) {
     this.config = config;
@@ -61,7 +57,6 @@ export class HttpServer {
     this.setupErrorHandler();
 
     await this.fastifyServer.register(fastifyCookie, { secret: this.config.cookie.secret });
-
     await this.fastifyServer.register(fastifyCors, {
       origin: this.config.frontendUrl,
       credentials: true,
@@ -69,27 +64,10 @@ export class HttpServer {
       allowedHeaders: ['Content-Type', 'Authorization'],
       exposedHeaders: ['X-Request-ID'],
     });
-
-    await this.fastifyServer.register(fastifyHelmet, {
-      contentSecurityPolicy: false,
-      crossOriginResourcePolicy: { policy: 'same-origin' },
-      crossOriginOpenerPolicy: { policy: 'same-origin' },
-      crossOriginEmbedderPolicy: false,
-      referrerPolicy: { policy: 'no-referrer' },
-      xContentTypeOptions: true,
-      xFrameOptions: { action: 'deny' },
-      xPermittedCrossDomainPolicies: { permittedPolicies: 'none' },
-      xDownloadOptions: true,
-      xDnsPrefetchControl: { allow: false },
-      hidePoweredBy: true,
-    });
-
     await this.fastifyServer.register(fastifyRateLimit, {
       global: true,
       max: this.config.rateLimit.global.max,
       timeWindow: this.config.rateLimit.global.timeWindow,
-      cache: 10000,
-      skipOnError: false,
       keyGenerator: (request) => request.ip,
     });
 
@@ -109,8 +87,6 @@ export class HttpServer {
       request.id = requestId;
       reply.header('X-Request-ID', requestId);
 
-      this.activeConnections++;
-
       this.loggerService.debug({
         message: 'Incoming HTTP request',
         event: 'http.request.start',
@@ -123,6 +99,8 @@ export class HttpServer {
     });
 
     this.fastifyServer.addHook('onSend', (request, reply, _payload, done) => {
+      reply.header('X-Content-Type-Options', 'nosniff');
+
       if (skipRequestLog(request)) {
         done();
         return;
@@ -141,15 +119,6 @@ export class HttpServer {
       done();
     });
 
-    this.fastifyServer.addHook('onResponse', (_request, _reply, done) => {
-      this.activeConnections--;
-      done();
-    });
-
-    this.fastifyServer.setSerializerCompiler(() => {
-      return (data): string => JSON.stringify(data);
-    });
-
     this.fastifyServer.addHook('preHandler', async (request, reply) => {
       if (
         request.body &&
@@ -157,7 +126,7 @@ export class HttpServer {
         request.headers['content-type']?.includes('application/json')
       ) {
         try {
-          request.body = this.sanitizeInput(request.body, 0);
+          this.validateInputLimits(request.body, 0);
         } catch (error) {
           this.loggerService.warn({
             message: 'Input sanitization failed',
@@ -184,36 +153,7 @@ export class HttpServer {
   }
 
   public async stop(): Promise<void> {
-    if (this.isShuttingDown) {
-      this.loggerService.warn({ message: 'HTTP server is already shutting down' });
-      return;
-    }
-
-    this.isShuttingDown = true;
-
     this.loggerService.info({ message: 'Stopping HTTP server' });
-
-    // Stop accepting new connections
-    this.fastifyServer.server.unref();
-
-    // Wait for active connections to finish (with timeout)
-    const shutdownTimeout = 30000; // 30s
-    const shutdownStart = Date.now();
-
-    while (this.activeConnections > 0 && Date.now() - shutdownStart < shutdownTimeout) {
-      this.loggerService.info({
-        message: 'Waiting for active connections to finish',
-        activeConnections: this.activeConnections,
-      });
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-    }
-
-    if (this.activeConnections > 0) {
-      this.loggerService.warn({
-        message: 'Forcing shutdown with active connections',
-        activeConnections: this.activeConnections,
-      });
-    }
 
     await this.fastifyServer.close();
 
@@ -240,7 +180,6 @@ export class HttpServer {
         ip: request.ip,
       };
 
-      // Handle TypeError (unexpected runtime errors)
       if (error instanceof TypeError) {
         this.loggerService.error({
           message: 'HTTP request type error',
@@ -255,7 +194,6 @@ export class HttpServer {
         });
       }
 
-      // Handle rate limiting
       if (error instanceof Error && 'statusCode' in error && error.statusCode === 429) {
         this.loggerService.warn({
           message: 'Rate limit exceeded',
@@ -269,9 +207,6 @@ export class HttpServer {
         });
       }
 
-      const responseError = this.sanitizeErrorResponse(error);
-
-      // Handle authentication errors (warn level - expected in normal operation)
       if (error instanceof UnauthorizedAccessError) {
         this.loggerService.warn({
           message: 'Unauthorized access attempt',
@@ -280,10 +215,9 @@ export class HttpServer {
           errorContext: error.context,
         });
 
-        return reply.status(401).send(responseError);
+        return reply.status(401).send(error.toJSON());
       }
 
-      // Handle authorization errors (warn level - expected in normal operation)
       if (error instanceof ForbiddenAccessError) {
         this.loggerService.warn({
           message: 'Forbidden access attempt',
@@ -292,34 +226,31 @@ export class HttpServer {
           errorContext: error.context,
         });
 
-        return reply.status(403).send(responseError);
+        return reply.status(403).send(error.toJSON());
       }
 
-      // Handle validation errors (warn level - client errors)
       if (error instanceof InputNotValidError) {
-        this.loggerService.warn({
+        this.loggerService.info({
           message: 'Invalid input',
           event: 'http.request.validation_error',
           ...baseContext,
           errorContext: error.context,
         });
 
-        return reply.status(400).send(responseError);
+        return reply.status(400).send(error.toJSON());
       }
 
-      // Handle business logic errors (warn level - expected domain errors)
       if (error instanceof OperationNotValidError) {
-        this.loggerService.warn({
+        this.loggerService.info({
           message: 'Invalid operation',
           event: 'http.request.operation_error',
           ...baseContext,
           errorContext: error.context,
         });
 
-        return reply.status(400).send(responseError);
+        return reply.status(400).send(error.toJSON());
       }
 
-      // Handle not found errors (info level - common in normal operation)
       if (error instanceof ResourceNotFoundError) {
         this.loggerService.info({
           message: 'Resource not found',
@@ -328,10 +259,9 @@ export class HttpServer {
           errorContext: error.context,
         });
 
-        return reply.status(404).send(responseError);
+        return reply.status(404).send(error.toJSON());
       }
 
-      // Handle conflict errors (warn level - client errors)
       if (error instanceof ResourceAlreadyExistsError) {
         this.loggerService.warn({
           message: 'Resource conflict',
@@ -340,10 +270,9 @@ export class HttpServer {
           errorContext: error.context,
         });
 
-        return reply.status(409).send(responseError);
+        return reply.status(409).send(error.toJSON());
       }
 
-      // Handle external service errors (error level - infrastructure issues)
       if (error instanceof ExternalServiceError) {
         this.loggerService.error({
           message: 'External service error',
@@ -352,10 +281,9 @@ export class HttpServer {
           err: error,
         });
 
-        return reply.status(502).send(responseError);
+        return reply.status(502).send(error.toJSON());
       }
 
-      // Handle unexpected errors (error level - needs investigation)
       this.loggerService.error({
         message: 'Unexpected error',
         event: 'http.request.unexpected_error',
@@ -370,67 +298,28 @@ export class HttpServer {
     });
   }
 
-  private sanitizeErrorResponse(errorRaw: unknown): Record<string, unknown> {
-    const error = serializeError(errorRaw);
-    const allowedFields = ['name', 'message'];
-    const sanitized: Record<string, unknown> = {};
-
-    for (const field of allowedFields) {
-      if (field in error) {
-        sanitized[field] = error[field];
-      }
-    }
-
-    if (error['context'] && typeof error['context'] === 'object') {
-      const context = error['context'] as Record<string, unknown>;
-      const safeContext: Record<string, unknown> = {};
-
-      const allowedContextFields = ['reason', 'value', 'field'];
-
-      for (const field of allowedContextFields) {
-        if (field in context) {
-          safeContext[field] = context[field];
-        }
-      }
-
-      if (Object.keys(safeContext).length > 0) {
-        sanitized['context'] = safeContext;
-      }
-    }
-
-    return sanitized;
-  }
-
-  private sanitizeInput(obj: unknown, depth: number): unknown {
-    // Prevent deeply nested objects (DoS protection)
+  private validateInputLimits(obj: unknown, depth: number): void {
     if (depth > maxObjectDepth) {
       throw new Error(`Object nesting exceeds maximum depth of ${String(maxObjectDepth)}`);
     }
 
     if (Array.isArray(obj)) {
-      return obj.map((item) => this.sanitizeInput(item, depth + 1));
+      for (const item of obj) {
+        this.validateInputLimits(item, depth + 1);
+      }
+      return;
     }
 
     if (obj && typeof obj === 'object') {
-      const sanitized: Record<string, unknown> = {};
-
-      for (const [key, value] of Object.entries(obj as Record<string, unknown>)) {
-        sanitized[key] = this.sanitizeInput(value, depth + 1);
+      for (const value of Object.values(obj as Record<string, unknown>)) {
+        this.validateInputLimits(value, depth + 1);
       }
-
-      return sanitized;
+      return;
     }
 
-    if (typeof obj === 'string') {
-      // Prevent extremely long strings (DoS protection)
-      if (obj.length > maxStringLength) {
-        throw new Error(`String length exceeds maximum of ${String(maxStringLength)} characters`);
-      }
-
-      return obj.trim();
+    if (typeof obj === 'string' && obj.length > maxStringLength) {
+      throw new Error(`String length exceeds maximum of ${String(maxStringLength)} characters`);
     }
-
-    return obj;
   }
 
   private async registerRoutes(): Promise<void> {
