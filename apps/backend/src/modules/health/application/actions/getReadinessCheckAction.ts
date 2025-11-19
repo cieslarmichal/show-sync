@@ -2,17 +2,8 @@ import type { LoggerService } from '../../../../common/logger/loggerService.ts';
 import type { Config } from '../../../../core/config.ts';
 import type { DatabaseClient } from '../../../../infrastructure/database/databaseClient.ts';
 
-type HealthCheckStatus = 'healthy' | 'unhealthy';
-
-type ServiceCheck = {
-  status: HealthCheckStatus;
-  latencyMs?: number;
-  error?: string;
-};
-
 type HealthCheckResult = {
-  status: HealthCheckStatus;
-  checks: Record<string, ServiceCheck>;
+  status: 'healthy' | 'unhealthy';
 };
 
 export class GetReadinessCheckAction {
@@ -27,94 +18,56 @@ export class GetReadinessCheckAction {
   }
 
   public async execute(): Promise<HealthCheckResult> {
-    const checks: Record<string, ServiceCheck> = {};
-
-    await Promise.all([this.checkDatabase(checks), this.checkTmdb(checks), this.checkOpenRouter(checks)]);
-
-    const allHealthy = Object.values(checks).every((check) => check.status === 'healthy');
-
-    if (!allHealthy) {
+    try {
+      await Promise.all([this.checkDatabase(), this.checkTmdb(), this.checkOpenRouter()]);
+      return { status: 'healthy' };
+    } catch (error) {
       this.loggerService.warn({
-        message: 'Readiness check failed - application not ready for traffic',
+        message: 'Readiness check failed',
         event: 'health.readiness.failed',
-        checks,
-      });
-    }
-
-    return {
-      status: allHealthy ? 'healthy' : 'unhealthy',
-      checks,
-    };
-  }
-
-  private async checkDatabase(checks: Record<string, ServiceCheck>): Promise<void> {
-    try {
-      const dbStart = Date.now();
-      await this.databaseClient.testConnection();
-      checks['database'] = { status: 'healthy', latencyMs: Date.now() - dbStart };
-    } catch (error) {
-      checks['database'] = {
-        status: 'unhealthy',
         error: error instanceof Error ? error.message : 'Unknown error',
-      };
+      });
+      return { status: 'unhealthy' };
     }
   }
 
-  private async checkTmdb(checks: Record<string, ServiceCheck>): Promise<void> {
-    try {
-      const tmdbStart = Date.now();
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => {
-        controller.abort();
-      }, 3000); // 3s timeout
+  private async checkDatabase(): Promise<void> {
+    await this.databaseClient.testConnection();
+  }
 
-      const response = await fetch(`${this.config.tmdb.baseUrl}/configuration`, {
-        headers: {
-          Authorization: `Bearer ${this.config.tmdb.apiKey}`,
-        },
-        signal: controller.signal,
-      });
+  private async checkTmdb(): Promise<void> {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => {
+      controller.abort();
+    }, 3000);
 
-      clearTimeout(timeoutId);
+    const response = await fetch(`${this.config.tmdb.baseUrl}/configuration`, {
+      headers: { Authorization: `Bearer ${this.config.tmdb.apiKey}` },
+      signal: controller.signal,
+    });
 
-      if (!response.ok) {
-        throw new Error(`TMDB API returned status ${String(response.status)}`);
-      }
-      checks['tmdb'] = { status: 'healthy', latencyMs: Date.now() - tmdbStart };
-    } catch (error) {
-      checks['tmdb'] = {
-        status: 'unhealthy',
-        error: error instanceof Error ? error.message : 'Unknown error',
-      };
+    clearTimeout(timeoutId);
+
+    if (!response.ok) {
+      throw new Error(`TMDB API returned status ${String(response.status)}`);
     }
   }
 
-  private async checkOpenRouter(checks: Record<string, ServiceCheck>): Promise<void> {
-    try {
-      const openRouterStart = Date.now();
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => {
-        controller.abort();
-      }, 3000); // 3s timeout
+  private async checkOpenRouter(): Promise<void> {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => {
+      controller.abort();
+    }, 3000);
 
-      const response = await fetch(`${this.config.openRouter.baseUrl}/models/count`, {
-        headers: {
-          Authorization: `Bearer ${this.config.openRouter.apiKey}`,
-        },
-        signal: controller.signal,
-      });
+    const response = await fetch(`${this.config.openRouter.baseUrl}/models/count`, {
+      headers: { Authorization: `Bearer ${this.config.openRouter.apiKey}` },
+      signal: controller.signal,
+    });
 
-      clearTimeout(timeoutId);
+    clearTimeout(timeoutId);
 
-      if (!response.ok) {
-        throw new Error(`OpenRouter API returned status ${String(response.status)}`);
-      }
-      checks['openRouter'] = { status: 'healthy', latencyMs: Date.now() - openRouterStart };
-    } catch (error) {
-      checks['openRouter'] = {
-        status: 'unhealthy',
-        error: error instanceof Error ? error.message : 'Unknown error',
-      };
+    if (!response.ok) {
+      throw new Error(`OpenRouter API returned status ${String(response.status)}`);
     }
   }
 }
