@@ -83,11 +83,13 @@ export class HttpServer {
         return;
       }
 
+      request.startTime = Date.now();
+
       const requestId = IdService.generateUuid();
       request.id = requestId;
       reply.header('X-Request-ID', requestId);
 
-      this.loggerService.debug({
+      this.loggerService.info({
         message: 'Incoming HTTP request',
         event: 'http.request.start',
         requestId: request.id,
@@ -99,14 +101,14 @@ export class HttpServer {
     });
 
     this.fastifyServer.addHook('onSend', (request, reply, _payload, done) => {
-      reply.header('X-Content-Type-Options', 'nosniff');
-
       if (skipRequestLog(request)) {
         done();
         return;
       }
 
-      this.loggerService.debug({
+      const durationMs = request.startTime ? Date.now() - request.startTime : undefined;
+
+      this.loggerService.info({
         message: 'Request completed',
         event: 'http.request.end',
         requestId: request.id,
@@ -114,6 +116,7 @@ export class HttpServer {
         url: request.url,
         statusCode: reply.statusCode,
         userId: request.user?.userId,
+        durationMs,
       });
 
       done();
@@ -208,12 +211,15 @@ export class HttpServer {
       }
 
       if (error instanceof UnauthorizedAccessError) {
-        this.loggerService.warn({
-          message: 'Unauthorized access attempt',
-          event: 'http.request.unauthorized',
-          ...baseContext,
-          errorContext: error.context,
-        });
+        // Only log if not marked as silent (expected auth failures like missing refresh token)
+        if (!error.isSilent) {
+          this.loggerService.warn({
+            message: 'Unauthorized access attempt',
+            event: 'http.request.unauthorized',
+            ...baseContext,
+            errorContext: error.context,
+          });
+        }
 
         return reply.status(401).send(error.toJSON());
       }

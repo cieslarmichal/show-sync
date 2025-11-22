@@ -39,7 +39,7 @@ export class SendResetPasswordEmailAction {
   public async execute(payload: ExecutePayload): Promise<void> {
     const { email: emailInput } = payload;
 
-    const email = emailInput.toLowerCase();
+    const email = emailInput.toLowerCase().trim();
 
     const user = await this.userRepository.findByEmail(email);
 
