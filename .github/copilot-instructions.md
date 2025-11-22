@@ -11,7 +11,6 @@ This is a monorepo using npm workspaces with Turborepo. The project consists of 
 - **Framework**: Fastify
 - **ORM**: Drizzle ORM
 - **Database**: PostgreSQL
-- **Storage**: S3
 - **Validation**: TypeBox
 - **Testing**: Vitest
 

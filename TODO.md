@@ -1,6 +1,9 @@
 # TODO List
 
-- Deploy to Fly.io
-- Setup Cloudflare CDN
 - Monetization
-- Security audit - CSRF
+- Watchlists
+- Export show ratings
+- User avatars
+- Collaborative Voting system dla grup
+- Filtering shows by genre, platform (netflix, hbo), mini-series, etc
+- Platform Availability Integration with JustWatch API: https://apis.justwatch.com
