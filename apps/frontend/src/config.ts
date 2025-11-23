@@ -45,8 +45,6 @@ export type Config = z.infer<typeof configSchema>;
 export function createConfig(): Config {
   const parsedConfig = configSchema.safeParse(appConfig);
 
-  console.log('App Config:', appConfig);
-
   if (!parsedConfig.success) {
     logger.error(parsedConfig.error);
     throw new Error('Configuration error');
