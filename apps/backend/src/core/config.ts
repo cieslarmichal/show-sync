@@ -34,6 +34,9 @@ const configSchema = Type.Object({
       // Short client/API idempotency window for coalescing duplicate refresh requests
       idempotencyMs: Type.Number({ minimum: 100, maximum: 5000 }),
     }),
+    accountVerification: Type.Object({
+      expiresIn: Type.Number({ minimum: 3600 }),
+    }),
     resetPassword: Type.Object({
       expiresIn: Type.Number({ minimum: 1800 }),
     }),
@@ -88,6 +91,10 @@ const configSchema = Type.Object({
     apiKey: Type.String({ minLength: 1 }),
     fromEmail: Type.String({ minLength: 1 }),
     emails: Type.Object({
+      verifyAccount: Type.Object({
+        templateFile: Type.String({ minLength: 1 }),
+        subject: Type.String({ minLength: 1 }),
+      }),
       resetPassword: Type.Object({
         templateFile: Type.String({ minLength: 1 }),
         subject: Type.String({ minLength: 1 }),
@@ -115,6 +122,9 @@ const configSchema = Type.Object({
   }),
   watchroom: Type.Object({
     maxParticipants: Type.Number({ minimum: 1, maximum: 10 }),
+  }),
+  emailVerification: Type.Object({
+    enabled: Type.Boolean(),
   }),
 });
 

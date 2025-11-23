@@ -26,7 +26,7 @@ const formSchema = z.object({
 type FormValues = z.infer<typeof formSchema>;
 
 interface Props {
-  onSuccess?: () => void;
+  onSuccess?: (email?: string) => void;
 }
 
 export default function RegisterForm({ onSuccess }: Props) {
@@ -59,7 +59,7 @@ export default function RegisterForm({ onSuccess }: Props) {
 
       // Call onSuccess callback if provided, otherwise redirect to dashboard
       if (onSuccess) {
-        onSuccess();
+        onSuccess(values.email);
       } else {
         navigate(redirectTo || '/dashboard');
       }

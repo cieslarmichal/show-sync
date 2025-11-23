@@ -20,8 +20,10 @@ import { GetUserStatsAction } from '../application/actions/getUserStatsAction.ts
 import { LoginUserAction } from '../application/actions/loginUserAction.ts';
 import { LogoutUserAction } from '../application/actions/logoutUserAction.ts';
 import { RefreshTokenAction } from '../application/actions/refreshTokenAction.ts';
+import { ResendVerificationEmailAction } from '../application/actions/resendVerificationEmailAction.ts';
 import { SendResetPasswordEmailAction } from '../application/actions/sendResetPasswordEmailAction.ts';
 import { ValidateOneTimeTokenAction } from '../application/actions/validateOneTimeTokenAction.ts';
+import { VerifyUserEmailAction } from '../application/actions/verifyUserEmailAction.ts';
 import { PasswordService } from '../application/services/passwordService.ts';
 import type { User } from '../domain/types/user.ts';
 import { EmailRepositoryImpl } from '../infrastructure/repositories/emailRepositoryImpl.ts';
@@ -63,6 +65,7 @@ export const userRoutes: FastifyPluginAsyncTypebox<{
       id: user.id,
       name: user.name,
       email: user.email,
+      isEmailVerified: user.isEmailVerified,
       createdAt: user.createdAt.toISOString(),
     };
   };
@@ -88,7 +91,15 @@ export const userRoutes: FastifyPluginAsyncTypebox<{
   const emailRepository = new EmailRepositoryImpl(databaseClient);
   const oneTimeTokenRepository = new OneTimeTokenRepositoryImpl(databaseClient);
 
-  const createUserAction = new CreateUserAction(userRepository, loggerService, passwordService);
+  const createUserAction = new CreateUserAction(
+    userRepository,
+    loggerService,
+    passwordService,
+    config,
+    emailRepository,
+    oneTimeTokenRepository,
+    databaseClient,
+  );
   const findUserAction = new FindUserAction(userRepository);
   const deleteUserAction = new DeleteUserAction(userRepository, loggerService);
   const loginUserAction = new LoginUserAction(
@@ -97,6 +108,7 @@ export const userRoutes: FastifyPluginAsyncTypebox<{
     tokenService,
     passwordService,
     userSessionRepository,
+    config,
   );
   const refreshTokenAction = new RefreshTokenAction(
     userRepository,
@@ -133,6 +145,20 @@ export const userRoutes: FastifyPluginAsyncTypebox<{
     userRepository,
     loggerService,
     oneTimeTokenRepository,
+  );
+  const verifyUserEmailAction = new VerifyUserEmailAction(
+    userRepository,
+    loggerService,
+    oneTimeTokenRepository,
+    databaseClient,
+  );
+  const resendVerificationEmailAction = new ResendVerificationEmailAction(
+    userRepository,
+    loggerService,
+    config,
+    emailRepository,
+    oneTimeTokenRepository,
+    databaseClient,
   );
 
   const authenticationMiddleware = createAuthenticationMiddleware(tokenService);
@@ -489,6 +515,55 @@ export const userRoutes: FastifyPluginAsyncTypebox<{
       const quota = await getUserQuotaAction.execute({ userId });
 
       return reply.send(quota);
+    },
+  });
+
+  fastify.post('/users/verify-email', {
+    schema: {
+      body: Type.Object({
+        token: Type.String({ minLength: 1 }),
+      }),
+      response: {
+        204: Type.Null(),
+      },
+    },
+    handler: async (request, reply) => {
+      const { token } = request.body;
+
+      await verifyUserEmailAction.execute(
+        { emailVerificationToken: token },
+        {
+          requestId: request.id,
+        },
+      );
+
+      return reply.status(204).send();
+    },
+  });
+
+  fastify.post('/users/resend-verification-email', {
+    schema: {
+      body: Type.Object({
+        email: emailSchema,
+      }),
+      response: {
+        204: Type.Null(),
+      },
+    },
+    config: {
+      rateLimit: config.rateLimit.login,
+    },
+    handler: async (request, reply) => {
+      const { email } = request.body;
+
+      await resendVerificationEmailAction.execute(
+        { email },
+        {
+          requestId: request.id,
+        },
+      );
+
+      return reply.status(204).send();
     },
   });
 };

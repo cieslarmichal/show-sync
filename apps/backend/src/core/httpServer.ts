@@ -73,8 +73,13 @@ export class HttpServer {
 
     const skipRequestLog = (request: FastifyRequest): boolean => {
       const isOptions = request.method === 'OPTIONS';
+      const isCrawler =
+        request.url === '/' ||
+        request.url === '/favicon.ico' ||
+        request.url === '/robots.txt' ||
+        request.url === '/sitemap.xml';
       const isHealthCheck = request.url === '/health/live' || request.url === '/health/ready';
-      return isOptions || isHealthCheck;
+      return isOptions || isCrawler || isHealthCheck;
     };
 
     this.fastifyServer.addHook('onRequest', (request, reply, done) => {

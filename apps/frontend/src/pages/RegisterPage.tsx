@@ -1,12 +1,18 @@
 import { useState, useContext } from 'react';
-import { Link, useSearchParams, Navigate } from 'react-router-dom';
+import { Link, useSearchParams, Navigate, useNavigate } from 'react-router-dom';
 import RegisterForm from '../components/RegisterForm';
-import { Button } from '@/components/ui/Button';
 import { useSEO } from '../hooks/useSEO';
 import { AuthContext } from '../context/AuthContext';
+import EmailConfirmationStep from '../components/EmailConfirmationStep';
+import { Button } from '../components/ui/Button';
+import { resendVerificationEmail } from '../api/queries/resendVerificationEmail';
+import { toast } from 'sonner';
+import { Loader } from 'lucide-react';
+import { config } from '../config';
 
 export default function RegisterPage() {
   const { userData, userDataInitialized } = useContext(AuthContext);
+  const navigate = useNavigate();
 
   useSEO({
     title: 'Create Account - ShowSync',
@@ -18,9 +24,29 @@ export default function RegisterPage() {
   const [searchParams] = useSearchParams();
   const redirect = searchParams.get('redirect');
   const [isRegistrationSuccess, setIsRegistrationSuccess] = useState(false);
+  const [registeredEmail, setRegisteredEmail] = useState('');
+  const [isResendingEmail, setIsResendingEmail] = useState(false);
 
-  const handleRegistrationSuccess = () => {
+  const handleRegistrationSuccess = (email?: string) => {
     setIsRegistrationSuccess(true);
+    if (email) {
+      setRegisteredEmail(email);
+    }
+  };
+
+  const handleResendVerificationEmail = async () => {
+    if (!registeredEmail) return;
+
+    setIsResendingEmail(true);
+    try {
+      await resendVerificationEmail({ email: registeredEmail });
+      toast.success('Verification email sent! Please check your inbox.');
+    } catch (error) {
+      console.error('Failed to resend verification email', error);
+      toast.error('Failed to send verification email. Please try again.');
+    } finally {
+      setIsResendingEmail(false);
+    }
   };
 
   const signInUrl = redirect ? `/login?redirect=${encodeURIComponent(redirect)}` : '/login';
@@ -46,45 +72,47 @@ export default function RegisterPage() {
 
   if (isRegistrationSuccess) {
     return (
-      <div className="min-h-screen bg-background flex  justify-center py-12 px-4 sm:px-6 lg:px-8 pt-32">
+      <div className="min-h-screen bg-background flex justify-center py-12 px-4 sm:px-6 lg:px-8 pt-32">
         <div className="w-full max-w-md space-y-8">
-          {/* Header */}
-          <div className="text-center">
-            <h2 className="text-3xl font-bold text-foreground tracking-tight">You're All Set!</h2>
-          </div>
-
-          {/* Success Card */}
-          <div className="bg-card rounded-xl border border-border p-8 shadow-sm">
-            <div className="text-center space-y-6">
-              <div className="space-y-4">
-                <div className="w-16 h-16 bg-secondary rounded-full flex items-center justify-center mx-auto border-2 border-border">
-                  <svg
-                    className="w-8 h-8 text-foreground"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M5 13l4 4L19 7"
-                    />
-                  </svg>
+          <div className="bg-card rounded-xl border border-border p-8 shadow-sm space-y-6">
+            {config.emailVerification.enabled ? (
+              <>
+                <EmailConfirmationStep
+                  title="Verify Your Email"
+                  message="We've sent you a verification email. Click the link in the email to activate your account."
+                  buttonText="Go to Sign In"
+                  onButtonClick={() => navigate(signInUrl)}
+                />
+                <div className="pt-2 border-t border-border">
+                  <p className="text-sm text-muted-foreground text-center">
+                    Didn't receive the email?{' '}
+                    <Button
+                      onClick={handleResendVerificationEmail}
+                      disabled={isResendingEmail}
+                      variant="link"
+                      className="h-auto p-0 text-sm font-semibold"
+                    >
+                      {isResendingEmail ? (
+                        <>
+                          <Loader className="h-3 w-3 animate-spin" />
+                          Sending...
+                        </>
+                      ) : (
+                        'Send again'
+                      )}
+                    </Button>
+                  </p>
                 </div>
-                <h3 className="text-xl font-semibold text-foreground tracking-tight">Welcome to ShowSync!</h3>
-                <p className="text-muted-foreground">
-                  Your account is ready. Sign in to start rating shows and creating watch rooms.
-                </p>
-              </div>
-              <Button
-                onClick={() => (window.location.href = signInUrl)}
-                className="w-full h-11 bg-foreground text-background hover:bg-foreground/90 font-semibold"
-                data-testid="back-to-sign-in-button"
-              >
-                Back to Sign In
-              </Button>
-            </div>
+              </>
+            ) : (
+              <EmailConfirmationStep
+                title="You're All Set!"
+                message="Your account is ready. Sign in to start rating shows and creating watch rooms."
+                buttonText="Go to Sign In"
+                onButtonClick={() => navigate(signInUrl)}
+                icon="check"
+              />
+            )}
           </div>
         </div>
       </div>

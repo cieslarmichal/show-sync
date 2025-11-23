@@ -4,6 +4,7 @@ import { UnauthorizedAccessError } from '../../../../common/errors/unathorizedAc
 import { IdService } from '../../../../common/id/idService.ts';
 import type { LoggerService } from '../../../../common/logger/loggerService.ts';
 import type { ExecutionContext } from '../../../../common/types/executionContext.ts';
+import type { Config } from '../../../../core/config.ts';
 import type { UserRepository } from '../../domain/repositories/userRepository.ts';
 import type { UserSessionRepository } from '../../domain/repositories/userSessionRepository.ts';
 import type { PasswordService } from '../services/passwordService.ts';
@@ -24,6 +25,7 @@ export class LoginUserAction {
   private readonly tokenService: TokenService;
   private readonly passwordService: PasswordService;
   private readonly userSessionRepository: UserSessionRepository;
+  private readonly config: Config;
 
   public constructor(
     userRepository: UserRepository,
@@ -31,12 +33,14 @@ export class LoginUserAction {
     tokenService: TokenService,
     passwordService: PasswordService,
     userSessionRepository: UserSessionRepository,
+    config: Config,
   ) {
     this.userRepository = userRepository;
     this.loggerService = loggerService;
     this.tokenService = tokenService;
     this.passwordService = passwordService;
     this.userSessionRepository = userSessionRepository;
+    this.config = config;
   }
 
   public async execute(loginData: LoginData, context: ExecutionContext): Promise<LoginResult> {
@@ -54,6 +58,14 @@ export class LoginUserAction {
     if (!user) {
       throw new UnauthorizedAccessError({
         reason: 'Invalid credentials',
+        email: normalizedEmail,
+      });
+    }
+
+    // Check email verification only if feature is enabled
+    if (this.config.emailVerification.enabled && !user.isEmailVerified) {
+      throw new UnauthorizedAccessError({
+        reason: 'Email not verified',
         email: normalizedEmail,
       });
     }

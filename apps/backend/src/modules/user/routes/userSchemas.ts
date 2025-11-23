@@ -14,6 +14,7 @@ export const userSchema = Type.Object({
   id: Type.String({ format: 'uuid' }),
   name: Type.String({ minLength: 1, maxLength: 64 }),
   email: emailSchema,
+  isEmailVerified: Type.Boolean(),
   createdAt: Type.String({ format: 'date-time' }),
 });
 

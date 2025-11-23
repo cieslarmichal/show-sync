@@ -2,11 +2,16 @@ import type { Config } from '../../core/config.ts';
 
 export type EmailTemplateName = keyof Config['resend']['emails'];
 
+interface VerifyAccountEmailTemplateData {
+  readonly verificationLink: string;
+}
+
 interface ResetPasswordEmailTemplateData {
   readonly resetLink: string;
 }
 
 interface EmailTemplateDataMap extends Record<EmailTemplateName, unknown> {
+  readonly verifyAccount: VerifyAccountEmailTemplateData;
   readonly resetPassword: ResetPasswordEmailTemplateData;
 }
 

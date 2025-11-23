@@ -33,6 +33,7 @@ describe('LoginUserAction', () => {
       tokenService,
       passwordService,
       userSessionRepository,
+      testContext.config,
     );
 
     await testContext.databaseClient.db.delete(userSessions);

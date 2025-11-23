@@ -5,8 +5,13 @@ const rawEnv = import.meta.env.MODE;
 
 const backendUrl = rawEnv === 'production' ? 'https://api.show-sync.com' : 'http://localhost:5000';
 
+// const emailVerificationEnabled = rawEnv === 'testing' ? false : true;
+
 const appConfig = {
   backendUrl: import.meta.env.VITE_BACKEND_URL || backendUrl,
+  emailVerification: {
+    enabled: false,
+  },
   watchroom: {
     maxParticipants: 6,
   },
@@ -21,6 +26,9 @@ const appConfig = {
 
 const configSchema = z.object({
   backendUrl: z.string().min(1),
+  emailVerification: z.object({
+    enabled: z.boolean(),
+  }),
   watchroom: z.object({
     maxParticipants: z.number().min(1).max(100),
   }),

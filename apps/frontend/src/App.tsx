@@ -15,6 +15,7 @@ import LoginPage from './pages/LoginPage.tsx';
 import RegisterPage from './pages/RegisterPage.tsx';
 import ForgotPasswordPage from './pages/ForgotPasswordPage.tsx';
 import ResetPasswordPage from './pages/ResetPasswordPage.tsx';
+import VerifyEmailPage from './pages/VerifyEmailPage.tsx';
 import SeriesPage from './pages/SeriesPage.tsx';
 import WatchRoomsPage from './pages/WatchRoomsPage.tsx';
 import ProfilePage from './pages/ProfilePage.tsx';
@@ -54,6 +55,10 @@ const router = createBrowserRouter([
       {
         path: '/new-password',
         element: <ResetPasswordPage />,
+      },
+      {
+        path: '/verify-email',
+        element: <VerifyEmailPage />,
       },
       {
         path: '/logout',

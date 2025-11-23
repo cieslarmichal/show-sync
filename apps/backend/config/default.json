@@ -65,8 +65,12 @@
   },
   "resend": {
     "apiKey": null,
-    "fromEmail": "noreply@show-sync.com",
+    "fromEmail": "ShowSync <noreply@show-sync.com>",
     "emails": {
+      "verifyAccount": {
+        "templateFile": "verifyAccount.html",
+        "subject": "Verify your ShowSync account"
+      },
       "resetPassword": {
         "templateFile": "resetPassword.html",
         "subject": "Reset your ShowSync password"
@@ -83,6 +87,9 @@
       "expiresIn": 604800,
       "graceMs": 10000,
       "idempotencyMs": 3000
+    },
+    "accountVerification": {
+      "expiresIn": 86400
     },
     "resetPassword": {
       "expiresIn": 3600
@@ -109,5 +116,8 @@
   },
   "watchroom": {
     "maxParticipants": 6
+  },
+  "emailVerification": {
+    "enabled": true
   }
 }

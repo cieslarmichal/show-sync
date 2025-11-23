@@ -6,9 +6,13 @@ import { Button } from '@/components/ui/Button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/Form';
 import { Input } from '@/components/ui/Input';
 import { loginUser } from '../api/queries/login';
-import { useNavigate, useSearchParams, Link } from 'react-router-dom';
+import { useSearchParams, Link, useNavigate } from 'react-router-dom';
 import { z } from 'zod';
-import { EyeIcon, EyeOffIcon, Mail, Lock } from 'lucide-react';
+import { EyeIcon, EyeOffIcon, Mail, Lock, Loader } from 'lucide-react';
+import { ApiError } from '../api/ApiError';
+import { resendVerificationEmail } from '../api/queries/resendVerificationEmail';
+import { toast } from 'sonner';
+import { config } from '../config';
 
 const formSchema = z.object({
   email: z.string().email().max(254),
@@ -21,6 +25,9 @@ export default function LoginForm() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [showPassword, setShowPassword] = useState(false);
+  const [emailNotVerified, setEmailNotVerified] = useState(false);
+  const [unverifiedEmail, setUnverifiedEmail] = useState('');
+  const [isResendingEmail, setIsResendingEmail] = useState(false);
   const redirectTo = searchParams.get('redirect');
 
   const form = useForm<FormValues>({
@@ -32,26 +39,56 @@ export default function LoginForm() {
     },
   });
 
+  async function handleResendVerificationEmail() {
+    setIsResendingEmail(true);
+    try {
+      await resendVerificationEmail({ email: unverifiedEmail });
+      toast.success('Verification email sent! Please check your inbox.');
+      setEmailNotVerified(false);
+      setUnverifiedEmail('');
+    } catch (error) {
+      console.error('Failed to resend verification email', error);
+      toast.error('Failed to send verification email. Please try again.');
+    } finally {
+      setIsResendingEmail(false);
+    }
+  }
+
   async function onSubmit(values: FormValues) {
     try {
+      setEmailNotVerified(false);
+      setUnverifiedEmail('');
+
       await loginUser({ email: values.email, password: values.password });
 
-      // add 1 second delay to show the submitting state
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      // Small delay to allow the access token to be set in the context
+      await new Promise((resolve) => setTimeout(resolve, 500));
 
       navigate(redirectTo || '/dashboard');
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Invalid email or password';
+      if (error instanceof ApiError) {
+        // Handle email not verified error (only if email verification is enabled)
+        if (config.emailVerification.enabled && error.isErrorType('UnauthorizedAccessError')) {
+          const reason = error.getContextValue<string>('reason');
+          if (reason === 'Email not verified') {
+            setEmailNotVerified(true);
+            setUnverifiedEmail(values.email);
+            return;
+          }
+        }
 
-      if (errorMessage.includes('Too many requests') || errorMessage.includes('Rate limit')) {
-        form.setError('root', {
-          message: 'Too many login attempts. Please wait 10 minutes before trying again.',
-        });
-      } else {
-        form.setError('root', {
-          message: 'Invalid email or password',
-        });
+        // Handle rate limiting
+        if (error.isErrorType('TooManyRequestsError')) {
+          form.setError('root', {
+            message: 'Too many login attempts. Please wait 10 minutes before trying again.',
+          });
+          return;
+        }
       }
+
+      form.setError('root', {
+        message: 'Invalid email or password',
+      });
     }
   }
 
@@ -154,6 +191,34 @@ export default function LoginForm() {
       {form.formState.errors.root && (
         <div className="text-destructive text-sm mt-4 text-center bg-destructive/10 border border-destructive/20 rounded-md p-3">
           {form.formState.errors.root.message}
+        </div>
+      )}
+      {emailNotVerified && (
+        <div className="mt-4 bg-card border border-border rounded-md p-4">
+          <div className="flex items-start gap-3">
+            <Mail className="h-5 w-5 text-muted-foreground mt-0.5 shrink-0" />
+            <div className="flex-1">
+              <p className="text-sm font-medium text-foreground">Email Not Verified</p>
+              <p className="text-sm text-muted-foreground">
+                Please verify your email address before signing in.{' '}
+                <Button
+                  onClick={handleResendVerificationEmail}
+                  disabled={isResendingEmail}
+                  variant="link"
+                  className="h-auto p-0 text-sm font-semibold"
+                >
+                  {isResendingEmail ? (
+                    <>
+                      <Loader className="h-3 w-3 animate-spin" />
+                      Sending...
+                    </>
+                  ) : (
+                    'Resend verification email'
+                  )}
+                </Button>
+              </p>
+            </div>
+          </div>
         </div>
       )}
     </div>

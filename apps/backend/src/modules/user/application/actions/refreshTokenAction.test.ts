@@ -35,6 +35,7 @@ describe('RefreshTokenAction', () => {
       tokenService,
       passwordService,
       userSessionRepository,
+      testContext.config,
     );
     refreshTokenAction = new RefreshTokenAction(
       userRepository,

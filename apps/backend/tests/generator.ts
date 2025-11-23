@@ -114,6 +114,7 @@ export class Generator {
       name: faker.person.fullName(),
       email: Generator.email(),
       password: Generator.password(),
+      isEmailVerified: true,
       ...input,
     };
   }

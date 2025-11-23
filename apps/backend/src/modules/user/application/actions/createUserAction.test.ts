@@ -4,7 +4,9 @@ import { Generator } from '../../../../../tests/generator.ts';
 import { createTestExecutionContext } from '../../../../../tests/helpers/executionContext.ts';
 import { createTestContext, type TestContext } from '../../../../../tests/helpers/testContext.ts';
 import { ResourceAlreadyExistsError } from '../../../../common/errors/resourceAlreadyExistsError.ts';
-import { users } from '../../../../infrastructure/database/schema.ts';
+import { emails, oneTimeTokens, users } from '../../../../infrastructure/database/schema.ts';
+import { EmailRepositoryImpl } from '../../infrastructure/repositories/emailRepositoryImpl.ts';
+import { OneTimeTokenRepositoryImpl } from '../../infrastructure/repositories/oneTimeTokenRepositoryImpl.ts';
 import { UserRepositoryImpl } from '../../infrastructure/repositories/userRepositoryImpl.ts';
 import { PasswordService } from '../services/passwordService.ts';
 
@@ -15,17 +17,33 @@ describe('CreateUserAction', () => {
   let userRepository: UserRepositoryImpl;
   let createUserAction: CreateUserAction;
   let passwordService: PasswordService;
+  let emailRepository: EmailRepositoryImpl;
+  let oneTimeTokenRepository: OneTimeTokenRepositoryImpl;
 
   beforeEach(async () => {
     testContext = createTestContext();
     userRepository = new UserRepositoryImpl(testContext.databaseClient);
     passwordService = new PasswordService(testContext.config);
+    emailRepository = new EmailRepositoryImpl(testContext.databaseClient);
+    oneTimeTokenRepository = new OneTimeTokenRepositoryImpl(testContext.databaseClient);
 
-    createUserAction = new CreateUserAction(userRepository, testContext.loggerService, passwordService);
+    createUserAction = new CreateUserAction(
+      userRepository,
+      testContext.loggerService,
+      passwordService,
+      testContext.config,
+      emailRepository,
+      oneTimeTokenRepository,
+      testContext.databaseClient,
+    );
 
+    await testContext.databaseClient.db.delete(emails);
+    await testContext.databaseClient.db.delete(oneTimeTokens);
     await testContext.databaseClient.db.delete(users);
   });
   afterEach(async () => {
+    await testContext.databaseClient.db.delete(emails);
+    await testContext.databaseClient.db.delete(oneTimeTokens);
     await testContext.databaseClient.db.delete(users);
     await testContext.databaseClient.close();
   });

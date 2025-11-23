@@ -34,6 +34,7 @@ describe('LogoutUserAction', () => {
       tokenService,
       passwordService,
       userSessionRepository,
+      testContext.config,
     );
     logoutUserAction = new LogoutUserAction(userSessionRepository, tokenService);
 

@@ -4,7 +4,7 @@ import { IdService } from '../../../../common/id/idService.ts';
 import type { DatabaseClient } from '../../../../infrastructure/database/databaseClient.ts';
 import { users } from '../../../../infrastructure/database/schema.ts';
 import type { Transaction } from '../../../../infrastructure/database/transaction.ts';
-import type { CreateUserData, UserRepository } from '../../domain/repositories/userRepository.ts';
+import type { CreateUserData, UpdateUserData, UserRepository } from '../../domain/repositories/userRepository.ts';
 import type { User } from '../../domain/types/user.ts';
 
 export class UserRepositoryImpl implements UserRepository {
@@ -22,6 +22,7 @@ export class UserRepositoryImpl implements UserRepository {
         name: userData.name,
         email: userData.email,
         password: userData.password,
+        isEmailVerified: userData.isEmailVerified ?? false,
       })
       .returning();
 
@@ -56,6 +57,12 @@ export class UserRepositoryImpl implements UserRepository {
     await this.databaseClient.db.delete(users).where(eq(users.id, id));
   }
 
+  public async update(id: string, data: UpdateUserData, tx?: Transaction): Promise<void> {
+    const db = tx ? tx : this.databaseClient.db;
+
+    await db.update(users).set(data).where(eq(users.id, id));
+  }
+
   public async updatePassword(id: string, password: string, tx?: Transaction): Promise<void> {
     const db = tx ? tx : this.databaseClient.db;
 
@@ -68,6 +75,7 @@ export class UserRepositoryImpl implements UserRepository {
       name: dbUser.name,
       email: dbUser.email,
       password: dbUser.password,
+      isEmailVerified: dbUser.isEmailVerified,
       createdAt: dbUser.createdAt,
     };
 

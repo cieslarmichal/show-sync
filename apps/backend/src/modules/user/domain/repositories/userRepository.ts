@@ -5,6 +5,11 @@ export interface CreateUserData {
   readonly name: string;
   readonly email: string;
   readonly password: string;
+  readonly isEmailVerified?: boolean;
+}
+
+export interface UpdateUserData {
+  readonly isEmailVerified?: boolean;
 }
 
 export interface UserRepository {
@@ -12,5 +17,6 @@ export interface UserRepository {
   findById(id: string, tx?: Transaction): Promise<User | null>;
   findByEmail(email: string, tx?: Transaction): Promise<User | null>;
   delete(id: string): Promise<void>;
+  update(id: string, data: UpdateUserData, tx?: Transaction): Promise<void>;
   updatePassword(id: string, password: string, tx?: Transaction): Promise<void>;
 }

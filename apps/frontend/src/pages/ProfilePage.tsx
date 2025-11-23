@@ -331,6 +331,17 @@ export default function ProfilePage() {
                             </FormItem>
                           )}
                         />
+
+                        {/* Password requirements */}
+                        <div className="bg-muted/50 rounded-md p-4 space-y-2">
+                          <p className="text-xs font-medium text-foreground">Your password must include:</p>
+                          <ul className="text-xs text-muted-foreground space-y-1 list-disc list-inside">
+                            <li>At least 8 characters</li>
+                            <li>Uppercase and lowercase letters</li>
+                            <li>At least one number</li>
+                            <li>At least one special character (e.g., !@#$%^&*)</li>
+                          </ul>
+                        </div>
                         <DialogFooter>
                           <DialogClose asChild>
                             <Button
