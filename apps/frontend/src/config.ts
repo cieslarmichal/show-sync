@@ -5,12 +5,12 @@ const rawEnv = import.meta.env.MODE;
 
 const backendUrl = rawEnv === 'production' ? 'https://api.show-sync.com' : 'http://localhost:5000';
 
-// const emailVerificationEnabled = rawEnv === 'testing' ? false : true;
+const emailVerificationEnabled = rawEnv === 'testing' ? false : true;
 
 const appConfig = {
   backendUrl: import.meta.env.VITE_BACKEND_URL || backendUrl,
   emailVerification: {
-    enabled: false,
+    enabled: emailVerificationEnabled,
   },
   watchroom: {
     maxParticipants: 6,
