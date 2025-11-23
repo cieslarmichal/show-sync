@@ -82,6 +82,7 @@ export default function RegisterPage() {
                   message="We've sent you a verification email. Click the link in the email to activate your account."
                   buttonText="Go to Sign In"
                   onButtonClick={() => navigate(signInUrl)}
+                  buttonTestId="back-to-sign-in-button"
                 />
                 <div className="pt-2 border-t border-border">
                   <p className="text-sm text-muted-foreground text-center">
@@ -111,6 +112,7 @@ export default function RegisterPage() {
                 buttonText="Go to Sign In"
                 onButtonClick={() => navigate(signInUrl)}
                 icon="check"
+                buttonTestId="back-to-sign-in-button"
               />
             )}
           </div>

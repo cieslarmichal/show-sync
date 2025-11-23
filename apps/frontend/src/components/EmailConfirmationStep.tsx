@@ -7,6 +7,7 @@ interface EmailConfirmationStepProps {
   buttonText: string;
   onButtonClick: () => void;
   icon?: 'email' | 'check';
+  buttonTestId?: string;
 }
 
 export default function EmailConfirmationStep({
@@ -15,6 +16,7 @@ export default function EmailConfirmationStep({
   buttonText,
   onButtonClick,
   icon = 'email',
+  buttonTestId,
 }: EmailConfirmationStepProps) {
   return (
     <div className="space-y-6">
@@ -34,6 +36,7 @@ export default function EmailConfirmationStep({
       <Button
         onClick={onButtonClick}
         className="w-full h-12 rounded-xl font-semibold text-base shadow-lg hover:shadow-xl transition-all"
+        data-testid={buttonTestId}
       >
         {buttonText}
       </Button>
