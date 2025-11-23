@@ -111,6 +111,7 @@ describe('Footer', () => {
       email: 'test@example.com',
       name: 'Test User',
       createdAt: new Date().toISOString(),
+      isEmailVerified: true,
     };
     renderFooter(userData);
 
@@ -152,6 +153,7 @@ describe('Footer', () => {
       email: 'test@example.com',
       name: 'Test User',
       createdAt: new Date().toISOString(),
+      isEmailVerified: true,
     };
     renderFooter(userData);
 
@@ -165,6 +167,7 @@ describe('Footer', () => {
       email: 'test@example.com',
       name: 'Test User',
       createdAt: new Date().toISOString(),
+      isEmailVerified: true,
     };
     renderFooter(userData);
 

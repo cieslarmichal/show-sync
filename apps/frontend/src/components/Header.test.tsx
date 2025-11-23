@@ -90,6 +90,7 @@ describe('Header', () => {
       email: 'test@example.com',
       name: 'Test User',
       createdAt: new Date().toISOString(),
+      isEmailVerified: true,
     };
     renderHeader(userData, true);
 
@@ -104,6 +105,7 @@ describe('Header', () => {
       email: 'test@example.com',
       name: 'Test User',
       createdAt: new Date().toISOString(),
+      isEmailVerified: true,
     };
     renderHeader(userData, true);
 
@@ -127,6 +129,7 @@ describe('Header', () => {
       email: 'test@example.com',
       name: 'Test User',
       createdAt: new Date().toISOString(),
+      isEmailVerified: true,
     };
     renderHeader(userData, true);
 
@@ -147,6 +150,7 @@ describe('Header', () => {
       email: 'test@example.com',
       name: 'Test User',
       createdAt: new Date().toISOString(),
+      isEmailVerified: true,
     };
     renderHeader(userData, true);
 
@@ -164,6 +168,7 @@ describe('Header', () => {
       email: 'test@example.com',
       name: 'Test User',
       createdAt: new Date().toISOString(),
+      isEmailVerified: true,
     };
     renderHeader(userData, true);
 
@@ -187,6 +192,7 @@ describe('Header', () => {
       email: 'test@example.com',
       name: 'Test User',
       createdAt: new Date().toISOString(),
+      isEmailVerified: true,
     };
     renderHeader(userData, true);
 
@@ -210,6 +216,7 @@ describe('Header', () => {
       email: 'test@example.com',
       name: 'Test User',
       createdAt: new Date().toISOString(),
+      isEmailVerified: true,
     };
     renderHeader(userData, true);
 
@@ -233,6 +240,7 @@ describe('Header', () => {
       email: 'test@example.com',
       name: 'Test User',
       createdAt: new Date().toISOString(),
+      isEmailVerified: true,
     };
     renderHeader(userData, true);
 
@@ -256,6 +264,7 @@ describe('Header', () => {
       email: '',
       name: 'Test User',
       createdAt: new Date().toISOString(),
+      isEmailVerified: true,
     };
     renderHeader(userData, true);
 
