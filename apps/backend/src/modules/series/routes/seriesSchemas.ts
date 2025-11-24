@@ -1,6 +1,8 @@
 import { Type, type Static } from '@fastify/type-provider-typebox';
 
-export const preferenceLevelSchema = Type.Union([Type.Literal('like'), Type.Literal('love')]);
+export const seriesRatingSchema = Type.Union([Type.Literal('like'), Type.Literal('love'), Type.Literal('dislike')]);
+
+export const watchlistTypeSchema = Type.Union([Type.Literal('notInterested'), Type.Literal('wantToWatch')]);
 
 export const seriesSchema = Type.Object({
   id: Type.Number(),
@@ -58,13 +60,13 @@ export const seriesParamsSchema = Type.Object({
   seriesTmdbId: Type.Number({ minimum: 1 }),
 });
 
-export const favoriteSeriesSchema = Type.Object({
+export const seriesRatingResponseSchema = Type.Object({
   seriesTmdbId: Type.Number(),
-  preferenceLevel: preferenceLevelSchema,
+  rating: seriesRatingSchema,
 });
 
-export const favoriteSeriesListSchema = Type.Object({
-  data: Type.Array(favoriteSeriesSchema),
+export const seriesRatingListSchema = Type.Object({
+  data: Type.Array(seriesRatingResponseSchema),
   metadata: Type.Object({
     page: Type.Number(),
     pageSize: Type.Number(),
@@ -72,12 +74,13 @@ export const favoriteSeriesListSchema = Type.Object({
   }),
 });
 
-export const ignoredSeriesSchema = Type.Object({
+export const seriesWatchlistResponseSchema = Type.Object({
   seriesTmdbId: Type.Number(),
+  type: watchlistTypeSchema,
 });
 
-export const ignoredSeriesListSchema = Type.Object({
-  data: Type.Array(ignoredSeriesSchema),
+export const seriesWatchlistListSchema = Type.Object({
+  data: Type.Array(seriesWatchlistResponseSchema),
   metadata: Type.Object({
     page: Type.Number(),
     pageSize: Type.Number(),
@@ -85,40 +88,42 @@ export const ignoredSeriesListSchema = Type.Object({
   }),
 });
 
-export const addFavoriteSeriesRequestSchema = Type.Object({
+export const addSeriesRatingRequestSchema = Type.Object({
   seriesTmdbId: Type.Number(),
-  preferenceLevel: preferenceLevelSchema,
+  rating: seriesRatingSchema,
 });
 
-export const favoriteSeriesParamsSchema = Type.Object({
-  seriesTmdbId: Type.Number(),
-});
-
-export const updateFavoriteSeriesPreferenceRequestSchema = Type.Object({
-  preferenceLevel: preferenceLevelSchema,
-});
-
-export const updateFavoriteSeriesPreferenceParamsSchema = Type.Object({
+export const seriesRatingParamsSchema = Type.Object({
   seriesTmdbId: Type.Number(),
 });
 
-export const favoriteSeriesQuerySchema = Type.Object({
+export const updateSeriesRatingRequestSchema = Type.Object({
+  rating: seriesRatingSchema,
+});
+
+export const updateSeriesRatingParamsSchema = Type.Object({
+  seriesTmdbId: Type.Number(),
+});
+
+export const seriesRatingQuerySchema = Type.Object({
   page: Type.Optional(Type.Number({ minimum: 1 })),
   pageSize: Type.Optional(Type.Number({ minimum: 1, maximum: 100 })),
-  preferenceLevel: Type.Optional(preferenceLevelSchema),
+  rating: Type.Optional(seriesRatingSchema),
 });
 
-export const addIgnoredSeriesRequestSchema = Type.Object({
+export const addSeriesWatchlistRequestSchema = Type.Object({
+  seriesTmdbId: Type.Number(),
+  type: watchlistTypeSchema,
+});
+
+export const seriesWatchlistParamsSchema = Type.Object({
   seriesTmdbId: Type.Number(),
 });
 
-export const ignoredSeriesParamsSchema = Type.Object({
-  seriesTmdbId: Type.Number(),
-});
-
-export const ignoredSeriesQuerySchema = Type.Object({
+export const seriesWatchlistQuerySchema = Type.Object({
   page: Type.Optional(Type.Number({ minimum: 1 })),
   pageSize: Type.Optional(Type.Number({ minimum: 1, maximum: 100 })),
+  type: Type.Optional(watchlistTypeSchema),
 });
 
 export const batchSeriesDetailsQuerySchema = Type.Object({
@@ -133,23 +138,23 @@ export const batchSeriesDetailsResponseSchema = Type.Object({
 export type SeriesDto = Static<typeof seriesSchema>;
 export type SeriesDetailsDto = Static<typeof seriesDetailsSchema>;
 export type SeriesExternalIdsDto = Static<typeof seriesExternalIdsSchema>;
-export type FavoriteSeriesDto = Static<typeof favoriteSeriesSchema>;
-export type IgnoredSeriesDto = Static<typeof ignoredSeriesSchema>;
+export type SeriesRatingDto = Static<typeof seriesRatingResponseSchema>;
+export type SeriesWatchlistDto = Static<typeof seriesWatchlistResponseSchema>;
 
 export type SeriesSearchResult = Static<typeof seriesSearchResultSchema>;
 export type SeriesSearchQuery = Static<typeof seriesSearchQuerySchema>;
 export type SeriesParams = Static<typeof seriesParamsSchema>;
 
-export type FavoriteSeriesListResponse = Static<typeof favoriteSeriesListSchema>;
-export type IgnoredSeriesListResponse = Static<typeof ignoredSeriesListSchema>;
+export type SeriesRatingListResponse = Static<typeof seriesRatingListSchema>;
+export type SeriesWatchlistListResponse = Static<typeof seriesWatchlistListSchema>;
 
-export type AddFavoriteSeriesRequest = Static<typeof addFavoriteSeriesRequestSchema>;
-export type FavoriteSeriesParams = Static<typeof favoriteSeriesParamsSchema>;
-export type UpdateFavoriteSeriesPreferenceRequest = Static<typeof updateFavoriteSeriesPreferenceRequestSchema>;
-export type UpdateFavoriteSeriesPreferenceParams = Static<typeof updateFavoriteSeriesPreferenceParamsSchema>;
-export type FavoriteSeriesQuery = Static<typeof favoriteSeriesQuerySchema>;
-export type AddIgnoredSeriesRequest = Static<typeof addIgnoredSeriesRequestSchema>;
-export type IgnoredSeriesParams = Static<typeof ignoredSeriesParamsSchema>;
-export type IgnoredSeriesQuery = Static<typeof ignoredSeriesQuerySchema>;
+export type AddSeriesRatingRequest = Static<typeof addSeriesRatingRequestSchema>;
+export type SeriesRatingParams = Static<typeof seriesRatingParamsSchema>;
+export type UpdateSeriesRatingRequest = Static<typeof updateSeriesRatingRequestSchema>;
+export type UpdateSeriesRatingParams = Static<typeof updateSeriesRatingParamsSchema>;
+export type SeriesRatingQuery = Static<typeof seriesRatingQuerySchema>;
+export type AddSeriesWatchlistRequest = Static<typeof addSeriesWatchlistRequestSchema>;
+export type SeriesWatchlistParams = Static<typeof seriesWatchlistParamsSchema>;
+export type SeriesWatchlistQuery = Static<typeof seriesWatchlistQuerySchema>;
 export type BatchSeriesDetailsQuery = Static<typeof batchSeriesDetailsQuerySchema>;
 export type BatchSeriesDetailsResponse = Static<typeof batchSeriesDetailsResponseSchema>;

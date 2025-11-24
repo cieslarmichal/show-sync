@@ -5,15 +5,8 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1763051339383,
-      "tag": "0000_third_ricochet",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "7",
-      "when": 1763899087823,
-      "tag": "0001_shallow_kitty_pryde",
+      "when": 1764026416082,
+      "tag": "0000_small_tarot",
       "breakpoints": true
     }
   ]

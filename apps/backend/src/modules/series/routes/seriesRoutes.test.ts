@@ -7,10 +7,10 @@ import { closeTestServer, createTestServerContext } from '../../../../tests/help
 import type { DatabaseClient } from '../../../infrastructure/database/databaseClient.ts';
 
 import type {
-  FavoriteSeriesListResponse,
-  FavoriteSeriesDto,
-  IgnoredSeriesListResponse,
-  IgnoredSeriesDto,
+  SeriesRatingListResponse,
+  SeriesRatingDto,
+  SeriesWatchlistListResponse,
+  SeriesWatchlistDto,
 } from './seriesSchemas.ts';
 
 type LoginResponse = {
@@ -64,13 +64,13 @@ describe('Series Routes Integration Tests', () => {
     return loginBody.accessToken;
   }
 
-  describe('GET /series/favorites', () => {
-    it('should return empty list for user with no favorites', async () => {
+  describe('GET /series/ratings', () => {
+    it('should return empty list for user with no ratings', async () => {
       const accessToken = await registerAndLogin();
 
       const response = await server.inject({
         method: 'GET',
-        url: '/series/favorites',
+        url: '/series/ratings',
         headers: {
           authorization: `Bearer ${accessToken}`,
         },
@@ -78,7 +78,7 @@ describe('Series Routes Integration Tests', () => {
 
       expect(response.statusCode).toBe(200);
 
-      const body = response.json<FavoriteSeriesListResponse>();
+      const body = response.json<SeriesRatingListResponse>();
 
       expect(body.data).toHaveLength(0);
       expect(body.metadata).toMatchObject({
@@ -88,35 +88,33 @@ describe('Series Routes Integration Tests', () => {
       });
     });
 
-    it('should return paginated list of favorite series', async () => {
+    it('should return paginated list of rating series', async () => {
       const accessToken = await registerAndLogin();
 
       const seriesTmdbId1 = 12345;
       const seriesTmdbId2 = 67890;
 
-      // Add favorites
       await server.inject({
         method: 'POST',
-        url: '/series/favorites',
+        url: '/series/ratings',
         headers: {
           authorization: `Bearer ${accessToken}`,
         },
-        payload: { seriesTmdbId: seriesTmdbId1, preferenceLevel: 'like' },
+        payload: { seriesTmdbId: seriesTmdbId1, rating: 'like' },
       });
 
       await server.inject({
         method: 'POST',
-        url: '/series/favorites',
+        url: '/series/ratings',
         headers: {
           authorization: `Bearer ${accessToken}`,
         },
-        payload: { seriesTmdbId: seriesTmdbId2, preferenceLevel: 'like' },
+        payload: { seriesTmdbId: seriesTmdbId2, rating: 'like' },
       });
 
-      // Get favorites
       const response = await server.inject({
         method: 'GET',
-        url: '/series/favorites',
+        url: '/series/ratings',
         headers: {
           authorization: `Bearer ${accessToken}`,
         },
@@ -124,7 +122,7 @@ describe('Series Routes Integration Tests', () => {
 
       expect(response.statusCode).toBe(200);
 
-      const body = response.json<FavoriteSeriesListResponse>();
+      const body = response.json<SeriesRatingListResponse>();
 
       expect(body.data).toHaveLength(2);
       expect(body.metadata.total).toBe(2);
@@ -135,67 +133,67 @@ describe('Series Routes Integration Tests', () => {
     it('should return 401 when not authenticated', async () => {
       const response = await server.inject({
         method: 'GET',
-        url: '/series/favorites',
+        url: '/series/ratings',
       });
 
       expect(response.statusCode).toBe(401);
     });
   });
 
-  describe('POST /series/favorites', () => {
-    it('should add series to favorites', async () => {
+  describe('POST /series/ratings', () => {
+    it('should add series to ratings', async () => {
       const accessToken = await registerAndLogin();
 
       const seriesTmdbId = 12345;
 
       const response = await server.inject({
         method: 'POST',
-        url: '/series/favorites',
+        url: '/series/ratings',
         headers: {
           authorization: `Bearer ${accessToken}`,
         },
         payload: {
           seriesTmdbId,
-          preferenceLevel: 'like',
+          rating: 'like',
         },
       });
 
       expect(response.statusCode).toBe(201);
 
-      const body = response.json<FavoriteSeriesDto>();
+      const body = response.json<SeriesRatingDto>();
 
       expect(body.seriesTmdbId).toBe(seriesTmdbId);
-      expect(body.preferenceLevel).toBe('like');
+      expect(body.rating).toBe('like');
     });
 
-    it('should return 409 when series is already in favorites', async () => {
+    it('should return 409 when series is already in ratings', async () => {
       const accessToken = await registerAndLogin();
 
       const seriesTmdbId = 12345;
 
-      // Add to favorites first time
+      // Add to ratings first time
       await server.inject({
         method: 'POST',
-        url: '/series/favorites',
+        url: '/series/ratings',
         headers: {
           authorization: `Bearer ${accessToken}`,
         },
         payload: {
           seriesTmdbId,
-          preferenceLevel: 'like',
+          rating: 'like',
         },
       });
 
       // Try to add again
       const response = await server.inject({
         method: 'POST',
-        url: '/series/favorites',
+        url: '/series/ratings',
         headers: {
           authorization: `Bearer ${accessToken}`,
         },
         payload: {
           seriesTmdbId,
-          preferenceLevel: 'like',
+          rating: 'like',
         },
       });
 
@@ -205,10 +203,10 @@ describe('Series Routes Integration Tests', () => {
     it('should return 401 when not authenticated', async () => {
       const response = await server.inject({
         method: 'POST',
-        url: '/series/favorites',
+        url: '/series/ratings',
         payload: {
           seriesTmdbId: 12345,
-          preferenceLevel: 'like',
+          rating: 'like',
         },
       });
 
@@ -216,29 +214,29 @@ describe('Series Routes Integration Tests', () => {
     });
   });
 
-  describe('DELETE /series/favorites/:seriesTmdbId', () => {
-    it('should remove series from favorites', async () => {
+  describe('DELETE /series/ratings/:seriesTmdbId', () => {
+    it('should remove series from ratings', async () => {
       const accessToken = await registerAndLogin();
 
       const seriesTmdbId = 12345;
 
-      // Add favorite first
+      // Add rating first
       await server.inject({
         method: 'POST',
-        url: '/series/favorites',
+        url: '/series/ratings',
         headers: {
           authorization: `Bearer ${accessToken}`,
         },
         payload: {
           seriesTmdbId,
-          preferenceLevel: 'like',
+          rating: 'like',
         },
       });
 
       // Remove favorite
       const response = await server.inject({
         method: 'DELETE',
-        url: `/series/favorites/${String(seriesTmdbId)}`,
+        url: `/series/ratings/${String(seriesTmdbId)}`,
         headers: {
           authorization: `Bearer ${accessToken}`,
         },
@@ -249,17 +247,17 @@ describe('Series Routes Integration Tests', () => {
       // Verify it was removed
       const getResponse = await server.inject({
         method: 'GET',
-        url: '/series/favorites',
+        url: '/series/ratings',
         headers: {
           authorization: `Bearer ${accessToken}`,
         },
       });
 
-      const body = getResponse.json<FavoriteSeriesListResponse>();
+      const body = getResponse.json<SeriesRatingListResponse>();
       expect(body.data).toHaveLength(0);
     });
 
-    it('should return 404 when series is not in favorites', async () => {
+    it('should return 404 when series is not in ratings', async () => {
       const accessToken = await registerAndLogin();
 
       const seriesTmdbId = 12345;
@@ -267,7 +265,7 @@ describe('Series Routes Integration Tests', () => {
       // Try to remove without adding first
       const response = await server.inject({
         method: 'DELETE',
-        url: `/series/favorites/${String(seriesTmdbId)}`,
+        url: `/series/ratings/${String(seriesTmdbId)}`,
         headers: {
           authorization: `Bearer ${accessToken}`,
         },
@@ -279,7 +277,7 @@ describe('Series Routes Integration Tests', () => {
     it('should return 401 when not authenticated', async () => {
       const response = await server.inject({
         method: 'DELETE',
-        url: '/series/favorites/12345',
+        url: '/series/ratings/12345',
       });
 
       expect(response.statusCode).toBe(401);
@@ -287,12 +285,12 @@ describe('Series Routes Integration Tests', () => {
   });
 
   describe('GET /series/ignored', () => {
-    it('should return empty list for user with no ignored series', async () => {
+    it('should return empty list for user with no watchlist', async () => {
       const accessToken = await registerAndLogin();
 
       const response = await server.inject({
         method: 'GET',
-        url: '/series/ignored',
+        url: '/series/watchlist',
         headers: {
           authorization: `Bearer ${accessToken}`,
         },
@@ -300,7 +298,7 @@ describe('Series Routes Integration Tests', () => {
 
       expect(response.statusCode).toBe(200);
 
-      const body = response.json<IgnoredSeriesListResponse>();
+      const body = response.json<SeriesWatchlistListResponse>();
 
       expect(body.data).toHaveLength(0);
       expect(body.metadata).toMatchObject({
@@ -310,35 +308,35 @@ describe('Series Routes Integration Tests', () => {
       });
     });
 
-    it('should return paginated list of ignored series', async () => {
+    it('should return paginated list of watchlist', async () => {
       const accessToken = await registerAndLogin();
 
       const seriesTmdbId1 = 12345;
       const seriesTmdbId2 = 67890;
 
-      // Add ignored series
+      // Add watchlist
       await server.inject({
         method: 'POST',
-        url: '/series/ignored',
+        url: '/series/watchlist',
         headers: {
           authorization: `Bearer ${accessToken}`,
         },
-        payload: { seriesTmdbId: seriesTmdbId1 },
+        payload: { seriesTmdbId: seriesTmdbId1, type: 'notInterested' },
       });
 
       await server.inject({
         method: 'POST',
-        url: '/series/ignored',
+        url: '/series/watchlist',
         headers: {
           authorization: `Bearer ${accessToken}`,
         },
-        payload: { seriesTmdbId: seriesTmdbId2 },
+        payload: { seriesTmdbId: seriesTmdbId2, type: 'wantToWatch' },
       });
 
-      // Get ignored series
+      // Get watchlist
       const response = await server.inject({
         method: 'GET',
-        url: '/series/ignored',
+        url: '/series/watchlist',
         headers: {
           authorization: `Bearer ${accessToken}`,
         },
@@ -346,7 +344,7 @@ describe('Series Routes Integration Tests', () => {
 
       expect(response.statusCode).toBe(200);
 
-      const body = response.json<IgnoredSeriesListResponse>();
+      const body = response.json<SeriesWatchlistListResponse>();
 
       expect(body.data).toHaveLength(2);
       expect(body.metadata.total).toBe(2);
@@ -357,63 +355,67 @@ describe('Series Routes Integration Tests', () => {
     it('should return 401 when not authenticated', async () => {
       const response = await server.inject({
         method: 'GET',
-        url: '/series/ignored',
+        url: '/series/watchlist',
       });
 
       expect(response.statusCode).toBe(401);
     });
   });
 
-  describe('POST /series/ignored', () => {
-    it('should add series to ignored list', async () => {
+  describe('POST /series/watchlist', () => {
+    it('should add series to watchlist', async () => {
       const accessToken = await registerAndLogin();
 
       const seriesTmdbId = 12345;
 
       const response = await server.inject({
         method: 'POST',
-        url: '/series/ignored',
+        url: '/series/watchlist',
         headers: {
           authorization: `Bearer ${accessToken}`,
         },
         payload: {
           seriesTmdbId,
+          type: 'notInterested',
         },
       });
 
       expect(response.statusCode).toBe(201);
 
-      const body = response.json<IgnoredSeriesDto>();
+      const body = response.json<SeriesWatchlistDto>();
 
       expect(body.seriesTmdbId).toBe(seriesTmdbId);
+      expect(body.type).toBe('notInterested');
     });
 
-    it('should return 409 when series is already ignored', async () => {
+    it('should return 409 when series is already in watchlist', async () => {
       const accessToken = await registerAndLogin();
 
       const seriesTmdbId = 12345;
 
-      // Add to ignored first time
+      // Add to watchlist first time
       await server.inject({
         method: 'POST',
-        url: '/series/ignored',
+        url: '/series/watchlist',
         headers: {
           authorization: `Bearer ${accessToken}`,
         },
         payload: {
           seriesTmdbId,
+          type: 'wantToWatch',
         },
       });
 
       // Try to add again
       const response = await server.inject({
         method: 'POST',
-        url: '/series/ignored',
+        url: '/series/watchlist',
         headers: {
           authorization: `Bearer ${accessToken}`,
         },
         payload: {
           seriesTmdbId,
+          type: 'notInterested',
         },
       });
 
@@ -423,9 +425,10 @@ describe('Series Routes Integration Tests', () => {
     it('should return 401 when not authenticated', async () => {
       const response = await server.inject({
         method: 'POST',
-        url: '/series/ignored',
+        url: '/series/watchlist',
         payload: {
           seriesTmdbId: 12345,
+          type: 'notInterested',
         },
       });
 
@@ -433,28 +436,29 @@ describe('Series Routes Integration Tests', () => {
     });
   });
 
-  describe('DELETE /series/ignored/:seriesTmdbId', () => {
-    it('should remove series from ignored list', async () => {
+  describe('DELETE /series/watchlist/:seriesTmdbId', () => {
+    it('should remove series from watchlist', async () => {
       const accessToken = await registerAndLogin();
 
       const seriesTmdbId = 12345;
 
-      // Add to ignored first
+      // Add to watchlist first
       await server.inject({
         method: 'POST',
-        url: '/series/ignored',
+        url: '/series/watchlist',
         headers: {
           authorization: `Bearer ${accessToken}`,
         },
         payload: {
           seriesTmdbId,
+          type: 'notInterested',
         },
       });
 
-      // Remove from ignored
+      // Remove from watchlist
       const response = await server.inject({
         method: 'DELETE',
-        url: `/series/ignored/${String(seriesTmdbId)}`,
+        url: `/series/watchlist/${String(seriesTmdbId)}`,
         headers: {
           authorization: `Bearer ${accessToken}`,
         },
@@ -465,17 +469,17 @@ describe('Series Routes Integration Tests', () => {
       // Verify it was removed
       const getResponse = await server.inject({
         method: 'GET',
-        url: '/series/ignored',
+        url: '/series/watchlist',
         headers: {
           authorization: `Bearer ${accessToken}`,
         },
       });
 
-      const body = getResponse.json<IgnoredSeriesListResponse>();
+      const body = getResponse.json<SeriesWatchlistListResponse>();
       expect(body.data).toHaveLength(0);
     });
 
-    it('should return 404 when series is not in ignored list', async () => {
+    it('should return 404 when series is not in watchlist', async () => {
       const accessToken = await registerAndLogin();
 
       const seriesTmdbId = 12345;
@@ -483,7 +487,7 @@ describe('Series Routes Integration Tests', () => {
       // Try to remove without adding first
       const response = await server.inject({
         method: 'DELETE',
-        url: `/series/ignored/${String(seriesTmdbId)}`,
+        url: `/series/watchlist/${String(seriesTmdbId)}`,
         headers: {
           authorization: `Bearer ${accessToken}`,
         },
@@ -495,29 +499,29 @@ describe('Series Routes Integration Tests', () => {
     it('should return 401 when not authenticated', async () => {
       const response = await server.inject({
         method: 'DELETE',
-        url: '/series/ignored/12345',
+        url: '/series/watchlist/12345',
       });
 
       expect(response.statusCode).toBe(401);
     });
   });
 
-  describe('PATCH /series/favorites/:seriesTmdbId/preference', () => {
-    it('should update preference level from like to love', async () => {
+  describe('PATCH /series/ratings/:seriesTmdbId', () => {
+    it('should update rating from like to love', async () => {
       const accessToken = await registerAndLogin();
 
       const seriesTmdbId = 12345;
 
-      // Add favorite with 'like' preference
+      // Add rating with 'like' rating
       const addResponse = await server.inject({
         method: 'POST',
-        url: '/series/favorites',
+        url: '/series/ratings',
         headers: {
           authorization: `Bearer ${accessToken}`,
         },
         payload: {
           seriesTmdbId,
-          preferenceLevel: 'like',
+          rating: 'like',
         },
       });
 
@@ -526,72 +530,72 @@ describe('Series Routes Integration Tests', () => {
       // Update to 'love'
       const updateResponse = await server.inject({
         method: 'PATCH',
-        url: `/series/favorites/${String(seriesTmdbId)}/preference`,
+        url: `/series/ratings/${String(seriesTmdbId)}`,
         headers: {
           authorization: `Bearer ${accessToken}`,
         },
         payload: {
-          preferenceLevel: 'love',
+          rating: 'love',
         },
       });
 
       expect(updateResponse.statusCode).toBe(200);
 
-      const body = updateResponse.json<FavoriteSeriesDto>();
+      const body = updateResponse.json<SeriesRatingDto>();
       expect(body.seriesTmdbId).toBe(seriesTmdbId);
-      expect(body.preferenceLevel).toBe('love');
+      expect(body.rating).toBe('love');
     });
 
-    it('should update preference level from love to like', async () => {
+    it('should update rating from love to like', async () => {
       const accessToken = await registerAndLogin();
 
       const seriesTmdbId = 67890;
 
-      // Add favorite with 'love' preference
+      // Add rating with 'love' rating
       await server.inject({
         method: 'POST',
-        url: '/series/favorites',
+        url: '/series/ratings',
         headers: {
           authorization: `Bearer ${accessToken}`,
         },
         payload: {
           seriesTmdbId,
-          preferenceLevel: 'love',
+          rating: 'love',
         },
       });
 
       // Update to 'like'
       const updateResponse = await server.inject({
         method: 'PATCH',
-        url: `/series/favorites/${String(seriesTmdbId)}/preference`,
+        url: `/series/ratings/${String(seriesTmdbId)}`,
         headers: {
           authorization: `Bearer ${accessToken}`,
         },
         payload: {
-          preferenceLevel: 'like',
+          rating: 'like',
         },
       });
 
       expect(updateResponse.statusCode).toBe(200);
 
-      const body = updateResponse.json<FavoriteSeriesDto>();
+      const body = updateResponse.json<SeriesRatingDto>();
       expect(body.seriesTmdbId).toBe(seriesTmdbId);
-      expect(body.preferenceLevel).toBe('like');
+      expect(body.rating).toBe('like');
     });
 
-    it('should return 404 when favorite series does not exist', async () => {
+    it('should return 404 when rating series does not exist', async () => {
       const accessToken = await registerAndLogin();
 
       const seriesTmdbId = 99999;
 
       const response = await server.inject({
         method: 'PATCH',
-        url: `/series/favorites/${String(seriesTmdbId)}/preference`,
+        url: `/series/ratings/${String(seriesTmdbId)}`,
         headers: {
           authorization: `Bearer ${accessToken}`,
         },
         payload: {
-          preferenceLevel: 'love',
+          rating: 'love',
         },
       });
 
@@ -601,42 +605,42 @@ describe('Series Routes Integration Tests', () => {
     it('should return 401 when not authenticated', async () => {
       const response = await server.inject({
         method: 'PATCH',
-        url: '/series/favorites/12345/preference',
+        url: '/series/ratings/12345',
         payload: {
-          preferenceLevel: 'love',
+          rating: 'love',
         },
       });
 
       expect(response.statusCode).toBe(401);
     });
 
-    it('should return 400 for invalid preference level', async () => {
+    it('should return 400 for invalid rating', async () => {
       const accessToken = await registerAndLogin();
 
       const seriesTmdbId = 12345;
 
-      // Add favorite first
+      // Add rating first
       await server.inject({
         method: 'POST',
-        url: '/series/favorites',
+        url: '/series/ratings',
         headers: {
           authorization: `Bearer ${accessToken}`,
         },
         payload: {
           seriesTmdbId,
-          preferenceLevel: 'like',
+          rating: 'like',
         },
       });
 
-      // Try to update with invalid preference
+      // Try to update with invalid rating
       const response = await server.inject({
         method: 'PATCH',
-        url: `/series/favorites/${String(seriesTmdbId)}/preference`,
+        url: `/series/ratings/${String(seriesTmdbId)}`,
         headers: {
           authorization: `Bearer ${accessToken}`,
         },
         payload: {
-          preferenceLevel: 'invalid',
+          rating: 'invalid',
         },
       });
 
@@ -644,51 +648,51 @@ describe('Series Routes Integration Tests', () => {
     });
   });
 
-  describe('GET /series/favorites with preferenceLevel filter', () => {
-    it('should filter favorites by love preference', async () => {
+  describe('GET /series/ratings with rating filter', () => {
+    it('should filter ratings by love rating', async () => {
       const accessToken = await registerAndLogin();
 
-      // Add favorites with different preferences
+      // Add ratings with different ratings
       await server.inject({
         method: 'POST',
-        url: '/series/favorites',
+        url: '/series/ratings',
         headers: {
           authorization: `Bearer ${accessToken}`,
         },
         payload: {
           seriesTmdbId: 11111,
-          preferenceLevel: 'love',
+          rating: 'love',
         },
       });
 
       await server.inject({
         method: 'POST',
-        url: '/series/favorites',
+        url: '/series/ratings',
         headers: {
           authorization: `Bearer ${accessToken}`,
         },
         payload: {
           seriesTmdbId: 22222,
-          preferenceLevel: 'like',
+          rating: 'like',
         },
       });
 
       await server.inject({
         method: 'POST',
-        url: '/series/favorites',
+        url: '/series/ratings',
         headers: {
           authorization: `Bearer ${accessToken}`,
         },
         payload: {
           seriesTmdbId: 33333,
-          preferenceLevel: 'love',
+          rating: 'love',
         },
       });
 
-      // Get only loved favorites
+      // Get only loved ratings
       const response = await server.inject({
         method: 'GET',
-        url: '/series/favorites?preferenceLevel=love',
+        url: '/series/ratings?rating=love',
         headers: {
           authorization: `Bearer ${accessToken}`,
         },
@@ -696,45 +700,45 @@ describe('Series Routes Integration Tests', () => {
 
       expect(response.statusCode).toBe(200);
 
-      const body = response.json<FavoriteSeriesListResponse>();
+      const body = response.json<SeriesRatingListResponse>();
       expect(body.data).toHaveLength(2);
-      expect(body.data.every((f) => f.preferenceLevel === 'love')).toBe(true);
+      expect(body.data.every((f) => f.rating === 'love')).toBe(true);
       expect(body.data.map((f) => f.seriesTmdbId)).toContain(11111);
       expect(body.data.map((f) => f.seriesTmdbId)).toContain(33333);
     });
 
-    it('should filter favorites by like preference', async () => {
+    it('should filter ratings by like rating', async () => {
       const accessToken = await registerAndLogin();
 
-      // Add favorites with different preferences
+      // Add ratings with different ratings
       await server.inject({
         method: 'POST',
-        url: '/series/favorites',
+        url: '/series/ratings',
         headers: {
           authorization: `Bearer ${accessToken}`,
         },
         payload: {
           seriesTmdbId: 11111,
-          preferenceLevel: 'love',
+          rating: 'love',
         },
       });
 
       await server.inject({
         method: 'POST',
-        url: '/series/favorites',
+        url: '/series/ratings',
         headers: {
           authorization: `Bearer ${accessToken}`,
         },
         payload: {
           seriesTmdbId: 22222,
-          preferenceLevel: 'like',
+          rating: 'like',
         },
       });
 
-      // Get only liked favorites
+      // Get only liked ratings
       const response = await server.inject({
         method: 'GET',
-        url: '/series/favorites?preferenceLevel=like',
+        url: '/series/ratings?rating=like',
         headers: {
           authorization: `Bearer ${accessToken}`,
         },
@@ -742,44 +746,44 @@ describe('Series Routes Integration Tests', () => {
 
       expect(response.statusCode).toBe(200);
 
-      const body = response.json<FavoriteSeriesListResponse>();
+      const body = response.json<SeriesRatingListResponse>();
       expect(body.data).toHaveLength(1);
-      expect(body.data[0]?.preferenceLevel).toBe('like');
+      expect(body.data[0]?.rating).toBe('like');
       expect(body.data[0]?.seriesTmdbId).toBe(22222);
     });
 
-    it('should return all favorites when no filter is applied', async () => {
+    it('should return all ratings when no filter is applied', async () => {
       const accessToken = await registerAndLogin();
 
-      // Add favorites with different preferences
+      // Add ratings with different ratings
       await server.inject({
         method: 'POST',
-        url: '/series/favorites',
+        url: '/series/ratings',
         headers: {
           authorization: `Bearer ${accessToken}`,
         },
         payload: {
           seriesTmdbId: 11111,
-          preferenceLevel: 'love',
+          rating: 'love',
         },
       });
 
       await server.inject({
         method: 'POST',
-        url: '/series/favorites',
+        url: '/series/ratings',
         headers: {
           authorization: `Bearer ${accessToken}`,
         },
         payload: {
           seriesTmdbId: 22222,
-          preferenceLevel: 'like',
+          rating: 'like',
         },
       });
 
-      // Get all favorites
+      // Get all ratings
       const response = await server.inject({
         method: 'GET',
-        url: '/series/favorites',
+        url: '/series/ratings',
         headers: {
           authorization: `Bearer ${accessToken}`,
         },
@@ -787,62 +791,62 @@ describe('Series Routes Integration Tests', () => {
 
       expect(response.statusCode).toBe(200);
 
-      const body = response.json<FavoriteSeriesListResponse>();
+      const body = response.json<SeriesRatingListResponse>();
       expect(body.data).toHaveLength(2);
     });
   });
 
-  describe('POST /series/favorites with preferenceLevel', () => {
-    it('should create favorite with love preference', async () => {
+  describe('POST /series/ratings with rating', () => {
+    it('should create rating with love rating', async () => {
       const accessToken = await registerAndLogin();
 
       const response = await server.inject({
         method: 'POST',
-        url: '/series/favorites',
+        url: '/series/ratings',
         headers: {
           authorization: `Bearer ${accessToken}`,
         },
         payload: {
           seriesTmdbId: 12345,
-          preferenceLevel: 'love',
+          rating: 'love',
         },
       });
 
       expect(response.statusCode).toBe(201);
 
-      const body = response.json<FavoriteSeriesDto>();
+      const body = response.json<SeriesRatingDto>();
       expect(body.seriesTmdbId).toBe(12345);
-      expect(body.preferenceLevel).toBe('love');
+      expect(body.rating).toBe('love');
     });
 
-    it('should create favorite with like preference', async () => {
+    it('should create rating with like rating', async () => {
       const accessToken = await registerAndLogin();
 
       const response = await server.inject({
         method: 'POST',
-        url: '/series/favorites',
+        url: '/series/ratings',
         headers: {
           authorization: `Bearer ${accessToken}`,
         },
         payload: {
           seriesTmdbId: 67890,
-          preferenceLevel: 'like',
+          rating: 'like',
         },
       });
 
       expect(response.statusCode).toBe(201);
 
-      const body = response.json<FavoriteSeriesDto>();
+      const body = response.json<SeriesRatingDto>();
       expect(body.seriesTmdbId).toBe(67890);
-      expect(body.preferenceLevel).toBe('like');
+      expect(body.rating).toBe('like');
     });
 
-    it('should return 400 when preferenceLevel is not provided', async () => {
+    it('should return 400 when rating is not provided', async () => {
       const accessToken = await registerAndLogin();
 
       const response = await server.inject({
         method: 'POST',
-        url: '/series/favorites',
+        url: '/series/ratings',
         headers: {
           authorization: `Bearer ${accessToken}`,
         },

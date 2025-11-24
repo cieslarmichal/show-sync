@@ -45,19 +45,20 @@ CREATE TABLE "recommendations" (
 	"created_at" timestamp DEFAULT now() NOT NULL
 );
 --> statement-breakpoint
-CREATE TABLE "user_favorite_series" (
+CREATE TABLE "user_series_ratings" (
 	"id" uuid PRIMARY KEY NOT NULL,
 	"user_id" uuid NOT NULL,
 	"series_tmdb_id" integer NOT NULL,
-	"preference_level" varchar(16) NOT NULL,
-	CONSTRAINT "uq_user_favorite_series_user_series" UNIQUE("user_id","series_tmdb_id")
+	"rating" varchar(16) NOT NULL,
+	CONSTRAINT "uq_user_series_ratings_user_series" UNIQUE("user_id","series_tmdb_id")
 );
 --> statement-breakpoint
-CREATE TABLE "user_ignored_series" (
+CREATE TABLE "user_series_watchlist" (
 	"id" uuid PRIMARY KEY NOT NULL,
 	"user_id" uuid NOT NULL,
 	"series_tmdb_id" integer NOT NULL,
-	CONSTRAINT "uq_user_ignored_series_user_series" UNIQUE("user_id","series_tmdb_id")
+	"type" varchar(16) NOT NULL,
+	CONSTRAINT "uq_user_series_watchlist_user_series" UNIQUE("user_id","series_tmdb_id")
 );
 --> statement-breakpoint
 CREATE TABLE "user_sessions" (
@@ -78,6 +79,7 @@ CREATE TABLE "users" (
 	"name" varchar(64) NOT NULL,
 	"email" varchar(255) NOT NULL,
 	"password" text NOT NULL,
+	"is_email_verified" boolean DEFAULT false NOT NULL,
 	"created_at" timestamp DEFAULT now() NOT NULL,
 	CONSTRAINT "users_email_unique" UNIQUE("email")
 );
@@ -105,8 +107,8 @@ ALTER TABLE "recommendation_feedback" ADD CONSTRAINT "recommendation_feedback_us
 ALTER TABLE "recommendation_requests" ADD CONSTRAINT "recommendation_requests_watchroom_id_watchrooms_id_fk" FOREIGN KEY ("watchroom_id") REFERENCES "public"."watchrooms"("id") ON DELETE set null ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "recommendation_requests" ADD CONSTRAINT "recommendation_requests_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "recommendations" ADD CONSTRAINT "recommendations_recommendation_request_id_recommendation_requests_id_fk" FOREIGN KEY ("recommendation_request_id") REFERENCES "public"."recommendation_requests"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "user_favorite_series" ADD CONSTRAINT "user_favorite_series_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "user_ignored_series" ADD CONSTRAINT "user_ignored_series_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "user_series_ratings" ADD CONSTRAINT "user_series_ratings_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "user_series_watchlist" ADD CONSTRAINT "user_series_watchlist_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "user_sessions" ADD CONSTRAINT "user_sessions_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "watchroom_participants" ADD CONSTRAINT "watchroom_participants_watchroom_id_watchrooms_id_fk" FOREIGN KEY ("watchroom_id") REFERENCES "public"."watchrooms"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "watchroom_participants" ADD CONSTRAINT "watchroom_participants_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
@@ -123,11 +125,12 @@ CREATE INDEX "idx_recommendation_requests_watchroom_id" ON "recommendation_reque
 CREATE INDEX "idx_recommendation_requests_status" ON "recommendation_requests" USING btree ("status");--> statement-breakpoint
 CREATE INDEX "idx_recommendations_recommendation_request_id" ON "recommendations" USING btree ("recommendation_request_id");--> statement-breakpoint
 CREATE INDEX "idx_recommendations_series_tmdb_id" ON "recommendations" USING btree ("series_tmdb_id");--> statement-breakpoint
-CREATE INDEX "idx_user_favorite_series_user_id" ON "user_favorite_series" USING btree ("user_id");--> statement-breakpoint
-CREATE INDEX "idx_user_favorite_series_user_series_tmdb_id" ON "user_favorite_series" USING btree ("user_id","series_tmdb_id");--> statement-breakpoint
-CREATE INDEX "idx_user_favorite_series_preference_level" ON "user_favorite_series" USING btree ("user_id","preference_level");--> statement-breakpoint
-CREATE INDEX "idx_user_ignored_series_user_id" ON "user_ignored_series" USING btree ("user_id");--> statement-breakpoint
-CREATE INDEX "idx_user_ignored_series_user_series_tmdb_id" ON "user_ignored_series" USING btree ("user_id","series_tmdb_id");--> statement-breakpoint
+CREATE INDEX "idx_user_series_ratings_user_id" ON "user_series_ratings" USING btree ("user_id");--> statement-breakpoint
+CREATE INDEX "idx_user_series_ratings_user_series_tmdb_id" ON "user_series_ratings" USING btree ("user_id","series_tmdb_id");--> statement-breakpoint
+CREATE INDEX "idx_user_series_ratings_rating" ON "user_series_ratings" USING btree ("user_id","rating");--> statement-breakpoint
+CREATE INDEX "idx_user_series_watchlist_user_id" ON "user_series_watchlist" USING btree ("user_id");--> statement-breakpoint
+CREATE INDEX "idx_user_series_watchlist_user_series_tmdb_id" ON "user_series_watchlist" USING btree ("user_id","series_tmdb_id");--> statement-breakpoint
+CREATE INDEX "idx_user_series_watchlist_type" ON "user_series_watchlist" USING btree ("user_id","type");--> statement-breakpoint
 CREATE INDEX "idx_user_sessions_user_id" ON "user_sessions" USING btree ("user_id");--> statement-breakpoint
 CREATE INDEX "idx_watchroom_participants_watchroom_id" ON "watchroom_participants" USING btree ("watchroom_id");--> statement-breakpoint
 CREATE INDEX "idx_watchroom_participants_user_id" ON "watchroom_participants" USING btree ("user_id");--> statement-breakpoint

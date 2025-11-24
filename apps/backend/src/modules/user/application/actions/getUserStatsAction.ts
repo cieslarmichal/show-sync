@@ -1,5 +1,6 @@
 import type { RecommendationRequestRepository } from '../../../recommendation/domain/repositories/recommendationRequestRepository.ts';
-import type { FavoriteSeriesRepository } from '../../../series/domain/repositories/favoriteSeriesRepository.ts';
+import type { UserSeriesRatingRepository } from '../../../series/domain/repositories/userSeriesRatingRepository.ts';
+import type { UserSeriesWatchlistRepository } from '../../../series/domain/repositories/userSeriesWatchlistRepository.ts';
 import type { WatchroomRepository } from '../../../watchroom/domain/repositories/watchroomRepository.ts';
 
 export interface GetUserStatsActionPayload {
@@ -7,22 +8,26 @@ export interface GetUserStatsActionPayload {
 }
 
 export interface GetUserStatsActionResult {
-  favoriteSeriesCount: number;
+  ratingsCount: number;
+  wantToWatchCount: number;
   watchRoomsCount: number;
   recommendationCount: number;
 }
 
 export class GetUserStatsAction {
-  private readonly favoriteSeriesRepository: FavoriteSeriesRepository;
+  private readonly userSeriesRatingRepository: UserSeriesRatingRepository;
+  private readonly userSeriesWatchlistRepository: UserSeriesWatchlistRepository;
   private readonly watchroomRepository: WatchroomRepository;
   private readonly recommendationRequestRepository: RecommendationRequestRepository;
 
   public constructor(
-    favoriteSeriesRepository: FavoriteSeriesRepository,
+    userSeriesRatingRepository: UserSeriesRatingRepository,
+    userSeriesWatchlistRepository: UserSeriesWatchlistRepository,
     watchroomRepository: WatchroomRepository,
     recommendationRequestRepository: RecommendationRequestRepository,
   ) {
-    this.favoriteSeriesRepository = favoriteSeriesRepository;
+    this.userSeriesRatingRepository = userSeriesRatingRepository;
+    this.userSeriesWatchlistRepository = userSeriesWatchlistRepository;
     this.watchroomRepository = watchroomRepository;
     this.recommendationRequestRepository = recommendationRequestRepository;
   }
@@ -30,14 +35,16 @@ export class GetUserStatsAction {
   public async execute(payload: GetUserStatsActionPayload): Promise<GetUserStatsActionResult> {
     const { userId } = payload;
 
-    const [favoriteSeriesCount, watchRoomsCount, recommendationCount] = await Promise.all([
-      this.favoriteSeriesRepository.count(userId),
+    const [ratingsCount, wantToWatchCount, watchRoomsCount, recommendationCount] = await Promise.all([
+      this.userSeriesRatingRepository.count(userId),
+      this.userSeriesWatchlistRepository.count(userId, 'wantToWatch'),
       this.watchroomRepository.count(userId),
       this.recommendationRequestRepository.count(userId),
     ]);
 
     return {
-      favoriteSeriesCount,
+      ratingsCount,
+      wantToWatchCount,
       watchRoomsCount,
       recommendationCount,
     };

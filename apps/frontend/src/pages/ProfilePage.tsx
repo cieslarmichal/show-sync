@@ -59,7 +59,8 @@ export default function ProfilePage() {
   const [showOldPassword, setShowOldPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [favoriteSeriesCount, setFavoriteSeriesCount] = useState<number>(0);
+  const [ratingsCount, setRatingsCount] = useState<number>(0);
+  const [wantToWatchCount, setWantToWatchCount] = useState<number>(0);
   const [watchRoomsCount, setWatchRoomsCount] = useState<number>(0);
   const [recommendationCount, setRecommendationCount] = useState<number>(0);
   const navigate = useNavigate();
@@ -79,7 +80,8 @@ export default function ProfilePage() {
       try {
         const [user, stats] = await Promise.all([getMyUser(), getMyStats()]);
         setUserDetails(user);
-        setFavoriteSeriesCount(stats.favoriteSeriesCount);
+        setRatingsCount(stats.ratingsCount);
+        setWantToWatchCount(stats.wantToWatchCount);
         setWatchRoomsCount(stats.watchRoomsCount);
         setRecommendationCount(stats.recommendationCount);
       } catch {
@@ -193,10 +195,14 @@ export default function ProfilePage() {
               <CardDescription>Track your ShowSync engagement</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-primary">{favoriteSeriesCount}</div>
+                  <div className="text-2xl font-bold text-primary">{ratingsCount}</div>
                   <p className="text-sm text-muted-foreground">Rated Shows</p>
+                </div>
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-primary">{wantToWatchCount}</div>
+                  <p className="text-sm text-muted-foreground">Want to Watch</p>
                 </div>
                 <div className="text-center">
                   <div className="text-2xl font-bold text-primary">{watchRoomsCount}</div>

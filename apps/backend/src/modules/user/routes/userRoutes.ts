@@ -8,7 +8,8 @@ import type { LoggerService } from '../../../common/logger/loggerService.ts';
 import type { Config } from '../../../core/config.ts';
 import type { DatabaseClient } from '../../../infrastructure/database/databaseClient.ts';
 import { RecommendationRequestRepositoryImpl } from '../../recommendation/infrastructure/repositories/recommendationRequestRepositoryImpl.ts';
-import { FavoriteSeriesRepositoryImpl } from '../../series/infrastructure/repositories/favoriteSeriesRepositoryImpl.ts';
+import { UserSeriesRatingRepositoryImpl } from '../../series/infrastructure/repositories/userSeriesRatingRepositoryImpl.ts';
+import { UserSeriesWatchlistRepositoryImpl } from '../../series/infrastructure/repositories/userSeriesWatchlistRepositoryImpl.ts';
 import { WatchroomRepositoryImpl } from '../../watchroom/infrastructure/repositories/watchroomRepositoryImpl.ts';
 import { ChangePasswordAction } from '../application/actions/changePasswordAction.ts';
 import { ChangePasswordByTokenAction } from '../application/actions/changePasswordByTokenAction.ts';
@@ -86,7 +87,8 @@ export const userRoutes: FastifyPluginAsyncTypebox<{
   const userSessionRepository = new UserSessionRepositoryImpl(databaseClient);
   const passwordService = new PasswordService(config);
   const recommendationRequestRepository = new RecommendationRequestRepositoryImpl(databaseClient);
-  const favoriteSeriesRepository = new FavoriteSeriesRepositoryImpl(databaseClient);
+  const userSeriesRatingRepository = new UserSeriesRatingRepositoryImpl(databaseClient);
+  const userSeriesWatchlistRepository = new UserSeriesWatchlistRepositoryImpl(databaseClient);
   const watchroomRepository = new WatchroomRepositoryImpl(databaseClient);
   const emailRepository = new EmailRepositoryImpl(databaseClient);
   const oneTimeTokenRepository = new OneTimeTokenRepositoryImpl(databaseClient);
@@ -120,7 +122,8 @@ export const userRoutes: FastifyPluginAsyncTypebox<{
   );
   const logoutUserAction = new LogoutUserAction(userSessionRepository, tokenService);
   const getUserStatsAction = new GetUserStatsAction(
-    favoriteSeriesRepository,
+    userSeriesRatingRepository,
+    userSeriesWatchlistRepository,
     watchroomRepository,
     recommendationRequestRepository,
   );
@@ -465,7 +468,8 @@ export const userRoutes: FastifyPluginAsyncTypebox<{
     schema: {
       response: {
         200: Type.Object({
-          favoriteSeriesCount: Type.Integer(),
+          ratingsCount: Type.Integer(),
+          wantToWatchCount: Type.Integer(),
           watchRoomsCount: Type.Integer(),
           recommendationCount: Type.Integer(),
         }),

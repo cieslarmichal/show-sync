@@ -7,8 +7,8 @@ import type { LoggerService } from '../../../common/logger/loggerService.ts';
 import type { OpenRouterService } from '../../../common/openRouter/openRouterService.ts';
 import type { Config } from '../../../core/config.ts';
 import type { DatabaseClient } from '../../../infrastructure/database/databaseClient.ts';
-import { FavoriteSeriesRepositoryImpl } from '../../series/infrastructure/repositories/favoriteSeriesRepositoryImpl.ts';
-import { IgnoredSeriesRepositoryImpl } from '../../series/infrastructure/repositories/ignoredSeriesRepositoryImpl.ts';
+import { UserSeriesRatingRepositoryImpl } from '../../series/infrastructure/repositories/userSeriesRatingRepositoryImpl.ts';
+import { UserSeriesWatchlistRepositoryImpl } from '../../series/infrastructure/repositories/userSeriesWatchlistRepositoryImpl.ts';
 import { TmdbServiceImpl } from '../../series/infrastructure/services/tmdbServiceImpl.ts';
 import { WatchroomRepositoryImpl } from '../../watchroom/infrastructure/repositories/watchroomRepositoryImpl.ts';
 import { CheckRecommendationFeedbackExistsAction } from '../application/actions/checkRecommendationFeedbackExistsAction.ts';
@@ -44,8 +44,8 @@ export const recommendationRoutes: FastifyPluginAsyncTypebox<{
   const recommendationRepository = new RecommendationRepositoryImpl(databaseClient);
   const recommendationRequestRepository = new RecommendationRequestRepositoryImpl(databaseClient);
   const recommendationFeedbackRepository = new RecommendationFeedbackRepositoryImpl(databaseClient);
-  const favoriteSeriesRepository = new FavoriteSeriesRepositoryImpl(databaseClient);
-  const ignoredSeriesRepository = new IgnoredSeriesRepositoryImpl(databaseClient);
+  const seriesRatingRepository = new UserSeriesRatingRepositoryImpl(databaseClient);
+  const seriesWatchlistRepository = new UserSeriesWatchlistRepositoryImpl(databaseClient);
   const tmdbService = new TmdbServiceImpl(config.tmdb.apiKey, config.tmdb.baseUrl, loggerService);
 
   const recommendationPromptBuilder = new RecommendationPromptBuilder();
@@ -61,8 +61,8 @@ export const recommendationRoutes: FastifyPluginAsyncTypebox<{
     watchroomRepository,
     recommendationRepository,
     recommendationRequestRepository,
-    favoriteSeriesRepository,
-    ignoredSeriesRepository,
+    seriesRatingRepository,
+    seriesWatchlistRepository,
     tmdbService,
     openRouterService,
     loggerService,

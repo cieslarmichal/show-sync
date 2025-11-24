@@ -7,36 +7,36 @@ import { UnauthorizedAccessError } from '../../../common/errors/unathorizedAcces
 import type { LoggerService } from '../../../common/logger/loggerService.ts';
 import type { Config } from '../../../core/config.ts';
 import type { DatabaseClient } from '../../../infrastructure/database/databaseClient.ts';
-import { AddFavoriteSeriesAction } from '../application/actions/addFavoriteSeriesAction.ts';
-import { AddIgnoredSeriesAction } from '../application/actions/addIgnoredSeriesAction.ts';
-import { GetFavoriteSeriesAction } from '../application/actions/getFavoriteSeriesAction.ts';
-import { GetIgnoredSeriesAction } from '../application/actions/getIgnoredSeriesAction.ts';
+import { AddSeriesRatingAction } from '../application/actions/addSeriesRatingAction.ts';
+import { AddSeriesWatchlistAction } from '../application/actions/addSeriesWatchlistAction.ts';
 import { GetSeriesDetailsBatchAction } from '../application/actions/getSeriesDetailsBatchAction.ts';
 import { GetSeriesExternalIdsAction } from '../application/actions/getSeriesExternalIdsAction.ts';
-import { RemoveFavoriteSeriesAction } from '../application/actions/removeFavoriteSeriesAction.ts';
-import { RemoveIgnoredSeriesAction } from '../application/actions/removeIgnoredSeriesAction.ts';
+import { GetSeriesRatingsAction } from '../application/actions/getSeriesRatingsAction.ts';
+import { GetSeriesWatchlistAction } from '../application/actions/getSeriesWatchlistAction.ts';
+import { RemoveSeriesRatingAction } from '../application/actions/removeSeriesRatingAction.ts';
+import { RemoveSeriesWatchlistAction } from '../application/actions/removeSeriesWatchlistAction.ts';
 import { SearchSeriesAction } from '../application/actions/searchSeriesAction.ts';
-import { UpdateFavoriteSeriesPreferenceAction } from '../application/actions/updateFavoriteSeriesPreferenceAction.ts';
-import type { FavoriteSeries } from '../domain/types/favoriteSeries.ts';
-import type { IgnoredSeries } from '../domain/types/ignoredSeries.ts';
+import { UpdateSeriesRatingAction } from '../application/actions/updateSeriesRatingAction.ts';
 import type { TmdbSeries, TmdbSeriesDetails, TmdbSeriesExternalIds } from '../domain/types/tmdbSeries.ts';
-import { FavoriteSeriesRepositoryImpl } from '../infrastructure/repositories/favoriteSeriesRepositoryImpl.ts';
-import { IgnoredSeriesRepositoryImpl } from '../infrastructure/repositories/ignoredSeriesRepositoryImpl.ts';
+import type { UserSeriesRating } from '../domain/types/userSeriesRating.ts';
+import type { UserSeriesWatchlist } from '../domain/types/userSeriesWatchlist.ts';
+import { UserSeriesRatingRepositoryImpl } from '../infrastructure/repositories/userSeriesRatingRepositoryImpl.ts';
+import { UserSeriesWatchlistRepositoryImpl } from '../infrastructure/repositories/userSeriesWatchlistRepositoryImpl.ts';
 import { TmdbServiceImpl } from '../infrastructure/services/tmdbServiceImpl.ts';
 
 import {
-  addFavoriteSeriesRequestSchema,
-  addIgnoredSeriesRequestSchema,
+  addSeriesRatingRequestSchema,
+  addSeriesWatchlistRequestSchema,
   batchSeriesDetailsQuerySchema,
   batchSeriesDetailsResponseSchema,
-  favoriteSeriesListSchema,
-  favoriteSeriesParamsSchema,
-  favoriteSeriesQuerySchema,
-  favoriteSeriesSchema,
-  ignoredSeriesListSchema,
-  ignoredSeriesParamsSchema,
-  ignoredSeriesQuerySchema,
-  ignoredSeriesSchema,
+  seriesRatingListSchema,
+  seriesRatingParamsSchema,
+  seriesRatingQuerySchema,
+  seriesRatingResponseSchema,
+  seriesWatchlistListSchema,
+  seriesWatchlistParamsSchema,
+  seriesWatchlistQuerySchema,
+  seriesWatchlistResponseSchema,
   type SeriesDto,
   type SeriesDetailsDto,
   seriesExternalIdsSchema,
@@ -44,10 +44,10 @@ import {
   seriesSearchQuerySchema,
   seriesSearchResultSchema,
   type SeriesExternalIdsDto,
-  updateFavoriteSeriesPreferenceRequestSchema,
-  updateFavoriteSeriesPreferenceParamsSchema,
-  type IgnoredSeriesDto,
-  type FavoriteSeriesDto,
+  updateSeriesRatingRequestSchema,
+  updateSeriesRatingParamsSchema,
+  type SeriesWatchlistDto,
+  type SeriesRatingDto,
 } from './seriesSchemas.ts';
 
 export const seriesRoutes: FastifyPluginAsyncTypebox<{
@@ -90,41 +90,39 @@ export const seriesRoutes: FastifyPluginAsyncTypebox<{
     twitterId: externalIds.twitterId,
   });
 
-  const mapIgnoredSeriesToResponse = (ignored: IgnoredSeries): IgnoredSeriesDto => ({
-    seriesTmdbId: ignored.seriesTmdbId,
+  const mapSeriesWatchlistToResponse = (watchlist: UserSeriesWatchlist): SeriesWatchlistDto => ({
+    seriesTmdbId: watchlist.seriesTmdbId,
+    type: watchlist.type,
   });
 
-  const mapFavoriteSeriesToResponse = (favorite: FavoriteSeries): FavoriteSeriesDto => ({
-    seriesTmdbId: favorite.seriesTmdbId,
-    preferenceLevel: favorite.preferenceLevel,
+  const mapSeriesRatingToResponse = (rating: UserSeriesRating): SeriesRatingDto => ({
+    seriesTmdbId: rating.seriesTmdbId,
+    rating: rating.rating,
   });
 
   const tmdbService = new TmdbServiceImpl(config.tmdb.apiKey, config.tmdb.baseUrl, loggerService);
   const searchSeriesAction = new SearchSeriesAction(tmdbService);
   const getSeriesDetailsBatchAction = new GetSeriesDetailsBatchAction(tmdbService);
   const getSeriesExternalIdsAction = new GetSeriesExternalIdsAction(tmdbService);
-  const favoriteSeriesRepository = new FavoriteSeriesRepositoryImpl(databaseClient);
-  const getUserFavoriteSeriesAction = new GetFavoriteSeriesAction(favoriteSeriesRepository);
-  const ignoredSeriesRepository = new IgnoredSeriesRepositoryImpl(databaseClient);
-  const getUserIgnoredSeriesAction = new GetIgnoredSeriesAction(ignoredSeriesRepository);
-  const addFavoriteSeriesAction = new AddFavoriteSeriesAction(
-    favoriteSeriesRepository,
-    ignoredSeriesRepository,
+  const seriesRatingRepository = new UserSeriesRatingRepositoryImpl(databaseClient);
+  const getSeriesRatingsAction = new GetSeriesRatingsAction(seriesRatingRepository);
+  const seriesWatchlistRepository = new UserSeriesWatchlistRepositoryImpl(databaseClient);
+  const getSeriesWatchlistAction = new GetSeriesWatchlistAction(seriesWatchlistRepository);
+  const addSeriesRatingAction = new AddSeriesRatingAction(
+    seriesRatingRepository,
+    seriesWatchlistRepository,
     databaseClient,
     loggerService,
   );
-  const removeFavoriteSeriesAction = new RemoveFavoriteSeriesAction(favoriteSeriesRepository, loggerService);
-  const updateFavoriteSeriesPreferenceAction = new UpdateFavoriteSeriesPreferenceAction(
-    favoriteSeriesRepository,
-    loggerService,
-  );
-  const addIgnoredSeriesAction = new AddIgnoredSeriesAction(
-    ignoredSeriesRepository,
-    favoriteSeriesRepository,
+  const removeSeriesRatingAction = new RemoveSeriesRatingAction(seriesRatingRepository, loggerService);
+  const updateSeriesRatingAction = new UpdateSeriesRatingAction(seriesRatingRepository, loggerService);
+  const addSeriesWatchlistAction = new AddSeriesWatchlistAction(
+    seriesWatchlistRepository,
+    seriesRatingRepository,
     databaseClient,
     loggerService,
   );
-  const removeIgnoredSeriesAction = new RemoveIgnoredSeriesAction(ignoredSeriesRepository, loggerService);
+  const removeSeriesWatchlistAction = new RemoveSeriesWatchlistAction(seriesWatchlistRepository, loggerService);
 
   const authenticationMiddleware = createAuthenticationMiddleware(tokenService);
 
@@ -210,11 +208,11 @@ export const seriesRoutes: FastifyPluginAsyncTypebox<{
     },
   });
 
-  fastify.get('/series/favorites', {
+  fastify.get('/series/ratings', {
     schema: {
-      querystring: favoriteSeriesQuerySchema,
+      querystring: seriesRatingQuerySchema,
       response: {
-        200: favoriteSeriesListSchema,
+        200: seriesRatingListSchema,
       },
     },
     preHandler: [authenticationMiddleware],
@@ -226,12 +224,12 @@ export const seriesRoutes: FastifyPluginAsyncTypebox<{
       }
 
       const { userId } = request.user;
-      const { page = 1, pageSize = 20, preferenceLevel } = request.query;
+      const { page = 1, pageSize = 20, rating } = request.query;
 
-      const { data, total } = await getUserFavoriteSeriesAction.execute({ userId, page, pageSize, preferenceLevel });
+      const { data, total } = await getSeriesRatingsAction.execute({ userId, page, pageSize, rating });
 
       return reply.send({
-        data: data.map(mapFavoriteSeriesToResponse),
+        data: data.map(mapSeriesRatingToResponse),
         metadata: {
           page,
           pageSize,
@@ -241,11 +239,11 @@ export const seriesRoutes: FastifyPluginAsyncTypebox<{
     },
   });
 
-  fastify.post('/series/favorites', {
+  fastify.post('/series/ratings', {
     schema: {
-      body: addFavoriteSeriesRequestSchema,
+      body: addSeriesRatingRequestSchema,
       response: {
-        201: favoriteSeriesSchema,
+        201: seriesRatingResponseSchema,
       },
     },
     preHandler: [authenticationMiddleware],
@@ -257,23 +255,23 @@ export const seriesRoutes: FastifyPluginAsyncTypebox<{
       }
 
       const { userId } = request.user;
-      const { seriesTmdbId, preferenceLevel } = request.body;
+      const { seriesTmdbId, rating } = request.body;
 
-      const favorite = await addFavoriteSeriesAction.execute(
-        { userId, seriesTmdbId, preferenceLevel },
+      const seriesRating = await addSeriesRatingAction.execute(
+        { userId, seriesTmdbId, rating },
         {
           requestId: request.id,
           userId,
         },
       );
 
-      return reply.status(201).send(mapFavoriteSeriesToResponse(favorite));
+      return reply.status(201).send(mapSeriesRatingToResponse(seriesRating));
     },
   });
 
-  fastify.delete('/series/favorites/:seriesTmdbId', {
+  fastify.delete('/series/ratings/:seriesTmdbId', {
     schema: {
-      params: favoriteSeriesParamsSchema,
+      params: seriesRatingParamsSchema,
       response: {
         204: Type.Null(),
       },
@@ -289,7 +287,7 @@ export const seriesRoutes: FastifyPluginAsyncTypebox<{
       const { userId } = request.user;
       const { seriesTmdbId } = request.params;
 
-      await removeFavoriteSeriesAction.execute(
+      await removeSeriesRatingAction.execute(
         { userId, seriesTmdbId },
         {
           requestId: request.id,
@@ -301,12 +299,12 @@ export const seriesRoutes: FastifyPluginAsyncTypebox<{
     },
   });
 
-  fastify.patch('/series/favorites/:seriesTmdbId/preference', {
+  fastify.patch('/series/ratings/:seriesTmdbId', {
     schema: {
-      params: updateFavoriteSeriesPreferenceParamsSchema,
-      body: updateFavoriteSeriesPreferenceRequestSchema,
+      params: updateSeriesRatingParamsSchema,
+      body: updateSeriesRatingRequestSchema,
       response: {
-        200: favoriteSeriesSchema,
+        200: seriesRatingResponseSchema,
       },
     },
     preHandler: [authenticationMiddleware],
@@ -319,13 +317,13 @@ export const seriesRoutes: FastifyPluginAsyncTypebox<{
 
       const { userId } = request.user;
       const { seriesTmdbId } = request.params;
-      const { preferenceLevel } = request.body;
+      const { rating } = request.body;
 
-      const updated = await updateFavoriteSeriesPreferenceAction.execute(
+      const updated = await updateSeriesRatingAction.execute(
         {
           userId,
           seriesTmdbId,
-          preferenceLevel,
+          rating,
         },
         {
           requestId: request.id,
@@ -333,15 +331,15 @@ export const seriesRoutes: FastifyPluginAsyncTypebox<{
         },
       );
 
-      return reply.send(mapFavoriteSeriesToResponse(updated));
+      return reply.send(mapSeriesRatingToResponse(updated));
     },
   });
 
-  fastify.get('/series/ignored', {
+  fastify.get('/series/watchlist', {
     schema: {
-      querystring: ignoredSeriesQuerySchema,
+      querystring: seriesWatchlistQuerySchema,
       response: {
-        200: ignoredSeriesListSchema,
+        200: seriesWatchlistListSchema,
       },
     },
     preHandler: [authenticationMiddleware],
@@ -353,12 +351,12 @@ export const seriesRoutes: FastifyPluginAsyncTypebox<{
       }
 
       const { userId } = request.user;
-      const { page = 1, pageSize = 20 } = request.query;
+      const { page = 1, pageSize = 20, type } = request.query;
 
-      const { data, total } = await getUserIgnoredSeriesAction.execute({ userId, page, pageSize });
+      const { data, total } = await getSeriesWatchlistAction.execute({ userId, page, pageSize, type });
 
       return reply.send({
-        data: data.map(mapIgnoredSeriesToResponse),
+        data: data.map(mapSeriesWatchlistToResponse),
         metadata: {
           page,
           pageSize,
@@ -368,11 +366,11 @@ export const seriesRoutes: FastifyPluginAsyncTypebox<{
     },
   });
 
-  fastify.post('/series/ignored', {
+  fastify.post('/series/watchlist', {
     schema: {
-      body: addIgnoredSeriesRequestSchema,
+      body: addSeriesWatchlistRequestSchema,
       response: {
-        201: ignoredSeriesSchema,
+        201: seriesWatchlistResponseSchema,
       },
     },
     preHandler: [authenticationMiddleware],
@@ -384,23 +382,23 @@ export const seriesRoutes: FastifyPluginAsyncTypebox<{
       }
 
       const { userId } = request.user;
-      const { seriesTmdbId } = request.body;
+      const { seriesTmdbId, type } = request.body;
 
-      const ignored = await addIgnoredSeriesAction.execute(
-        { userId, seriesTmdbId },
+      const watchlist = await addSeriesWatchlistAction.execute(
+        { userId, seriesTmdbId, type },
         {
           requestId: request.id,
           userId,
         },
       );
 
-      return reply.status(201).send(mapIgnoredSeriesToResponse(ignored));
+      return reply.status(201).send(mapSeriesWatchlistToResponse(watchlist));
     },
   });
 
-  fastify.delete('/series/ignored/:seriesTmdbId', {
+  fastify.delete('/series/watchlist/:seriesTmdbId', {
     schema: {
-      params: ignoredSeriesParamsSchema,
+      params: seriesWatchlistParamsSchema,
       response: {
         204: Type.Null(),
       },
@@ -416,7 +414,7 @@ export const seriesRoutes: FastifyPluginAsyncTypebox<{
       const { userId } = request.user;
       const { seriesTmdbId } = request.params;
 
-      await removeIgnoredSeriesAction.execute(
+      await removeSeriesWatchlistAction.execute(
         { userId, seriesTmdbId },
         {
           requestId: request.id,

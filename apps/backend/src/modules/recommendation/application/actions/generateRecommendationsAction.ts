@@ -4,8 +4,8 @@ import type { LoggerService } from '../../../../common/logger/loggerService.ts';
 import type { OpenRouterService } from '../../../../common/openRouter/openRouterService.ts';
 import type { ExecutionContext } from '../../../../common/types/executionContext.ts';
 import type { DatabaseClient } from '../../../../infrastructure/database/databaseClient.ts';
-import type { FavoriteSeriesRepository } from '../../../series/domain/repositories/favoriteSeriesRepository.ts';
-import type { IgnoredSeriesRepository } from '../../../series/domain/repositories/ignoredSeriesRepository.ts';
+import type { UserSeriesRatingRepository } from '../../../series/domain/repositories/userSeriesRatingRepository.ts';
+import type { UserSeriesWatchlistRepository } from '../../../series/domain/repositories/userSeriesWatchlistRepository.ts';
 import type { TmdbService } from '../../../series/domain/services/tmdbService.ts';
 import type { WatchroomRepository } from '../../../watchroom/domain/repositories/watchroomRepository.ts';
 import type { Watchroom } from '../../../watchroom/domain/types/watchroom.ts';
@@ -39,23 +39,25 @@ interface SeriesInfo {
   readonly firstAirDate: string | null;
 }
 
-interface ParticipantFavorites {
+interface ParticipantRatings {
   readonly participantId: string;
   readonly lovedSeriesIds: number[];
   readonly likedSeriesIds: number[];
+  readonly dislikedSeriesIds: number[];
 }
 
-interface ParticipantIgnored {
+interface ParticipantWatchlist {
   readonly participantId: string;
-  readonly seriesTmdbIds: number[];
+  readonly notInterestedSeriesIds: number[];
+  readonly wantToWatchSeriesIds: number[];
 }
 
 export class GenerateRecommendationsAction {
   private readonly watchroomRepository: WatchroomRepository;
   private readonly recommendationRepository: RecommendationRepository;
   private readonly recommendationRequestRepository: RecommendationRequestRepository;
-  private readonly favoriteSeriesRepository: FavoriteSeriesRepository;
-  private readonly ignoredSeriesRepository: IgnoredSeriesRepository;
+  private readonly seriesRatingRepository: UserSeriesRatingRepository;
+  private readonly seriesWatchlistRepository: UserSeriesWatchlistRepository;
   private readonly tmdbService: TmdbService;
   private readonly openRouterService: OpenRouterService;
   private readonly loggerService: LoggerService;
@@ -67,8 +69,8 @@ export class GenerateRecommendationsAction {
     watchroomRepository: WatchroomRepository,
     recommendationRepository: RecommendationRepository,
     recommendationRequestRepository: RecommendationRequestRepository,
-    favoriteSeriesRepository: FavoriteSeriesRepository,
-    ignoredSeriesRepository: IgnoredSeriesRepository,
+    seriesRatingRepository: UserSeriesRatingRepository,
+    seriesWatchlistRepository: UserSeriesWatchlistRepository,
     tmdbService: TmdbService,
     openRouterService: OpenRouterService,
     loggerService: LoggerService,
@@ -79,8 +81,8 @@ export class GenerateRecommendationsAction {
     this.watchroomRepository = watchroomRepository;
     this.recommendationRepository = recommendationRepository;
     this.recommendationRequestRepository = recommendationRequestRepository;
-    this.favoriteSeriesRepository = favoriteSeriesRepository;
-    this.ignoredSeriesRepository = ignoredSeriesRepository;
+    this.seriesRatingRepository = seriesRatingRepository;
+    this.seriesWatchlistRepository = seriesWatchlistRepository;
     this.tmdbService = tmdbService;
     this.openRouterService = openRouterService;
     this.loggerService = loggerService;
@@ -104,19 +106,27 @@ export class GenerateRecommendationsAction {
       const watchroom = await this.getWatchroom(watchroomId, userId);
       const participantIds = [watchroom.ownerId, ...watchroom.participants.map((p) => p.id)];
 
-      const [participantFavorites, participantIgnored] = await Promise.all([
-        this.fetchParticipantFavorites(participantIds),
-        this.fetchParticipantIgnored(participantIds),
+      const [participantRatings, participantWatchlists] = await Promise.all([
+        this.fetchParticipantRatings(participantIds),
+        this.fetchParticipantWatchlists(participantIds),
       ]);
 
-      const allIgnoredSeriesIds = [...new Set(participantIgnored.flatMap((p) => p.seriesTmdbIds))];
-      const allFavoriteSeriesIds = [
-        ...new Set(participantFavorites.flatMap((p) => [...p.lovedSeriesIds, ...p.likedSeriesIds])),
+      const allNotInterestedSeriesIds = [...new Set(participantWatchlists.flatMap((p) => p.notInterestedSeriesIds))];
+      const allDislikedSeriesIds = [...new Set(participantRatings.flatMap((p) => p.dislikedSeriesIds))];
+      const allRatedSeriesIds = [
+        ...new Set(
+          participantRatings.flatMap((p) => [...p.lovedSeriesIds, ...p.likedSeriesIds, ...p.dislikedSeriesIds]),
+        ),
       ];
+      const allWantToWatchSeriesIds = [...new Set(participantWatchlists.flatMap((p) => p.wantToWatchSeriesIds))];
 
-      const seriesInfoMap = await this.fetchSeriesInfo([...allFavoriteSeriesIds, ...allIgnoredSeriesIds]);
+      const seriesInfoMap = await this.fetchSeriesInfo([
+        ...allRatedSeriesIds,
+        ...allNotInterestedSeriesIds,
+        ...allWantToWatchSeriesIds,
+      ]);
 
-      const totalSeries = allFavoriteSeriesIds.length + allIgnoredSeriesIds.length;
+      const totalSeries = allRatedSeriesIds.length + allNotInterestedSeriesIds.length + allWantToWatchSeriesIds.length;
       const failedCount = totalSeries - seriesInfoMap.size;
       if (failedCount > 0) {
         this.loggerService.warn({
@@ -131,18 +141,18 @@ export class GenerateRecommendationsAction {
       }
 
       const aiRecommendations = await this.generateAIRecommendations(
-        participantFavorites,
-        allIgnoredSeriesIds,
+        participantRatings,
+        allNotInterestedSeriesIds,
+        allDislikedSeriesIds,
+        allWantToWatchSeriesIds,
         seriesInfoMap,
         watchroom.name,
         watchroom.description,
       );
 
-      const resolutionResult = await this.seriesResolver.resolve(
-        aiRecommendations,
-        allFavoriteSeriesIds,
-        allIgnoredSeriesIds,
-      );
+      const excludedSeriesIds = [...allRatedSeriesIds, ...allNotInterestedSeriesIds];
+
+      const resolutionResult = await this.seriesResolver.resolve(aiRecommendations, excludedSeriesIds, []);
 
       if (resolutionResult.failed.length > 0 || resolutionResult.skipped.length > 0) {
         this.loggerService.warn({
@@ -242,31 +252,40 @@ export class GenerateRecommendationsAction {
     return watchroom;
   }
 
-  private async fetchParticipantFavorites(participantIds: string[]): Promise<ParticipantFavorites[]> {
+  private async fetchParticipantRatings(participantIds: string[]): Promise<ParticipantRatings[]> {
     return Promise.all(
       participantIds.map(async (participantId) => {
-        const favorites = await this.favoriteSeriesRepository.findMany(participantId, 1, 100);
+        const ratings = await this.seriesRatingRepository.findMany(participantId, 1, 100);
 
-        const lovedSeriesIds = favorites.filter((f) => f.preferenceLevel === 'love').map((f) => f.seriesTmdbId);
+        const lovedSeriesIds = ratings.filter((r) => r.rating === 'love').map((r) => r.seriesTmdbId);
 
-        const likedSeriesIds = favorites.filter((f) => f.preferenceLevel === 'like').map((f) => f.seriesTmdbId);
+        const likedSeriesIds = ratings.filter((r) => r.rating === 'like').map((r) => r.seriesTmdbId);
+
+        const dislikedSeriesIds = ratings.filter((r) => r.rating === 'dislike').map((r) => r.seriesTmdbId);
 
         return {
           participantId,
           lovedSeriesIds,
           likedSeriesIds,
+          dislikedSeriesIds,
         };
       }),
     );
   }
 
-  private async fetchParticipantIgnored(participantIds: string[]): Promise<ParticipantIgnored[]> {
+  private async fetchParticipantWatchlists(participantIds: string[]): Promise<ParticipantWatchlist[]> {
     return Promise.all(
       participantIds.map(async (participantId) => {
-        const ignored = await this.ignoredSeriesRepository.findMany(participantId, 1, 100);
+        const watchlist = await this.seriesWatchlistRepository.findMany(participantId, 1, 100);
+
+        const notInterestedSeriesIds = watchlist.filter((w) => w.type === 'notInterested').map((w) => w.seriesTmdbId);
+
+        const wantToWatchSeriesIds = watchlist.filter((w) => w.type === 'wantToWatch').map((w) => w.seriesTmdbId);
+
         return {
           participantId,
-          seriesTmdbIds: ignored.map((i) => i.seriesTmdbId),
+          notInterestedSeriesIds,
+          wantToWatchSeriesIds,
         };
       }),
     );
@@ -297,15 +316,19 @@ export class GenerateRecommendationsAction {
   }
 
   private async generateAIRecommendations(
-    participantFavorites: ParticipantFavorites[],
-    ignoredSeriesIds: number[],
+    participantRatings: ParticipantRatings[],
+    notInterestedSeriesIds: number[],
+    dislikedSeriesIds: number[],
+    wantToWatchSeriesIds: number[],
     seriesInfoMap: Map<number, SeriesInfo>,
     watchroomName: string,
     watchroomDescription: string | undefined,
   ): Promise<AIRecommendation[]> {
     const userMessage = this.promptBuilder.build(
-      participantFavorites,
-      ignoredSeriesIds,
+      participantRatings,
+      notInterestedSeriesIds,
+      dislikedSeriesIds,
+      wantToWatchSeriesIds,
       seriesInfoMap,
       watchroomName,
       watchroomDescription,

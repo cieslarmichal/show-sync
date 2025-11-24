@@ -1,7 +1,8 @@
 import { apiRequest } from '../apiRequest.ts';
 
 export interface UserStats {
-  favoriteSeriesCount: number;
+  ratingsCount: number;
+  wantToWatchCount: number;
   watchRoomsCount: number;
   recommendationCount: number;
 }

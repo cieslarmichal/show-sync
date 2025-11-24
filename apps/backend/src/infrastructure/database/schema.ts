@@ -69,37 +69,39 @@ export const emails = pgTable(
   ],
 );
 
-export const userFavoriteSeries = pgTable(
-  'user_favorite_series',
+export const userSeriesRatings = pgTable(
+  'user_series_ratings',
   {
     id: uuid('id').primaryKey(),
     userId: uuid('user_id')
       .notNull()
       .references(() => users.id, { onDelete: 'cascade' }),
     seriesTmdbId: integer('series_tmdb_id').notNull(),
-    preferenceLevel: varchar('preference_level', { length: 16 }).notNull(), // 'like' | 'love'
+    rating: varchar('rating', { length: 16 }).notNull(), // 'like' | 'love' | 'dislike'
   },
   (table) => [
-    index('idx_user_favorite_series_user_id').on(table.userId),
-    index('idx_user_favorite_series_user_series_tmdb_id').on(table.userId, table.seriesTmdbId),
-    index('idx_user_favorite_series_preference_level').on(table.userId, table.preferenceLevel),
-    unique('uq_user_favorite_series_user_series').on(table.userId, table.seriesTmdbId),
+    index('idx_user_series_ratings_user_id').on(table.userId),
+    index('idx_user_series_ratings_user_series_tmdb_id').on(table.userId, table.seriesTmdbId),
+    index('idx_user_series_ratings_rating').on(table.userId, table.rating),
+    unique('uq_user_series_ratings_user_series').on(table.userId, table.seriesTmdbId),
   ],
 );
 
-export const userIgnoredSeries = pgTable(
-  'user_ignored_series',
+export const userSeriesWatchlist = pgTable(
+  'user_series_watchlist',
   {
     id: uuid('id').primaryKey(),
     userId: uuid('user_id')
       .notNull()
       .references(() => users.id, { onDelete: 'cascade' }),
     seriesTmdbId: integer('series_tmdb_id').notNull(),
+    type: varchar('type', { length: 16 }).notNull(), // 'notInterested' | 'wantToWatch'
   },
   (table) => [
-    index('idx_user_ignored_series_user_id').on(table.userId),
-    index('idx_user_ignored_series_user_series_tmdb_id').on(table.userId, table.seriesTmdbId),
-    unique('uq_user_ignored_series_user_series').on(table.userId, table.seriesTmdbId),
+    index('idx_user_series_watchlist_user_id').on(table.userId),
+    index('idx_user_series_watchlist_user_series_tmdb_id').on(table.userId, table.seriesTmdbId),
+    index('idx_user_series_watchlist_type').on(table.userId, table.type),
+    unique('uq_user_series_watchlist_user_series').on(table.userId, table.seriesTmdbId),
   ],
 );
 
