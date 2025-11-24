@@ -22,6 +22,13 @@ export interface TmdbSeriesDetails {
   readonly numberOfEpisodes: number;
   readonly status: string;
   readonly voteAverage: number;
+  readonly watchProviders: TmdbWatchProvider[];
+}
+
+export interface TmdbWatchProvider {
+  readonly providerId: number;
+  readonly providerName: string;
+  readonly logoPath: string | null;
 }
 
 export interface TmdbSeriesExternalIds {

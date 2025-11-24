@@ -54,7 +54,7 @@ export function RecommendationsSection({
       }
 
       const seriesIds = fetchedRecommendations.map((rec) => rec.seriesTmdbId);
-      const batchDetails = await getSeriesDetailsBatch(seriesIds);
+      const batchDetails = await getSeriesDetailsBatch(seriesIds, true);
       const detailsMap = new Map(batchDetails.map((details) => [details.id, details]));
 
       const recommendationsWithDetails = fetchedRecommendations.map((rec) => ({

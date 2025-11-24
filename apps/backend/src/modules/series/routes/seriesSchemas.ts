@@ -11,6 +11,12 @@ export const seriesSchema = Type.Object({
   voteAverage: Type.Number(),
 });
 
+export const watchProviderSchema = Type.Object({
+  providerId: Type.Number(),
+  providerName: Type.String(),
+  logoPath: Type.Union([Type.String(), Type.Null()]),
+});
+
 export const seriesDetailsSchema = Type.Object({
   id: Type.Number(),
   name: Type.String(),
@@ -23,6 +29,7 @@ export const seriesDetailsSchema = Type.Object({
   numberOfEpisodes: Type.Number(),
   status: Type.String(),
   voteAverage: Type.Number(),
+  watchProviders: Type.Array(watchProviderSchema),
 });
 
 export const seriesExternalIdsSchema = Type.Object({
@@ -116,6 +123,7 @@ export const ignoredSeriesQuerySchema = Type.Object({
 
 export const batchSeriesDetailsQuerySchema = Type.Object({
   ids: Type.String({ minLength: 1 }),
+  includeProviders: Type.Optional(Type.Boolean()),
 });
 
 export const batchSeriesDetailsResponseSchema = Type.Object({

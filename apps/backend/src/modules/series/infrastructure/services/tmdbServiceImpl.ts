@@ -3,7 +3,12 @@ import { ExternalServiceError } from '../../../../common/errors/externalServiceE
 import { ResourceNotFoundError } from '../../../../common/errors/resourceNotFoundError.ts';
 import type { LoggerService } from '../../../../common/logger/loggerService.ts';
 import type { SearchSeriesParams, SeriesSearchResult, TmdbService } from '../../domain/services/tmdbService.ts';
-import type { TmdbSeries, TmdbSeriesDetails, TmdbSeriesExternalIds } from '../../domain/types/tmdbSeries.ts';
+import type {
+  TmdbSeries,
+  TmdbSeriesDetails,
+  TmdbSeriesExternalIds,
+  TmdbWatchProvider,
+} from '../../domain/types/tmdbSeries.ts';
 
 interface TmdbApiSeriesResponse {
   readonly id: number;
@@ -42,6 +47,25 @@ interface TmdbApiSeriesDetailsResponse {
   readonly vote_average: number;
 }
 
+interface TmdbApiWatchProvider {
+  readonly provider_id: number;
+  readonly provider_name: string;
+  readonly logo_path: string | null;
+}
+
+interface TmdbApiCountryProviders {
+  readonly flatrate?: TmdbApiWatchProvider[];
+  readonly buy?: TmdbApiWatchProvider[];
+  readonly rent?: TmdbApiWatchProvider[];
+}
+
+interface TmdbApiWatchProvidersResponse {
+  readonly results: {
+    readonly PL?: TmdbApiCountryProviders;
+    readonly [key: string]: TmdbApiCountryProviders | undefined;
+  };
+}
+
 interface TmdbApiExternalIdsResponse {
   readonly imdb_id: string | null;
   readonly tvdb_id: number | null;
@@ -56,6 +80,7 @@ export class TmdbServiceImpl implements TmdbService {
   private readonly searchCache: InMemoryCache<SeriesSearchResult>;
   private readonly detailsCache: InMemoryCache<TmdbSeriesDetails>;
   private readonly externalIdsCache: InMemoryCache<TmdbSeriesExternalIds>;
+  private readonly watchProvidersCache: InMemoryCache<TmdbWatchProvider[]>;
 
   public constructor(apiKey: string, baseUrl: string, logger: LoggerService) {
     this.apiKey = apiKey;
@@ -69,6 +94,9 @@ export class TmdbServiceImpl implements TmdbService {
 
     // Cache external IDs for 24 hours (very stable data)
     this.externalIdsCache = new InMemoryCache<TmdbSeriesExternalIds>(24 * 60 * 60 * 1000, 1000, logger);
+
+    // Cache watch providers for 7 days (very stable data)
+    this.watchProvidersCache = new InMemoryCache<TmdbWatchProvider[]>(7 * 24 * 60 * 60 * 1000, 1000, logger);
   }
 
   public async searchSeries(params: SearchSeriesParams): Promise<SeriesSearchResult> {
@@ -135,8 +163,8 @@ export class TmdbServiceImpl implements TmdbService {
     return result;
   }
 
-  public async getSeriesDetails(seriesTmdbId: number): Promise<TmdbSeriesDetails> {
-    const cacheKey = `details:${seriesTmdbId.toString()}`;
+  public async getSeriesDetails(seriesTmdbId: number, includeProviders = false): Promise<TmdbSeriesDetails> {
+    const cacheKey = `details:${seriesTmdbId.toString()}:${includeProviders.toString()}`;
 
     const cachedDetails = this.detailsCache.get(cacheKey);
     if (cachedDetails) {
@@ -173,7 +201,12 @@ export class TmdbServiceImpl implements TmdbService {
 
       const data = (await response.json()) as TmdbApiSeriesDetailsResponse;
 
-      const result = this.mapToSeriesDetails(data);
+      let watchProviders: TmdbWatchProvider[] = [];
+      if (includeProviders) {
+        watchProviders = await this.getWatchProviders(seriesTmdbId);
+      }
+
+      const result = this.mapToSeriesDetails(data, watchProviders);
 
       this.detailsCache.set(cacheKey, result);
 
@@ -188,6 +221,74 @@ export class TmdbServiceImpl implements TmdbService {
         reason: 'Failed to fetch series details from TMDB API',
         originalError: error,
       });
+    }
+  }
+
+  private async getWatchProviders(seriesTmdbId: number): Promise<TmdbWatchProvider[]> {
+    const cacheKey = `watchProviders:${seriesTmdbId.toString()}`;
+
+    const cachedProviders = this.watchProvidersCache.get(cacheKey);
+    if (cachedProviders) {
+      return cachedProviders;
+    }
+
+    const url = new URL(`${this.baseUrl}/tv/${seriesTmdbId.toString()}/watch/providers`);
+
+    try {
+      const response = await fetch(url.toString(), {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${this.apiKey}`,
+        },
+      });
+
+      if (!response.ok) {
+        return [];
+      }
+
+      const data = (await response.json()) as TmdbApiWatchProvidersResponse;
+
+      const plProviders = data.results['PL'];
+      if (!plProviders) {
+        return [];
+      }
+
+      // Only include streaming platforms (flatrate)
+      const allProviders = [...(plProviders.flatrate || [])];
+
+      // Filter to popular providers in Poland and remove duplicates
+      const popularProviderIds = new Set([
+        8, // Netflix
+        337, // Disney+
+        531, // Paramount+
+        350, // Apple TV+
+        119, // Amazon Prime Video (Poland)
+        1899, // Max (HBO Max successor)
+        2, // Apple iTunes
+        3, // Google Play Movies
+        10, // Amazon Video
+      ]);
+
+      const uniqueProviders = new Map<number, TmdbWatchProvider>();
+
+      for (const provider of allProviders) {
+        if (popularProviderIds.has(provider.provider_id) && !uniqueProviders.has(provider.provider_id)) {
+          uniqueProviders.set(provider.provider_id, {
+            providerId: provider.provider_id,
+            providerName: provider.provider_name,
+            logoPath: provider.logo_path,
+          });
+        }
+      }
+
+      const result = Array.from(uniqueProviders.values()).slice(0, 5);
+
+      this.watchProvidersCache.set(cacheKey, result);
+
+      return result;
+    } catch {
+      return [];
     }
   }
 
@@ -263,7 +364,10 @@ export class TmdbServiceImpl implements TmdbService {
     return series;
   }
 
-  private mapToSeriesDetails(apiDetails: TmdbApiSeriesDetailsResponse): TmdbSeriesDetails {
+  private mapToSeriesDetails(
+    apiDetails: TmdbApiSeriesDetailsResponse,
+    watchProviders: TmdbWatchProvider[] = [],
+  ): TmdbSeriesDetails {
     return {
       id: apiDetails.id,
       name: apiDetails.name,
@@ -276,6 +380,7 @@ export class TmdbServiceImpl implements TmdbService {
       numberOfEpisodes: apiDetails.number_of_episodes,
       status: apiDetails.status,
       voteAverage: apiDetails.vote_average,
+      watchProviders,
     };
   }
 

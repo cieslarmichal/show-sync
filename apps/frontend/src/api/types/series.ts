@@ -17,12 +17,19 @@ export interface Series {
   readonly originalLanguage: string;
 }
 
+export interface WatchProvider {
+  readonly providerId: number;
+  readonly providerName: string;
+  readonly logoPath: string | null;
+}
+
 export interface SeriesDetails extends Series {
   readonly backdropPath: string | null;
   readonly genres: string[];
   readonly numberOfSeasons: number;
   readonly numberOfEpisodes: number;
   readonly status: string;
+  readonly watchProviders: WatchProvider[];
 }
 
 export interface SeriesSearchResult {

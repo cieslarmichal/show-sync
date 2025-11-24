@@ -79,6 +79,7 @@ export const seriesRoutes: FastifyPluginAsyncTypebox<{
     numberOfEpisodes: details.numberOfEpisodes,
     status: details.status,
     voteAverage: details.voteAverage,
+    watchProviders: details.watchProviders,
   });
 
   const mapSeriesExternalIdsToResponse = (externalIds: TmdbSeriesExternalIds): SeriesExternalIdsDto => ({
@@ -185,7 +186,7 @@ export const seriesRoutes: FastifyPluginAsyncTypebox<{
     },
     preHandler: [authenticationMiddleware],
     handler: async (request, reply) => {
-      const { ids } = request.query;
+      const { ids, includeProviders = false } = request.query;
 
       const seriesIds = ids
         .split(',')
@@ -199,7 +200,7 @@ export const seriesRoutes: FastifyPluginAsyncTypebox<{
         });
       }
 
-      const results = await getSeriesDetailsBatchAction.execute({ seriesIds });
+      const results = await getSeriesDetailsBatchAction.execute({ seriesIds, includeProviders });
 
       const responseData = results.map(mapSeriesDetailsToResponse);
 

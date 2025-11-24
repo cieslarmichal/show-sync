@@ -134,71 +134,80 @@ export function RecommendationCard({
         </button>
 
         {/* Series Details */}
-        <div className="flex-1 min-w-0 space-y-3 sm:space-y-4">
-          <div className="space-y-2 sm:space-y-3">
+        <div className="flex-1 min-w-0 space-y-3 sm:space-y-3.5">
+          {/* Title and Main Info */}
+          <div className="space-y-2">
             <button
               onMouseDown={(e) => handleOpenImdb(recommendation.seriesTmdbId, e)}
               className="group/title h-auto p-0 hover:bg-transparent justify-start text-left focus:outline-none focus:underline cursor-pointer w-full"
             >
-              <h4 className="text-base sm:text-lg md:text-xl font-semibold text-foreground group-hover:text-primary transition-colors flex items-center gap-1.5 sm:gap-2">
+              <h4 className="text-base sm:text-lg md:text-xl font-bold text-foreground group-hover:text-primary transition-colors flex items-center gap-1.5 sm:gap-2">
                 {recommendation.seriesDetails?.name || 'Loading...'}
                 <ExternalLink className="w-3.5 h-3.5 sm:w-4 sm:h-4 opacity-0 group-hover/title:opacity-100 transition-opacity" />
               </h4>
             </button>
+
+            {/* Metadata Row - Year, Rating, Seasons, Episodes, Status */}
             {recommendation.seriesDetails && (
-              <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
-                {/* Year */}
+              <div className="flex flex-wrap items-center gap-2">
                 {recommendation.seriesDetails.firstAirDate && (
-                  <Badge
-                    variant="secondary"
-                    className="text-[10px] sm:text-xs px-1.5 py-0"
-                  >
+                  <span className="text-xs sm:text-sm text-muted-foreground font-medium">
                     {new Date(recommendation.seriesDetails.firstAirDate).getFullYear()}
-                  </Badge>
+                  </span>
                 )}
-                {/* Rating */}
-                <div className="flex items-center gap-0.5 sm:gap-1 text-foreground">
-                  <Star className="w-3 h-3 sm:w-4 sm:h-4 fill-current" />
+                {recommendation.seriesDetails.firstAirDate && <span className="text-muted-foreground/40">•</span>}
+                <div className="flex items-center gap-1 text-foreground">
+                  <Star className="w-3.5 h-3.5 sm:w-4 sm:h-4 fill-current" />
                   <span className="text-xs sm:text-sm font-semibold">
                     {recommendation.seriesDetails.voteAverage.toFixed(1)}
                   </span>
-                  <span className="text-[10px] sm:text-xs text-muted-foreground">/10</span>
                 </div>
-                {/* Seasons */}
                 {recommendation.seriesDetails.numberOfSeasons > 0 && (
-                  <Badge
-                    variant="outline"
-                    className="text-[10px] sm:text-xs px-1.5 py-0"
-                  >
-                    {recommendation.seriesDetails.numberOfSeasons}{' '}
-                    {recommendation.seriesDetails.numberOfSeasons === 1 ? 'Season' : 'Seasons'}
-                  </Badge>
+                  <>
+                    <span className="text-muted-foreground/40">•</span>
+                    <span className="text-xs sm:text-sm text-muted-foreground">
+                      {recommendation.seriesDetails.numberOfSeasons}{' '}
+                      {recommendation.seriesDetails.numberOfSeasons === 1 ? 'Season' : 'Seasons'}
+                    </span>
+                  </>
                 )}
-                {/* Status */}
+                {recommendation.seriesDetails.numberOfEpisodes > 0 && (
+                  <>
+                    <span className="text-muted-foreground/40">•</span>
+                    <span className="text-xs sm:text-sm text-muted-foreground">
+                      {recommendation.seriesDetails.numberOfEpisodes} Episodes
+                    </span>
+                  </>
+                )}
                 {recommendation.seriesDetails.status && (
-                  <Badge
-                    variant="outline"
-                    className={`text-[10px] sm:text-xs px-1.5 py-0 ${
-                      recommendation.seriesDetails.status === 'Ended'
-                        ? 'border-muted-foreground/30 text-muted-foreground'
-                        : recommendation.seriesDetails.status === 'Canceled' ||
-                            recommendation.seriesDetails.status === 'Cancelled'
-                          ? 'border-red-500/30 text-red-600 dark:text-red-400'
-                          : 'border-green-500/30 text-green-600 dark:text-green-400'
-                    }`}
-                  >
-                    {recommendation.seriesDetails.status}
-                  </Badge>
+                  <>
+                    <span className="text-muted-foreground/40">•</span>
+                    <Badge
+                      variant="outline"
+                      className={`text-[10px] sm:text-xs px-2 py-0.5 ${
+                        recommendation.seriesDetails.status === 'Ended'
+                          ? 'border-muted-foreground/30 text-muted-foreground'
+                          : recommendation.seriesDetails.status === 'Canceled' ||
+                              recommendation.seriesDetails.status === 'Cancelled'
+                            ? 'border-red-500/30 text-red-600 dark:text-red-400'
+                            : 'border-green-500/30 text-green-600 dark:text-green-400'
+                      }`}
+                    >
+                      {recommendation.seriesDetails.status}
+                    </Badge>
+                  </>
                 )}
               </div>
             )}
+
+            {/* Genres */}
             {recommendation.seriesDetails?.genres && recommendation.seriesDetails.genres.length > 0 && (
-              <div className="flex flex-wrap gap-1.5 sm:gap-2">
+              <div className="flex flex-wrap gap-1.5">
                 {recommendation.seriesDetails.genres.slice(0, 4).map((genre) => (
                   <Badge
                     key={genre}
                     variant="secondary"
-                    className="text-[10px] sm:text-xs font-normal bg-muted/50 text-muted-foreground border-0 hover:bg-muted transition-colors px-1.5 py-0"
+                    className="text-[10px] sm:text-xs font-normal bg-muted/50 text-muted-foreground border-0 px-2 py-0.5"
                   >
                     {genre}
                   </Badge>
@@ -206,6 +215,51 @@ export function RecommendationCard({
               </div>
             )}
           </div>
+
+          {/* Series Overview */}
+          {recommendation.seriesDetails?.overview && (
+            <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed line-clamp-2">
+              {recommendation.seriesDetails.overview}
+            </p>
+          )}
+
+          {/* Watch Providers (only show if available) */}
+          {recommendation.seriesDetails && recommendation.seriesDetails.watchProviders.length > 0 && (
+            <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 text-xs">
+              <div className="flex items-center gap-1.5">
+                <span className="text-muted-foreground">Available on:</span>
+                <div className="flex items-center gap-1.5">
+                  {recommendation.seriesDetails.watchProviders.slice(0, 4).map((provider) => (
+                    <div
+                      key={provider.providerId}
+                      className="relative group/provider"
+                      title={provider.providerName}
+                    >
+                      {provider.logoPath ? (
+                        <img
+                          src={`https://image.tmdb.org/t/p/w45${provider.logoPath}`}
+                          alt={provider.providerName}
+                          className="w-6 h-6 rounded shadow-sm hover:shadow-md transition-shadow"
+                        />
+                      ) : (
+                        <Badge
+                          variant="outline"
+                          className="text-[10px] px-1.5 py-0.5"
+                        >
+                          {provider.providerName}
+                        </Badge>
+                      )}
+                    </div>
+                  ))}
+                  {recommendation.seriesDetails.watchProviders.length > 4 && (
+                    <span className="text-[10px] text-muted-foreground">
+                      +{recommendation.seriesDetails.watchProviders.length - 4}
+                    </span>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* Recommendation Justification */}
           <div className="rounded-lg bg-primary/5 border-l-2 sm:border-l-4 border-primary p-2.5 sm:p-3 md:p-4 space-y-1 sm:space-y-1.5 shadow-sm">

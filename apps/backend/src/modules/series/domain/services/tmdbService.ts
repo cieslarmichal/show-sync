@@ -14,6 +14,6 @@ export interface SeriesSearchResult {
 
 export interface TmdbService {
   searchSeries(params: SearchSeriesParams): Promise<SeriesSearchResult>;
-  getSeriesDetails(seriesTmdbId: number): Promise<TmdbSeriesDetails>;
+  getSeriesDetails(seriesTmdbId: number, includeProviders?: boolean): Promise<TmdbSeriesDetails>;
   getSeriesExternalIds(seriesTmdbId: number): Promise<TmdbSeriesExternalIds>;
 }

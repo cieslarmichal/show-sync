@@ -3,6 +3,7 @@ import type { TmdbSeriesDetails } from '../../domain/types/tmdbSeries.ts';
 
 interface GetSeriesDetailsBatchPayload {
   readonly seriesIds: number[];
+  readonly includeProviders?: boolean;
 }
 
 export class GetSeriesDetailsBatchAction {
@@ -13,10 +14,10 @@ export class GetSeriesDetailsBatchAction {
   }
 
   public async execute(payload: GetSeriesDetailsBatchPayload): Promise<TmdbSeriesDetails[]> {
-    const { seriesIds } = payload;
+    const { seriesIds, includeProviders = false } = payload;
 
     const results = await Promise.allSettled(
-      seriesIds.map((seriesTmdbId) => this.tmdbService.getSeriesDetails(seriesTmdbId)),
+      seriesIds.map((seriesTmdbId) => this.tmdbService.getSeriesDetails(seriesTmdbId, includeProviders)),
     );
 
     const successfulResults = results
