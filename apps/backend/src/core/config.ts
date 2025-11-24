@@ -10,6 +10,7 @@ const configSchema = Type.Object({
     url: Type.String({ minLength: 1 }),
     ssl: Type.Boolean(),
     pool: Type.Object({
+      min: Type.Number({ minimum: 0, maximum: 10 }),
       max: Type.Number({ minimum: 1, maximum: 20 }),
       idleTimeoutMillis: Type.Number({ minimum: 1000, maximum: 120000 }),
       connectionTimeoutMillis: Type.Number({ minimum: 1000, maximum: 30000 }),

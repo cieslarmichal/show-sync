@@ -20,6 +20,7 @@ export class DatabaseClient {
             rejectUnauthorized: false,
           }
         : false,
+      min: config.pool.min,
       max: config.pool.max,
       idleTimeoutMillis: config.pool.idleTimeoutMillis,
       connectionTimeoutMillis: config.pool.connectionTimeoutMillis,
