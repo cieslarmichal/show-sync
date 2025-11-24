@@ -39,6 +39,7 @@ describe('IgnoredSeriesList', () => {
         genreIds: [18],
         originCountry: ['US'],
         originalLanguage: 'en',
+        watchProviders: [],
       },
       {
         id: 2,
@@ -55,6 +56,7 @@ describe('IgnoredSeriesList', () => {
         genreIds: [18],
         originCountry: ['US'],
         originalLanguage: 'en',
+        watchProviders: [],
       },
     ]);
   });

@@ -73,6 +73,7 @@ describe('FavoriteSeriesList', () => {
         genreIds: [18, 80],
         originCountry: ['US'],
         originalLanguage: 'en',
+        watchProviders: [],
       },
       {
         id: 2,
@@ -89,6 +90,7 @@ describe('FavoriteSeriesList', () => {
         genreIds: [10765, 18],
         originCountry: ['US'],
         originalLanguage: 'en',
+        watchProviders: [],
       },
     ]);
 
@@ -127,6 +129,7 @@ describe('FavoriteSeriesList', () => {
         genreIds: [18],
         originCountry: ['US'],
         originalLanguage: 'en',
+        watchProviders: [],
       },
     ]);
 
@@ -163,6 +166,7 @@ describe('FavoriteSeriesList', () => {
         genreIds: [18],
         originCountry: ['US'],
         originalLanguage: 'en',
+        watchProviders: [],
       },
     ]);
 
@@ -198,6 +202,7 @@ describe('FavoriteSeriesList', () => {
         genreIds: [18],
         originCountry: ['US'],
         originalLanguage: 'en',
+        watchProviders: [],
       },
     ]);
     mockOnRemoveFavorite.mockResolvedValue(undefined);
@@ -266,6 +271,7 @@ describe('FavoriteSeriesList', () => {
         genreIds: [18],
         originCountry: ['US'],
         originalLanguage: 'en',
+        watchProviders: [],
       },
     ]);
 
@@ -333,6 +339,7 @@ describe('FavoriteSeriesList', () => {
         genreIds: [18],
         originCountry: ['US'],
         originalLanguage: 'en',
+        watchProviders: [],
       },
     ]);
 
@@ -380,6 +387,7 @@ describe('FavoriteSeriesList', () => {
         genreIds: [18],
         originCountry: ['US'],
         originalLanguage: 'en',
+        watchProviders: [],
       },
     ]);
 
@@ -420,6 +428,7 @@ describe('FavoriteSeriesList', () => {
         genreIds: [18],
         originCountry: ['US'],
         originalLanguage: 'en',
+        watchProviders: [],
       },
     ]);
 
@@ -459,6 +468,7 @@ describe('FavoriteSeriesList', () => {
         genreIds: [18],
         originCountry: ['US'],
         originalLanguage: 'en',
+        watchProviders: [],
       },
     ]);
 
@@ -502,6 +512,7 @@ describe('FavoriteSeriesList', () => {
         genreIds: [18],
         originCountry: ['US'],
         originalLanguage: 'en',
+        watchProviders: [],
       },
     ]);
 
@@ -545,6 +556,7 @@ describe('FavoriteSeriesList', () => {
         genreIds: [18],
         originCountry: ['US'],
         originalLanguage: 'en',
+        watchProviders: [],
       },
     ]);
 
