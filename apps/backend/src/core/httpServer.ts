@@ -161,11 +161,11 @@ export class HttpServer {
   }
 
   public async stop(): Promise<void> {
-    this.loggerService.info({ message: 'Stopping HTTP server' });
+    this.loggerService.debug({ message: 'Stopping HTTP server' });
 
     await this.fastifyServer.close();
 
-    this.loggerService.info({ message: 'HTTP server stopped' });
+    this.loggerService.debug({ message: 'HTTP server stopped' });
   }
 
   private setupErrorHandler(): void {
