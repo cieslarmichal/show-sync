@@ -5,6 +5,7 @@ import Header from './Header';
 import { AuthContext } from '../context/AuthContext';
 import { BrowserRouter } from 'react-router-dom';
 import type { User } from '../api/types/user';
+import { ThemeContextProvider } from '../context/ThemeContextProvider';
 
 const mockNavigate = vi.fn();
 
@@ -24,19 +25,21 @@ describe('Header', () => {
 
   const renderHeader = (userData: User | null = null, userDataInitialized = true) => {
     return render(
-      <BrowserRouter>
-        <AuthContext.Provider
-          value={{
-            userData,
-            userDataInitialized,
-            clearUserData: vi.fn(),
-            refreshUserData: vi.fn(),
-            accessToken: null,
-          }}
-        >
-          <Header />
-        </AuthContext.Provider>
-      </BrowserRouter>,
+      <ThemeContextProvider>
+        <BrowserRouter>
+          <AuthContext.Provider
+            value={{
+              userData,
+              userDataInitialized,
+              clearUserData: vi.fn(),
+              refreshUserData: vi.fn(),
+              accessToken: null,
+            }}
+          >
+            <Header />
+          </AuthContext.Provider>
+        </BrowserRouter>
+      </ThemeContextProvider>,
     );
   };
 
