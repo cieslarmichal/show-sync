@@ -39,10 +39,10 @@ ShowSync transforms group entertainment decisions from chaos into confidence. Ou
 
 ### 🎯 Smart Preference Management
 
-- **Two-Tier Favoriting System**: Mark series as "like" or "love" to signal preference strength
-- **Intelligent Ignore Lists**: Block series you've already seen or aren't interested in—never see them in recommendations
+- **Three-Tier Rating System**: Rate series as "dislike", "like", or "love" to signal preference strength
+- **Smart Watchlist**: Add series to your watchlist as "not interested" or "want to watch"—control what appears in recommendations
 - **Rich Series Database**: Search and explore thousands of TV series with official data, descriptions, and artwork from TMDB
-- **Flexible Preference Updates**: Change your mind anytime—update preferences as your taste evolves
+- **Flexible Updates**: Change your mind anytime—update ratings and watchlist as your taste evolves
 
 ### 👥 Collaborative Watch Rooms
 
@@ -55,9 +55,9 @@ ShowSync transforms group entertainment decisions from chaos into confidence. Ou
 
 - **Multi-Model AI Engine**: Leverages OpenRouter.ai for access to OpenAI, Anthropic, Google, and other leading AI models
 - **Contextual Justifications**: Each recommendation includes a detailed explanation of why it fits your group's combined preferences
-- **Preference Prioritization**: "Love" preferences weighted more heavily than "like" for accurate matching
-- **Smart Filtering**: Automatically excludes series on anyone's ignore list
-- **Iterative Refinement**: Don't like a suggestion? Ignore it and regenerate for fresh options
+- **Rating Prioritization**: "Love" ratings weighted highest, "like" medium, "dislike" helps filter out unwanted content
+- **Smart Filtering**: Automatically excludes series on anyone's watchlist
+- **Iterative Refinement**: Don't like a suggestion? Add it to your watchlist and regenerate for fresh options
 - **Asynchronous Processing**: Recommendations generate in the background—no waiting, just check back when ready
 
 ### 📊 Quality Feedback Loop
@@ -79,19 +79,21 @@ ShowSync transforms group entertainment decisions from chaos into confidence. Ou
 
 ### Step 1: Create Your Profile
 
-Register for a free account and start building your TV series preferences. Search from thousands of shows using our TMDB integration and mark your favorites:
+Register for a free account and start building your TV series preferences. Search from thousands of shows using our TMDB integration and rate them:
 
 - **"Love"** for series you're passionate about
 - **"Like"** for shows you'd enjoy watching
-- Add series to your **ignore list** to exclude them from recommendations
+- **"Dislike"** for series you want to avoid in recommendations
+- Add series to your **watchlist** as "not interested" or "want to watch" to control recommendations
 
-### Step 2: Build Your Preference Foundation
+### Step 2: Build Your Rating Foundation
 
-The more you add, the better your recommendations. Our AI learns from:
+The more you rate, the better your recommendations. Our AI learns from:
 
-- Your favorite genres and themes
-- Series you've marked as "love" (weighted more heavily)
-- Shows you want to avoid
+- Your rated series and preferred genres
+- Series you've rated as "love" (weighted highest) and "like" (weighted medium)
+- Series you've rated as "dislike" (helps filter out similar content)
+- Shows on your watchlist (excluded from recommendations)
 - Your unique viewing patterns
 
 ### Step 3: Create or Join a Watch Room
@@ -123,8 +125,8 @@ Browse your recommendations and decide what to watch:
 
 - Read AI-generated justifications for each series
 - View official descriptions and artwork
-- Not interested? Add it to your ignore list
-- Regenerate for new options that avoid ignored series
+- Not interested? Add it to your watchlist
+- Regenerate for new options that avoid watchlist series
 
 ### Step 6: Provide Feedback
 
@@ -269,7 +271,7 @@ ShowSync leverages modern, production-grade technologies chosen for performance,
 
 ### External APIs & Services
 
-#### AI & Machine Learning
+#### AI
 
 - **[OpenRouter.ai](https://openrouter.ai/)** - Unified API gateway for multiple LLM providers (OpenAI GPT-4, Anthropic Claude, Google Gemini)
   - Enables model comparison and fallback strategies
@@ -448,8 +450,8 @@ This section outlines what's included in the current version and what's planned 
 - ✅ **Persistent Rooms**: Watch room links never expire—use them indefinitely
 - ✅ **Asynchronous AI**: Background processing with status tracking—no blocking waits
 - ✅ **Secure Authentication**: JWT-based auth with automatic token rotation for enhanced security
-- ✅ **Nuanced Preferences**: Two-tier system (like/love) for expressing preference strength
-- ✅ **Smart Filtering**: Global ignore lists ensure you never see unwanted recommendations
+- ✔️ **Nuanced Ratings**: Three-tier system (dislike/like/love) for expressing preference strength
+- ✔️ **Smart Filtering**: Global watchlist ensures you never see unwanted recommendations
 - ✅ **Quality Feedback**: Rate recommendations to help improve the AI
 
 **What This Means:**
@@ -468,9 +470,9 @@ This section outlines what's included in the current version and what's planned 
 - 💎 **Premium Features**: Optional paid tiers with advanced capabilities (while keeping core features free)
 - 📜 **Recommendation History**: Browse and revisit past recommendation sessions
 - 🎭 **Advanced Filtering**: Filter by genre, streaming platform, release year, runtime, and more
-- 📊 **Analytics Dashboard**: Insights into group viewing patterns and preference trends
+- 📊 **Analytics Dashboard**: Insights into group viewing patterns and rating trends
 - 🔗 **Platform Integration**: Direct links to streaming services for one-click watching
-- 👥 **Social Features**: Share favorite recommendations, follow friends' preferences
+- 👥 **Social Features**: Share recommendations, follow friends' ratings
 
 **Not Planned (By Design):**
 
@@ -496,10 +498,10 @@ ShowSync is live with a complete, production-ready feature set:
 
 - ✔️ **TMDB Integration**: Access to thousands of TV series with official data
 - ✔️ **Advanced Search**: Find series by title with rich metadata
-- ✔️ **Two-Tier Favorites**: Express preferences with "like" and "love" levels
-- ✔️ **Flexible Management**: Add, remove, and update series preferences anytime
-- ✔️ **Ignore Lists**: Block unwanted series from all recommendations
-- ✔️ **Comprehensive Views**: Browse your favorites and ignored series
+- ✔️ **Three-Tier Rating System**: Rate series as "dislike", "like", or "love" to express preference strength
+- ✔️ **Flexible Management**: Add, remove, and update series ratings anytime
+- ✔️ **Smart Watchlist**: Add series as "not interested" or "want to watch" to control recommendations
+- ✔️ **Comprehensive Views**: Browse your rated series and watchlist
 
 #### Collaborative Features
 
@@ -514,9 +516,9 @@ ShowSync is live with a complete, production-ready feature set:
 - ✔️ **Asynchronous Processing**: Background generation with status tracking
 - ✔️ **Smart Matching**: 5-10 curated recommendations per request
 - ✔️ **Contextual Justifications**: Detailed explanations for each recommendation
-- ✔️ **Preference Weighting**: "Love" > "Like" for accurate prioritization
-- ✔️ **Intelligent Filtering**: Automatic exclusion of ignored series
-- ✔️ **Iterative Refinement**: Regenerate recommendations excluding newly ignored series
+- ✔️ **Rating Weighting**: "Love" > "Like" > "Dislike" for accurate prioritization
+- ✔️ **Intelligent Filtering**: Automatic exclusion of watchlist series
+- ✔️ **Iterative Refinement**: Regenerate recommendations excluding newly watchlisted series
 
 #### Quality & Feedback
 

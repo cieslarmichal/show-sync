@@ -284,7 +284,7 @@ describe('Series Routes Integration Tests', () => {
     });
   });
 
-  describe('GET /series/ignored', () => {
+  describe('GET /series/watchlist', () => {
     it('should return empty list for user with no watchlist', async () => {
       const accessToken = await registerAndLogin();
 

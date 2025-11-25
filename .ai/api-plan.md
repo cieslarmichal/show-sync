@@ -136,7 +136,7 @@
 
 - **Method**: `GET`
 - **Path**: `/users/me`
-- **Description**: Retrieves the profile and favorite series of the currently authenticated user.
+- **Description**: Retrieves the profile of the currently authenticated user.
 - **Authentication**: Required.
 - **Response Body**:
 
@@ -161,15 +161,16 @@
 - **Success Codes**: `204 No Content`
 - **Error Codes**: `401 Unauthorized`
 
-#### Get favorite series
+#### Get rated series
 
 - **Method**: `GET`
-- **Path**: `/series/favorites`
-- **Description**: Retrieves the user's list of favorite series.
+- **Path**: `/series/ratings`
+- **Description**: Retrieves the user's list of rated series.
 - **Authentication**: Required.
 - **Query Parameters**:
   - `page` (integer, optional, default: 1): The page number for pagination.
   - `pageSize` (integer, optional, default: 20): The number of items per page.
+  - `rating` (string, optional): Filter by rating level ("dislike", "like", or "love").
 - **Response Body**:
 
   ```json
@@ -177,6 +178,7 @@
     "data": [
       {
         "seriesTmdbId": 1396,
+        "rating": "love"
       }
     ],
     "metadata": {
@@ -190,17 +192,18 @@
 - **Success Codes**: `200 OK`
 - **Error Codes**: `401 Unauthorized`
 
-#### Add a favorite series
+#### Add a series rating
 
 - **Method**: `POST`
-- **Path**: `/series/favorites`
-- **Description**: Adds a series to the user's list of favorites.
+- **Path**: `/series/ratings`
+- **Description**: Adds a series to the user's list of rated series with a rating (dislike/like/love).
 - **Authentication**: Required.
 - **Request Body**:
 
   ```json
   {
-    "seriesTmdbId": 1399
+    "seriesTmdbId": 1399,
+    "rating": "love"
   }
   ```
 
@@ -209,28 +212,29 @@
   ```json
   {
     "seriesTmdbId": 1399,
+    "rating": "love"
   }
   ```
 
 - **Success Codes**: `201 Created`
-- **Error Codes**: `400 Bad Request` (Invalid ID), `401 Unauthorized`, `409 Conflict` (Series already in favorites)
+- **Error Codes**: `400 Bad Request` (Invalid ID or rating), `401 Unauthorized`, `409 Conflict` (Series already rated)
 
-#### Remove a favorite series
+#### Remove a series rating
 
 - **Method**: `DELETE`
-- **Path**: `/series/favorites/:seriesTmdbId`
-- **Description**: Removes a series from the user's list of favorites.
+- **Path**: `/series/ratings/:seriesTmdbId`
+- **Description**: Removes a series from the user's list of rated series.
 - **Authentication**: Required.
 - **URL Parameters**:
   - `seriesTmdbId` (integer): The TMDB ID of the series to remove.
 - **Success Codes**: `204 No Content`
-- **Error Codes**: `401 Unauthorized`, `404 Not Found` (Series not in favorites)
+- **Error Codes**: `401 Unauthorized`, `404 Not Found` (Series not rated)
 
-#### Update favorite series preference
+#### Update series rating
 
 - **Method**: `PATCH`
-- **Path**: `/series/favorites/:seriesTmdbId/preference`
-- **Description**: Updates the preference level (like/love) for a series in the user's favorites.
+- **Path**: `/series/ratings/:seriesTmdbId`
+- **Description**: Updates the rating (dislike/like/love) for a series in the user's rated series.
 - **Authentication**: Required.
 - **URL Parameters**:
   - `seriesTmdbId` (integer): The TMDB ID of the series to update.
@@ -238,7 +242,7 @@
 
   ```json
   {
-    "preferenceLevel": "love"
+    "rating": "love"
   }
   ```
 
@@ -247,22 +251,23 @@
   ```json
   {
     "seriesTmdbId": 1399,
-    "preferenceLevel": "love"
+    "rating": "love"
   }
   ```
 
 - **Success Codes**: `200 OK`
-- **Error Codes**: `400 Bad Request` (Invalid preference level), `401 Unauthorized`, `404 Not Found` (Series not in favorites)
+- **Error Codes**: `400 Bad Request` (Invalid rating), `401 Unauthorized`, `404 Not Found` (Series not rated)
 
-#### Get ignored series
+#### Get watchlist series
 
 - **Method**: `GET`
-- **Path**: `/series/ignored`
-- **Description**: Retrieves the user's list of ignored series.
+- **Path**: `/series/watchlist`
+- **Description**: Retrieves the user's watchlist of series with type information.
 - **Authentication**: Required.
 - **Query Parameters**:
   - `page` (integer, optional, default: 1): The page number for pagination.
   - `pageSize` (integer, optional, default: 20): The number of items per page.
+  - `type` (string, optional): Filter by watchlist type ("notInterested" or "wantToWatch").
 - **Response Body**:
 
   ```json
@@ -270,7 +275,8 @@
     "data": [
       {
         "seriesTmdbId": 1402,
-        "ignoredAt": "iso-8601-date-string"
+        "type": "notInterested",
+        "createdAt": "iso-8601-date-string"
       }
     ],
     "metadata": {
@@ -284,17 +290,18 @@
 - **Success Codes**: `200 OK`
 - **Error Codes**: `401 Unauthorized`
 
-#### Add an ignored series
+#### Add a series to watchlist
 
 - **Method**: `POST`
-- **Path**: `/series/ignored`
-- **Description**: Adds a series to the user's list of ignored series.
+- **Path**: `/series/watchlist`
+- **Description**: Adds a series to the user's watchlist with a type (notInterested/wantToWatch).
 - **Authentication**: Required.
 - **Request Body**:
 
   ```json
   {
-    "seriesTmdbId": 1402
+    "seriesTmdbId": 1402,
+    "type": "notInterested"
   }
   ```
 
@@ -303,23 +310,24 @@
   ```json
   {
     "seriesTmdbId": 1402,
-    "ignoredAt": "iso-8601-date-string"
+    "type": "notInterested",
+    "createdAt": "iso-8601-date-string"
   }
   ```
 
 - **Success Codes**: `201 Created`
-- **Error Codes**: `400 Bad Request` (Invalid ID), `401 Unauthorized`, `409 Conflict` (Series already ignored)
+- **Error Codes**: `400 Bad Request` (Invalid ID or type), `401 Unauthorized`, `409 Conflict` (Series already in watchlist)
 
-#### Remove an ignored series
+#### Remove a series from watchlist
 
 - **Method**: `DELETE`
-- **Path**: `/series/ignored/:seriesTmdbId`
-- **Description**: Removes a series from the user's list of ignored series.
+- **Path**: `/series/watchlist/:seriesTmdbId`
+- **Description**: Removes a series from the user's watchlist.
 - **Authentication**: Required.
 - **URL Parameters**:
   - `seriesTmdbId` (integer): The TMDB ID of the series to remove.
 - **Success Codes**: `204 No Content`
-- **Error Codes**: `401 Unauthorized`, `404 Not Found` (Series not in ignored list)
+- **Error Codes**: `401 Unauthorized`, `404 Not Found` (Series not in watchlist)
 
 ---
 
@@ -645,7 +653,7 @@
 
 - **Method**: `POST`
 - **Path**: `/watchrooms/:watchroomId/recommendations/generate`
-- **Description**: Triggers the AI to generate new recommendations for the watchroom based on the participants' favorite series (prioritizing "love" preferences) and excluding ignored series. This action creates a new recommendation request and starts an asynchronous generation process. Can only be performed by the watchroom owner.
+- **Description**: Triggers the AI to generate new recommendations for the watchroom based on the participants' rated series (prioritizing "love" ratings) and excluding series in watchlist. This action creates a new recommendation request and starts an asynchronous generation process. Can only be performed by the watchroom owner.
 - **Authentication**: Required. User must be the owner.
 - **URL Parameters**:
   - `watchroomId` (string): The UUID of the watchroom.
@@ -757,19 +765,19 @@ DELETE /users/me
 PATCH /users/me/password
 
 2. Series Module
-This module handles all operations related to series including favorites, ignored series, and acts as a proxy to the external TMDB API.
+This module handles all operations related to series including ratings, watchlist, and acts as a proxy to the external TMDB API.
 Endpoints:
 GET /series/search
 GET /series/:seriesTmdbId
 GET /series/:seriesTmdbId/external-ids
 GET /series/batch/details
-GET /series/favorites
-POST /series/favorites
-DELETE /series/favorites/:seriesTmdbId
-PATCH /series/favorites/:seriesTmdbId/preference
-GET /series/ignored
-POST /series/ignored
-DELETE /series/ignored/:seriesTmdbId
+GET /series/ratings
+POST /series/ratings
+DELETE /series/ratings/:seriesTmdbId
+PATCH /series/ratings/:seriesTmdbId
+GET /series/watchlist
+POST /series/watchlist
+DELETE /series/watchlist/:seriesTmdbId
 
 3. Watchroom Module
 This module would be responsible for all operations related to watchrooms, including creation, management, and participant actions.

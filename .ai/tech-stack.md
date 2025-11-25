@@ -5,7 +5,7 @@
 - React dla nowoczesnej, reaktywnej architektury UI
 - TypeScript w strict mode dla pełnej bezpieczeństwa typów
 - React Router do zarządzania routingiem i nawigacją
-- Tailwind CSS z @tailwindcss/vite do szybkiego stylowania
+- Tailwind CSS szybkiego stylowania
 - Radix UI dla komponentów primitywnych
 - React Hook Form z Zod do walidacji formularzy
 

@@ -66,43 +66,47 @@ Reprezentuje "pokoje oglądania" tworzone przez użytkowników.
 
 ---
 
-### Tabela `user_favorite_series`
+### Tabela `user_series_ratings`
 
-Tabela łącząca, przechowująca ulubione seriale dla każdego użytkownika.
+Tabela łącząca, przechowująca oceny seriali dla każdego użytkownika.
 
 **Kolumny:**
 
 - `id` UUID PRIMARY KEY — Unikalny identyfikator
 - `user_id` UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE — Identyfikator użytkownika
 - `series_tmdb_id` INTEGER NOT NULL — Identyfikator serialu z bazy danych TMDB
-- `preference_level` VARCHAR(16) NOT NULL — Poziom preferencji ("like", "love")
+- `rating` VARCHAR(16) NOT NULL — Ocena serialu ("like", "love", "dislike")
+- `created_at` TIMESTAMP NOT NULL DEFAULT NOW() — Data utworzenia oceny
 
 **Indeksy:**
 
 - Automatyczny indeks na `id` (PRIMARY KEY)
-- `CREATE INDEX idx_user_favorite_series_user_id ON user_favorite_series(user_id);` — Dla zapytań pobierających ulubione seriale użytkownika
-- `CREATE INDEX idx_user_favorite_series_user_series_tmdb_id ON user_favorite_series(user_id, series_tmdb_id);` — Dla szybkiego sprawdzania czy serial jest w ulubionych
-- `CREATE INDEX idx_user_favorite_series_preference_level ON user_favorite_series(user_id, preference_level);` — Dla filtrowania po poziomie preferencji
-- `CREATE UNIQUE INDEX uq_user_favorite_series_user_series ON user_favorite_series(user_id, series_tmdb_id);` — Zapewnia unikalność pary użytkownik-serial
+- `CREATE INDEX idx_user_series_ratings_user_id ON user_series_ratings(user_id);` — Dla zapytań pobierających ocenione seriale użytkownika
+- `CREATE INDEX idx_user_series_ratings_user_series_tmdb_id ON user_series_ratings(user_id, series_tmdb_id);` — Dla szybkiego sprawdzania czy serial jest oceniony
+- `CREATE INDEX idx_user_series_ratings_rating ON user_series_ratings(user_id, rating);` — Dla filtrowania po ocenie
+- `CREATE UNIQUE INDEX uq_user_series_ratings_user_series ON user_series_ratings(user_id, series_tmdb_id);` — Zapewnia unikalność pary użytkownik-serial
 
 ---
 
-### Tabela `user_ignored_series`
+### Tabela `user_series_watchlist`
 
-Tabela łącząca, przechowująca seriale ignorowane przez użytkownika. Seriale dodawane są do tej tabeli gdy użytkownik oznacza rekomendację jako "nie interesuje mnie".
+Tabela łącząca, przechowująca seriale na liście obserwowanych użytkownika. Seriale mogą być dodane jako "nie interesuje mnie" (notInterested) lub "chcę obejrzeć" (wantToWatch).
 
 **Kolumny:**
 
 - `id` UUID PRIMARY KEY — Unikalny identyfikator
 - `user_id` UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE — Identyfikator użytkownika
 - `series_tmdb_id` INTEGER NOT NULL — Identyfikator serialu z bazy danych TMDB
+- `type` VARCHAR(16) NOT NULL — Typ wpisu na liście ("notInterested", "wantToWatch")
+- `created_at` TIMESTAMP NOT NULL DEFAULT NOW() — Data utworzenia wpisu
 
 **Indeksy:**
 
 - Automatyczny indeks na `id` (PRIMARY KEY)
-- `CREATE INDEX idx_user_ignored_series_user_id ON user_ignored_series(user_id);` — Dla zapytań pobierających listę ignorowanych seriali użytkownika
-- `CREATE INDEX idx_user_ignored_series_user_series_tmdb_id ON user_ignored_series(user_id, series_tmdb_id);` — Dla szybkiego sprawdzania czy serial jest ignorowany
-- `CREATE UNIQUE INDEX uq_user_ignored_series_user_series ON user_ignored_series(user_id, series_tmdb_id);` — Zapewnia unikalność pary użytkownik-serial
+- `CREATE INDEX idx_user_series_watchlist_user_id ON user_series_watchlist(user_id);` — Dla zapytań pobierających listę obserwowanych seriali użytkownika
+- `CREATE INDEX idx_user_series_watchlist_user_series_tmdb_id ON user_series_watchlist(user_id, series_tmdb_id);` — Dla szybkiego sprawdzania czy serial jest na liście
+- `CREATE INDEX idx_user_series_watchlist_type ON user_series_watchlist(user_id, type);` — Dla filtrowania po typie wpisu
+- `CREATE UNIQUE INDEX uq_user_series_watchlist_user_series ON user_series_watchlist(user_id, series_tmdb_id);` — Zapewnia unikalność pary użytkownik-serial
 
 ---
 
@@ -200,15 +204,15 @@ Przechowuje opinie użytkowników na temat wygenerowanych rekomendacji dla daneg
   - Każdy pokój ma dokładnie jednego właściciela.
   - Relacja zrealizowana przez klucz obcy `watchrooms.owner_id`.
 
-- **`users` ↔ `user_favorite_series` ↔ `series` (Wiele-do-wielu)**
-  - Jeden użytkownik może mieć wiele ulubionych seriali z różnymi poziomami preferencji (like/love).
-  - Jeden serial może być ulubionym dla wielu użytkowników.
-  - Relacja zrealizowana przez tabelę łączącą `user_favorite_series`. (Uwaga: dane seriali nie są przechowywane w naszej bazie, tylko ich identyfikatory TMDB).
+- **`users` ↔ `user_series_ratings` ↔ `series` (Wiele-do-wielu)**
+  - Jeden użytkownik może ocenić wiele seriali z różnymi ocenami (dislike/like/love).
+  - Jeden serial może być oceniony przez wielu użytkowników.
+  - Relacja zrealizowana przez tabelę łączącą `user_series_ratings`. (Uwaga: dane seriali nie są przechowywane w naszej bazie, tylko ich identyfikatory TMDB).
 
-- **`users` ↔ `user_ignored_series` ↔ `series` (Wiele-do-wielu)**
-  - Jeden użytkownik może mieć wiele ignorowanych seriali.
-  - Jeden serial może być ignorowany przez wielu użytkowników.
-  - Relacja zrealizowana przez tabelę łączącą `user_ignored_series`. (Uwaga: dane seriali nie są przechowywane w naszej bazie, tylko ich identyfikatory TMDB).
+- **`users` ↔ `user_series_watchlist` ↔ `series` (Wiele-do-wielu)**
+  - Jeden użytkownik może mieć wiele seriali na liście obserwowanych z różnymi typami (notInterested/wantToWatch).
+  - Jeden serial może być na liście obserwowanych wielu użytkowników.
+  - Relacja zrealizowana przez tabelę łączącą `user_series_watchlist`. (Uwaga: dane seriali nie są przechowywane w naszej bazie, tylko ich identyfikatory TMDB).
 
 - **`watchrooms` ↔ `watchroom_participants` ↔ `users` (Wiele-do-wielu)**
   - Jeden pokój może mieć wielu uczestników.
@@ -320,41 +324,41 @@ Projekt świadomie rezygnuje z Row-Level Security na rzecz kontroli dostępu na 
 - Może przeglądać wszystkie opinie dla żądań w swoim pokoju (przyszła funkcjonalność)
 - Może zostawić własną opinię jako uczestnik
 
-### Ulubione seriale (`user_favorite_series`)
+### Ocenione seriale (`user_series_ratings`)
 
 **Właściciel danych** (`user_id`):
 
-- Może przeglądać tylko **własne** ulubione seriale
-- Może dodawać nowe ulubione seriale z poziomem preferencji (like/love)
-- Może zmieniać poziom preferencji dla swoich ulubionych seriali
-- Może usuwać swoje ulubione seriale
+- Może przeglądać tylko **własne** ocenione seriale
+- Może dodawać nowe oceny seriali z oceną (dislike/like/love)
+- Może zmieniać ocenę dla swoich ocenionych seriali
+- Może usuwać swoje oceny seriali
 
 **Inni użytkownicy**:
 
-- NIE mogą przeglądać ulubionych innych użytkowników
-- NIE mogą modyfikować cudzych ulubionych
+- NIE mogą przeglądać ocen innych użytkowników
+- NIE mogą modyfikować cudzych ocen
 
 **Wyjątek - System AI**:
 
-- Podczas generowania rekomendacji dla pokoju, system agreguje ulubione wszystkich uczestników
+- Podczas generowania rekomendacji dla pokoju, system agreguje oceny wszystkich uczestników
 - Seriale oznaczone jako "love" mają wyższy priorytet w algorytmie rekomendacji
 - Dostęp tylko w kontekście generowania rekomendacji (read-only)
 
-### Ignorowane seriale (`user_ignored_series`)
+### Lista obserwowanych seriali (`user_series_watchlist`)
 
 **Właściciel danych** (`user_id`):
 
-- Może przeglądać tylko **własne** ignorowane seriale
-- Może dodawać nowe ignorowane seriale (poprzez oznaczenie rekomendacji jako "nie interesuje mnie")
-- Może usuwać swoje ignorowane seriale
+- Może przeglądać tylko **własną** listę obserwowanych seriali
+- Może dodawać nowe seriale na listę z typem (notInterested/wantToWatch)
+- Może usuwać seriale ze swojej listy
 
 **Inni użytkownicy**:
 
-- NIE mogą przeglądać ignorowanych innych użytkowników
-- NIE mogą modyfikować cudzych ignorowanych
+- NIE mogą przeglądać list innych użytkowników
+- NIE mogą modyfikować cudzych list
 
 **Wyjątek - System AI**:
 
-- Podczas generowania rekomendacji dla pokoju, system agreguje ignorowane seriale wszystkich uczestników
-- Jeśli którykolwiek uczestnik ma serial w ignorowanych, serial NIE zostanie zarekomendowany
+- Podczas generowania rekomendacji dla pokoju, system agreguje listy obserwowanych wszystkich uczestników
+- Jeśli którykolwiek uczestnik ma serial na liście (niezależnie od typu), serial NIE zostanie zarekomendowany
 - Dostęp tylko w kontekście generowania rekomendacji (read-only)

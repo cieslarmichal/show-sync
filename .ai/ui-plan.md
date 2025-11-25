@@ -30,14 +30,14 @@ Struktura opiera się na kilku głównych widokach, które odpowiadają za poszc
 - **Kluczowe komponenty widoku**: `LoginForm`, `RegisterForm`, `Tabs`.
 - **UX, dostępność i względy bezpieczeństwa**: Strona obsługuje przekierowania (np. po kliknięciu linku zapraszającego). Należy zaimplementować walidację po stronie klienta i serwera. Pola haseł muszą być maskowane.
 
-### 3. Strona zarządzania ulubionymi serialami
+### 3. Strona zarządzania ocenionymi serialami
 
 - **Nazwa widoku**: SeriesPage
 - **Ścieżka widoku**: `/series`
-- **Główny cel**: Umożliwienie użytkownikowi zbudowania swojego profilu preferencji poprzez wyszukiwanie i dodawanie seriali do listy ulubionych.
-- **Kluczowe informacje do wyświetlenia**: Wyszukiwarka seriali, wyniki wyszukiwania, galeria plakatów ulubionych seriali.
-- **Kluczowe komponenty widoku**: `SearchSeries`, `FavoriteSeriesList`.
-- **UX, dostępność i względy bezpieczeństwa**: Dostęp chroniony, tylko dla zalogowanych użytkowników. Wyszukiwarka powinna wykorzystywać mechanizm "debounce" do optymalizacji zapytań API. Lista ulubionych seriali powinna obsługiwać paginację (np. "infinite scroll").
+- **Główny cel**: Umożliwienie użytkownikowi zbudowania swojego profilu preferencji poprzez wyszukiwanie i dodawanie seriali do listy ocenionych oraz zarządzanie listą obserwowanych.
+- **Kluczowe informacje do wyświetlenia**: Wyszukiwarka seriali, wyniki wyszukiwania, galeria plakatów ocenionych seriali, lista obserwowanych seriali.
+- **Kluczowe komponenty widoku**: `SearchSeries`, `SeriesRatingList`, `SeriesWatchlistList`.
+- **UX, dostępność i względy bezpieczeństwa**: Dostęp chroniony, tylko dla zalogowanych użytkowników. Wyszukiwarka powinna wykorzystywać mechanizm "debounce" do optymalizacji zapytań API. Lista ocenionych seriali powinna obsługiwać paginację (np. "infinite scroll").
 
 ### 4. Strona zarządzania pokojami
 
@@ -82,7 +82,7 @@ Główny przepływ użytkownika obejmuje stworzenie konta, zdefiniowanie swoich 
 1. **Rejestracja i budowanie profilu**:
     - Użytkownik trafia na `HomePage (/)`, klika "Zarejestruj się", co przenosi go na `LoginPage (/login)`.
     - Po pomyślnej rejestracji jest przekierowywany na `HomePage (/)`, która teraz działa jako dashboard.
-    - Z nawigacji przechodzi do `SeriesPage (/series)`, gdzie wyszukuje i dodaje ulubione seriale do swojego profilu.
+    - Z nawigacji przechodzi do `SeriesPage (/series)`, gdzie wyszukuje i dodaje seriale do swojej listy ocenionych.
 2. **Tworzenie pokoju i zapraszanie**:
     - Użytkownik przechodzi do `WatchRoomsPage (/watchrooms)` lub klika "Stwórz pokój" na dashboardzie.
     - Wypełnia formularz i tworzy nowy pokój, po czym zostaje przekierowany na `RoomPage (/watchrooms/:watchroomId)`.
@@ -113,7 +113,8 @@ Poniżej znajduje się lista kluczowych, reużywalnych komponentów, które będ
 - **`Header`**: Globalny komponent nawigacyjny, dynamicznie dostosowujący swoje menu w zależności od stanu zalogowania użytkownika.
 - **`LoginForm` / `RegisterForm`**: Komponenty formularzy z logiką walidacji (przy użyciu `react-hook-form` i `zod`) do obsługi uwierzytelniania.
 - **`SearchSeries`**: Komponent zawierający pole do wyszukiwania seriali, logikę "debounce" oraz wyświetlanie wyników z TMDB API.
-- **`FavoriteSeriesList`**: Komponent wyświetlający listę ulubionych seriali użytkownika w formie galerii plakatów z opcją usunięcia.
+- **`SeriesRatingList`**: Komponent wyświetlający listę ocenionych seriali użytkownika w formie galerii plakatów z opcją zmiany oceny lub usunięcia.
+- **`SeriesWatchlistList`**: Komponent wyświetlający listę obserwowanych seriali użytkownika z opcją usunięcia z listy.
 - **`WatchRoomList`**: Komponent wyświetlający listę pokoi, do których należy użytkownik, z podstawowymi informacjami i linkiem do szczegółów.
 - **`CreateWatchRoomModal`**: Modal z formularzem do tworzenia nowego pokoju.
 - **`ParticipantList`**: Komponent wyświetlający listę uczestników w danym pokoju, wizualnie odróżniający właściciela i umożliwiający mu usuwanie innych członków.

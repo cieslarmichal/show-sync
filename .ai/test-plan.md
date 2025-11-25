@@ -210,12 +210,12 @@
 - ✗ Nieprawidłowy access token → `UnauthorizedAccessError` (401)
 - ✗ Wygasły access token → `UnauthorizedAccessError` (401)
 
-#### PUT /api/users/profile/series
+#### POST /api/series/ratings
 
 **Testy pozytywne:**
 
-- ✓ Dodanie ulubionych seriali do profilu
-- ✓ Aktualizacja istniejącej listy seriali
+- ✓ Dodanie oceny serialu do profilu z oceną "like"
+- ✓ Dodanie oceny serialu do profilu z oceną "love"
 - ✓ Weryfikacja zapisu w bazie danych
 - ✓ Transakcja bazodanowa (ACID)
 
@@ -223,12 +223,28 @@
 
 - ✗ Brak autoryzacji → `UnauthorizedAccessError` (401)
 - ✗ Nieprawidłowa struktura danych → `InputNotValidError` (400)
+- ✗ Brakująca ocena → `InputNotValidError` (400)
+- ✗ Serial już oceniony → `ResourceAlreadyExistsError` (409)
 - ✗ Błąd bazy danych → rollback transakcji
 
 **Testy transakcji:**
 
 - Rollback przy częściowym błędzie
 - Weryfikacja stanu bazy przed i po operacji
+
+#### PATCH /api/series/ratings/:seriesTmdbId
+
+**Testy pozytywne:**
+
+- ✓ Zmiana oceny z "like" na "love", z "like" na "dislike", lub z "dislike" na "love"
+- ✓ Zmiana oceny z "love" na "like"
+- ✓ Weryfikacja aktualizacji w bazie danych
+
+**Testy negatywne:**
+
+- ✗ Brak autoryzacji → `UnauthorizedAccessError` (401)
+- ✗ Serial nie jest oceniony → `ResourceNotFoundError` (404)
+- ✗ Nieprawidłowa ocena → `InputNotValidError` (400)
 
 ### 4.2. Moduł WatchRoom - Testy API (Vitest + Supertest)
 
@@ -285,10 +301,12 @@
 
 **Testy pozytywne:**
 
-- ✓ Generowanie rekomendacji (minimum 2 użytkowników)
-- ✓ Wysłanie zbiorczych danych do OpenRouter API
+- ✓ Generowanie rekomendacji (minimum 2 użytkowników z ocenionymi serialami)
+- ✓ Wysłanie ocen seriali (ratings) wszystkich uczestników do OpenRouter API
+- ✓ Wysłanie listy obserwowanych seriali do wykluczenia z rekomendacji
 - ✓ Parsowanie i zapis rekomendacji do bazy
 - ✓ Zwrócenie rekomendacji z uzasadnieniami
+- ✓ Priorytetyzacja seriali z oceną "love" nad "like"
 
 **Testy negatywne:**
 
@@ -402,7 +420,7 @@
 1. Przejście na stronę rejestracji
 2. Wypełnienie formularza rejestracji
 3. Automatyczne przekierowanie na dashboard
-4. Wyszukanie i dodanie 3 ulubionych seriali
+4. Wyszukanie i dodanie 3 seriali do listy ocenionych (z ocenami "dislike", "like" i "love")
 5. Utworzenie pokoju oglądania
 6. Weryfikacja wygenerowanego invite link
 7. Otwarcie pokoju w nowej karcie jako drugi użytkownik
@@ -452,7 +470,7 @@
 - Brak przekierowania
 - Pozostanie na stronie logowania
 
-#### Scenariusz 3: Zarządzanie ulubionymi serialami
+#### Scenariusz 3: Zarządzanie ocenionymi serialami i listą obserwowanych
 
 **Test 1: Wyszukiwanie seriali**
 
@@ -461,21 +479,36 @@
 - Wyświetlenie wyników z TMDB
 - Loading state podczas wyszukiwania
 
-**Test 2: Dodawanie serialu do ulubionych**
+**Test 2: Dodawanie serialu do ocenionych**
 
 - Kliknięcie na serial z wyników
-- Serial pojawia się na liście ulubionych
+- Wybór oceny ("dislike", "like" lub "love")
+- Serial pojawia się na liście ocenionych z odpowiednią oceną
 - Persistence po refresh strony
 
-**Test 3: Usuwanie serialu**
+**Test 3: Zmiana oceny serialu**
+
+- Kliknięcie na opcję zmiany oceny przy serialu
+- Zmiana między dowolnymi ocenami ("dislike", "like", "love")
+- Aktualizacja widoczna natychmiast
+- Persistence po refresh strony
+
+**Test 4: Usuwanie serialu z listy ocenionych**
 
 - Kliknięcie "Usuń" na serialu
-- Serial znika z listy
+- Serial znika z listy ocenionych
 - Persistence po refresh strony
 
-**Test 4: Pusta lista**
+**Test 5: Dodawanie serialu do listy obserwowanych**
 
-- Wyświetlenie komunikatu "Brak ulubionych seriali"
+- Kliknięcie opcji "Dodaj do listy"
+- Wybór typu ("notInterested" lub "wantToWatch")
+- Serial pojawia się na liście obserwowanych
+- Persistence po refresh strony
+
+**Test 6: Pusta lista ocenionych**
+
+- Wyświetlenie komunikatu "Brak ocenionych seriali"
 - Prompt do dodania seriali
 
 #### Scenariusz 4: Tworzenie i zarządzanie pokojami
@@ -567,7 +600,7 @@
 - Login page
 - Registration page
 - Dashboard (empty state)
-- Dashboard (with favorite series)
+- Dashboard (with rated series)
 - Watch room details (empty)
 - Watch room details (with participants)
 - Recommendations results
@@ -986,14 +1019,14 @@ npm audit --audit-level=moderate
 
 **Dzień 2: Core User Journeys**
 
-- Add favorite series flow
+- Add series ratings flow
 - Create watch room flow
 - Join watch room flow (invite link)
 - Profile management
 
 **Dzień 3: Critical Path**
 
-- Complete user journey: Register → Add Series → Create Watch Room → Invite → Generate Recommendations
+- Complete user journey: Register → Add Rated Series → Create Watch Room → Invite → Generate Recommendations
 - Multi-user scenarios (2 browser contexts)
 - Error handling and edge cases
 

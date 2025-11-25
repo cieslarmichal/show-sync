@@ -27,31 +27,31 @@ ShowSync ma na celu rozwiązanie tych problemów, dostarczając obiektywne, opar
   - Podstawowy profil użytkownika, na którym widoczna jest lista jego ulubionych seriali.
 - FR-02: Budowanie profilu preferencji
   - Funkcjonalność wyszukiwania seriali w oparciu o integrację z API TMDB.
-  - Możliwość dodawania i usuwania seriali z osobistej listy "ulubionych".
-  - Możliwość oznaczania seriali jako "like" (lubię) lub "love" (uwielbiam) z możliwością zmiany poziomu preferencji.
-  - Możliwość oznaczania seriali jako "zignorowane" - seriale dodawane do listy ignorowanych nie będą pojawiać się w przyszłych rekomendacjach.
+  - Możliwość dodawania i usuwania seriali z listy ocenionych z oceną "dislike" (nie lubię), "like" (lubię) lub "love" (uwielbiam).
+  - Możliwość zmiany oceny serialu między dowolnymi wartościami: "dislike", "like" i "love".
+  - Możliwość dodawania seriali do listy obserwowanych z typem "notInterested" (nie interesuje mnie) lub "wantToWatch" (chcę obejrzeć) - seriale na tej liście nie będą pojawiać się w przyszłych rekomendacjach.
 - FR-03: Zarządzanie sesjami ("pokojami")
   - Możliwość utworzenia nowego "pokoju oglądania" przez zalogowanego użytkownika.
   - Automatyczne generowanie unikalnego, publicznego linku do pokoju.
 - FR-04: System zaproszeń
   - Możliwość dołączenia do istniejącego pokoju za pomocą udostępnionego linku.
 - FR-05: Silnik rekomendacji
-  - Integracja z API OpenAI w celu analizy list ulubionych seriali wszystkich uczestników sesji.
-  - System priorytetyzuje seriale oznaczone jako "love" (uwielbiam) nad "like" (lubię) podczas generowania rekomendacji.
+  - Integracja z API OpenAI w celu analizy ocen seriali wszystkich uczestników sesji.
+  - System priorytetyzuje seriale ocenione jako "love" (uwielbiam) najwyżej, "like" (lubię) średnio, a "dislike" (nie lubię) pomaga filtrować niechciane treści podczas generowania rekomendacji.
   - Generowanie rekomendacji odbywa się asynchronicznie - użytkownik otrzymuje natychmiastowe potwierdzenie rozpoczęcia procesu.
   - Możliwość sprawdzenia statusu generowania (oczekujące/ukończone/nieudane).
-  - System przesyła do API połączone dane o preferencjach, a w odpowiedzi otrzymuje listę rekomendacji wraz z uzasadnieniem.
+  - System przesyła do API połączone dane o ocenach, a w odpowiedzi otrzymuje listę rekomendacji wraz z uzasadnieniem.
 - FR-06: Wyświetlanie wyników
   - Interfejs prezentujący listę 5-10 polecanych seriali z najnowszego ukończonego żądania rekomendacji.
   - Każda propozycja zawiera tytuł, plakat, krótki opis (z TMDB) oraz wygenerowane przez AI uzasadnienie dopasowania do gustu grupy.
-  - Możliwość dodania dowolnego serialu do osobistej listy ignorowanych (nie tylko z rekomendacji).
+  - Możliwość dodania dowolnego serialu do osobistej listy obserwowanych (nie tylko z rekomendacji).
 - FR-07: System opinii
   - Po przeglądnięciu rekomendacji, uczestnicy mogą zostawić opinię na temat jakości rekomendacji.
   - Opinia zawiera: ocenę w skali 1-5, informację czy znaleziono coś do obejrzenia, oraz opcjonalny komentarz.
   - Każdy uczestnik może zostawić tylko jedną opinię na dane żądanie rekomendacji.
 - FR-08: Filtrowanie rekomendacji
-  - Seriale oznaczone jako "zignorowane" przez któregokolwiek uczestnika pokoju nie będą uwzględniane w przyszłych rekomendacjach dla tego pokoju.
-  - Każdy użytkownik buduje własną globalną listę ignorowanych seriali, która jest używana we wszystkich pokojach, w których uczestniczy.
+  - Seriale dodane do listy obserwowanych przez któregokolwiek uczestnika pokoju nie będą uwzględniane w przyszłych rekomendacjach dla tego pokoju.
+  - Każdy użytkownik buduje własną globalną listę obserwowanych seriali, która jest używana we wszystkich pokojach, w których uczestniczy.
 - FR-09: Zarządzanie hasłem
   - Zalogowany użytkownik może zmienić swoje hasło, podając aktualne hasło i nowe hasło.
 
@@ -84,7 +84,7 @@ ShowSync ma na celu rozwiązanie tych problemów, dostarczając obiektywne, opar
 - Tytuł: Rejestracja nowego użytkownika
 - Opis: Jako nowy użytkownik, chcę móc założyć konto za pomocą mojego adresu e-mail i hasła, aby móc korzystać z aplikacji.
 - Kryteria akceptacji:
-  - Formularz rejestracji zawiera pola na adres e-mail, hasło i potwierdzenie hasła.
+  - Formularz rejestracji zawiera pola na imię, adres e-mail, hasło i potwierdzenie hasła.
   - Walidacja formularza sprawdza, czy e-mail jest w poprawnym formacie.
   - Walidacja sprawdza, czy hasła w obu polach są identyczne.
   - System sprawdza, czy adres e-mail nie jest już zarejestrowany w bazie.
@@ -107,59 +107,59 @@ ShowSync ma na celu rozwiązanie tych problemów, dostarczając obiektywne, opar
 
 - ID: US-004
 - Tytuł: Wyszukiwanie seriali do dodania
-- Opis: Jako zalogowany użytkownik, chcę móc wyszukać seriale po tytule, aby dodać je do mojej listy ulubionych.
+- Opis: Jako zalogowany użytkownik, chcę móc wyszukać seriale po tytule, aby dodać je do mojej listy ocenionych.
 - Kryteria akceptacji:
   - Na stronie profilu znajduje się pole wyszukiwania.
   - Wpisywanie tekstu w pole wyszukiwania na bieżąco zwraca listę pasujących seriali z API TMDB.
   - Wyniki wyszukiwania zawierają co najmniej tytuł i plakat serialu.
 
 - ID: US-005
-- Tytuł: Dodawanie serialu do listy ulubionych
-- Opis: Jako zalogowany użytkownik, chcę móc dodać wyszukany serial do mojej listy ulubionych z określonym poziomem preferencji, aby system lepiej poznał mój gust.
+- Tytuł: Dodawanie serialu do listy ocenionych
+- Opis: Jako zalogowany użytkownik, chcę móc dodać wyszukany serial do mojej listy ocenionych z oceną, aby system lepiej poznał mój gust.
 - Kryteria akceptacji:
-  - Przy każdym wyniku wyszukiwania znajduje się przycisk "Dodaj do ulubionych".
-  - Po kliknięciu przycisku użytkownik może wybrać poziom preferencji: "like" (lubię) lub "love" (uwielbiam).
-  - Serial zostaje dodany do listy ulubionych z wybranym poziomem.
-  - Dodany serial natychmiast pojawia się na liście ulubionych na stronie profilu z odpowiednią oznaczeniem (np. ❤️ dla "love", 👍 dla "like").
+  - Przy każdym wyniku wyszukiwania znajduje się przycisk "Dodaj ocenę".
+  - Po kliknięciu przycisku użytkownik może wybrać ocenę: "dislike" (nie lubię), "like" (lubię) lub "love" (uwielbiam).
+  - Serial zostaje dodany do listy ocenionych z wybraną oceną.
+  - Dodany serial natychmiast pojawia się na liście ocenionych na stronie profilu z odpowiednią oznaczeniem (np. ❤️ dla "love", 👍 dla "like", 👎 dla "dislike").
 
 - ID: US-006
-- Tytuł: Przeglądanie listy ulubionych seriali
-- Opis: Jako zalogowany użytkownik, chcę widzieć listę moich ulubionych seriali z poziomami preferencji, aby zarządzać swoimi gustami.
+- Tytuł: Przeglądanie listy ocenionych seriali
+- Opis: Jako zalogowany użytkownik, chcę widzieć listę moich ocenionych seriali z ocenami, aby zarządzać swoimi gustami.
 - Kryteria akceptacji:
-  - Na stronie profilu wyświetlana jest galeria plakatów wszystkich seriali dodanych przez użytkownika.
-  - Seriale są pogrupowane lub oznaczone według poziomu preferencji ("love" i "like").
+  - Na stronie profilu wyświetlana jest galeria plakatów wszystkich seriali ocenionych przez użytkownika.
+  - Seriale są pogrupowane lub oznaczone według oceny ("dislike", "like" i "love").
   - Lista jest widoczna i czytelna.
 
 - ID: US-006a
-- Tytuł: Zmiana poziomu preferencji serialu
-- Opis: Jako zalogowany użytkownik, chcę móc zmienić poziom preferencji dla serialu w mojej liście ulubionych, jeśli zmienią się moje odczucia.
+- Tytuł: Zmiana oceny serialu
+- Opis: Jako zalogowany użytkownik, chcę móc zmienić ocenę serialu w mojej liście ocenionych, jeśli zmienią się moje odczucia.
 - Kryteria akceptacji:
-  - Przy każdym serialu na liście ulubionych znajduje się opcja zmiany poziomu preferencji.
-  - Mogę zmienić serial z "like" na "love" i odwrotnie.
+  - Przy każdym serialu na liście ocenionych znajduje się opcja zmiany oceny.
+  - Mogę zmienić ocenę między dowolnymi wartościami: "dislike", "like" i "love".
   - Zmiana jest natychmiast widoczna na liście.
 
 - ID: US-007
-- Tytuł: Usuwanie serialu z listy ulubionych
-- Opis: Jako zalogowany użytkownik, chcę móc usunąć serial z mojej listy ulubionych, jeśli zmienię zdanie.
+- Tytuł: Usuwanie serialu z listy ocenionych
+- Opis: Jako zalogowany użytkownik, chcę móc usunąć serial z mojej listy ocenionych, jeśli zmienię zdanie.
 - Kryteria akceptacji:
-  - Przy każdym serialu na liście ulubionych znajduje się przycisk "Usuń".
+  - Przy każdym serialu na liście ocenionych znajduje się przycisk "Usuń".
   - Po kliknięciu przycisku serial znika z listy.
 
 - ID: US-007a
-- Tytuł: Przeglądanie listy ignorowanych seriali
-- Opis: Jako zalogowany użytkownik, chcę móc zobaczyć listę seriali, które oznaczyłem jako "nie interesuje mnie", aby w razie potrzeby móc zmienić zdanie.
+- Tytuł: Przeglądanie listy obserwowanych seriali
+- Opis: Jako zalogowany użytkownik, chcę móc zobaczyć listę seriali na mojej liście obserwowanych, aby w razie potrzeby móc zmienić zdanie.
 - Kryteria akceptacji:
-  - Na stronie profilu znajduje się sekcja "Ignorowane seriale".
-  - Lista wyświetla wszystkie seriale, które użytkownik dodał do ignorowanych.
-  - Przy każdym serialu znajduje się przycisk "Usuń z ignorowanych".
+  - Na stronie profilu znajduje się sekcja "Lista obserwowanych".
+  - Lista wyświetla wszystkie seriale, które użytkownik dodał do listy obserwowanych z ich typami.
+  - Przy każdym serialu znajduje się przycisk "Usuń z listy".
 
 - ID: US-007b
-- Tytuł: Dodawanie serialu do ignorowanych
-- Opis: Jako zalogowany użytkownik, chcę móc oznaczyć dowolny serial jako ignorowany, aby nie pojawiał się w moich przyszłych rekomendacjach.
+- Tytuł: Dodawanie serialu do listy obserwowanych
+- Opis: Jako zalogowany użytkownik, chcę móc oznaczyć dowolny serial jako "nie interesuje mnie" lub "chcę obejrzeć", aby kontrolować przyszłe rekomendacje.
 - Kryteria akceptacji:
-  - Mogę dodać serial do listy ignorowanych z dowolnego miejsca w aplikacji (nie tylko z rekomendacji).
-  - Serial dodany do ignorowanych nie będzie już pojawiać się w rekomendacjach dla żadnego pokoju, w którym uczestniczę.
-  - Wyświetlany jest komunikat potwierdzający dodanie do ignorowanych.
+  - Mogę dodać serial do listy obserwowanych z dowolnego miejsca w aplikacji (nie tylko z rekomendacji).
+  - Serial dodany do listy nie będzie już pojawiać się w rekomendacjach dla żadnego pokoju, w którym uczestniczę.
+  - Wyświetlany jest komunikat potwierdzający dodanie do listy.
 
 - ID: US-007c
 - Tytuł: Zmiana hasła
@@ -202,7 +202,7 @@ ShowSync ma na celu rozwiązanie tych problemów, dostarczając obiektywne, opar
 - Kryteria akceptacji:
   - Na stronie pokoju znajduje się przycisk "Generuj rekomendacje".
   - Przycisk jest aktywny tylko wtedy, gdy w pokoju są co najmniej dwie osoby.
-  - Po kliknięciu przycisku system wysyła listy ulubionych seriali wszystkich uczestników do API OpenAI.
+  - Po kliknięciu przycisku system wysyła listy ocenionych seriali wszystkich uczestników do API OpenAI.
   - W trakcie przetwarzania zapytania interfejs wyświetla informację o ładowaniu.
 
 - ID: US-012
@@ -214,22 +214,22 @@ ShowSync ma na celu rozwiązanie tych problemów, dostarczając obiektywne, opar
   - Uzasadnienie wyjaśnia, dlaczego dany serial jest dobrym wyborem dla obecnej grupy.
 
 - ID: US-013
-- Tytuł: Ignorowanie rekomendacji
-- Opis: Jako uczestnik pokoju, chcę móc oznaczyć rekomendację jako "nie interesuje mnie", aby system wiedział, że nie chcę oglądać tego serialu.
+- Tytuł: Dodawanie rekomendacji do listy obserwowanych
+- Opis: Jako uczestnik pokoju, chcę móc dodać rekomendację do mojej listy obserwowanych, aby kontrolować przyszłe rekomendacje.
 - Kryteria akceptacji:
-  - Przy każdej rekomendacji znajduje się przycisk "Nie interesuje mnie".
-  - Po kliknięciu przycisku serial zostaje dodany do mojej osobistej listy ignorowanych.
+  - Przy każdej rekomendacji znajduje się przycisk "Dodaj do listy".
+  - Po kliknięciu przycisku serial zostaje dodany do mojej osobistej listy obserwowanych.
   - Wyświetlany jest komunikat: "Dzięki! Nie pokażemy Ci tego serialu w przyszłych rekomendacjach".
   - Serial pozostaje widoczny dla innych uczestników (którzy mogą go rozważyć).
 
 - ID: US-014
-- Tytuł: Regenerowanie rekomendacji z uwzględnieniem ignorowanych
-- Opis: Jako założyciel pokoju, chcę móc wygenerować nowe rekomendacje, które wykluczają seriale zignorowane przez uczestników.
+- Tytuł: Regenerowanie rekomendacji z uwzględnieniem listy obserwowanych
+- Opis: Jako założyciel pokoju, chcę móc wygenerować nowe rekomendacje, które wykluczają seriale z list obserwowanych uczestników.
 - Kryteria akceptacji:
-  - Gdy wszyscy uczestnicy zignorują wszystkie aktualne rekomendacje, wyświetla się komunikat: "Odrzuciliście wszystkie propozycje. Chcecie spróbować ponownie?".
+  - Gdy wszyscy uczestnicy dodadzą wszystkie aktualne rekomendacje do listy obserwowanych, wyświetla się komunikat: "Odrzuciliście wszystkie propozycje. Chcecie spróbować ponownie?".
   - Przycisk "Generuj ponownie" uruchamia proces generowania nowych rekomendacji.
-  - System wysyła do API OpenAI listy ulubionych oraz listy ignorowanych seriali wszystkich uczestników.
-  - Nowe rekomendacje nie zawierają żadnych seriali, które są w listach ignorowanych uczestników.
+  - System wysyła do API OpenAI listy ocenionych oraz listy obserwowanych seriali wszystkich uczestników.
+  - Nowe rekomendacje nie zawierają żadnych seriali, które są na listach obserwowanych uczestników.
 
 ## 6. Metryki sukcesu
 
