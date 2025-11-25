@@ -4,7 +4,8 @@ import type { DatabaseClient } from '../../src/infrastructure/database/databaseC
 
 export async function truncateTables(databaseClient: DatabaseClient): Promise<void> {
   const tables = [
-    'user_favorite_series',
+    'user_series_ratings',
+    'user_series_watchlist',
     'watchroom_participants',
     'recommendations',
     'watchrooms',

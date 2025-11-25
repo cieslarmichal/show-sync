@@ -7,7 +7,7 @@ import { updateMetaTags, injectStructuredData, type SEOConfig } from '../utils/s
  * @example
  * useSEO({
  *   title: 'Shows - ShowSync',
- *   description: 'Browse and rate your favorite TV shows',
+ *   description: 'Browse and rate TV shows',
  * });
  */
 export function useSEO(config: Partial<SEOConfig>): void {

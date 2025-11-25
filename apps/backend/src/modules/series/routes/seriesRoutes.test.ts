@@ -82,8 +82,6 @@ describe('Series Routes Integration Tests', () => {
 
       expect(body.data).toHaveLength(0);
       expect(body.metadata).toMatchObject({
-        page: 1,
-        pageSize: 20,
         total: 0,
       });
     });
@@ -233,7 +231,7 @@ describe('Series Routes Integration Tests', () => {
         },
       });
 
-      // Remove favorite
+      // Remove rating
       const response = await server.inject({
         method: 'DELETE',
         url: `/series/ratings/${String(seriesTmdbId)}`,
@@ -302,8 +300,6 @@ describe('Series Routes Integration Tests', () => {
 
       expect(body.data).toHaveLength(0);
       expect(body.metadata).toMatchObject({
-        page: 1,
-        pageSize: 20,
         total: 0,
       });
     });

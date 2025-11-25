@@ -25,8 +25,8 @@ export class SeriesNameResolver {
 
   public async resolve(
     recommendations: AIRecommendation[],
-    favoriteSeriesIds: number[],
-    ignoredSeriesIds: number[],
+    ratedSeriesIds: number[],
+    watchlistSeriesIds: number[],
   ): Promise<ResolutionResult> {
     const results = await Promise.allSettled(
       recommendations.map(async (recommendation) => {
@@ -42,7 +42,7 @@ export class SeriesNameResolver {
         }
 
         const isAlreadyProcessed =
-          favoriteSeriesIds.includes(firstResult.id) || ignoredSeriesIds.includes(firstResult.id);
+          ratedSeriesIds.includes(firstResult.id) || watchlistSeriesIds.includes(firstResult.id);
 
         if (isAlreadyProcessed) {
           return { type: 'skipped' as const, seriesName: recommendation.seriesName };

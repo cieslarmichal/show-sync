@@ -44,11 +44,7 @@ export const seriesExternalIdsSchema = Type.Object({
 
 export const seriesSearchResultSchema = Type.Object({
   data: Type.Array(seriesSchema),
-  metadata: Type.Object({
-    page: Type.Number(),
-    pageSize: Type.Number(),
-    total: Type.Number(),
-  }),
+  metadata: Type.Object({ total: Type.Number() }),
 });
 
 export const seriesSearchQuerySchema = Type.Object({
@@ -67,11 +63,7 @@ export const seriesRatingResponseSchema = Type.Object({
 
 export const seriesRatingListSchema = Type.Object({
   data: Type.Array(seriesRatingResponseSchema),
-  metadata: Type.Object({
-    page: Type.Number(),
-    pageSize: Type.Number(),
-    total: Type.Number(),
-  }),
+  metadata: Type.Object({ total: Type.Number() }),
 });
 
 export const seriesWatchlistResponseSchema = Type.Object({
@@ -81,11 +73,7 @@ export const seriesWatchlistResponseSchema = Type.Object({
 
 export const seriesWatchlistListSchema = Type.Object({
   data: Type.Array(seriesWatchlistResponseSchema),
-  metadata: Type.Object({
-    page: Type.Number(),
-    pageSize: Type.Number(),
-    total: Type.Number(),
-  }),
+  metadata: Type.Object({ total: Type.Number() }),
 });
 
 export const addSeriesRatingRequestSchema = Type.Object({

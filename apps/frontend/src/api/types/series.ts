@@ -42,11 +42,7 @@ export interface SeriesDetails extends Series {
 
 export interface SeriesSearchResult {
   readonly data: Series[];
-  readonly metadata: {
-    readonly page: number;
-    readonly pageSize: number;
-    readonly total: number;
-  };
+  readonly metadata: { readonly total: number };
 }
 
 export interface SeriesRating {
@@ -56,11 +52,7 @@ export interface SeriesRating {
 
 export interface SeriesRatingList {
   readonly data: SeriesRating[];
-  readonly metadata: {
-    readonly page: number;
-    readonly pageSize: number;
-    readonly total: number;
-  };
+  readonly metadata: { readonly total: number };
 }
 
 export interface SeriesWatchlist {
@@ -70,9 +62,5 @@ export interface SeriesWatchlist {
 
 export interface SeriesWatchlistList {
   readonly data: SeriesWatchlist[];
-  readonly metadata: {
-    readonly page: number;
-    readonly pageSize: number;
-    readonly total: number;
-  };
+  readonly metadata: { readonly total: number };
 }

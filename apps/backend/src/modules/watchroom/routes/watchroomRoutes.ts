@@ -121,11 +121,7 @@ export const watchroomRoutes: FastifyPluginAsyncTypebox<{
       response: {
         200: Type.Object({
           data: Type.Array(watchroomSchema),
-          metadata: Type.Object({
-            page: Type.Integer(),
-            pageSize: Type.Integer(),
-            total: Type.Integer(),
-          }),
+          metadata: Type.Object({ total: Type.Integer() }),
         }),
       },
     },
@@ -140,19 +136,15 @@ export const watchroomRoutes: FastifyPluginAsyncTypebox<{
       const { userId } = request.user;
       const { page = 1, pageSize = 20 } = request.query;
 
-      const result = await findUserWatchroomsAction.execute({
+      const { data, total } = await findUserWatchroomsAction.execute({
         userId,
         page,
         pageSize,
       });
 
       return reply.send({
-        data: result.data.map(mapWatchroomToResponse),
-        metadata: {
-          page,
-          pageSize,
-          total: result.total,
-        },
+        data: data.map(mapWatchroomToResponse),
+        metadata: { total },
       });
     },
   });

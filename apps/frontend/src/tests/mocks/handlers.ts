@@ -110,11 +110,7 @@ export const handlers = [
 
     return HttpResponse.json({
       data: filteredSeries,
-      metadata: {
-        page: 1,
-        pageSize: filteredSeries.length,
-        total: filteredSeries.length,
-      },
+      metadata: { total: filteredSeries.length },
     });
   }),
 

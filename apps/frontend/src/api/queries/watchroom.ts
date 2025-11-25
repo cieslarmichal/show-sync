@@ -12,7 +12,7 @@ export const createWatchroom = async (payload: { name: string; description?: str
 export const getMyWatchrooms = async (
   page: number = 1,
   pageSize: number = 20,
-): Promise<{ data: Watchroom[]; metadata: { page: number; pageSize: number; total: number } }> => {
+): Promise<{ data: Watchroom[]; metadata: { total: number } }> => {
   const params = new URLSearchParams({
     page: page.toString(),
     pageSize: pageSize.toString(),
@@ -20,7 +20,7 @@ export const getMyWatchrooms = async (
 
   return apiRequest<{
     data: Watchroom[];
-    metadata: { page: number; pageSize: number; total: number };
+    metadata: { total: number };
   }>('/watchrooms', {
     method: 'GET',
     params,

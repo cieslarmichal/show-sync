@@ -182,8 +182,6 @@
       }
     ],
     "metadata": {
-      "page": 1,
-      "pageSize": 20,
       "total": 1
     }
   }
@@ -280,8 +278,6 @@
       }
     ],
     "metadata": {
-      "page": 1,
-      "pageSize": 20,
       "total": 15
     }
   }
@@ -357,8 +353,6 @@
       }
     ],
     "metadata": {
-      "page": 1,
-      "pageSize": 20,
       "total": 198
     }
   }
@@ -513,8 +507,6 @@
       }
     ],
     "metadata": {
-      "page": 1,
-      "pageSize": 20,
       "total": 5
     }
   }

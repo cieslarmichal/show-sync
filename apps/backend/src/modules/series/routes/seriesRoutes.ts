@@ -141,11 +141,7 @@ export const seriesRoutes: FastifyPluginAsyncTypebox<{
 
       const responseData = {
         data: result.results.map(mapSeriesToResponse),
-        metadata: {
-          page: result.page,
-          pageSize: 20,
-          total: result.totalResults,
-        },
+        metadata: { total: result.totalResults },
       };
 
       reply.header('Cache-Control', 'public, max-age=1800, must-revalidate');
@@ -230,11 +226,7 @@ export const seriesRoutes: FastifyPluginAsyncTypebox<{
 
       return reply.send({
         data: data.map(mapSeriesRatingToResponse),
-        metadata: {
-          page,
-          pageSize,
-          total,
-        },
+        metadata: { total },
       });
     },
   });
@@ -357,11 +349,7 @@ export const seriesRoutes: FastifyPluginAsyncTypebox<{
 
       return reply.send({
         data: data.map(mapSeriesWatchlistToResponse),
-        metadata: {
-          page,
-          pageSize,
-          total,
-        },
+        metadata: { total },
       });
     },
   });

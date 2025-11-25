@@ -222,7 +222,7 @@ describe('RecommendationPromptBuilder', () => {
       expect(result).toContain('The Crown');
     });
 
-    it('skips participants with no favorites', () => {
+    it('skips participants with no ratings', () => {
       const seriesInfoMap = new Map([
         [1, createSeriesInfo(1, 'Breaking Bad', 'Chemistry teacher turns to cooking meth.', ['Drama'], 9.5)],
       ]);
@@ -255,7 +255,7 @@ describe('RecommendationPromptBuilder', () => {
       expect(result).not.toContain('Participant 3:');
     });
 
-    it('includes ignored series section when provided', () => {
+    it('includes not interested series section when provided', () => {
       const seriesInfoMap = new Map([
         [1, createSeriesInfo(1, 'Breaking Bad', 'Chemistry teacher turns to cooking meth.', ['Drama'], 9.5)],
         [2, createSeriesInfo(2, 'Friends', 'Six friends living in New York.', ['Comedy'], 8.9)],
@@ -288,7 +288,7 @@ describe('RecommendationPromptBuilder', () => {
       expect(result).toContain('Friends, Lost');
     });
 
-    it('omits ignored series section when empty', () => {
+    it('omits not interested series section when empty', () => {
       const seriesInfoMap = new Map([
         [1, createSeriesInfo(1, 'Breaking Bad', 'Chemistry teacher turns to cooking meth.', ['Drama'], 9.5)],
       ]);
@@ -307,7 +307,7 @@ describe('RecommendationPromptBuilder', () => {
       expect(result).not.toContain('SERIES MARKED AS NOT INTERESTED:');
     });
 
-    it('omits ignored series section when series info not found', () => {
+    it('omits not interested series section when series info not found', () => {
       const seriesInfoMap = new Map([
         [1, createSeriesInfo(1, 'Breaking Bad', 'Chemistry teacher turns to cooking meth.', ['Drama'], 9.5)],
       ]);
@@ -355,7 +355,7 @@ describe('RecommendationPromptBuilder', () => {
       expect(result).toContain('TASK:');
       expect(result).toContain('Recommend 5-10 BRAND NEW TV series');
       expect(result).toContain('CRITICAL REQUIREMENTS:');
-      expect(result).toContain('Do NOT include ANY series from the "FAVORITE SERIES" lists');
+      expect(result).toContain('Do NOT include ANY series from the "SERIES RATINGS" lists');
       expect(result).toContain('Do NOT include ANY series from the "NOT INTERESTED" list');
       expect(result).toContain('RECOMMENDATION STRATEGY:');
       expect(result).toContain('PRIORITIZE finding series similar to ❤️ LOVED series');
@@ -546,12 +546,12 @@ describe('RecommendationPromptBuilder', () => {
 
       const watchRoomIndex = result.indexOf('WATCH ROOM:');
       const participantsIndex = result.indexOf('PARTICIPANTS AND THEIR SERIES PREFERENCES:');
-      const ignoredIndex = result.indexOf('SERIES MARKED AS NOT INTERESTED:');
+      const notInterestedIndex = result.indexOf('SERIES MARKED AS NOT INTERESTED:');
       const taskIndex = result.indexOf('TASK:');
 
       expect(watchRoomIndex).toBeLessThan(participantsIndex);
-      expect(participantsIndex).toBeLessThan(ignoredIndex);
-      expect(ignoredIndex).toBeLessThan(taskIndex);
+      expect(participantsIndex).toBeLessThan(notInterestedIndex);
+      expect(notInterestedIndex).toBeLessThan(taskIndex);
     });
   });
 });
