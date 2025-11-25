@@ -119,49 +119,49 @@ export function RecommendationCard({
 
   return (
     <div
-      className={`group relative rounded-xl border bg-card hover:border-primary/40 hover:shadow-xl transition-all duration-300 overflow-hidden ${
+      className={`group relative rounded-lg border bg-card hover:border-primary/40 hover:shadow-lg transition-all duration-300 overflow-hidden ${
         isFadingOut ? 'opacity-0 scale-95' : 'opacity-100 scale-100'
       }`}
     >
-      <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 md:gap-8 p-3 sm:p-5 md:p-6">
+      <div className="flex flex-col sm:flex-row gap-4 sm:gap-5 p-4 sm:p-5">
         {/* Series Poster */}
         <button
           onMouseDown={(e) => handleOpenImdb(recommendation.seriesTmdbId, e)}
-          className="relative shrink-0 w-full sm:w-40 md:w-48 h-auto p-0 rounded-lg sm:rounded-xl overflow-hidden group/poster focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 cursor-pointer"
+          className="relative shrink-0 w-full sm:w-44 h-auto p-0 rounded-lg overflow-hidden group/poster focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 cursor-pointer"
         >
-          {isImageLoading && <Skeleton className="absolute inset-0 h-56 sm:h-60 md:h-72 w-full" />}
+          {isImageLoading && <Skeleton className="absolute inset-0 h-60 sm:h-64 w-full" />}
           {recommendation.seriesDetails?.posterPath ? (
             <img
-              src={`https://image.tmdb.org/t/p/w300${recommendation.seriesDetails.posterPath}`}
+              src={`https://image.tmdb.org/t/p/w342${recommendation.seriesDetails.posterPath}`}
               alt={`${recommendation.seriesDetails.name} poster`}
-              className="h-56 sm:h-60 md:h-72 w-full object-cover rounded-lg sm:rounded-xl shadow-md group-hover/poster:shadow-xl transition-shadow"
+              className="h-60 sm:h-64 w-full object-cover rounded-lg shadow-sm group-hover/poster:shadow-md transition-shadow"
               onLoad={() => setIsImageLoading(false)}
               style={{ display: isImageLoading ? 'none' : 'block' }}
             />
           ) : (
-            <div className="h-56 sm:h-60 md:h-72 w-full rounded-lg sm:rounded-xl bg-linear-to-br from-primary/20 to-primary/10 flex items-center justify-center">
-              <TvMinimalPlay className="w-8 h-8 text-primary" />
+            <div className="h-60 sm:h-64 w-full rounded-lg bg-linear-to-br from-primary/20 to-primary/10 flex items-center justify-center">
+              <TvMinimalPlay className="w-7 h-7 text-primary" />
             </div>
           )}
         </button>
 
         {/* Series Details */}
-        <div className="flex-1 min-w-0 space-y-3 sm:space-y-3.5">
+        <div className="flex-1 min-w-0 space-y-2.5 sm:space-y-3">
           {/* Title and Main Info */}
-          <div className="space-y-2">
+          <div className="space-y-1.5">
             <button
               onMouseDown={(e) => handleOpenImdb(recommendation.seriesTmdbId, e)}
               className="group/title h-auto p-0 hover:bg-transparent justify-start text-left focus:outline-none focus:underline cursor-pointer w-full"
             >
-              <h4 className="text-base sm:text-lg md:text-xl font-bold text-foreground group-hover:text-primary transition-colors flex items-center gap-1.5 sm:gap-2">
+              <h4 className="text-base sm:text-lg font-bold text-foreground group-hover:text-primary transition-colors flex items-center gap-1.5">
                 {recommendation.seriesDetails?.name || 'Loading...'}
-                <ExternalLink className="w-3.5 h-3.5 sm:w-4 sm:h-4 opacity-0 group-hover/title:opacity-100 transition-opacity" />
+                <ExternalLink className="w-3.5 h-3.5 opacity-0 group-hover/title:opacity-100 transition-opacity" />
               </h4>
             </button>
 
             {/* Metadata Row - Year, Rating, Seasons, Episodes, Status */}
             {recommendation.seriesDetails && (
-              <div className="flex flex-wrap items-center gap-2">
+              <div className="flex flex-wrap items-center gap-1.5">
                 {recommendation.seriesDetails.firstAirDate && (
                   <span className="text-xs sm:text-sm text-muted-foreground font-medium">
                     {new Date(recommendation.seriesDetails.firstAirDate).getFullYear()}
@@ -230,7 +230,7 @@ export function RecommendationCard({
 
           {/* Series Overview */}
           {recommendation.seriesDetails?.overview && (
-            <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed line-clamp-2">
+            <p className="text-xs sm:text-sm text-muted-foreground/80 leading-relaxed line-clamp-2">
               {recommendation.seriesDetails.overview}
             </p>
           )}
@@ -274,61 +274,74 @@ export function RecommendationCard({
           )}
 
           {/* Recommendation Justification */}
-          <div className="rounded-lg bg-primary/5 border-l-2 sm:border-l-4 border-primary p-2.5 sm:p-3 md:p-4 space-y-1 sm:space-y-1.5 shadow-sm">
-            <p className="text-[10px] sm:text-xs font-semibold text-primary flex items-center gap-1">
-              <Sparkles className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
-              Why we recommend this:
+          <div className="border-l-2 border-primary/30 pl-3 space-y-1">
+            <p className="text-xs font-semibold text-primary/90 flex items-center gap-1">
+              <Sparkles className="w-3 h-3" />
+              Why we recommend this
             </p>
-            <p className="text-xs sm:text-sm text-foreground/80 leading-relaxed">{recommendation.justification}</p>
+            <p className="text-xs text-muted-foreground/70 leading-relaxed">{recommendation.justification}</p>
           </div>
 
-          {/* Action Buttons */}
-          <div className="flex flex-col sm:flex-row gap-2">
-            <Button
-              size="sm"
-              variant="outline"
-              onClick={() => handleAddRating('like')}
-              disabled={isRated || isInWatchlist || isFadingOut}
-            >
-              <ThumbsUp className="w-4 h-4 mr-1.5" />
-              Like
-            </Button>
-            <Button
-              size="sm"
-              variant="outline"
-              onClick={() => handleAddRating('love')}
-              disabled={isRated || isInWatchlist || isFadingOut}
-            >
-              <Heart className="w-4 h-4 mr-1.5" />
-              Love
-            </Button>
-            <Button
-              size="sm"
-              variant="outline"
-              onClick={() => handleAddRating('dislike')}
-              disabled={isRated || isInWatchlist || isFadingOut}
-            >
-              <ThumbsDown className="w-4 h-4 mr-1.5" />
-              Dislike
-            </Button>
-            <Button
-              size="sm"
-              variant="outline"
-              onClick={() => handleAddToWatchlist('wantToWatch')}
-              disabled={isInWatchlist || isRated || isFadingOut}
-            >
-              <CalendarPlus className="w-4 h-4 mr-1.5" />
-              Want to Watch
-            </Button>
-            <Button
-              size="sm"
-              variant="outline"
-              onClick={() => handleAddToWatchlist('notInterested')}
-              disabled={isInWatchlist || isRated || isFadingOut}
-            >
-              <EyeOff className="w-4 h-4 mr-1.5" />
-              Not Interested
-            </Button>
+          {/* Action Buttons - Grouped by type */}
+          <div className="flex flex-col gap-2 pt-1">
+            {/* Rating Buttons */}
+            <div className="flex flex-wrap items-center gap-1.5">
+              <span className="text-xs text-muted-foreground font-medium min-w-12">Rate:</span>
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => handleAddRating('like')}
+                disabled={isRated || isInWatchlist || isFadingOut}
+                className="h-8 text-xs"
+              >
+                <ThumbsUp className="w-3.5 h-3.5 mr-1" />
+                Like
+              </Button>
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => handleAddRating('love')}
+                disabled={isRated || isInWatchlist || isFadingOut}
+                className="h-8 text-xs"
+              >
+                <Heart className="w-3.5 h-3.5 mr-1" />
+                Love
+              </Button>
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => handleAddRating('dislike')}
+                disabled={isRated || isInWatchlist || isFadingOut}
+                className="h-8 text-xs"
+              >
+                <ThumbsDown className="w-3.5 h-3.5 mr-1" />
+                Dislike
+              </Button>
+            </div>
+            {/* Watchlist Buttons */}
+            <div className="flex flex-wrap items-center gap-1.5">
+              <span className="text-xs text-muted-foreground font-medium min-w-12">Watchlist:</span>
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => handleAddToWatchlist('wantToWatch')}
+                disabled={isInWatchlist || isRated || isFadingOut}
+                className="h-8 text-xs"
+              >
+                <CalendarPlus className="w-3.5 h-3.5 mr-1" />
+                Want to Watch
+              </Button>
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => handleAddToWatchlist('notInterested')}
+                disabled={isInWatchlist || isRated || isFadingOut}
+                className="h-8 text-xs"
+              >
+                <EyeOff className="w-3.5 h-3.5 mr-1" />
+                Not Interested
+              </Button>
+            </div>
           </div>
         </div>
       </div>

@@ -76,15 +76,15 @@ export function ParticipantsCard({ room, isOwner, currentUserId, onRoomUpdated, 
 
   return (
     <>
-      <Card className="border-2 shadow-sm hover:shadow-md transition-all duration-300">
-        <CardHeader className="pb-2.5 sm:pb-3">
+      <Card className="border shadow-sm">
+        <CardHeader className="pb-2">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-primary/10 flex items-center justify-center">
-              <Users className="w-4 h-4 sm:w-5.5 sm:h-5.5 text-primary" />
+            <div className="w-7 h-7 rounded-lg bg-primary/10 flex items-center justify-center">
+              <Users className="w-4 h-4 text-primary" />
             </div>
             <div>
-              <CardTitle className="text-base sm:text-lg md:text-xl font-bold tracking-tight">Participants</CardTitle>
-              <p className="text-xs text-muted-foreground mt-0.5">
+              <CardTitle className="text-sm sm:text-base font-bold tracking-tight">Participants</CardTitle>
+              <p className="text-xs text-muted-foreground">
                 {room.participants.length} / {config.watchroom.maxParticipants}{' '}
                 {room.participants.length === 1 ? 'member' : 'members'}
               </p>
@@ -92,34 +92,32 @@ export function ParticipantsCard({ room, isOwner, currentUserId, onRoomUpdated, 
           </div>
         </CardHeader>
         <CardContent className="space-y-0">
-          <div className="grid gap-2">
+          <div className="grid gap-1.5">
             {room.participants.map((participant) => (
               <div
                 key={participant.id}
-                className="group flex items-center justify-between p-2 sm:p-2.5 md:p-3 rounded-lg border bg-card hover:border-primary/40 hover:bg-muted/30 transition-all duration-200"
+                className="group flex items-center justify-between p-2 rounded-lg border bg-card hover:border-primary/40 hover:bg-muted/30 transition-all duration-200"
                 data-testid="participants-list"
               >
-                <div className="flex items-center gap-2 sm:gap-2.5">
+                <div className="flex items-center gap-2">
                   <div className="relative">
-                    <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-primary/10 flex items-center justify-center ring-2 ring-background group-hover:ring-primary/20 transition-all">
-                      <span className="text-sm sm:text-base font-bold text-primary">
-                        {participant.name.charAt(0).toUpperCase()}
-                      </span>
+                    <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center ring-2 ring-background group-hover:ring-primary/20 transition-all">
+                      <span className="text-xs font-bold text-primary">{participant.name.charAt(0).toUpperCase()}</span>
                     </div>
                     {participant.id === room.ownerId && (
-                      <div className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full bg-primary flex items-center justify-center ring-2 ring-background">
-                        <Users className="w-2 h-2 sm:w-2.5 sm:h-2.5 text-primary-foreground" />
+                      <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-primary flex items-center justify-center ring-2 ring-background">
+                        <Users className="w-1.5 h-1.5 text-primary-foreground" />
                       </div>
                     )}
                   </div>
-                  <div className="flex flex-col gap-0.5">
-                    <span className="font-semibold text-sm text-foreground">{participant.name}</span>
+                  <div className="flex flex-col">
+                    <span className="font-semibold text-xs text-foreground">{participant.name}</span>
                     {participant.id === room.ownerId && (
                       <Badge
                         variant="outline"
-                        className="text-[10px] sm:text-xs w-fit bg-primary/5 text-primary border-primary/30 font-medium px-1.5 py-0"
+                        className="text-[10px] w-fit bg-primary/5 text-primary border-primary/30 font-medium px-1 py-0"
                       >
-                        Room Owner
+                        Owner
                       </Badge>
                     )}
                   </div>
@@ -137,17 +135,17 @@ export function ParticipantsCard({ room, isOwner, currentUserId, onRoomUpdated, 
                             participantName: participant.name,
                           })
                         }
-                        className="h-10 w-10 hover:bg-destructive/10 hover:text-destructive rounded-lg opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-all"
+                        className="h-8 w-8 hover:bg-destructive/10 hover:text-destructive rounded-lg opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-all"
                         aria-label={`Remove ${participant.name} from room`}
                       >
-                        <UserMinus className="w-4 h-4" />
+                        <UserMinus className="w-3.5 h-3.5" />
                       </Button>
                     </TooltipTrigger>
                     <TooltipContent
                       side="bottom"
                       className="hidden sm:block"
                     >
-                      <p>Remove {participant.name} from room</p>
+                      <p>Remove {participant.name}</p>
                     </TooltipContent>
                   </Tooltip>
                 )}
@@ -155,14 +153,15 @@ export function ParticipantsCard({ room, isOwner, currentUserId, onRoomUpdated, 
             ))}
           </div>
           {!isOwner && (
-            <div className="pt-4">
+            <div className="pt-3">
               <Button
                 variant="outline"
-                className="w-full hover:bg-destructive/10 hover:text-destructive hover:border-destructive/50 transition-all font-semibold"
+                size="sm"
+                className="w-full hover:bg-destructive/10 hover:text-destructive hover:border-destructive/50 transition-all font-semibold text-xs"
                 onClick={() => setConfirmLeaveDialog(true)}
                 data-testid="leave-room-button"
               >
-                <LogOut className="w-4 h-4 mr-2" />
+                <LogOut className="w-3.5 h-3.5 mr-1.5" />
                 Leave Room
               </Button>
             </div>

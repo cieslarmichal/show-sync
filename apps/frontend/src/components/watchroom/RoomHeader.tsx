@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { toast } from 'sonner';
-import { Copy, Trash2, Calendar, Users } from 'lucide-react';
+import { Copy, Trash2, Calendar } from 'lucide-react';
 
 import { deleteWatchroom } from '../../api/queries/watchroom.ts';
 import type { WatchroomDetails } from '../../api/types/watchroom.ts';
@@ -45,31 +45,29 @@ export function RoomHeader({ room, isOwner, onCopyLink, onRoomUpdated, onRoomDel
 
   return (
     <>
-      <Card className="border-2 shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden">
-        <CardHeader className="relative space-y-3 pb-5">
-          <div className="space-y-2.5">
-            <div className="flex items-center justify-between gap-3">
-              <CardTitle className="text-2xl sm:text-3xl font-bold tracking-tight wrap-break-word flex-1 min-w-0 pr-2">
+      <Card className="border shadow-sm overflow-hidden">
+        <CardHeader className="relative space-y-2 pb-3">
+          <div className="space-y-2">
+            <div className="flex items-start justify-between gap-2">
+              <CardTitle className="text-lg sm:text-xl font-bold tracking-tight wrap-break-word flex-1 min-w-0">
                 {room.name}
               </CardTitle>
               {isOwner && (
-                <Badge className="hidden sm:inline-flex shrink-0 bg-primary/10 text-primary border border-primary/20 font-medium whitespace-nowrap">
-                  <Users className="w-3 h-3 mr-1" />
+                <Badge className="shrink-0 bg-primary/10 text-primary border border-primary/20 font-medium text-xs">
                   Owner
                 </Badge>
               )}
             </div>
 
             {room.description && (
-              <CardDescription className="text-sm sm:text-base leading-relaxed text-muted-foreground">
+              <CardDescription className="text-xs sm:text-sm leading-relaxed text-muted-foreground line-clamp-2">
                 {room.description}
               </CardDescription>
             )}
 
-            <div className="flex items-center text-xs sm:text-sm text-muted-foreground">
-              <Calendar className="w-3.5 h-3.5 mr-1.5" />
+            <div className="flex items-center text-xs text-muted-foreground">
+              <Calendar className="w-3 h-3 mr-1" />
               <span>
-                Created{' '}
                 {new Date(room.createdAt).toLocaleDateString('en-US', {
                   month: 'short',
                   day: 'numeric',
@@ -79,17 +77,16 @@ export function RoomHeader({ room, isOwner, onCopyLink, onRoomUpdated, onRoomDel
             </div>
           </div>
 
-          <div className="flex flex-wrap gap-2 pt-2 border-t border-border/40">
+          <div className="flex flex-wrap gap-1.5 pt-2 border-t border-border/40">
             <Button
               size="sm"
               variant="default"
               onClick={onCopyLink}
-              className="shadow-sm hover:shadow-md transition-all h-9"
+              className="shadow-sm hover:shadow-md transition-all h-8 text-xs"
               data-testid="copy-invite-link-button"
             >
               <Copy className="w-3 h-3 mr-1" />
-              <span className="hidden sm:inline">Copy Link</span>
-              <span className="inline sm:hidden">Share</span>
+              Share
             </Button>
             {isOwner && (
               <>
@@ -103,11 +100,10 @@ export function RoomHeader({ room, isOwner, onCopyLink, onRoomUpdated, onRoomDel
                   size="sm"
                   variant="outline"
                   onClick={() => setConfirmDeleteDialog(true)}
-                  className="shadow-sm hover:shadow-md hover:bg-destructive/10 hover:text-destructive hover:border-destructive transition-all h-9"
+                  className="shadow-sm hover:shadow-md hover:bg-destructive/10 hover:text-destructive hover:border-destructive transition-all h-8 text-xs"
                 >
                   <Trash2 className="w-3 h-3 mr-1" />
-                  <span className="hidden sm:inline">Delete Room</span>
-                  <span className="inline sm:hidden">Delete</span>
+                  Delete
                 </Button>
               </>
             )}
