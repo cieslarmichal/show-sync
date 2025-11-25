@@ -3,6 +3,7 @@ import { Menu, X } from 'lucide-react';
 import { Button } from '../ui/Button';
 import { MobileAuthSection } from './MobileAuthSection';
 import { MobileNavigation } from './MobileNavigation';
+import { ThemeToggle } from '../ThemeToggle';
 
 export function MobileMenu() {
   const [isOpen, setIsOpen] = useState(false);
@@ -11,6 +12,7 @@ export function MobileMenu() {
     <>
       {/* Mobile Menu Button */}
       <div className="md:hidden flex items-center gap-1.5 sm:gap-2">
+        <ThemeToggle />
         <MobileAuthSection />
 
         <Button

@@ -1,4 +1,4 @@
-import { useContext, useState, useEffect, useRef } from 'react';
+import { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import { SeriesContext } from '../context/SeriesContext';
@@ -18,7 +18,6 @@ import { ChecklistItem } from '../components/ui/ChecklistItem';
 import { Heart, Lock, Sparkles, Users, ArrowRight, Lightbulb, UserPlus } from 'lucide-react';
 import { config } from '../config';
 import { useSEO } from '../hooks/useSEO';
-import { useConfetti } from '../hooks/useConfetti';
 
 export default function DashboardPage() {
   useSEO({
@@ -31,32 +30,12 @@ export default function DashboardPage() {
   const { totalCount } = useContext(SeriesContext);
   const navigate = useNavigate();
   const [lockedDialogOpen, setLockedDialogOpen] = useState(false);
-  const confetti = useConfetti();
-  const previousTotalCount = useRef(totalCount);
 
   const canCreateRoom = totalCount >= config.series.minRatedShowsToCreateWatchRoom;
 
   // Derived values used for display
   const toReachGoodAccuracy = Math.max(config.series.goodAccuracy - totalCount, 0);
   const toReachMaxAccuracy = Math.max(config.series.maxAccuracy - totalCount, 0);
-
-  // Trigger confetti when milestones are reached
-  useEffect(() => {
-    if (!userDataInitialized) return;
-
-    const justReachedGood =
-      previousTotalCount.current < config.series.goodAccuracy && totalCount >= config.series.goodAccuracy;
-    const justReachedMax =
-      previousTotalCount.current < config.series.maxAccuracy && totalCount >= config.series.maxAccuracy;
-
-    if (justReachedMax) {
-      confetti.trigger({ particleCount: 100, spread: 120, origin: { x: 0.5, y: 0.4 } });
-    } else if (justReachedGood) {
-      confetti.trigger({ particleCount: 50, spread: 100, origin: { x: 0.5, y: 0.4 } });
-    }
-
-    previousTotalCount.current = totalCount;
-  }, [totalCount, userDataInitialized, confetti]);
 
   // Progress milestones for visual markers
   const progressMilestones = [
@@ -270,7 +249,7 @@ export default function DashboardPage() {
                           ) : (
                             <span className="text-xs text-emerald-600 dark:text-emerald-400 font-medium flex items-center gap-1.5">
                               <Sparkles className="w-3 h-3" />
-                              🎉 Best recommendations unlocked!
+                              Best recommendations unlocked!
                               {totalCount > config.series.maxAccuracy &&
                                 ` • +${totalCount - config.series.maxAccuracy} extra`}
                             </span>

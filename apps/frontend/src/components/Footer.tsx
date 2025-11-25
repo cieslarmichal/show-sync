@@ -1,10 +1,12 @@
 import { Link } from 'react-router-dom';
 import { useContext } from 'react';
 import { AuthContext } from '../context/AuthContext';
+import { useTheme } from '../hooks/useTheme';
 import { Mail, Phone, MapPin, Heart, Tv, User, Github, Users, Bookmark } from 'lucide-react';
 
 export default function Footer() {
   const { userData } = useContext(AuthContext);
+  const { effectiveTheme } = useTheme();
 
   const currentYear = new Date().getFullYear();
 
@@ -22,7 +24,7 @@ export default function Footer() {
             aria-label="ShowSync home"
           >
             <img
-              src="/logo.svg"
+              src={effectiveTheme === 'dark' ? '/logo-white.svg' : '/logo.svg'}
               alt=""
               className="h-6 w-6 transition-transform group-hover:scale-110 duration-200"
               aria-hidden="true"
@@ -51,7 +53,7 @@ export default function Footer() {
               aria-label="ShowSync home"
             >
               <img
-                src="/logo.svg"
+                src={effectiveTheme === 'dark' ? '/logo-white.svg' : '/logo.svg'}
                 alt=""
                 className="h-8 w-8 transition-transform group-hover:scale-110 duration-200"
                 aria-hidden="true"
@@ -61,7 +63,7 @@ export default function Footer() {
               </h2>
             </Link>
             <p className="text-sm text-muted-foreground leading-relaxed max-w-xs">
-              Find shows your whole group will enjoy. Get AI-powered recommendations based on everyone's watch history.
+              Find shows your whole group will enjoy. Get recommendations based on group preferences.
             </p>
           </div>
 

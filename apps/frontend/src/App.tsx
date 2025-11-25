@@ -2,6 +2,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { StrictMode } from 'react';
 import { AuthContextProvider } from './context/AuthContextProvider.tsx';
 import { SeriesContextProvider } from './context/SeriesContextProvider.tsx';
+import { ThemeContextProvider } from './context/ThemeContextProvider.tsx';
 import { useStructuredData } from './hooks/useSEO.ts';
 
 import Root from './pages/Root';
@@ -127,15 +128,17 @@ function AppContent() {
 
   return (
     <StrictMode>
-      <CookiesProvider>
-        <AuthContextProvider>
-          <SeriesContextProvider>
-            <TooltipProvider>
-              <RouterProvider router={router} />
-            </TooltipProvider>
-          </SeriesContextProvider>
-        </AuthContextProvider>
-      </CookiesProvider>
+      <ThemeContextProvider>
+        <CookiesProvider>
+          <AuthContextProvider>
+            <SeriesContextProvider>
+              <TooltipProvider>
+                <RouterProvider router={router} />
+              </TooltipProvider>
+            </SeriesContextProvider>
+          </AuthContextProvider>
+        </CookiesProvider>
+      </ThemeContextProvider>
     </StrictMode>
   );
 }

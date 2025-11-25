@@ -4,6 +4,7 @@ import { AuthContext } from '../../context/AuthContext';
 import { Button } from '../ui/Button';
 import { Skeleton } from '../ui/Skeleton';
 import { UserMenu } from './UserMenu';
+import { ThemeToggle } from '../ThemeToggle';
 
 export function DesktopAuthSection() {
   const { userData, userDataInitialized } = useContext(AuthContext);
@@ -12,6 +13,7 @@ export function DesktopAuthSection() {
   if (!userDataInitialized) {
     return (
       <div className="flex items-center gap-2 lg:gap-3">
+        <ThemeToggle />
         <Skeleton className="h-10 w-10 rounded-full bg-muted" />
       </div>
     );
@@ -21,7 +23,8 @@ export function DesktopAuthSection() {
     const initial = (userData.email?.[0] || 'U').toUpperCase();
 
     return (
-      <div className="flex items-center justify-end">
+      <div className="flex items-center justify-end gap-2">
+        <ThemeToggle />
         <UserMenu
           initial={initial}
           size="large"
@@ -32,6 +35,7 @@ export function DesktopAuthSection() {
 
   return (
     <div className="flex items-center gap-3 lg:gap-4">
+      <ThemeToggle />
       <Button
         variant="ghost"
         size="lg"
