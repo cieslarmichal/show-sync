@@ -25,7 +25,9 @@ export class SeriesPageModel extends BasePageModel {
     this.filterTabLoved = page.getByRole('tab', { name: /loved \(/i });
     this.filterTabLiked = page.getByRole('tab', { name: /liked \(/i });
     this.filterTabDisliked = page.getByRole('tab', { name: /disliked \(/i });
-    this.emptyRatingsMessage = page.getByText(/no rated shows yet|no loved shows yet|no liked shows yet|no disliked shows yet/i);
+    this.emptyRatingsMessage = page.getByText(
+      /no rated shows yet|no loved shows yet|no liked shows yet|no disliked shows yet/i,
+    );
   }
 
   override async goto(): Promise<void> {
@@ -61,7 +63,14 @@ export class SeriesPageModel extends BasePageModel {
   }
 
   async getTabCount(tab: 'all' | 'loved' | 'liked' | 'disliked'): Promise<number> {
-    const tabElement = tab === 'all' ? this.filterTabAll : tab === 'loved' ? this.filterTabLoved : tab === 'liked' ? this.filterTabLiked : this.filterTabDisliked;
+    const tabElement =
+      tab === 'all'
+        ? this.filterTabAll
+        : tab === 'loved'
+          ? this.filterTabLoved
+          : tab === 'liked'
+            ? this.filterTabLiked
+            : this.filterTabDisliked;
     const text = await tabElement.textContent();
     const match = text?.match(/\((\d+)\)/);
     return match && match[1] ? parseInt(match[1], 10) : 0;
@@ -76,14 +85,14 @@ export class SeriesPageModel extends BasePageModel {
   async getRating(seriesName: string): Promise<'like' | 'love' | 'dislike' | null> {
     const seriesCard = this.page.locator('[data-testid="series-rating-card"]', { hasText: seriesName }).first();
     const ratingSelector = seriesCard.getByTestId('rating-selector');
-    
+
     const ariaLabel = await ratingSelector.getAttribute('aria-label');
     if (!ariaLabel) return null;
-    
+
     if (ariaLabel.includes('Love')) return 'love';
     if (ariaLabel.includes('Like')) return 'like';
     if (ariaLabel.includes('Dislike')) return 'dislike';
-    
+
     return null;
   }
 

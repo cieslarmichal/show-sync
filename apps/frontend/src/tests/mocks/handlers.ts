@@ -158,22 +158,25 @@ export const handlers = [
       },
     };
 
-    const seriesDetails = ids.map((id) => seriesMap[id] || {
-      id,
-      name: `Series ${id}`,
-      posterPath: `/poster${id}.jpg`,
-      overview: 'Test overview',
-      firstAirDate: '2024-01-01',
-      genres: ['Drama'],
-      numberOfSeasons: 1,
-      numberOfEpisodes: 10,
-      backdropPath: null,
-      status: 'Returning Series',
-      voteAverage: 8.5,
-      genreIds: [18],
-      originCountry: ['US'],
-      originalLanguage: 'en',
-    });
+    const seriesDetails = ids.map(
+      (id) =>
+        seriesMap[id] || {
+          id,
+          name: `Series ${id}`,
+          posterPath: `/poster${id}.jpg`,
+          overview: 'Test overview',
+          firstAirDate: '2024-01-01',
+          genres: ['Drama'],
+          numberOfSeasons: 1,
+          numberOfEpisodes: 10,
+          backdropPath: null,
+          status: 'Returning Series',
+          voteAverage: 8.5,
+          genreIds: [18],
+          originCountry: ['US'],
+          originalLanguage: 'en',
+        },
+    );
 
     return HttpResponse.json({
       data: seriesDetails,

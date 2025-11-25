@@ -54,7 +54,10 @@ export function SearchResultCard({
           <div className="space-y-2 mt-2.5">
             <div className="flex items-center gap-2">
               {series?.firstAirDate && (
-                <Badge variant="secondary" className="text-xs">
+                <Badge
+                  variant="secondary"
+                  className="text-xs"
+                >
                   {new Date(series.firstAirDate).getFullYear()}
                 </Badge>
               )}

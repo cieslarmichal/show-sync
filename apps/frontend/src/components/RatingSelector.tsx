@@ -36,17 +36,32 @@ export function RatingSelector({ rating, onSelect, disabled = false }: RatingSel
     const className = `size-6 transition-all duration-300 ${getRatingColor(currentRating)}`;
     switch (currentRating) {
       case 'love':
-        return <Heart className={`${className} fill-current`} strokeWidth={2.2} />;
+        return (
+          <Heart
+            className={`${className} fill-current`}
+            strokeWidth={2.2}
+          />
+        );
       case 'like':
-        return <ThumbsUp className={className} strokeWidth={2.2} />;
+        return (
+          <ThumbsUp
+            className={className}
+            strokeWidth={2.2}
+          />
+        );
       case 'dislike':
-        return <ThumbsDown className={`${className} fill-current`} strokeWidth={2.2} />;
+        return (
+          <ThumbsDown
+            className={`${className} fill-current`}
+            strokeWidth={2.2}
+          />
+        );
     }
   };
 
   const cycleRating = () => {
     if (disabled) return;
-    
+
     const ratingCycle: Rating[] = ['like', 'love', 'dislike'];
     const currentIndex = ratingCycle.indexOf(rating);
     const nextIndex = (currentIndex + 1) % ratingCycle.length;

@@ -92,14 +92,14 @@ export default function SeriesPage() {
 
       await addSeriesRating(series.id, rating);
       setRatedSeriesIds((prev) => new Set(prev).add(series.id));
-      
+
       // Add to ratings list
       const newRating: SeriesRating = {
         seriesTmdbId: series.id,
         rating: rating,
       };
       setMyRatings((prev) => [...prev, newRating]);
-      
+
       // Update counts
       if (rating === 'love') {
         setLovedCount((prev) => prev + 1);
@@ -108,9 +108,9 @@ export default function SeriesPage() {
       } else {
         setDislikedCount((prev) => prev + 1);
       }
-      
+
       await refreshCounts(); // Sync with context
-      
+
       const ratingEmoji = rating === 'love' ? '❤️' : rating === 'like' ? '👍' : '👎';
       toast.success(`"${series.name}" rated as ${ratingEmoji}`);
     } catch {
@@ -164,7 +164,7 @@ export default function SeriesPage() {
       else if (rating === 'dislike') setDislikedCount((prev) => prev + 1);
 
       await refreshCounts(); // Sync with context
-      
+
       const ratingEmoji = rating === 'love' ? '❤️' : rating === 'like' ? '👍' : '👎';
       toast.success(`Rating updated to ${ratingEmoji}`);
     } catch {
@@ -207,7 +207,7 @@ export default function SeriesPage() {
         type: type,
       };
       setMyWatchlist((prev) => [...prev, newWatchlistItem]);
-      
+
       const typeLabel = type === 'notInterested' ? 'Not Interested' : 'Want to Watch';
       toast.success(`"${series.name}" added to watchlist as ${typeLabel}`);
     } catch {

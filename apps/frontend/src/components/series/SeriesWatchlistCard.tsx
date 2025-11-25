@@ -18,7 +18,9 @@ export function SeriesWatchlistCard({ seriesTmdbId, details, type, isRemoving, o
   };
 
   const getTypeColor = (): string => {
-    return type === 'notInterested' ? 'bg-muted text-muted-foreground' : 'bg-sky-100 text-sky-700 dark:bg-sky-900/30 dark:text-sky-300';
+    return type === 'notInterested'
+      ? 'bg-muted text-muted-foreground'
+      : 'bg-sky-100 text-sky-700 dark:bg-sky-900/30 dark:text-sky-300';
   };
 
   return (
@@ -43,12 +45,10 @@ export function SeriesWatchlistCard({ seriesTmdbId, details, type, isRemoving, o
           </div>
         )}
         <div className="absolute inset-0 bg-linear-to-t from-black/60 via-black/20 to-transparent opacity-100 group-hover:opacity-100 transition-opacity" />
-        
+
         {/* Type Badge - Top Left */}
         <div className="absolute top-2 left-2">
-          <Badge className={`text-xs ${getTypeColor()}`}>
-            {getTypeLabel()}
-          </Badge>
+          <Badge className={`text-xs ${getTypeColor()}`}>{getTypeLabel()}</Badge>
         </div>
 
         {/* Remove Button - Top Right */}
@@ -71,7 +71,7 @@ export function SeriesWatchlistCard({ seriesTmdbId, details, type, isRemoving, o
             Remove from watchlist
           </TooltipContent>
         </Tooltip>
-        
+
         <div className="absolute bottom-0 left-0 right-0 p-2">
           <h3 className="text-xs font-bold text-white truncate text-center leading-tight">
             {details?.name || `Show ${seriesTmdbId}`}

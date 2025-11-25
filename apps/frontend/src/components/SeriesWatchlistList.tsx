@@ -26,9 +26,7 @@ export default function SeriesWatchlistList({
         return;
       }
 
-      const seriesDetailsBatchResults = await getSeriesDetailsBatch(
-        watchlist.map((item) => item.seriesTmdbId),
-      );
+      const seriesDetailsBatchResults = await getSeriesDetailsBatch(watchlist.map((item) => item.seriesTmdbId));
 
       const seriesDetailsMap = new Map<number, SeriesDetails>();
       seriesDetailsBatchResults.forEach((result) => {
