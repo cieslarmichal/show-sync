@@ -412,13 +412,6 @@ export function RecommendationsSection({
           </div>
         ) : (
           <div className="space-y-3 sm:space-y-4">
-            {/* Recommendations Count */}
-            {visibleRecommendations.length !== recommendations.length && (
-              <div className="text-xs text-muted-foreground">
-                Showing {visibleRecommendations.length} of {recommendations.length} total
-              </div>
-            )}
-
             <div className="space-y-4">
               {visibleRecommendations.map((recommendation) => (
                 <RecommendationCard
@@ -453,8 +446,8 @@ export function RecommendationsSection({
                     <li className="text-[10px] sm:text-[11px] italic pt-0.5">
                       ℹ️ Any action hides the show from future recommendations
                     </li>
-                    <li className="text-[10px] sm:text-[11px] italic pt-0.5 hidden sm:block">
-                      💡 Click poster or title to view on IMDb
+                    <li className="text-[10px] sm:text-[11px] italic pt-0.5">
+                      🎯 Update room description with preferences (mood, genre, themes) for better results
                     </li>
                   </ul>
                 </div>

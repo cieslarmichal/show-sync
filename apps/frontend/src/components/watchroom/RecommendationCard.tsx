@@ -244,7 +244,8 @@ export function RecommendationCard({
                 </div>
 
                 {/* Seasons and Episodes */}
-                {(recommendation.seriesDetails.numberOfSeasons > 0 || recommendation.seriesDetails.numberOfEpisodes > 0) && (
+                {(recommendation.seriesDetails.numberOfSeasons > 0 ||
+                  recommendation.seriesDetails.numberOfEpisodes > 0) && (
                   <>
                     <span className="text-muted-foreground/40 text-xs">•</span>
                     <div className="flex items-center gap-1.5 text-[11px] sm:text-sm text-muted-foreground">
@@ -254,9 +255,10 @@ export function RecommendationCard({
                           {recommendation.seriesDetails.numberOfSeasons === 1 ? 'Season' : 'Seasons'}
                         </span>
                       )}
-                      {recommendation.seriesDetails.numberOfSeasons > 0 && recommendation.seriesDetails.numberOfEpisodes > 0 && (
-                        <span className="text-muted-foreground/40">·</span>
-                      )}
+                      {recommendation.seriesDetails.numberOfSeasons > 0 &&
+                        recommendation.seriesDetails.numberOfEpisodes > 0 && (
+                          <span className="text-muted-foreground/40">·</span>
+                        )}
                       {recommendation.seriesDetails.numberOfEpisodes > 0 && (
                         <span>{recommendation.seriesDetails.numberOfEpisodes} Episodes</span>
                       )}
