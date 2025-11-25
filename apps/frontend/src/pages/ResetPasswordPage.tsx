@@ -3,7 +3,7 @@ import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { Lock, CheckCircle, XCircle, Loader2 } from 'lucide-react';
+import { Lock, CheckCircle, XCircle, Loader2, Eye, EyeOff } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/Form';
 import { Input } from '@/components/ui/Input';
@@ -43,6 +43,8 @@ export default function ResetPasswordPage() {
 
   const [tokenStatus, setTokenStatus] = useState<'validating' | 'valid' | 'invalid'>('validating');
   const [isSuccess, setIsSuccess] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -231,13 +233,24 @@ export default function ResetPasswordPage() {
                       <FormControl>
                         <Input
                           id="newPassword"
-                          type="password"
+                          type={showNewPassword ? 'text' : 'password'}
                           placeholder="Enter new password"
                           className="pl-10 h-11"
                           aria-invalid={!!fieldState.error}
                           {...field}
                         />
                       </FormControl>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent text-muted-foreground"
+                        onClick={() => setShowNewPassword(!showNewPassword)}
+                        tabIndex={-1}
+                        aria-label={showNewPassword ? 'Hide password' : 'Show password'}
+                      >
+                        {showNewPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                      </Button>
                     </div>
                     <FormMessage />
                   </FormItem>
@@ -260,13 +273,24 @@ export default function ResetPasswordPage() {
                       <FormControl>
                         <Input
                           id="confirmPassword"
-                          type="password"
+                          type={showConfirmPassword ? 'text' : 'password'}
                           placeholder="Confirm new password"
                           className="pl-10 h-11"
                           aria-invalid={!!fieldState.error}
                           {...field}
                         />
                       </FormControl>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent text-muted-foreground"
+                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                        tabIndex={-1}
+                        aria-label={showConfirmPassword ? 'Hide password' : 'Show password'}
+                      >
+                        {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                      </Button>
                     </div>
                     <FormMessage />
                   </FormItem>
