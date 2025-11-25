@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { LoginPageModel } from '../pages/LoginPageModel.ts';
 import { RegisterPageModel } from '../pages/RegisterPageModel.ts';
-import { generateUniqueEmail } from '../fixtures/testData.js';
+import { generateUniqueEmail } from '../fixtures/testData.ts';
 
 test.describe('Authentication Flow', () => {
   test.describe('Registration', () => {

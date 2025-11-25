@@ -1,5 +1,5 @@
 import { type Locator, type Page } from '@playwright/test';
-import { BasePageModel } from './BasePageModel.js';
+import { BasePageModel } from './BasePageModel.ts';
 
 export class SeriesPageModel extends BasePageModel {
   // Page elements
