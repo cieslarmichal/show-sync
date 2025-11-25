@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useDebounce } from '../hooks/useDebounce';
 import { searchSeries } from '../api/queries/searchSeries';
-import { Series } from '../api/types/series';
+import { Series, Rating, WatchlistType } from '../api/types/series';
 import { Input } from './ui/Input';
 import { Card } from './ui/Card';
 import { Skeleton } from './ui/Skeleton';
@@ -9,17 +9,17 @@ import { Search } from 'lucide-react';
 import { SearchResultCard } from './series/SearchResultCard';
 
 interface SearchSeriesProps {
-  onAddToProfile: (series: Series, preferenceLevel: 'like' | 'love') => void;
-  onAddToIgnored: (series: Series) => void;
-  profileSeriesIds: Set<number>;
-  ignoredSeriesIds?: Set<number>;
+  onAddRating: (series: Series, rating: Rating) => void;
+  onAddToWatchlist: (series: Series, type: WatchlistType) => void;
+  ratedSeriesIds: Set<number>;
+  watchlistSeriesIds?: Set<number>;
 }
 
 export default function SearchSeries({
-  onAddToProfile,
-  onAddToIgnored,
-  profileSeriesIds,
-  ignoredSeriesIds,
+  onAddRating,
+  onAddToWatchlist,
+  ratedSeriesIds,
+  watchlistSeriesIds,
 }: SearchSeriesProps) {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<Series[]>([]);
@@ -51,13 +51,13 @@ export default function SearchSeries({
     performSearch();
   }, [debouncedQuery]);
 
-  const handleAddToProfile = (series: Series, preferenceLevel: 'like' | 'love') => {
-    onAddToProfile(series, preferenceLevel);
+  const handleAddRating = (series: Series, rating: Rating) => {
+    onAddRating(series, rating);
     setQuery('');
   };
 
-  const handleAddToIgnored = (series: Series) => {
-    onAddToIgnored(series);
+  const handleAddToWatchlist = (series: Series, type: WatchlistType) => {
+    onAddToWatchlist(series, type);
     setQuery('');
   };
 
@@ -82,8 +82,8 @@ export default function SearchSeries({
           />
         </div>
         <p className="text-xs text-muted-foreground px-1">
-          <span className="font-medium">Like</span> or <span className="font-medium">Love</span> shows you enjoy •
-          <span className="font-medium"> Skip</span> shows you don't want to see
+          <span className="font-medium">Rate shows</span> you've seen (Like 👍 / Love ❤️ / Dislike 👎) •
+          <span className="font-medium"> Add to watchlist</span> (Want to Watch 📅 / Not Interested 👁️)
         </p>
       </div>
 
@@ -108,9 +108,16 @@ export default function SearchSeries({
                   </div>
                 </div>
                 <div className="shrink-0 w-full sm:w-auto mt-4 sm:mt-0 sm:ml-4">
-                  <div className="flex gap-2">
-                    <Skeleton className="h-8 w-20 flex-1 sm:flex-none" />
-                    <Skeleton className="h-8 w-32 flex-1 sm:flex-none" />
+                  <div className="flex flex-col gap-2">
+                    <div className="flex gap-2">
+                      <Skeleton className="h-11 w-20 flex-1 sm:flex-none" />
+                      <Skeleton className="h-11 w-20 flex-1 sm:flex-none" />
+                      <Skeleton className="h-11 w-24 flex-1 sm:flex-none" />
+                    </div>
+                    <div className="flex gap-2">
+                      <Skeleton className="h-11 flex-1" />
+                      <Skeleton className="h-11 flex-1" />
+                    </div>
                   </div>
                 </div>
               </div>
@@ -126,10 +133,10 @@ export default function SearchSeries({
               key={series.id}
               series={series}
               index={index}
-              isInProfile={profileSeriesIds.has(series.id)}
-              isIgnored={ignoredSeriesIds?.has(series.id) || false}
-              onAddToProfile={handleAddToProfile}
-              onAddToIgnored={handleAddToIgnored}
+              isInProfile={ratedSeriesIds.has(series.id)}
+              isInWatchlist={watchlistSeriesIds?.has(series.id) || false}
+              onAddRating={handleAddRating}
+              onAddToWatchlist={handleAddToWatchlist}
             />
           ))}
         </div>

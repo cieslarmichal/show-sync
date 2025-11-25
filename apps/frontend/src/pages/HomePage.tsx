@@ -107,7 +107,7 @@ export default function HomePage() {
                       <Heart className="h-8 w-8 text-primary" />
                     </div>
                   </div>
-                  <h3 className="text-xl font-semibold text-foreground">1. Rate Your Favorites</h3>
+                  <h3 className="text-xl font-semibold text-foreground">1. Rate Your Shows</h3>
                   <p className="text-muted-foreground leading-relaxed">
                     Quickly rate shows you've watched. Love it, like it, or skip it. Takes less than a minute to build
                     your taste profile.

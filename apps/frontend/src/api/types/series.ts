@@ -1,9 +1,17 @@
-export const preferenceLevels = {
+export const ratings = {
   like: 'like',
   love: 'love',
+  dislike: 'dislike',
 } as const;
 
-export type PreferenceLevel = (typeof preferenceLevels)[keyof typeof preferenceLevels];
+export type Rating = (typeof ratings)[keyof typeof ratings];
+
+export const watchlistTypes = {
+  notInterested: 'notInterested',
+  wantToWatch: 'wantToWatch',
+} as const;
+
+export type WatchlistType = (typeof watchlistTypes)[keyof typeof watchlistTypes];
 
 export interface Series {
   readonly id: number;
@@ -41,13 +49,13 @@ export interface SeriesSearchResult {
   };
 }
 
-export interface FavoriteSeries {
+export interface SeriesRating {
   readonly seriesTmdbId: number;
-  readonly preferenceLevel: PreferenceLevel;
+  readonly rating: Rating;
 }
 
-export interface FavoriteSeriesList {
-  readonly data: FavoriteSeries[];
+export interface SeriesRatingList {
+  readonly data: SeriesRating[];
   readonly metadata: {
     readonly page: number;
     readonly pageSize: number;
@@ -55,12 +63,13 @@ export interface FavoriteSeriesList {
   };
 }
 
-export interface IgnoredSeries {
+export interface SeriesWatchlist {
   readonly seriesTmdbId: number;
+  readonly type: WatchlistType;
 }
 
-export interface IgnoredSeriesList {
-  readonly data: IgnoredSeries[];
+export interface SeriesWatchlistList {
+  readonly data: SeriesWatchlist[];
   readonly metadata: {
     readonly page: number;
     readonly pageSize: number;

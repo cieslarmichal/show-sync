@@ -1,30 +1,23 @@
 import { Button } from '../ui/Button';
 import { Badge } from '../ui/Badge';
 import { Card } from '../ui/Card';
-import { ThumbsUp, Heart, EyeOff } from 'lucide-react';
-import { Series } from '../../api/types/series';
+import { ThumbsUp, Heart, ThumbsDown, EyeOff, CalendarPlus } from 'lucide-react';
+import { Series, Rating, WatchlistType } from '../../api/types/series';
 
 interface SearchResultCardProps {
   series: Series;
   index: number;
   isInProfile: boolean;
-  isIgnored: boolean;
-  onAddToProfile: (series: Series, preferenceLevel: 'like' | 'love') => void;
-  onAddToIgnored: (series: Series) => void;
+  isInWatchlist: boolean;
+  onAddRating: (series: Series, rating: Rating) => void;
+  onAddToWatchlist: (series: Series, type: WatchlistType) => void;
 }
 
 const truncateToTwoSentences = (text: string): string => {
   if (!text) return '';
-
-  // Find the first two sentence endings (. followed by space or end of string)
   const sentenceRegex = /[^.!?]+[.!?]+/g;
   const sentences = text.match(sentenceRegex);
-
-  if (!sentences || sentences.length === 0) {
-    return text;
-  }
-
-  // Take first two sentences and ensure it ends with a dot
+  if (!sentences || sentences.length === 0) return text;
   const twoSentences = sentences.slice(0, 2).join(' ').trim();
   return twoSentences.endsWith('.') ? twoSentences : twoSentences + '.';
 };
@@ -33,9 +26,9 @@ export function SearchResultCard({
   series,
   index,
   isInProfile,
-  isIgnored,
-  onAddToProfile,
-  onAddToIgnored,
+  isInWatchlist,
+  onAddRating,
+  onAddToWatchlist,
 }: SearchResultCardProps) {
   return (
     <Card className="p-4">
@@ -61,10 +54,7 @@ export function SearchResultCard({
           <div className="space-y-2 mt-2.5">
             <div className="flex items-center gap-2">
               {series?.firstAirDate && (
-                <Badge
-                  variant="secondary"
-                  className="text-xs"
-                >
+                <Badge variant="secondary" className="text-xs">
                   {new Date(series.firstAirDate).getFullYear()}
                 </Badge>
               )}
@@ -76,75 +66,61 @@ export function SearchResultCard({
           </div>
         </div>
         <div className="shrink-0 w-full sm:w-auto mt-4 sm:mt-0 sm:ml-4">
-          <div className="flex gap-2">
-            {/* Love Button - Primary Action */}
-            <Button
-              size="sm"
-              variant="outline"
-              className={`flex-1 sm:flex-none min-h-11 shadow-sm hover:shadow-md active:scale-95 transition-all duration-300 group ${
-                isInProfile
-                  ? 'bg-linear-to-br from-red-400 to-red-500 text-white border-red-400 hover:from-red-500 hover:to-red-600'
-                  : 'bg-red-50 border-red-200 hover:bg-red-100 hover:border-red-400 dark:bg-red-950/20 dark:border-red-900/50 dark:hover:bg-red-900/30 dark:hover:border-red-700'
-              }`}
-              onClick={() => onAddToProfile(series, 'love')}
-              disabled={isInProfile}
-              aria-label="Mark as loved"
-              aria-pressed={isInProfile}
-              data-testid={`search-result-love-button-${index}`}
-            >
-              <Heart
-                className={`w-4 h-4 mr-1.5 transition-all duration-300 text-red-500 dark:text-red-400 ${
-                  isInProfile
-                    ? 'fill-current text-white!'
-                    : 'group-hover:scale-110 group-hover:text-red-600 dark:group-hover:text-red-300'
-                }`}
-              />
-              Love
-            </Button>
-
-            {/* Like Button - Secondary Action */}
-            <Button
-              size="sm"
-              variant="outline"
-              className={`flex-1 sm:flex-none min-h-11 shadow-sm hover:shadow-md active:scale-95 transition-all duration-300 group ${
-                isInProfile
-                  ? 'bg-linear-to-br from-sky-400 to-sky-500 text-white border-sky-400 hover:from-sky-500 hover:to-sky-600'
-                  : 'bg-sky-50 border-sky-200 hover:bg-sky-100 hover:border-sky-400 dark:bg-sky-950/20 dark:border-sky-900/50 dark:hover:bg-sky-900/30 dark:hover:border-sky-700'
-              }`}
-              onClick={() => onAddToProfile(series, 'like')}
-              disabled={isInProfile}
-              aria-label="Mark as liked"
-              aria-pressed={isInProfile}
-              data-testid={`search-result-like-button-${index}`}
-            >
-              <ThumbsUp
-                className={`w-4 h-4 mr-1.5 transition-all duration-300 text-sky-500 dark:text-sky-400 ${
-                  isInProfile
-                    ? 'text-white!'
-                    : 'group-hover:scale-110 group-hover:text-sky-600 dark:group-hover:text-sky-300'
-                }`}
-              />
-              Like
-            </Button>
-
-            {/* Skip Button - Neutral Action */}
-            <Button
-              size="sm"
-              variant="outline"
-              className={`flex-1 sm:flex-none min-h-11 shadow-sm hover:shadow-md active:scale-95 transition-all duration-300 group ${
-                isIgnored
-                  ? 'bg-muted text-muted-foreground border-muted-foreground/50'
-                  : 'bg-muted/30 hover:bg-muted/60 hover:border-muted-foreground/40'
-              }`}
-              onClick={() => onAddToIgnored(series)}
-              disabled={isIgnored}
-              aria-label="Mark as not interested"
-              aria-pressed={isIgnored}
-              data-testid={`search-result-skip-button-${index}`}
-            >
-              <EyeOff className={`w-4 h-4 mr-1.5 transition-all duration-300 ${isIgnored ? 'opacity-50' : ''}`} />
-              {isIgnored ? 'Skipped' : 'Skip'}
-            </Button>
+          <div className="flex flex-col gap-2">
+            <div className="flex gap-2">
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => onAddRating(series, 'love')}
+                disabled={isInProfile}
+                data-testid={`search-result-love-button-${index}`}
+              >
+                <Heart className="w-4 h-4 mr-1.5" />
+                Love
+              </Button>
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => onAddRating(series, 'like')}
+                disabled={isInProfile}
+                data-testid={`search-result-like-button-${index}`}
+              >
+                <ThumbsUp className="w-4 h-4 mr-1.5" />
+                Like
+              </Button>
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => onAddRating(series, 'dislike')}
+                disabled={isInProfile}
+                data-testid={`search-result-dislike-button-${index}`}
+              >
+                <ThumbsDown className="w-4 h-4 mr-1.5" />
+                Dislike
+              </Button>
+            </div>
+            <div className="flex gap-2">
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => onAddToWatchlist(series, 'notInterested')}
+                disabled={isInWatchlist}
+                data-testid={`search-result-not-interested-button-${index}`}
+              >
+                <EyeOff className="w-4 h-4 mr-1.5" />
+                Not Interested
+              </Button>
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => onAddToWatchlist(series, 'wantToWatch')}
+                disabled={isInWatchlist}
+                data-testid={`search-result-want-to-watch-button-${index}`}
+              >
+                <CalendarPlus className="w-4 h-4 mr-1.5" />
+                Want to Watch
+              </Button>
+            </div>
           </div>
         </div>
       </div>

@@ -18,7 +18,7 @@ export class DashboardPageModel extends BasePageModel {
   }
 
   get seriesList() {
-    return this.page.locator('[data-testid="favorite-series-list"], .series-list');
+    return this.page.locator('[data-testid="series-ratings-list"], .series-list');
   }
 
   get createRoomButton() {
@@ -50,7 +50,7 @@ export class DashboardPageModel extends BasePageModel {
     await this.logoutButton.click();
   }
 
-  async getFavoriteSeriesCount(): Promise<number> {
+  async getSeriesRatingsCount(): Promise<number> {
     const items = await this.seriesList.locator('> *').count();
     return items;
   }

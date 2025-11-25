@@ -73,19 +73,6 @@ export const handlers = [
       id: '123e4567-e89b-12d3-a456-426614174000',
       name: 'Test User',
       email: 'test@example.com',
-      favoriteSeries: [
-        { id: 1396, name: 'Breaking Bad', posterPath: '/ggFHVNu6YYI5L9pCfOacjizRGt.jpg' },
-        { id: 60059, name: 'Better Call Saul', posterPath: '/fC2HDm5t0kHl7mTm7jxMR31b7by.jpg' },
-      ],
-    });
-  }),
-
-  http.put(`${API_BASE_URL}/users/profile/series`, async ({ request }) => {
-    const body = (await request.json()) as { seriesIds: number[] };
-
-    return HttpResponse.json({
-      message: 'Favorite series updated',
-      seriesIds: body.seriesIds,
     });
   }),
 

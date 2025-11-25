@@ -1,17 +1,17 @@
 import { useState, useEffect, useContext } from 'react';
 import { toast } from 'sonner';
-import { Heart, ThumbsUp } from 'lucide-react';
+import { Heart, ThumbsUp, ThumbsDown } from 'lucide-react';
 import SearchSeries from '../components/SearchSeries.tsx';
-import FavoriteSeriesList from '../components/FavoriteSeriesList.tsx';
-import IgnoredSeriesList from '../components/IgnoredSeriesList.tsx';
-import { getMyFavoriteSeries } from '../api/queries/getMyFavoriteSeries.ts';
-import { addFavoriteSeries } from '../api/queries/addFavoriteSeries.ts';
-import { removeFavoriteSeries } from '../api/queries/removeFavoriteSeries.ts';
-import { updateFavoriteSeriesPreference } from '../api/queries/updateFavoriteSeriesPreference.ts';
-import { getMyIgnoredSeries } from '../api/queries/getMyIgnoredSeries.ts';
-import { addIgnoredSeries } from '../api/queries/addIgnoredSeries.ts';
-import { removeIgnoredSeries } from '../api/queries/removeIgnoredSeries.ts';
-import { Series, FavoriteSeries, IgnoredSeries, PreferenceLevel } from '../api/types/series.ts';
+import SeriesRatingList from '../components/SeriesRatingList.tsx';
+import SeriesWatchlistList from '../components/SeriesWatchlistList.tsx';
+import { getMySeriesRatings } from '../api/queries/getMySeriesRatings.ts';
+import { addSeriesRating } from '../api/queries/addSeriesRating.ts';
+import { removeSeriesRating } from '../api/queries/removeSeriesRating.ts';
+import { updateSeriesRating } from '../api/queries/updateSeriesRating.ts';
+import { getMySeriesWatchlist } from '../api/queries/getMySeriesWatchlist.ts';
+import { addSeriesWatchlist } from '../api/queries/addSeriesWatchlist.ts';
+import { removeSeriesWatchlist } from '../api/queries/removeSeriesWatchlist.ts';
+import { Series, SeriesRating, SeriesWatchlist, Rating, WatchlistType } from '../api/types/series.ts';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '../components/ui/Tabs';
 import { SeriesContext } from '../context/SeriesContext';
 import { useSEO } from '../hooks/useSEO';
@@ -19,181 +19,199 @@ import { useSEO } from '../hooks/useSEO';
 export default function SeriesPage() {
   useSEO({
     title: 'Shows - ShowSync',
-    description: 'Browse, rate, and manage your favorite TV shows. Tell us what you like to get better suggestions.',
-    keywords: ['tv shows', 'rate shows', 'favorite shows', 'tv recommendations', 'show list'],
+    description: 'Browse, rate, and manage your TV shows. Tell us what you like to get better suggestions.',
+    keywords: ['tv shows', 'rate shows', 'rated shows', 'tv recommendations', 'show list'],
   });
 
   const { refreshCounts } = useContext(SeriesContext);
-  const [profileSeriesIds, setProfileSeriesIds] = useState<Set<number>>(new Set());
-  const [ignoredSeriesIds, setIgnoredSeriesIds] = useState<Set<number>>(new Set());
-  const [mySeries, setMySeries] = useState<FavoriteSeries[]>([]);
-  const [myIgnoredSeries, setMyIgnoredSeries] = useState<IgnoredSeries[]>([]);
+  const [ratedSeriesIds, setRatedSeriesIds] = useState<Set<number>>(new Set());
+  const [watchlistSeriesIds, setWatchlistSeriesIds] = useState<Set<number>>(new Set());
+  const [myRatings, setMyRatings] = useState<SeriesRating[]>([]);
+  const [myWatchlist, setMyWatchlist] = useState<SeriesWatchlist[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [isLoadingIgnored, setIsLoadingIgnored] = useState(true);
-  const [preferenceFilter, setPreferenceFilter] = useState<'all' | PreferenceLevel>('all');
+  const [isLoadingWatchlist, setIsLoadingWatchlist] = useState(true);
+  const [ratingFilter, setRatingFilter] = useState<'all' | Rating>('all');
   const [lovedCount, setLovedCount] = useState(0);
   const [likedCount, setLikedCount] = useState(0);
+  const [dislikedCount, setDislikedCount] = useState(0);
 
   useEffect(() => {
-    const loadSeries = async () => {
+    const loadRatings = async () => {
       try {
-        const response = await getMyFavoriteSeries();
-        const series = response.data;
-        setMySeries(series);
-        setProfileSeriesIds(new Set(series.map((fav: FavoriteSeries) => fav.seriesTmdbId)));
+        const response = await getMySeriesRatings();
+        const ratings = response.data;
+        setMyRatings(ratings);
+        setRatedSeriesIds(new Set(ratings.map((rating: SeriesRating) => rating.seriesTmdbId)));
 
         // Calculate counts
-        const loved = series.filter((s: FavoriteSeries) => s.preferenceLevel === 'love').length;
-        const liked = series.filter((s: FavoriteSeries) => s.preferenceLevel === 'like').length;
+        const loved = ratings.filter((s: SeriesRating) => s.rating === 'love').length;
+        const liked = ratings.filter((s: SeriesRating) => s.rating === 'like').length;
+        const disliked = ratings.filter((s: SeriesRating) => s.rating === 'dislike').length;
         setLovedCount(loved);
         setLikedCount(liked);
+        setDislikedCount(disliked);
       } catch {
-        toast.error('Could not load your shows. Please refresh the page.');
+        toast.error('Could not load your ratings. Please refresh the page.');
       } finally {
         setIsLoading(false);
       }
     };
 
-    loadSeries();
+    loadRatings();
   }, []);
 
   useEffect(() => {
-    const loadIgnoredSeries = async () => {
+    const loadWatchlist = async () => {
       try {
-        const response = await getMyIgnoredSeries();
-        const ignored = response.data;
-        setMyIgnoredSeries(ignored);
-        setIgnoredSeriesIds(new Set(ignored.map((ign: IgnoredSeries) => ign.seriesTmdbId)));
+        const response = await getMySeriesWatchlist();
+        const watchlist = response.data;
+        setMyWatchlist(watchlist);
+        setWatchlistSeriesIds(new Set(watchlist.map((item: SeriesWatchlist) => item.seriesTmdbId)));
       } catch {
-        toast.error('Could not load your skipped shows. Please refresh the page.');
+        toast.error('Could not load your watchlist. Please refresh the page.');
       } finally {
-        setIsLoadingIgnored(false);
+        setIsLoadingWatchlist(false);
       }
     };
 
-    loadIgnoredSeries();
+    loadWatchlist();
   }, []);
 
-  const handleAddToProfile = async (series: Series, preferenceLevel: PreferenceLevel = 'like') => {
+  const handleAddRating = async (series: Series, rating: Rating) => {
     try {
-      // If series is in ignored list, remove it first
-      if (ignoredSeriesIds.has(series.id)) {
-        await removeIgnoredSeries(series.id);
-        setIgnoredSeriesIds((prev) => {
+      // If series is in watchlist, remove it first
+      if (watchlistSeriesIds.has(series.id)) {
+        await removeSeriesWatchlist(series.id);
+        setWatchlistSeriesIds((prev) => {
           const newSet = new Set(prev);
           newSet.delete(series.id);
           return newSet;
         });
-        setMyIgnoredSeries((prev) => prev.filter((ignored) => ignored.seriesTmdbId !== series.id));
+        setMyWatchlist((prev) => prev.filter((item) => item.seriesTmdbId !== series.id));
       }
 
-      await addFavoriteSeries(series.id, preferenceLevel);
-      setProfileSeriesIds((prev) => new Set(prev).add(series.id));
-      // Add to series list
-      const newSeries: FavoriteSeries = {
+      await addSeriesRating(series.id, rating);
+      setRatedSeriesIds((prev) => new Set(prev).add(series.id));
+      
+      // Add to ratings list
+      const newRating: SeriesRating = {
         seriesTmdbId: series.id,
-        preferenceLevel: preferenceLevel,
+        rating: rating,
       };
-      setMySeries((prev) => [...prev, newSeries]);
-      if (preferenceLevel === 'love') {
+      setMyRatings((prev) => [...prev, newRating]);
+      
+      // Update counts
+      if (rating === 'love') {
         setLovedCount((prev) => prev + 1);
-      } else {
+      } else if (rating === 'like') {
         setLikedCount((prev) => prev + 1);
+      } else {
+        setDislikedCount((prev) => prev + 1);
       }
+      
       await refreshCounts(); // Sync with context
-      toast.success(`"${series.name}" added to your favorites!`);
+      
+      const ratingEmoji = rating === 'love' ? '❤️' : rating === 'like' ? '👍' : '👎';
+      toast.success(`"${series.name}" rated as ${ratingEmoji}`);
     } catch {
       toast.error('Could not save your rating. Please check your connection and try again.');
     }
   };
 
-  const handleRemoveSeries = async (seriesTmdbId: number): Promise<void> => {
+  const handleRemoveRating = async (seriesTmdbId: number): Promise<void> => {
     try {
-      const removedSeries = mySeries.find((s) => s.seriesTmdbId === seriesTmdbId);
-      await removeFavoriteSeries(seriesTmdbId);
-      setProfileSeriesIds((prev) => {
+      const removedRating = myRatings.find((s) => s.seriesTmdbId === seriesTmdbId);
+      await removeSeriesRating(seriesTmdbId);
+      setRatedSeriesIds((prev) => {
         const newSet = new Set(prev);
         newSet.delete(seriesTmdbId);
         return newSet;
       });
-      setMySeries((prev) => prev.filter((fav) => fav.seriesTmdbId !== seriesTmdbId));
+      setMyRatings((prev) => prev.filter((rating) => rating.seriesTmdbId !== seriesTmdbId));
 
       // Update counts
-      if (removedSeries?.preferenceLevel === 'love') {
+      if (removedRating?.rating === 'love') {
         setLovedCount((prev) => prev - 1);
-      } else {
+      } else if (removedRating?.rating === 'like') {
         setLikedCount((prev) => prev - 1);
+      } else if (removedRating?.rating === 'dislike') {
+        setDislikedCount((prev) => prev - 1);
       }
 
       await refreshCounts(); // Sync with context
-      toast.success('Show removed from your favorites');
+      toast.success('Rating removed');
     } catch {
-      toast.error('Could not remove show. Please try again.');
+      toast.error('Could not remove rating. Please try again.');
     }
   };
 
-  const handleUpdatePreference = async (seriesTmdbId: number, preferenceLevel: PreferenceLevel): Promise<void> => {
+  const handleUpdateRating = async (seriesTmdbId: number, rating: Rating): Promise<void> => {
     try {
-      const oldSeries = mySeries.find((s) => s.seriesTmdbId === seriesTmdbId);
-      const oldLevel = oldSeries?.preferenceLevel;
+      const oldRating = myRatings.find((s) => s.seriesTmdbId === seriesTmdbId);
+      const oldRatingValue = oldRating?.rating;
 
-      await updateFavoriteSeriesPreference(seriesTmdbId, preferenceLevel);
+      await updateSeriesRating(seriesTmdbId, rating);
 
-      setMySeries((prev) => prev.map((fav) => (fav.seriesTmdbId === seriesTmdbId ? { ...fav, preferenceLevel } : fav)));
+      setMyRatings((prev) => prev.map((r) => (r.seriesTmdbId === seriesTmdbId ? { ...r, rating } : r)));
 
       // Update counts
-      if (oldLevel === 'love' && preferenceLevel === 'like') {
-        setLovedCount((prev) => prev - 1);
-        setLikedCount((prev) => prev + 1);
-      } else if (oldLevel === 'like' && preferenceLevel === 'love') {
-        setLikedCount((prev) => prev - 1);
-        setLovedCount((prev) => prev + 1);
-      }
+      if (oldRatingValue === 'love') setLovedCount((prev) => prev - 1);
+      else if (oldRatingValue === 'like') setLikedCount((prev) => prev - 1);
+      else if (oldRatingValue === 'dislike') setDislikedCount((prev) => prev - 1);
+
+      if (rating === 'love') setLovedCount((prev) => prev + 1);
+      else if (rating === 'like') setLikedCount((prev) => prev + 1);
+      else if (rating === 'dislike') setDislikedCount((prev) => prev + 1);
 
       await refreshCounts(); // Sync with context
-      toast.success(`Preference updated to ${preferenceLevel === 'love' ? '❤️ Loved' : '👍 Liked'}`);
+      
+      const ratingEmoji = rating === 'love' ? '❤️' : rating === 'like' ? '👍' : '👎';
+      toast.success(`Rating updated to ${ratingEmoji}`);
     } catch {
       toast.error('Could not update your rating. Please try again.');
     }
   };
 
-  const handleRemoveIgnoredSeries = async (seriesTmdbId: number): Promise<void> => {
+  const handleRemoveWatchlist = async (seriesTmdbId: number): Promise<void> => {
     try {
-      await removeIgnoredSeries(seriesTmdbId);
-      setIgnoredSeriesIds((prev) => {
+      await removeSeriesWatchlist(seriesTmdbId);
+      setWatchlistSeriesIds((prev) => {
         const newSet = new Set(prev);
         newSet.delete(seriesTmdbId);
         return newSet;
       });
-      setMyIgnoredSeries((prev) => prev.filter((ignored) => ignored.seriesTmdbId !== seriesTmdbId));
-      toast.success('Show removed from skipped list');
+      setMyWatchlist((prev) => prev.filter((item) => item.seriesTmdbId !== seriesTmdbId));
+      toast.success('Show removed from watchlist');
     } catch {
-      toast.error('Could not restore show. Please try again.');
+      toast.error('Could not remove show from watchlist. Please try again.');
     }
   };
 
-  const handleAddToIgnored = async (series: Series): Promise<void> => {
+  const handleAddToWatchlist = async (series: Series, type: WatchlistType): Promise<void> => {
     try {
-      // If series is in favorite list, remove it first
-      if (profileSeriesIds.has(series.id)) {
-        await removeFavoriteSeries(series.id);
-        setProfileSeriesIds((prev) => {
+      // If series is in ratings list, remove it first
+      if (ratedSeriesIds.has(series.id)) {
+        await removeSeriesRating(series.id);
+        setRatedSeriesIds((prev) => {
           const newSet = new Set(prev);
           newSet.delete(series.id);
           return newSet;
         });
-        setMySeries((prev) => prev.filter((fav) => fav.seriesTmdbId !== series.id));
+        setMyRatings((prev) => prev.filter((rating) => rating.seriesTmdbId !== series.id));
       }
 
-      await addIgnoredSeries(series.id);
-      setIgnoredSeriesIds((prev) => new Set(prev).add(series.id));
-      const newIgnored: IgnoredSeries = {
+      await addSeriesWatchlist(series.id, type);
+      setWatchlistSeriesIds((prev) => new Set(prev).add(series.id));
+      const newWatchlistItem: SeriesWatchlist = {
         seriesTmdbId: series.id,
+        type: type,
       };
-      setMyIgnoredSeries((prev) => [...prev, newIgnored]);
-      toast.success(`"${series.name}" added to your ignored list`);
+      setMyWatchlist((prev) => [...prev, newWatchlistItem]);
+      
+      const typeLabel = type === 'notInterested' ? 'Not Interested' : 'Want to Watch';
+      toast.success(`"${series.name}" added to watchlist as ${typeLabel}`);
     } catch {
-      toast.error('Could not skip show. Please try again.');
+      toast.error('Could not add to watchlist. Please try again.');
     }
   };
 
@@ -217,26 +235,26 @@ export default function SeriesPage() {
 
             {/* Search Section */}
             <SearchSeries
-              onAddToProfile={handleAddToProfile}
-              onAddToIgnored={handleAddToIgnored}
-              profileSeriesIds={profileSeriesIds}
-              ignoredSeriesIds={ignoredSeriesIds}
+              onAddRating={handleAddRating}
+              onAddToWatchlist={handleAddToWatchlist}
+              ratedSeriesIds={ratedSeriesIds}
+              watchlistSeriesIds={watchlistSeriesIds}
             />
 
-            {/* Series Section */}
+            {/* Ratings Section */}
             <div>
               <div className="flex items-center justify-between gap-3 mb-6">
                 <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-foreground">
                   Your Ratings
                 </h2>
                 <span className="text-sm font-semibold text-muted-foreground px-3 py-1.5 bg-muted/50 rounded-full">
-                  {mySeries.length} {mySeries.length === 1 ? 'show' : 'shows'}
+                  {myRatings.length} {myRatings.length === 1 ? 'show' : 'shows'}
                 </span>
               </div>
 
               <Tabs
-                value={preferenceFilter}
-                onValueChange={(value: string) => setPreferenceFilter(value as 'all' | PreferenceLevel)}
+                value={ratingFilter}
+                onValueChange={(value: string) => setRatingFilter(value as 'all' | Rating)}
                 className="w-full"
               >
                 <TabsList className="mb-8 bg-muted/50 p-1.5 rounded-xl inline-flex">
@@ -244,7 +262,7 @@ export default function SeriesPage() {
                     value="all"
                     className="data-[state=active]:bg-background data-[state=active]:shadow-md rounded-lg px-5 py-2.5 font-semibold transition-all"
                   >
-                    All ({mySeries.length})
+                    All ({myRatings.length})
                   </TabsTrigger>
                   <TabsTrigger
                     value="love"
@@ -260,22 +278,29 @@ export default function SeriesPage() {
                     <ThumbsUp className="w-4 h-4 mr-1.5" />
                     Liked ({likedCount})
                   </TabsTrigger>
+                  <TabsTrigger
+                    value="dislike"
+                    className="data-[state=active]:bg-amber-50 data-[state=active]:text-amber-600 data-[state=active]:shadow-md dark:data-[state=active]:bg-amber-950/30 dark:data-[state=active]:text-amber-400 rounded-lg px-5 py-2.5 font-semibold transition-all"
+                  >
+                    <ThumbsDown className="w-4 h-4 mr-1.5 fill-current" />
+                    Disliked ({dislikedCount})
+                  </TabsTrigger>
                 </TabsList>
 
                 <TabsContent value="all">
-                  <FavoriteSeriesList
-                    favorites={mySeries}
-                    onRemoveFavorite={handleRemoveSeries}
-                    onUpdatePreference={handleUpdatePreference}
+                  <SeriesRatingList
+                    ratings={myRatings}
+                    onRemoveRating={handleRemoveRating}
+                    onUpdateRating={handleUpdateRating}
                     isLoading={isLoading}
                   />
                 </TabsContent>
 
                 <TabsContent value="love">
-                  <FavoriteSeriesList
-                    favorites={mySeries.filter((s) => s.preferenceLevel === 'love')}
-                    onRemoveFavorite={handleRemoveSeries}
-                    onUpdatePreference={handleUpdatePreference}
+                  <SeriesRatingList
+                    ratings={myRatings.filter((s) => s.rating === 'love')}
+                    onRemoveRating={handleRemoveRating}
+                    onUpdateRating={handleUpdateRating}
                     isLoading={isLoading}
                     emptyMessage="No loved shows yet"
                     emptySubMessage="Mark shows with ❤️ to see them here"
@@ -283,35 +308,46 @@ export default function SeriesPage() {
                 </TabsContent>
 
                 <TabsContent value="like">
-                  <FavoriteSeriesList
-                    favorites={mySeries.filter((s) => s.preferenceLevel === 'like')}
-                    onRemoveFavorite={handleRemoveSeries}
-                    onUpdatePreference={handleUpdatePreference}
+                  <SeriesRatingList
+                    ratings={myRatings.filter((s) => s.rating === 'like')}
+                    onRemoveRating={handleRemoveRating}
+                    onUpdateRating={handleUpdateRating}
                     isLoading={isLoading}
                     emptyMessage="No liked shows yet"
                     emptySubMessage="Search and rate shows above to get started"
                   />
                 </TabsContent>
+
+                <TabsContent value="dislike">
+                  <SeriesRatingList
+                    ratings={myRatings.filter((s) => s.rating === 'dislike')}
+                    onRemoveRating={handleRemoveRating}
+                    onUpdateRating={handleUpdateRating}
+                    isLoading={isLoading}
+                    emptyMessage="No disliked shows yet"
+                    emptySubMessage="Mark shows with 👎 to see them here"
+                  />
+                </TabsContent>
               </Tabs>
             </div>
 
-            {/* Ignored Series Section */}
+            {/* Watchlist Section */}
             <div>
               <div className="flex items-center justify-between gap-3 mb-6">
                 <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-foreground">
-                  Skipped Shows
+                  Your Watchlist
                 </h2>
                 <span className="text-sm font-semibold text-muted-foreground px-3 py-1.5 bg-muted/50 rounded-full">
-                  {myIgnoredSeries.length} {myIgnoredSeries.length === 1 ? 'show' : 'shows'}
+                  {myWatchlist.length} {myWatchlist.length === 1 ? 'show' : 'shows'}
                 </span>
               </div>
               <p className="text-sm text-muted-foreground mb-6 leading-relaxed">
-                These shows won't appear in your recommendations. Remove them anytime to reconsider.
+                Shows you've added to your watchlist. "Not Interested" shows won't appear in recommendations.
               </p>
-              <IgnoredSeriesList
-                ignoredSeries={myIgnoredSeries}
-                onRemoveIgnored={handleRemoveIgnoredSeries}
-                isLoading={isLoadingIgnored}
+              <SeriesWatchlistList
+                watchlist={myWatchlist}
+                onRemoveWatchlist={handleRemoveWatchlist}
+                isLoading={isLoadingWatchlist}
               />
             </div>
           </div>

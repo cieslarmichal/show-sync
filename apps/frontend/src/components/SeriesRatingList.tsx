@@ -1,26 +1,26 @@
 import { useState, useEffect, useRef } from 'react';
-import { FavoriteSeries, SeriesDetails, PreferenceLevel } from '../api/types/series';
+import { SeriesRating, SeriesDetails, Rating } from '../api/types/series';
 import { Skeleton } from './ui/Skeleton';
 import { getSeriesDetailsBatch } from '../api/queries/getSeriesDetailsBatch';
-import { FavoriteSeriesCard } from './series/FavoriteSeriesCard';
+import { SeriesRatingCard } from './series/SeriesRatingCard.tsx';
 
-interface FavoriteSeriesListProps {
-  favorites: FavoriteSeries[];
-  onRemoveFavorite: (seriesTmdbId: number) => void;
-  onUpdatePreference?: (seriesTmdbId: number, preferenceLevel: PreferenceLevel) => Promise<void>;
+interface SeriesRatingListProps {
+  ratings: SeriesRating[];
+  onRemoveRating: (seriesTmdbId: number) => void;
+  onUpdateRating?: (seriesTmdbId: number, rating: Rating) => Promise<void>;
   isLoading: boolean;
   emptyMessage?: string;
   emptySubMessage?: string;
 }
 
-export default function FavoriteSeriesList({
-  favorites,
-  onRemoveFavorite,
-  onUpdatePreference,
+export default function SeriesRatingList({
+  ratings,
+  onRemoveRating,
+  onUpdateRating,
   isLoading: externalLoading,
-  emptyMessage = 'No favorite shows yet',
-  emptySubMessage = 'Search for shows above and mark the ones you like or love!',
-}: FavoriteSeriesListProps) {
+  emptyMessage = 'No rated shows yet',
+  emptySubMessage = 'Search for shows above and rate the ones you like, love, or dislike!',
+}: SeriesRatingListProps) {
   const [seriesDetails, setSeriesDetails] = useState<Map<number, SeriesDetails>>(new Map());
   const [removingIds, setRemovingIds] = useState<Set<number>>(new Set());
   const [updatingIds, setUpdatingIds] = useState<Set<number>>(new Set());
@@ -28,12 +28,12 @@ export default function FavoriteSeriesList({
 
   useEffect(() => {
     const loadSeriesDetails = async () => {
-      if (favorites.length === 0) {
+      if (ratings.length === 0) {
         setSeriesDetails(new Map());
         return;
       }
 
-      const seriesDetailsBatchResults = await getSeriesDetailsBatch(favorites.map((favorite) => favorite.seriesTmdbId));
+      const seriesDetailsBatchResults = await getSeriesDetailsBatch(ratings.map((rating) => rating.seriesTmdbId));
 
       const seriesDetailsMap = new Map<number, SeriesDetails>();
       seriesDetailsBatchResults.forEach((result) => {
@@ -46,7 +46,7 @@ export default function FavoriteSeriesList({
     };
 
     loadSeriesDetails();
-  }, [favorites]);
+  }, [ratings]);
 
   // Cleanup timeouts on unmount
   useEffect(() => {
@@ -57,12 +57,12 @@ export default function FavoriteSeriesList({
     };
   }, []);
 
-  const handleRemoveFavorite = async (seriesTmdbId: number) => {
+  const handleRemoveRating = async (seriesTmdbId: number) => {
     // Add to removing set for animation
     setRemovingIds((prev) => new Set(prev).add(seriesTmdbId));
 
     try {
-      await onRemoveFavorite(seriesTmdbId);
+      await onRemoveRating(seriesTmdbId);
 
       // Delay the actual removal to allow fade-out animation
       const timeoutId = setTimeout(() => {
@@ -90,13 +90,13 @@ export default function FavoriteSeriesList({
     }
   };
 
-  const handleUpdatePreference = async (seriesTmdbId: number, preferenceLevel: PreferenceLevel) => {
-    if (!onUpdatePreference) return;
+  const handleUpdateRating = async (seriesTmdbId: number, rating: Rating) => {
+    if (!onUpdateRating) return;
 
     setUpdatingIds((prev) => new Set(prev).add(seriesTmdbId));
 
     try {
-      await onUpdatePreference(seriesTmdbId, preferenceLevel);
+      await onUpdateRating(seriesTmdbId, rating);
     } catch {
       // Silently handle errors - parent component should handle user feedback
     } finally {
@@ -125,7 +125,7 @@ export default function FavoriteSeriesList({
 
   return (
     <div className="space-y-3">
-      {favorites.length === 0 ? (
+      {ratings.length === 0 ? (
         <div className="text-center py-8 text-muted-foreground">
           <p>{emptyMessage}</p>
           <p className="text-sm mt-1">{emptySubMessage}</p>
@@ -133,21 +133,21 @@ export default function FavoriteSeriesList({
       ) : (
         <div className="max-h-[400px] sm:max-h-[500px] overflow-y-auto">
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7 gap-4 sm:gap-6">
-            {favorites.map((favorite) => {
-              const details = seriesDetails.get(favorite.seriesTmdbId);
-              const isRemoving = removingIds.has(favorite.seriesTmdbId);
-              const isUpdating = updatingIds.has(favorite.seriesTmdbId);
+            {ratings.map((rating) => {
+              const details = seriesDetails.get(rating.seriesTmdbId);
+              const isRemoving = removingIds.has(rating.seriesTmdbId);
+              const isUpdating = updatingIds.has(rating.seriesTmdbId);
 
               return (
-                <FavoriteSeriesCard
-                  key={favorite.seriesTmdbId}
-                  seriesTmdbId={favorite.seriesTmdbId}
+                <SeriesRatingCard
+                  key={rating.seriesTmdbId}
+                  seriesTmdbId={rating.seriesTmdbId}
                   details={details}
-                  preferenceLevel={favorite.preferenceLevel}
+                  rating={rating.rating}
                   isRemoving={isRemoving}
                   isUpdating={isUpdating}
-                  onRemove={handleRemoveFavorite}
-                  onUpdatePreference={onUpdatePreference ? handleUpdatePreference : undefined}
+                  onRemove={handleRemoveRating}
+                  onUpdateRating={onUpdateRating ? handleUpdateRating : undefined}
                 />
               );
             })}

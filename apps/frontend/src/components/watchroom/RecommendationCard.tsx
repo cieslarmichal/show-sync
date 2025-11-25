@@ -3,10 +3,10 @@ import { toast } from 'sonner';
 import { Sparkles, TvMinimalPlay, EyeOff, ThumbsUp, Heart, Star, ExternalLink } from 'lucide-react';
 
 import { getSeriesExternalIds } from '../../api/queries/getSeriesExternalIds.ts';
-import { addIgnoredSeries } from '../../api/queries/addIgnoredSeries.ts';
-import { addFavoriteSeries } from '../../api/queries/addFavoriteSeries.ts';
+import { addSeriesWatchlist } from '../../api/queries/addSeriesWatchlist.ts';
+import { addSeriesRating } from '../../api/queries/addSeriesRating.ts';
 import type { Recommendation } from '../../api/types/recommendation.ts';
-import type { SeriesDetails } from '../../api/types/series.ts';
+import type { SeriesDetails, Rating } from '../../api/types/series.ts';
 import { Button } from '../ui/Button.tsx';
 import { Badge } from '../ui/Badge.tsx';
 import { Skeleton } from '../ui/Skeleton.tsx';
@@ -18,20 +18,20 @@ interface RecommendationWithDetails extends Recommendation {
 
 interface RecommendationCardProps {
   recommendation: RecommendationWithDetails;
-  isIgnored: boolean;
-  isFavorite: boolean;
+  isInWatchlist: boolean;
+  isRated: boolean;
   isFadingOut: boolean;
-  onIgnore: (seriesTmdbId: number) => void;
-  onFavorite: (seriesTmdbId: number) => void;
+  onAddToWatchlist: (seriesTmdbId: number) => void;
+  onAddRating: (seriesTmdbId: number) => void;
 }
 
 export function RecommendationCard({
   recommendation,
-  isIgnored,
-  isFavorite,
+  isInWatchlist,
+  isRated,
   isFadingOut,
-  onIgnore,
-  onFavorite,
+  onAddToWatchlist,
+  onAddRating,
 }: RecommendationCardProps) {
   const { refreshCounts } = useContext(SeriesContext);
   const [isImageLoading, setIsImageLoading] = useState(true);
@@ -63,16 +63,16 @@ export function RecommendationCard({
     }
   };
 
-  const handleIgnoreSeries = async () => {
+  const handleAddToWatchlist = async () => {
     try {
-      await addIgnoredSeries(recommendation.seriesTmdbId);
-      toast.success(`"${recommendation.seriesDetails?.name}" added to your ignored list`, {
+      await addSeriesWatchlist(recommendation.seriesTmdbId, 'notInterested');
+      toast.success(`"${recommendation.seriesDetails?.name}" added to your watchlist`, {
         description: "You won't see this show in future recommendations.",
       });
-      onIgnore(recommendation.seriesTmdbId);
+      onAddToWatchlist(recommendation.seriesTmdbId);
       await refreshCounts();
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Failed to ignore series';
+      const errorMessage = error instanceof Error ? error.message : 'Failed to add to watchlist';
 
       if (errorMessage.includes('Too many requests') || errorMessage.includes('Rate limit')) {
         toast.error('Slow down!', {
@@ -84,16 +84,17 @@ export function RecommendationCard({
     }
   };
 
-  const handleLikeSeries = async (preferenceLevel: 'like' | 'love' = 'like') => {
+  const handleAddRating = async (rating: Rating = 'like') => {
     try {
-      await addFavoriteSeries(recommendation.seriesTmdbId, preferenceLevel);
-      toast.success(`"${recommendation.seriesDetails?.name}" added to your favorites!`, {
+      await addSeriesRating(recommendation.seriesTmdbId, rating);
+      const ratingLabel = rating === 'love' ? '❤️ Love' : rating === 'like' ? '👍 Like' : '👎 Dislike';
+      toast.success(`"${recommendation.seriesDetails?.name}" rated as ${ratingLabel}!`, {
         description: "You won't see this show in future recommendations.",
       });
-      onFavorite(recommendation.seriesTmdbId);
+      onAddRating(recommendation.seriesTmdbId);
       await refreshCounts();
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Failed to add to favorites';
+      const errorMessage = error instanceof Error ? error.message : 'Failed to save rating';
 
       if (errorMessage.includes('Too many requests') || errorMessage.includes('Rate limit')) {
         toast.error('Slow down!', {
@@ -277,18 +278,18 @@ export function RecommendationCard({
               size="sm"
               variant="outline"
               className={`flex-1 min-h-9 sm:min-h-10 md:min-h-11 text-[11px] sm:text-sm shadow-sm hover:shadow-md active:scale-95 transition-all duration-300 group ${
-                isFavorite
+                isRated
                   ? 'bg-linear-to-br from-red-400 to-red-500 text-white border-red-400 hover:from-red-500 hover:to-red-600'
                   : 'bg-red-50 border-red-200 hover:bg-red-100 hover:border-red-400 dark:bg-red-950/20 dark:border-red-900/50 dark:hover:bg-red-900/30 dark:hover:border-red-700'
               }`}
-              onClick={() => handleLikeSeries('love')}
-              disabled={isFavorite || isIgnored || isFadingOut}
+              onClick={() => handleAddRating('love')}
+              disabled={isRated || isInWatchlist || isFadingOut}
               aria-label="Mark as loved"
-              aria-pressed={isFavorite}
+              aria-pressed={isRated}
             >
               <Heart
                 className={`w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1 sm:mr-1.5 transition-all duration-300 text-red-500 dark:text-red-400 ${
-                  isFavorite
+                  isRated
                     ? 'fill-current text-white!'
                     : 'group-hover:scale-110 group-hover:text-red-600 dark:group-hover:text-red-300'
                 }`}
@@ -301,18 +302,18 @@ export function RecommendationCard({
               size="sm"
               variant="outline"
               className={`flex-1 min-h-9 sm:min-h-10 md:min-h-11 text-[11px] sm:text-sm shadow-sm hover:shadow-md active:scale-95 transition-all duration-300 group ${
-                isFavorite
+                isRated
                   ? 'bg-linear-to-br from-sky-400 to-sky-500 text-white border-sky-400 hover:from-sky-500 hover:to-sky-600'
                   : 'bg-sky-50 border-sky-200 hover:bg-sky-100 hover:border-sky-400 dark:bg-sky-950/20 dark:border-sky-900/50 dark:hover:bg-sky-900/30 dark:hover:border-sky-700'
               }`}
-              onClick={() => handleLikeSeries('like')}
-              disabled={isFavorite || isIgnored || isFadingOut}
+              onClick={() => handleAddRating('like')}
+              disabled={isRated || isInWatchlist || isFadingOut}
               aria-label="Mark as liked"
-              aria-pressed={isFavorite}
+              aria-pressed={isRated}
             >
               <ThumbsUp
                 className={`w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1 sm:mr-1.5 transition-all duration-300 text-sky-500 dark:text-sky-400 ${
-                  isFavorite
+                  isRated
                     ? 'text-white!'
                     : 'group-hover:scale-110 group-hover:text-sky-600 dark:group-hover:text-sky-300'
                 }`}
@@ -325,19 +326,19 @@ export function RecommendationCard({
               size="sm"
               variant="outline"
               className={`flex-1 min-h-9 sm:min-h-10 md:min-h-11 text-[11px] sm:text-sm shadow-sm hover:shadow-md active:scale-95 transition-all duration-300 group ${
-                isIgnored
+                isInWatchlist
                   ? 'bg-muted text-muted-foreground border-muted-foreground/50'
                   : 'bg-muted/30 hover:bg-muted/60 hover:border-muted-foreground/40'
               }`}
-              onClick={handleIgnoreSeries}
-              disabled={isIgnored || isFavorite || isFadingOut}
+              onClick={handleAddToWatchlist}
+              disabled={isInWatchlist || isRated || isFadingOut}
               aria-label="Mark as not interested"
-              aria-pressed={isIgnored}
+              aria-pressed={isInWatchlist}
             >
               <EyeOff
-                className={`w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1 sm:mr-1.5 transition-all duration-300 ${isIgnored ? 'opacity-50' : ''}`}
+                className={`w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1 sm:mr-1.5 transition-all duration-300 ${isInWatchlist ? 'opacity-50' : ''}`}
               />
-              {isIgnored ? 'Skipped' : 'Skip'}
+              {isInWatchlist ? 'Skipped' : 'Skip'}
             </Button>
           </div>
         </div>

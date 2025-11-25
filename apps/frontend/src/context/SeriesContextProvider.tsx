@@ -1,7 +1,7 @@
 import { ReactNode, useState, useCallback, useEffect, useContext } from 'react';
 import { SeriesContext } from './SeriesContext';
-import { getMyFavoriteSeries } from '../api/queries/getMyFavoriteSeries';
-import { FavoriteSeries } from '../api/types/series';
+import { getMySeriesRatings } from '../api/queries/getMySeriesRatings';
+import { SeriesRating } from '../api/types/series';
 import { logger } from '../utils/logger';
 import { AuthContext } from './AuthContext';
 
@@ -18,11 +18,11 @@ export const SeriesContextProvider = ({ children }: { children: ReactNode }) => 
     }
 
     try {
-      const response = await getMyFavoriteSeries();
+      const response = await getMySeriesRatings();
       const series = response.data;
 
-      const loved = series.filter((s: FavoriteSeries) => s.preferenceLevel === 'love').length;
-      const liked = series.filter((s: FavoriteSeries) => s.preferenceLevel === 'like').length;
+      const loved = series.filter((s: SeriesRating) => s.rating === 'love').length;
+      const liked = series.filter((s: SeriesRating) => s.rating === 'like').length;
 
       setLovedCount(loved);
       setLikedCount(liked);
@@ -41,11 +41,11 @@ export const SeriesContextProvider = ({ children }: { children: ReactNode }) => 
 
     const loadCounts = async () => {
       try {
-        const response = await getMyFavoriteSeries();
+        const response = await getMySeriesRatings();
         const series = response.data;
 
-        const loved = series.filter((s: FavoriteSeries) => s.preferenceLevel === 'love').length;
-        const liked = series.filter((s: FavoriteSeries) => s.preferenceLevel === 'like').length;
+        const loved = series.filter((s: SeriesRating) => s.rating === 'love').length;
+        const liked = series.filter((s: SeriesRating) => s.rating === 'like').length;
 
         setLovedCount(loved);
         setLikedCount(liked);

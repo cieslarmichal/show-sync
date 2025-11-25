@@ -4,8 +4,8 @@ import { Sparkles, TvMinimalPlay, ThumbsUp, Heart, EyeOff, Info } from 'lucide-r
 
 import { generateRecommendations, checkRecommendationStatus, getRecommendations } from '../../api/queries/watchroom.ts';
 import { getSeriesDetailsBatch } from '../../api/queries/getSeriesDetailsBatch.ts';
-import { getMyIgnoredSeries } from '../../api/queries/getMyIgnoredSeries.ts';
-import { getMyFavoriteSeries } from '../../api/queries/getMyFavoriteSeries.ts';
+import { getMySeriesWatchlist } from '../../api/queries/getMySeriesWatchlist.ts';
+import { getMySeriesRatings } from '../../api/queries/getMySeriesRatings.ts';
 import { getMyQuota } from '../../api/queries/getMyQuota.ts';
 import type { Recommendation } from '../../api/types/recommendation.ts';
 import type { SeriesDetails } from '../../api/types/series.ts';
@@ -37,8 +37,8 @@ export function RecommendationsSection({
   const [recommendations, setRecommendations] = useState<RecommendationWithDetails[]>([]);
   const [isLoadingRecommendations, setIsLoadingRecommendations] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
-  const [ignoredSeriesIds, setIgnoredSeriesIds] = useState<Set<number>>(new Set());
-  const [profileSeriesIds, setProfileSeriesIds] = useState<Set<number>>(new Set());
+  const [watchlistSeriesIds, setWatchlistSeriesIds] = useState<Set<number>>(new Set());
+  const [ratedSeriesIds, setRatedSeriesIds] = useState<Set<number>>(new Set());
   const [fadingOutCards, setFadingOutCards] = useState<Set<string>>(new Set());
   const [quota, setQuota] = useState<{ current: number; max: number } | null>(null);
   const [isLoadingQuota, setIsLoadingQuota] = useState(false);
@@ -100,31 +100,31 @@ export function RecommendationsSection({
   }, [isOwner]);
 
   useEffect(() => {
-    const loadIgnoredSeries = async () => {
+    const loadWatchlist = async () => {
       try {
-        const response = await getMyIgnoredSeries();
-        const ignoredIds = new Set(response.data.map((item) => item.seriesTmdbId));
-        setIgnoredSeriesIds(ignoredIds);
+        const response = await getMySeriesWatchlist();
+        const watchlistIds = new Set(response.data.map((item) => item.seriesTmdbId));
+        setWatchlistSeriesIds(watchlistIds);
       } catch {
         // Silently fail - not critical
       }
     };
 
-    loadIgnoredSeries();
+    loadWatchlist();
   }, []);
 
   useEffect(() => {
-    const loadFavoriteSeries = async () => {
+    const loadRatings = async () => {
       try {
-        const response = await getMyFavoriteSeries();
-        const favoriteIds = new Set(response.data.map((item) => item.seriesTmdbId));
-        setProfileSeriesIds(favoriteIds);
+        const response = await getMySeriesRatings();
+        const ratingIds = new Set(response.data.map((item) => item.seriesTmdbId));
+        setRatedSeriesIds(ratingIds);
       } catch {
         // Silently fail - not critical
       }
     };
 
-    loadFavoriteSeries();
+    loadRatings();
   }, []);
 
   const handleGenerateRecommendations = async () => {
@@ -228,9 +228,9 @@ export function RecommendationsSection({
     }
   };
 
-  const handleIgnoreSeries = (seriesTmdbId: number, recommendationId: string) => {
+  const handleAddToWatchlist = (seriesTmdbId: number, recommendationId: string) => {
     setFadingOutCards((prev) => new Set(prev).add(recommendationId));
-    setIgnoredSeriesIds((prev) => new Set(prev).add(seriesTmdbId));
+    setWatchlistSeriesIds((prev) => new Set(prev).add(seriesTmdbId));
 
     setTimeout(() => {
       setFadingOutCards((prev) => {
@@ -241,9 +241,9 @@ export function RecommendationsSection({
     }, 300);
   };
 
-  const handleFavoriteSeries = (seriesTmdbId: number, recommendationId: string) => {
+  const handleAddRating = (seriesTmdbId: number, recommendationId: string) => {
     setFadingOutCards((prev) => new Set(prev).add(recommendationId));
-    setProfileSeriesIds((prev) => new Set(prev).add(seriesTmdbId));
+    setRatedSeriesIds((prev) => new Set(prev).add(seriesTmdbId));
 
     setTimeout(() => {
       setFadingOutCards((prev) => {
@@ -255,7 +255,7 @@ export function RecommendationsSection({
   };
 
   const visibleRecommendations = recommendations.filter(
-    (rec) => !ignoredSeriesIds.has(rec.seriesTmdbId) && !profileSeriesIds.has(rec.seriesTmdbId),
+    (rec) => !watchlistSeriesIds.has(rec.seriesTmdbId) && !ratedSeriesIds.has(rec.seriesTmdbId),
   );
 
   const isQuotaExhausted = quota ? quota.current >= quota.max : false;
@@ -452,11 +452,11 @@ export function RecommendationsSection({
                 <RecommendationCard
                   key={recommendation.id}
                   recommendation={recommendation}
-                  isIgnored={ignoredSeriesIds.has(recommendation.seriesTmdbId)}
-                  isFavorite={profileSeriesIds.has(recommendation.seriesTmdbId)}
+                  isInWatchlist={watchlistSeriesIds.has(recommendation.seriesTmdbId)}
+                  isRated={ratedSeriesIds.has(recommendation.seriesTmdbId)}
                   isFadingOut={fadingOutCards.has(recommendation.id)}
-                  onIgnore={(seriesTmdbId) => handleIgnoreSeries(seriesTmdbId, recommendation.id)}
-                  onFavorite={(seriesTmdbId) => handleFavoriteSeries(seriesTmdbId, recommendation.id)}
+                  onAddToWatchlist={(seriesTmdbId) => handleAddToWatchlist(seriesTmdbId, recommendation.id)}
+                  onAddRating={(seriesTmdbId) => handleAddRating(seriesTmdbId, recommendation.id)}
                 />
               ))}
             </div>
