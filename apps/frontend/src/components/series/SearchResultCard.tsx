@@ -1,7 +1,7 @@
 import { Button } from '../ui/Button';
 import { Badge } from '../ui/Badge';
 import { Card } from '../ui/Card';
-import { ThumbsUp, Heart, ThumbsDown, EyeOff, CalendarPlus } from 'lucide-react';
+import { ThumbsUp, Heart, ThumbsDown, EyeOff, Eye } from 'lucide-react';
 import { Series, Rating, WatchlistType } from '../../api/types/series';
 
 interface SearchResultCardProps {
@@ -70,26 +70,29 @@ export function SearchResultCard({
         </div>
         <div className="shrink-0 w-full sm:w-auto mt-4 sm:mt-0 sm:ml-4">
           <div className="flex flex-col gap-2">
-            <div className="flex gap-2">
+            {/* Rating actions */}
+            <div className="flex flex-wrap gap-2">
               <Button
                 size="sm"
-                variant="outline"
-                onClick={() => onAddRating(series, 'like')}
-                disabled={isInProfile || isInWatchlist}
-                data-testid={`search-result-like-button-${index}`}
-              >
-                <ThumbsUp className="w-4 h-4 mr-1.5" />
-                Like
-              </Button>
-              <Button
-                size="sm"
-                variant="outline"
+                variant="default"
                 onClick={() => onAddRating(series, 'love')}
                 disabled={isInProfile || isInWatchlist}
                 data-testid={`search-result-love-button-${index}`}
+                className="flex-1 sm:flex-none h-9 font-semibold bg-linear-to-br from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 shadow-sm hover:shadow"
               >
-                <Heart className="w-4 h-4 mr-1.5" />
-                Love
+                <Heart className="w-4 h-4" />
+                Love It
+              </Button>
+              <Button
+                size="sm"
+                variant="default"
+                onClick={() => onAddRating(series, 'like')}
+                disabled={isInProfile || isInWatchlist}
+                data-testid={`search-result-like-button-${index}`}
+                className="flex-1 sm:flex-none h-9 font-semibold shadow-sm hover:shadow"
+              >
+                <ThumbsUp className="w-4 h-4" />
+                Like It
               </Button>
               <Button
                 size="sm"
@@ -97,20 +100,24 @@ export function SearchResultCard({
                 onClick={() => onAddRating(series, 'dislike')}
                 disabled={isInProfile || isInWatchlist}
                 data-testid={`search-result-dislike-button-${index}`}
+                className="flex-1 sm:flex-none h-9 font-medium"
               >
-                <ThumbsDown className="w-4 h-4 mr-1.5" />
+                <ThumbsDown className="w-4 h-4" />
                 Dislike
               </Button>
             </div>
-            <div className="flex gap-2">
+
+            {/* Watchlist actions */}
+            <div className="flex flex-wrap gap-2">
               <Button
                 size="sm"
                 variant="outline"
                 onClick={() => onAddToWatchlist(series, 'wantToWatch')}
                 disabled={isInWatchlist || isInProfile}
                 data-testid={`search-result-want-to-watch-button-${index}`}
+                className="flex-1 sm:flex-none h-9 font-medium"
               >
-                <CalendarPlus className="w-4 h-4 mr-1.5" />
+                <Eye className="w-4 h-4" />
                 Want to Watch
               </Button>
               <Button
@@ -119,8 +126,9 @@ export function SearchResultCard({
                 onClick={() => onAddToWatchlist(series, 'notInterested')}
                 disabled={isInWatchlist || isInProfile}
                 data-testid={`search-result-not-interested-button-${index}`}
+                className="flex-1 sm:flex-none h-9 font-medium"
               >
-                <EyeOff className="w-4 h-4 mr-1.5" />
+                <EyeOff className="w-4 h-4" />
                 Not Interested
               </Button>
             </div>

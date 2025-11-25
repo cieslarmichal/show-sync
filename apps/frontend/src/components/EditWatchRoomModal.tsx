@@ -77,7 +77,7 @@ export function EditWatchRoomModal({
         <Button
           size="sm"
           variant="outline"
-          className="shadow-sm hover:shadow-md transition-all h-9"
+          className="shadow-sm hover:shadow-md transition-all h-8 text-xs"
         >
           <Pencil className="w-3 h-3 mr-1" />
           <span className="hidden sm:inline">Edit Room</span>
@@ -88,7 +88,7 @@ export function EditWatchRoomModal({
         <DialogHeader>
           <DialogTitle>Edit Watch Room</DialogTitle>
         </DialogHeader>
-        <DialogDescription>Update details of your watch room.</DialogDescription>
+        <DialogDescription>Get TV show suggestions based on what you like.</DialogDescription>
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
@@ -97,13 +97,14 @@ export function EditWatchRoomModal({
             <FormField
               control={form.control}
               name="name"
-              render={({ field }) => (
+              render={({ field, fieldState }) => (
                 <FormItem>
                   <FormLabel htmlFor="edit-room-name">Room Name</FormLabel>
                   <FormControl>
                     <Input
                       id="edit-room-name"
-                      placeholder="Weekend Movie Night"
+                      placeholder="Family Movie Night"
+                      aria-invalid={!!fieldState.error}
                       {...field}
                     />
                   </FormControl>
@@ -114,20 +115,17 @@ export function EditWatchRoomModal({
             <FormField
               control={form.control}
               name="description"
-              render={({ field }) => (
+              render={({ field, fieldState }) => (
                 <FormItem>
-                  <FormLabel htmlFor="edit-room-description">Description - AI Prompt (optional)</FormLabel>
+                  <FormLabel htmlFor="edit-room-description">Description (optional)</FormLabel>
                   <FormControl>
                     <Textarea
                       id="edit-room-description"
-                      placeholder="I'm looking for something light and funny, maybe a comedy series with strong character development..."
+                      placeholder="Tell us what kind of shows you're looking for..."
+                      aria-invalid={!!fieldState.error}
                       {...field}
                     />
                   </FormControl>
-                  <p className="text-xs text-muted-foreground mt-1">
-                    💡 Describe your preferences, mood, or what you're looking for. The AI will use this to recommend
-                    series that match your interests.
-                  </p>
                   <FormMessage />
                 </FormItem>
               )}

@@ -3,7 +3,6 @@ import { toast } from 'sonner';
 import { Heart, ThumbsUp, ThumbsDown } from 'lucide-react';
 import SearchSeries from '../components/SearchSeries.tsx';
 import SeriesRatingList from '../components/SeriesRatingList.tsx';
-import SeriesWatchlistList from '../components/SeriesWatchlistList.tsx';
 import { getMySeriesRatings } from '../api/queries/getMySeriesRatings.ts';
 import { addSeriesRating } from '../api/queries/addSeriesRating.ts';
 import { removeSeriesRating } from '../api/queries/removeSeriesRating.ts';
@@ -11,7 +10,7 @@ import { updateSeriesRating } from '../api/queries/updateSeriesRating.ts';
 import { getMySeriesWatchlist } from '../api/queries/getMySeriesWatchlist.ts';
 import { addSeriesWatchlist } from '../api/queries/addSeriesWatchlist.ts';
 import { removeSeriesWatchlist } from '../api/queries/removeSeriesWatchlist.ts';
-import { Series, SeriesRating, SeriesWatchlist, Rating, WatchlistType } from '../api/types/series.ts';
+import { Series, SeriesRating, Rating, WatchlistType } from '../api/types/series.ts';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '../components/ui/Tabs';
 import { SeriesContext } from '../context/SeriesContext';
 import { useSEO } from '../hooks/useSEO';
@@ -27,9 +26,7 @@ export default function SeriesPage() {
   const [ratedSeriesIds, setRatedSeriesIds] = useState<Set<number>>(new Set());
   const [watchlistSeriesIds, setWatchlistSeriesIds] = useState<Set<number>>(new Set());
   const [myRatings, setMyRatings] = useState<SeriesRating[]>([]);
-  const [myWatchlist, setMyWatchlist] = useState<SeriesWatchlist[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [isLoadingWatchlist, setIsLoadingWatchlist] = useState(true);
   const [ratingFilter, setRatingFilter] = useState<'all' | Rating>('all');
   const [lovedCount, setLovedCount] = useState(0);
   const [likedCount, setLikedCount] = useState(0);
@@ -65,12 +62,9 @@ export default function SeriesPage() {
       try {
         const response = await getMySeriesWatchlist();
         const watchlist = response.data;
-        setMyWatchlist(watchlist);
-        setWatchlistSeriesIds(new Set(watchlist.map((item: SeriesWatchlist) => item.seriesTmdbId)));
+        setWatchlistSeriesIds(new Set(watchlist.map((item) => item.seriesTmdbId)));
       } catch {
-        toast.error('Could not load your watchlist. Please refresh the page.');
-      } finally {
-        setIsLoadingWatchlist(false);
+        // Silently fail - watchlist is now optional for this page
       }
     };
 
@@ -87,7 +81,6 @@ export default function SeriesPage() {
           newSet.delete(series.id);
           return newSet;
         });
-        setMyWatchlist((prev) => prev.filter((item) => item.seriesTmdbId !== series.id));
       }
 
       await addSeriesRating(series.id, rating);
@@ -172,41 +165,29 @@ export default function SeriesPage() {
     }
   };
 
-  const handleRemoveWatchlist = async (seriesTmdbId: number): Promise<void> => {
-    try {
-      await removeSeriesWatchlist(seriesTmdbId);
-      setWatchlistSeriesIds((prev) => {
-        const newSet = new Set(prev);
-        newSet.delete(seriesTmdbId);
-        return newSet;
-      });
-      setMyWatchlist((prev) => prev.filter((item) => item.seriesTmdbId !== seriesTmdbId));
-      toast.success('Show removed from watchlist');
-    } catch {
-      toast.error('Could not remove show from watchlist. Please try again.');
-    }
-  };
-
   const handleAddToWatchlist = async (series: Series, type: WatchlistType): Promise<void> => {
     try {
       // If series is in ratings list, remove it first
       if (ratedSeriesIds.has(series.id)) {
         await removeSeriesRating(series.id);
+        const removedRating = myRatings.find((s) => s.seriesTmdbId === series.id);
         setRatedSeriesIds((prev) => {
           const newSet = new Set(prev);
           newSet.delete(series.id);
           return newSet;
         });
         setMyRatings((prev) => prev.filter((rating) => rating.seriesTmdbId !== series.id));
+
+        // Update counts
+        if (removedRating?.rating === 'love') setLovedCount((prev) => prev - 1);
+        else if (removedRating?.rating === 'like') setLikedCount((prev) => prev - 1);
+        else if (removedRating?.rating === 'dislike') setDislikedCount((prev) => prev - 1);
       }
 
       await addSeriesWatchlist(series.id, type);
       setWatchlistSeriesIds((prev) => new Set(prev).add(series.id));
-      const newWatchlistItem: SeriesWatchlist = {
-        seriesTmdbId: series.id,
-        type: type,
-      };
-      setMyWatchlist((prev) => [...prev, newWatchlistItem]);
+
+      await refreshCounts();
 
       const typeLabel = type === 'notInterested' ? 'Not Interested' : 'Want to Watch';
       toast.success(`"${series.name}" added to watchlist as ${typeLabel}`);
@@ -265,13 +246,6 @@ export default function SeriesPage() {
                     All ({myRatings.length})
                   </TabsTrigger>
                   <TabsTrigger
-                    value="like"
-                    className="data-[state=active]:bg-emerald-50 data-[state=active]:text-emerald-600 data-[state=active]:shadow-md dark:data-[state=active]:bg-emerald-950/30 dark:data-[state=active]:text-emerald-400 rounded-lg px-5 py-2.5 font-semibold transition-all"
-                  >
-                    <ThumbsUp className="w-4 h-4 mr-1.5 fill-current" />
-                    Liked ({likedCount})
-                  </TabsTrigger>
-                  <TabsTrigger
                     value="love"
                     className="data-[state=active]:bg-red-50 data-[state=active]:text-red-600 data-[state=active]:shadow-md dark:data-[state=active]:bg-red-950/30 dark:data-[state=active]:text-red-400 rounded-lg px-5 py-2.5 font-semibold transition-all"
                   >
@@ -279,11 +253,18 @@ export default function SeriesPage() {
                     Loved ({lovedCount})
                   </TabsTrigger>
                   <TabsTrigger
+                    value="like"
+                    className="data-[state=active]:bg-emerald-50 data-[state=active]:text-emerald-600 data-[state=active]:shadow-md dark:data-[state=active]:bg-emerald-950/30 dark:data-[state=active]:text-emerald-400 rounded-lg px-5 py-2.5 font-semibold transition-all"
+                  >
+                    <ThumbsUp className="w-4 h-4 mr-1.5 fill-current" />
+                    Liked ({likedCount})
+                  </TabsTrigger>
+                  <TabsTrigger
                     value="dislike"
                     className="data-[state=active]:bg-orange-50 data-[state=active]:text-orange-600 data-[state=active]:shadow-md dark:data-[state=active]:bg-orange-950/30 dark:data-[state=active]:text-orange-400 rounded-lg px-5 py-2.5 font-semibold transition-all"
                   >
                     <ThumbsDown className="w-4 h-4 mr-1.5 fill-current" />
-                    Disliked ({dislikedCount})
+                    Dislike ({dislikedCount})
                   </TabsTrigger>
                 </TabsList>
 
@@ -324,31 +305,11 @@ export default function SeriesPage() {
                     onRemoveRating={handleRemoveRating}
                     onUpdateRating={handleUpdateRating}
                     isLoading={isLoading}
-                    emptyMessage="No disliked shows yet"
-                    emptySubMessage="Mark shows with 👎 to see them here"
+                    emptyMessage="Not for you yet"
+                    emptySubMessage="Mark shows you don't like to see them here"
                   />
                 </TabsContent>
               </Tabs>
-            </div>
-
-            {/* Watchlist Section */}
-            <div>
-              <div className="flex items-center justify-between gap-3 mb-6">
-                <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-foreground">
-                  Your Watchlist
-                </h2>
-                <span className="text-sm font-semibold text-muted-foreground px-3 py-1.5 bg-muted/50 rounded-full">
-                  {myWatchlist.length} {myWatchlist.length === 1 ? 'show' : 'shows'}
-                </span>
-              </div>
-              <p className="text-sm text-muted-foreground mb-6 leading-relaxed">
-                Shows you've added to your watchlist. "Not Interested" shows won't appear in recommendations.
-              </p>
-              <SeriesWatchlistList
-                watchlist={myWatchlist}
-                onRemoveWatchlist={handleRemoveWatchlist}
-                isLoading={isLoadingWatchlist}
-              />
             </div>
           </div>
         </div>

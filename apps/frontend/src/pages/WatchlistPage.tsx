@@ -67,9 +67,7 @@ export default function WatchlistPage() {
             {/* Watchlist Section */}
             <div>
               <div className="flex items-center justify-between gap-3 mb-6">
-                <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-foreground">
-                  Want to Watch
-                </h2>
+                <h2 className="text-xl font-semibold tracking-tight text-foreground">Want to Watch</h2>
                 <span className="text-sm font-semibold text-muted-foreground px-3 py-1.5 bg-muted/50 rounded-full">
                   {myWatchlist.length} {myWatchlist.length === 1 ? 'show' : 'shows'}
                 </span>

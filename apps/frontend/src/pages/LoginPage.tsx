@@ -10,7 +10,7 @@ export default function LoginPage() {
   useSEO({
     title: 'Sign In - ShowSync',
     description:
-      'Sign in to ShowSync and discover TV shows everyone will love. Access your ratings, watch rooms, and personalized recommendations.',
+      'Sign in to ShowSync and find shows your whole group will enjoy. Access your ratings, watch rooms, and AI-powered recommendations.',
     keywords: ['login', 'sign in', 'account access', 'tv show recommendations'],
   });
 

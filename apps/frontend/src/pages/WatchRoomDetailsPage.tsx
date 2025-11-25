@@ -8,8 +8,7 @@ import { getWatchroomDetails } from '../api/queries/watchroom.ts';
 import type { WatchroomDetails } from '../api/types/watchroom.ts';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/Card.tsx';
 import { Button } from '../components/ui/Button.tsx';
-import { RoomHeader } from '../components/watchroom/RoomHeader.tsx';
-import { ParticipantsCard } from '../components/watchroom/ParticipantsCard.tsx';
+import { RoomInfoCard } from '../components/watchroom/RoomInfoCard.tsx';
 import { RecommendationsSection } from '../components/watchroom/RecommendationsSection.tsx';
 
 export default function WatchRoomDetailsPage() {
@@ -102,23 +101,15 @@ export default function WatchRoomDetailsPage() {
         </Button>
 
         <div className="grid grid-cols-1 lg:grid-cols-[380px,1fr] gap-4 lg:gap-6">
-          {/* Left Sidebar - Room Info */}
+          {/* Left Sidebar - Room Info & Participants */}
           <div className="space-y-3 lg:space-y-4">
-            {/* Room Header Card */}
-            <RoomHeader
-              room={room}
-              isOwner={isOwner}
-              onCopyLink={handleCopyLink}
-              onRoomUpdated={() => fetchRoomDetails(watchroomId!)}
-              onRoomDeleted={handleRoomDeleted}
-            />
-
-            {/* Participants Card */}
-            <ParticipantsCard
+            <RoomInfoCard
               room={room}
               isOwner={isOwner}
               currentUserId={userData?.id}
+              onCopyLink={handleCopyLink}
               onRoomUpdated={() => fetchRoomDetails(watchroomId!)}
+              onRoomDeleted={handleRoomDeleted}
               onLeaveRoom={handleLeaveRoom}
             />
           </div>

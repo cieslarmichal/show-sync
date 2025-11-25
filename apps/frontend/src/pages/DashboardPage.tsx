@@ -194,7 +194,7 @@ export default function DashboardPage() {
                   <ArrowRight className="w-4 h-4 text-muted-foreground rotate-90 animate-pulse" />
                   <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20">
                     <UserPlus className="w-4 h-4 text-primary" />
-                    <span className="text-sm font-medium text-foreground">Invite Friends</span>
+                    <span className="text-sm font-medium text-foreground">Invite Friends (or not)</span>
                   </div>
                   <ArrowRight className="w-4 h-4 text-muted-foreground rotate-90 animate-pulse" />
                   <button

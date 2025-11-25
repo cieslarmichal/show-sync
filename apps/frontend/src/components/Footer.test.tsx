@@ -39,7 +39,7 @@ describe('Footer', () => {
   it('should render app description', () => {
     renderFooter();
 
-    expect(screen.getByText(/Discover TV shows everyone will love/i)).toBeInTheDocument();
+    expect(screen.getByText(/Find shows your whole group will enjoy/i)).toBeInTheDocument();
   });
 
   it('should render contact section', () => {
@@ -105,7 +105,7 @@ describe('Footer', () => {
     expect(screen.getByText(/© 2025 ShowSync/i)).toBeInTheDocument();
   });
 
-  it('should show user account section when authenticated (desktop only)', () => {
+  it('should show navigation section when authenticated (desktop only)', () => {
     const userData: User = {
       id: '123',
       email: 'test@example.com',
@@ -116,17 +116,21 @@ describe('Footer', () => {
     renderFooter(userData);
 
     // Navigation section is hidden on mobile (sm:hidden class not tested here, but visible in DOM)
-    expect(screen.getByText('Your Account')).toBeInTheDocument();
+    expect(screen.getByText('Navigation')).toBeInTheDocument();
     expect(screen.getByText('TV Shows')).toBeInTheDocument();
+    expect(screen.getByText('Watchlist')).toBeInTheDocument();
     expect(screen.getByText('Watch Rooms')).toBeInTheDocument();
+    expect(screen.getByText('Profile')).toBeInTheDocument();
   });
 
-  it('should not show user account section when not authenticated', () => {
+  it('should not show navigation section when not authenticated', () => {
     renderFooter(null);
 
-    expect(screen.queryByText('Your Account')).not.toBeInTheDocument();
+    expect(screen.queryByText('Navigation')).not.toBeInTheDocument();
     expect(screen.queryByText('TV Shows')).not.toBeInTheDocument();
+    expect(screen.queryByText('Watchlist')).not.toBeInTheDocument();
     expect(screen.queryByText('Watch Rooms')).not.toBeInTheDocument();
+    expect(screen.queryByText('Profile')).not.toBeInTheDocument();
   });
 
   it('should render compact mobile footer', () => {
@@ -161,6 +165,20 @@ describe('Footer', () => {
     expect(myShowsLink.closest('a')).toHaveAttribute('href', '/series');
   });
 
+  it('should render Watchlist link when authenticated', () => {
+    const userData: User = {
+      id: '123',
+      email: 'test@example.com',
+      name: 'Test User',
+      createdAt: new Date().toISOString(),
+      isEmailVerified: true,
+    };
+    renderFooter(userData);
+
+    const watchlistLink = screen.getByText('Watchlist');
+    expect(watchlistLink.closest('a')).toHaveAttribute('href', '/watchlist');
+  });
+
   it('should render Watch Rooms link when authenticated', () => {
     const userData: User = {
       id: '123',
@@ -173,6 +191,20 @@ describe('Footer', () => {
 
     const watchRoomsLink = screen.getByText('Watch Rooms');
     expect(watchRoomsLink.closest('a')).toHaveAttribute('href', '/watchrooms');
+  });
+
+  it('should render Profile link when authenticated', () => {
+    const userData: User = {
+      id: '123',
+      email: 'test@example.com',
+      name: 'Test User',
+      createdAt: new Date().toISOString(),
+      isEmailVerified: true,
+    };
+    renderFooter(userData);
+
+    const profileLink = screen.getByText('Profile');
+    expect(profileLink.closest('a')).toHaveAttribute('href', '/my-profile');
   });
 
   it('should have accessible footer landmark', () => {

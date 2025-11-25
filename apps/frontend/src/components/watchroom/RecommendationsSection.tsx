@@ -264,15 +264,17 @@ export function RecommendationsSection({
   return (
     <Card className="border shadow-sm overflow-hidden">
       <CardHeader className="relative pb-3">
-        <div className="flex items-start justify-between gap-3">
-          <div className="space-y-1.5">
+        <div className="flex items-start justify-between gap-2 sm:gap-3">
+          <div className="space-y-1 sm:space-y-1.5">
             <div className="flex items-center gap-2">
-              <div className="w-7 h-7 rounded-lg bg-linear-to-br from-primary to-primary/70 flex items-center justify-center">
-                <Sparkles className="w-4 h-4 text-primary-foreground" />
+              <div className="w-6 sm:w-7 h-6 sm:h-7 rounded-lg bg-linear-to-br from-primary to-primary/70 flex items-center justify-center">
+                <Sparkles className="w-3.5 sm:w-4 h-3.5 sm:h-4 text-primary-foreground" />
               </div>
-              <CardTitle className="text-base sm:text-lg font-bold">Recommendations</CardTitle>
+              <CardTitle className="text-sm sm:text-lg font-bold">Recommendations</CardTitle>
             </div>
-            <CardDescription className="text-xs">Show suggestions based on everyone's preferences</CardDescription>
+            <CardDescription className="text-[11px] sm:text-xs hidden sm:block">
+              Show suggestions based on everyone's preferences
+            </CardDescription>
           </div>
           {isOwner && (
             <div className="flex flex-col items-end gap-1.5">
@@ -340,7 +342,7 @@ export function RecommendationsSection({
                           </button>
                         </TooltipTrigger>
                         <TooltipContent>
-                          <p>{quota.max} total generations per account</p>
+                          <p>{quota.max} total recommendation requests per account</p>
                         </TooltipContent>
                       </Tooltip>
                     </>
@@ -354,36 +356,41 @@ export function RecommendationsSection({
       <CardContent className="pt-2 sm:pt-3">
         {isLoadingRecommendations ? (
           <div className="space-y-3 sm:space-y-4">
-            <p className="text-xs sm:text-sm text-muted-foreground px-1">Loading recommendations...</p>
+            <p className="text-[11px] sm:text-sm text-muted-foreground px-1">Loading recommendations...</p>
             {[...Array(3)].map((_, i) => (
               <div
                 key={i}
-                className="rounded-xl border bg-card p-3 sm:p-5"
+                className="rounded-lg border bg-card overflow-hidden"
               >
-                <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
-                  <Skeleton className="h-32 sm:h-36 w-full sm:w-24 shrink-0 rounded-lg" />
-                  <div className="flex-1 space-y-2 sm:space-y-3">
-                    <Skeleton className="h-5 sm:h-6 w-3/4" />
-                    <div className="flex gap-2">
-                      <Skeleton className="h-4 sm:h-5 w-16" />
-                      <Skeleton className="h-4 sm:h-5 w-12" />
-                      <Skeleton className="h-4 sm:h-5 w-16" />
+                {/* Mobile: Banner skeleton */}
+                <Skeleton className="h-48 w-full sm:hidden" />
+                {/* Desktop: Side-by-side skeleton */}
+                <div className="flex gap-3 sm:gap-5 p-3 sm:p-5">
+                  <Skeleton className="h-64 w-44 shrink-0 rounded-lg hidden sm:block" />
+                  <div className="flex-1 space-y-1.5 sm:space-y-3">
+                    <Skeleton className="h-4 sm:h-6 w-3/4" />
+                    <div className="flex gap-1.5 sm:gap-2">
+                      <Skeleton className="h-3 sm:h-5 w-12 sm:w-16" />
+                      <Skeleton className="h-3 sm:h-5 w-10 sm:w-12" />
+                      <Skeleton className="h-3 sm:h-5 w-12 sm:w-16" />
                     </div>
                     <Skeleton className="h-3 sm:h-4 w-full" />
-                    <Skeleton className="h-3 sm:h-4 w-full" />
-                    <Skeleton className="h-3 sm:h-4 w-2/3" />
+                    <Skeleton className="h-3 sm:h-4 w-full hidden sm:block" />
+                    <Skeleton className="h-3 sm:h-4 w-2/3 hidden sm:block" />
                   </div>
                 </div>
               </div>
             ))}
           </div>
         ) : recommendations.length === 0 ? (
-          <div className="text-center py-10 sm:py-12 md:py-16 px-4 sm:px-6">
-            <div className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-2xl bg-linear-to-br from-primary/20 via-primary/10 to-primary/5 mx-auto mb-4 sm:mb-6 md:mb-8 flex items-center justify-center shadow-inner">
-              <TvMinimalPlay className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 text-primary animate-pulse" />
+          <div className="text-center py-8 sm:py-12 md:py-16 px-3 sm:px-6">
+            <div className="w-14 sm:w-20 md:w-24 h-14 sm:h-20 md:h-24 rounded-2xl bg-linear-to-br from-primary/20 via-primary/10 to-primary/5 mx-auto mb-3 sm:mb-6 md:mb-8 flex items-center justify-center shadow-inner">
+              <TvMinimalPlay className="w-7 sm:w-10 md:w-12 h-7 sm:h-10 md:h-12 text-primary animate-pulse" />
             </div>
-            <h3 className="text-base sm:text-lg md:text-xl font-bold text-foreground mb-3">No recommendations yet</h3>
-            <p className="text-xs sm:text-sm md:text-base text-muted-foreground max-w-lg mx-auto leading-relaxed">
+            <h3 className="text-sm sm:text-lg md:text-xl font-bold text-foreground mb-2 sm:mb-3">
+              No recommendations yet
+            </h3>
+            <p className="text-[11px] sm:text-sm md:text-base text-muted-foreground max-w-lg mx-auto leading-relaxed">
               {isOwner ? (
                 participantCount < 2 ? (
                   <>
@@ -427,22 +434,27 @@ export function RecommendationsSection({
             </div>
 
             {/* Instructions Callout - at bottom after seeing recommendations */}
-            <div className="rounded-lg border border-primary/20 bg-primary/5 p-3 space-y-1.5">
-              <div className="flex items-start gap-2">
-                <Info className="w-3.5 h-3.5 text-primary shrink-0 mt-0.5" />
-                <div className="space-y-1 text-xs">
-                  <p className="font-semibold text-foreground">How interactions work:</p>
-                  <ul className="space-y-0.5 text-muted-foreground">
+            <div className="rounded-lg border border-muted bg-muted/30 p-2.5 sm:p-3 space-y-1">
+              <div className="flex items-start gap-1.5 sm:gap-2">
+                <Info className="w-3 sm:w-3.5 h-3 sm:h-3.5 text-muted-foreground shrink-0 mt-0.5" />
+                <div className="space-y-0.5 sm:space-y-1 text-[11px] sm:text-xs">
+                  <p className="font-semibold text-foreground text-xs sm:text-sm">How it works:</p>
+                  <ul className="space-y-0.5 text-muted-foreground leading-relaxed">
                     <li>
-                      <span className="font-medium text-foreground">Rate</span> (Like/Love/Dislike) → saves to your
+                      <span className="font-medium text-foreground">Love/Like/Dislike</span> → saves rating to your
                       profile
                     </li>
                     <li>
                       <span className="font-medium text-foreground">Want to Watch</span> → adds to your watchlist
                     </li>
                     <li>
-                      <span className="font-medium text-foreground">Not Interested</span> → hides from future
-                      recommendations
+                      <span className="font-medium text-foreground">Not Interested</span> → marks as not interested
+                    </li>
+                    <li className="text-[10px] sm:text-[11px] italic pt-0.5">
+                      ℹ️ Any action hides the show from future recommendations
+                    </li>
+                    <li className="text-[10px] sm:text-[11px] italic pt-0.5 hidden sm:block">
+                      💡 Click poster or title to view on IMDb
                     </li>
                   </ul>
                 </div>

@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { useContext } from 'react';
 import { AuthContext } from '../context/AuthContext';
-import { Mail, Phone, MapPin, Heart, Tv, User, Github, Users } from 'lucide-react';
+import { Mail, Phone, MapPin, Heart, Tv, User, Github, Users, Bookmark } from 'lucide-react';
 
 export default function Footer() {
   const { userData } = useContext(AuthContext);
@@ -61,7 +61,7 @@ export default function Footer() {
               </h2>
             </Link>
             <p className="text-sm text-muted-foreground leading-relaxed max-w-xs">
-              Discover TV shows everyone will love. Smart recommendations powered by what your group actually watches.
+              Find shows your whole group will enjoy. Get AI-powered recommendations based on everyone's watch history.
             </p>
           </div>
 
@@ -71,7 +71,7 @@ export default function Footer() {
               className="lg:mx-auto"
               aria-label="Footer navigation"
             >
-              <h3 className="text-sm font-semibold mb-4 text-foreground tracking-tight">Your Account</h3>
+              <h3 className="text-sm font-semibold mb-4 text-foreground tracking-tight">Navigation</h3>
               <ul className="space-y-3 text-sm">
                 <li>
                   <Link
@@ -83,6 +83,18 @@ export default function Footer() {
                       aria-hidden="true"
                     />
                     <span>TV Shows</span>
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to="/watchlist"
+                    className="flex items-center gap-3 text-muted-foreground hover:text-foreground transition-colors group"
+                  >
+                    <Bookmark
+                      className="h-4 w-4 group-hover:scale-110 transition-transform"
+                      aria-hidden="true"
+                    />
+                    <span>Watchlist</span>
                   </Link>
                 </li>
                 <li>
