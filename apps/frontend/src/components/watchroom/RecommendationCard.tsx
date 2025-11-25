@@ -361,13 +361,13 @@ export function RecommendationCard({
             {/* Action buttons organized by type */}
             <div className="flex flex-col gap-1.5 sm:gap-2">
               {/* Rating actions */}
-              <div className="flex flex-wrap gap-1.5 sm:gap-2">
+              <div className="flex gap-1.5 sm:gap-2">
                 <Button
                   size="sm"
                   variant="default"
                   onClick={() => handleAddRating('love')}
                   disabled={isDisabled}
-                  className="flex-1 sm:flex-none h-8 sm:h-9 text-xs font-semibold bg-linear-to-br from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 shadow-sm hover:shadow"
+                  className="flex-1 h-8 sm:h-9 text-xs font-semibold bg-linear-to-br from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 shadow-sm hover:shadow"
                 >
                   <Heart className="w-3.5 sm:w-4 h-3.5 sm:h-4" />
                   <span>Love</span>
@@ -377,7 +377,7 @@ export function RecommendationCard({
                   variant="default"
                   onClick={() => handleAddRating('like')}
                   disabled={isDisabled}
-                  className="flex-1 sm:flex-none h-8 sm:h-9 text-xs font-semibold shadow-sm hover:shadow"
+                  className="flex-1 h-8 sm:h-9 text-xs font-semibold shadow-sm hover:shadow"
                 >
                   <ThumbsUp className="w-3.5 sm:w-4 h-3.5 sm:h-4" />
                   <span>Like</span>
@@ -387,7 +387,7 @@ export function RecommendationCard({
                   variant="outline"
                   onClick={() => handleAddRating('dislike')}
                   disabled={isDisabled}
-                  className="flex-1 sm:flex-none h-8 sm:h-9 text-xs font-medium"
+                  className="flex-1 h-8 sm:h-9 text-xs font-medium"
                 >
                   <ThumbsDown className="w-3.5 sm:w-4 h-3.5 sm:h-4" />
                   <span>Dislike</span>
@@ -395,13 +395,13 @@ export function RecommendationCard({
               </div>
 
               {/* Watchlist actions */}
-              <div className="flex flex-wrap gap-1.5 sm:gap-2">
+              <div className="flex gap-1.5 sm:gap-2">
                 <Button
                   size="sm"
                   variant="outline"
                   onClick={() => handleAddToWatchlist('wantToWatch')}
                   disabled={isDisabled}
-                  className="flex-1 sm:flex-none h-8 sm:h-9 text-xs font-medium"
+                  className="flex-1 h-8 sm:h-9 text-xs font-medium"
                 >
                   <Eye className="w-3.5 sm:w-4 h-3.5 sm:h-4" />
                   <span className="hidden sm:inline">Want to Watch</span>
@@ -412,7 +412,7 @@ export function RecommendationCard({
                   variant="outline"
                   onClick={() => handleAddToWatchlist('notInterested')}
                   disabled={isDisabled}
-                  className="flex-1 sm:flex-none h-8 sm:h-9 text-xs font-medium"
+                  className="flex-1 h-8 sm:h-9 text-xs font-medium"
                 >
                   <EyeOff className="w-3.5 sm:w-4 h-3.5 sm:h-4" />
                   <span className="hidden sm:inline">Not Interested</span>

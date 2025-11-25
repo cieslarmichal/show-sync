@@ -435,13 +435,14 @@ export function RecommendationsSection({
                   <ul className="space-y-0.5 text-muted-foreground leading-relaxed">
                     <li>
                       <span className="font-medium text-foreground">Love/Like/Dislike</span> → saves rating to your
-                      profile
+                      profile and improves future recommendations
                     </li>
                     <li>
                       <span className="font-medium text-foreground">Want to Watch</span> → adds to your watchlist
                     </li>
                     <li>
-                      <span className="font-medium text-foreground">Not Interested</span> → marks as not interested
+                      <span className="font-medium text-foreground">Not Interested</span> → just removes from this list
+                      (no negative impact on recommendations)
                     </li>
                     <li className="text-[10px] sm:text-[11px] italic pt-0.5">
                       ℹ️ Any action hides the show from future recommendations

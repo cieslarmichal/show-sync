@@ -124,7 +124,7 @@ export function RoomInfoCard({
             )}
 
             {/* Meta Info */}
-            <div className="flex items-center text-xs text-muted-foreground pt-1 border-t border-border/40">
+            <div className="flex items-center text-xs text-muted-foreground pt-1">
               <Calendar className="w-3 h-3 mr-1" />
               <span>
                 {new Date(room.createdAt).toLocaleDateString('en-US', {
