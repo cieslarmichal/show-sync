@@ -423,13 +423,15 @@ export function RecommendationsSection({
             {/* Instructions Callout */}
             <div className="rounded-lg border border-primary/20 bg-primary/5 px-3 py-2 sm:px-4 sm:py-2.5">
               <p className="text-xs sm:text-sm text-muted-foreground flex items-center gap-1.5 sm:gap-2 flex-wrap leading-relaxed">
-                <ThumbsUp className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary" />
-                <span>Like or</span>
+                <span className="font-medium">Rate:</span>
+                <ThumbsUp className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                <span>Like,</span>
                 <Heart className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-red-600" />
-                <span>Love shows</span>
+                <span>Love, or Dislike</span>
                 <span className="text-muted-foreground/50">•</span>
-                <EyeOff className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-muted-foreground" />
-                <span>Skip to exclude</span>
+                <span className="font-medium">Watchlist:</span>
+                <EyeOff className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                <span>Not Interested or Want to Watch</span>
               </p>
             </div>
 

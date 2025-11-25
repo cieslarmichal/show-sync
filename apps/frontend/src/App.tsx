@@ -17,6 +17,7 @@ import ForgotPasswordPage from './pages/ForgotPasswordPage.tsx';
 import ResetPasswordPage from './pages/ResetPasswordPage.tsx';
 import VerifyEmailPage from './pages/VerifyEmailPage.tsx';
 import SeriesPage from './pages/SeriesPage.tsx';
+import WatchlistPage from './pages/WatchlistPage.tsx';
 import WatchRoomsPage from './pages/WatchRoomsPage.tsx';
 import ProfilePage from './pages/ProfilePage.tsx';
 import JoinWatchRoomPage from './pages/JoinWatchRoomPage.tsx';
@@ -73,6 +74,14 @@ const router = createBrowserRouter([
         element: (
           <PrivateRoute>
             <SeriesPage />
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: '/watchlist',
+        element: (
+          <PrivateRoute>
+            <WatchlistPage />
           </PrivateRoute>
         ),
       },

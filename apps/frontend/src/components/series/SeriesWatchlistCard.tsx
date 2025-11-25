@@ -2,7 +2,6 @@ import { X } from 'lucide-react';
 import { SeriesDetails, WatchlistType } from '../../api/types/series';
 import { Button } from '../ui/Button';
 import { Tooltip, TooltipContent, TooltipTrigger } from '../ui/Tooltip';
-import { Badge } from '../ui/Badge';
 
 interface SeriesWatchlistCardProps {
   seriesTmdbId: number;
@@ -13,16 +12,6 @@ interface SeriesWatchlistCardProps {
 }
 
 export function SeriesWatchlistCard({ seriesTmdbId, details, type, isRemoving, onRemove }: SeriesWatchlistCardProps) {
-  const getTypeLabel = (): string => {
-    return type === 'notInterested' ? 'Not Interested' : 'Want to Watch';
-  };
-
-  const getTypeColor = (): string => {
-    return type === 'notInterested'
-      ? 'bg-muted text-muted-foreground'
-      : 'bg-sky-100 text-sky-700 dark:bg-sky-900/30 dark:text-sky-300';
-  };
-
   return (
     <div
       data-testid="series-watchlist-card"
@@ -45,11 +34,6 @@ export function SeriesWatchlistCard({ seriesTmdbId, details, type, isRemoving, o
           </div>
         )}
         <div className="absolute inset-0 bg-linear-to-t from-black/60 via-black/20 to-transparent opacity-100 group-hover:opacity-100 transition-opacity" />
-
-        {/* Type Badge - Top Left */}
-        <div className="absolute top-2 left-2">
-          <Badge className={`text-xs ${getTypeColor()}`}>{getTypeLabel()}</Badge>
-        </div>
 
         {/* Remove Button - Top Right */}
         <Tooltip>

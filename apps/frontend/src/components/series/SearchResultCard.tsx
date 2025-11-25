@@ -74,18 +74,8 @@ export function SearchResultCard({
               <Button
                 size="sm"
                 variant="outline"
-                onClick={() => onAddRating(series, 'love')}
-                disabled={isInProfile}
-                data-testid={`search-result-love-button-${index}`}
-              >
-                <Heart className="w-4 h-4 mr-1.5" />
-                Love
-              </Button>
-              <Button
-                size="sm"
-                variant="outline"
                 onClick={() => onAddRating(series, 'like')}
-                disabled={isInProfile}
+                disabled={isInProfile || isInWatchlist}
                 data-testid={`search-result-like-button-${index}`}
               >
                 <ThumbsUp className="w-4 h-4 mr-1.5" />
@@ -94,8 +84,18 @@ export function SearchResultCard({
               <Button
                 size="sm"
                 variant="outline"
+                onClick={() => onAddRating(series, 'love')}
+                disabled={isInProfile || isInWatchlist}
+                data-testid={`search-result-love-button-${index}`}
+              >
+                <Heart className="w-4 h-4 mr-1.5" />
+                Love
+              </Button>
+              <Button
+                size="sm"
+                variant="outline"
                 onClick={() => onAddRating(series, 'dislike')}
-                disabled={isInProfile}
+                disabled={isInProfile || isInWatchlist}
                 data-testid={`search-result-dislike-button-${index}`}
               >
                 <ThumbsDown className="w-4 h-4 mr-1.5" />
@@ -106,22 +106,22 @@ export function SearchResultCard({
               <Button
                 size="sm"
                 variant="outline"
-                onClick={() => onAddToWatchlist(series, 'notInterested')}
-                disabled={isInWatchlist}
-                data-testid={`search-result-not-interested-button-${index}`}
-              >
-                <EyeOff className="w-4 h-4 mr-1.5" />
-                Not Interested
-              </Button>
-              <Button
-                size="sm"
-                variant="outline"
                 onClick={() => onAddToWatchlist(series, 'wantToWatch')}
-                disabled={isInWatchlist}
+                disabled={isInWatchlist || isInProfile}
                 data-testid={`search-result-want-to-watch-button-${index}`}
               >
                 <CalendarPlus className="w-4 h-4 mr-1.5" />
                 Want to Watch
+              </Button>
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => onAddToWatchlist(series, 'notInterested')}
+                disabled={isInWatchlist || isInProfile}
+                data-testid={`search-result-not-interested-button-${index}`}
+              >
+                <EyeOff className="w-4 h-4 mr-1.5" />
+                Not Interested
               </Button>
             </div>
           </div>

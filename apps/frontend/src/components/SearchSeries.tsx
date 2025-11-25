@@ -81,10 +81,6 @@ export default function SearchSeries({
             className="w-full pl-12 pr-4 py-6 text-base sm:text-lg rounded-full bg-muted border-2 border-transparent focus:border-primary focus:bg-background"
           />
         </div>
-        <p className="text-xs text-muted-foreground px-1">
-          <span className="font-medium">Rate shows</span> you've seen (Like 👍 / Love ❤️ / Dislike 👎) •
-          <span className="font-medium"> Add to watchlist</span> (Want to Watch 📅 / Not Interested 👁️)
-        </p>
       </div>
 
       {error && <div className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-md p-3">{error}</div>}
@@ -110,9 +106,9 @@ export default function SearchSeries({
                 <div className="shrink-0 w-full sm:w-auto mt-4 sm:mt-0 sm:ml-4">
                   <div className="flex flex-col gap-2">
                     <div className="flex gap-2">
-                      <Skeleton className="h-11 w-20 flex-1 sm:flex-none" />
-                      <Skeleton className="h-11 w-20 flex-1 sm:flex-none" />
-                      <Skeleton className="h-11 w-24 flex-1 sm:flex-none" />
+                      <Skeleton className="h-11 w-20" />
+                      <Skeleton className="h-11 w-20" />
+                      <Skeleton className="h-11 w-24" />
                     </div>
                     <div className="flex gap-2">
                       <Skeleton className="h-11 flex-1" />

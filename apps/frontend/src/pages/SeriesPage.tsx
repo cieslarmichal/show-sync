@@ -265,6 +265,13 @@ export default function SeriesPage() {
                     All ({myRatings.length})
                   </TabsTrigger>
                   <TabsTrigger
+                    value="like"
+                    className="data-[state=active]:bg-emerald-50 data-[state=active]:text-emerald-600 data-[state=active]:shadow-md dark:data-[state=active]:bg-emerald-950/30 dark:data-[state=active]:text-emerald-400 rounded-lg px-5 py-2.5 font-semibold transition-all"
+                  >
+                    <ThumbsUp className="w-4 h-4 mr-1.5 fill-current" />
+                    Liked ({likedCount})
+                  </TabsTrigger>
+                  <TabsTrigger
                     value="love"
                     className="data-[state=active]:bg-red-50 data-[state=active]:text-red-600 data-[state=active]:shadow-md dark:data-[state=active]:bg-red-950/30 dark:data-[state=active]:text-red-400 rounded-lg px-5 py-2.5 font-semibold transition-all"
                   >
@@ -272,15 +279,8 @@ export default function SeriesPage() {
                     Loved ({lovedCount})
                   </TabsTrigger>
                   <TabsTrigger
-                    value="like"
-                    className="data-[state=active]:bg-sky-50 data-[state=active]:text-sky-600 data-[state=active]:shadow-md dark:data-[state=active]:bg-sky-950/30 dark:data-[state=active]:text-sky-400 rounded-lg px-5 py-2.5 font-semibold transition-all"
-                  >
-                    <ThumbsUp className="w-4 h-4 mr-1.5" />
-                    Liked ({likedCount})
-                  </TabsTrigger>
-                  <TabsTrigger
                     value="dislike"
-                    className="data-[state=active]:bg-amber-50 data-[state=active]:text-amber-600 data-[state=active]:shadow-md dark:data-[state=active]:bg-amber-950/30 dark:data-[state=active]:text-amber-400 rounded-lg px-5 py-2.5 font-semibold transition-all"
+                    className="data-[state=active]:bg-orange-50 data-[state=active]:text-orange-600 data-[state=active]:shadow-md dark:data-[state=active]:bg-orange-950/30 dark:data-[state=active]:text-orange-400 rounded-lg px-5 py-2.5 font-semibold transition-all"
                   >
                     <ThumbsDown className="w-4 h-4 mr-1.5 fill-current" />
                     Disliked ({dislikedCount})
