@@ -545,7 +545,7 @@ describe('RecommendationPromptBuilder', () => {
       const result = promptBuilder.build(participantRatings, [2], [], [], seriesInfoMap, 'Test Room', 'A description');
 
       const watchRoomIndex = result.indexOf('WATCH ROOM:');
-      const participantsIndex = result.indexOf('PARTICIPANTS AND THEIR SERIES PREFERENCES:');
+      const participantsIndex = result.indexOf('PARTICIPANTS AND THEIR SERIES RATINGS:');
       const notInterestedIndex = result.indexOf('SERIES MARKED AS NOT INTERESTED:');
       const taskIndex = result.indexOf('TASK:');
 
