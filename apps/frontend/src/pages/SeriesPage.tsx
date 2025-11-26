@@ -3,6 +3,7 @@ import { toast } from 'sonner';
 import { Heart, ThumbsUp, ThumbsDown } from 'lucide-react';
 import SearchSeries from '../components/SearchSeries.tsx';
 import SeriesRatingList from '../components/SeriesRatingList.tsx';
+import { useTranslation } from 'react-i18next';
 import { getMySeriesRatings } from '../api/queries/getMySeriesRatings.ts';
 import { addSeriesRating } from '../api/queries/addSeriesRating.ts';
 import { removeSeriesRating } from '../api/queries/removeSeriesRating.ts';
@@ -16,6 +17,8 @@ import { SeriesContext } from '../context/SeriesContext';
 import { useSEO } from '../hooks/useSEO';
 
 export default function SeriesPage() {
+  const { t } = useTranslation();
+
   useSEO({
     title: 'Shows - ShowSync',
     description: 'Browse, rate, and manage your TV shows. Tell us what you like to get better suggestions.',
@@ -48,7 +51,7 @@ export default function SeriesPage() {
         setLikedCount(liked);
         setDislikedCount(disliked);
       } catch {
-        toast.error('Could not load your ratings. Please refresh the page.');
+        toast.error(t('series.errors.loadRatings'));
       } finally {
         setIsLoading(false);
       }
@@ -105,9 +108,9 @@ export default function SeriesPage() {
       await refreshCounts(); // Sync with context
 
       const ratingEmoji = rating === 'love' ? '❤️' : rating === 'like' ? '👍' : '👎';
-      toast.success(`"${series.name}" rated as ${ratingEmoji}`);
+      toast.success(t('series.messages.rated', { name: series.name, emoji: ratingEmoji }));
     } catch {
-      toast.error('Could not save your rating. Please check your connection and try again.');
+      toast.error(t('series.errors.saveRating'));
     }
   };
 
@@ -132,9 +135,9 @@ export default function SeriesPage() {
       }
 
       await refreshCounts(); // Sync with context
-      toast.success('Rating removed');
+      toast.success(t('series.ratingRemoved'));
     } catch {
-      toast.error('Could not remove rating. Please try again.');
+      toast.error(t('series.removeRatingError'));
     }
   };
 
@@ -159,9 +162,9 @@ export default function SeriesPage() {
       await refreshCounts(); // Sync with context
 
       const ratingEmoji = rating === 'love' ? '❤️' : rating === 'like' ? '👍' : '👎';
-      toast.success(`Rating updated to ${ratingEmoji}`);
+      toast.success(t('series.ratingUpdated', { emoji: ratingEmoji }));
     } catch {
-      toast.error('Could not update your rating. Please try again.');
+      toast.error(t('series.updateRatingError'));
     }
   };
 
@@ -189,10 +192,11 @@ export default function SeriesPage() {
 
       await refreshCounts();
 
-      const typeLabel = type === 'notInterested' ? 'Not Interested' : 'Want to Watch';
-      toast.success(`"${series.name}" added to watchlist as ${typeLabel}`);
+      const typeLabel =
+        type === 'notInterested' ? t('series.watchlist.notInterested') : t('series.watchlist.wantToWatch');
+      toast.success(t('series.messages.addedToWatchlist', { name: series.name, type: typeLabel }));
     } catch {
-      toast.error('Could not add to watchlist. Please try again.');
+      toast.error(t('series.errors.addWatchlist'));
     }
   };
 
@@ -207,10 +211,10 @@ export default function SeriesPage() {
             {/* Header */}
             <div className="text-center">
               <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-foreground leading-[1.1] mb-4">
-                Rate Your Shows
+                {t('series.title')}
               </h1>
               <p className="text-lg sm:text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-                Build your taste profile by rating shows. The more you rate, the better your recommendations.
+                {t('series.subtitle')}
               </p>
             </div>
 
@@ -226,10 +230,10 @@ export default function SeriesPage() {
             <div>
               <div className="flex items-center justify-between gap-3 mb-6">
                 <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-foreground">
-                  Your Ratings
+                  {t('series.yourRatings')}
                 </h2>
                 <span className="text-sm font-semibold text-muted-foreground px-3 py-1.5 bg-muted/50 rounded-full">
-                  {myRatings.length} {myRatings.length === 1 ? 'show' : 'shows'}
+                  {t('series.showCount', { count: myRatings.length })}
                 </span>
               </div>
 
@@ -243,28 +247,28 @@ export default function SeriesPage() {
                     value="all"
                     className="data-[state=active]:bg-background data-[state=active]:shadow-md rounded-lg px-5 py-2.5 font-semibold transition-all"
                   >
-                    All ({myRatings.length})
+                    {t('series.tabs.all', { count: myRatings.length })}
                   </TabsTrigger>
                   <TabsTrigger
                     value="love"
                     className="data-[state=active]:bg-red-50 data-[state=active]:text-red-600 data-[state=active]:shadow-md dark:data-[state=active]:bg-red-950/30 dark:data-[state=active]:text-red-400 rounded-lg px-5 py-2.5 font-semibold transition-all"
                   >
                     <Heart className="w-4 h-4 mr-1.5 fill-current" />
-                    Loved ({lovedCount})
+                    {t('series.tabs.loved', { count: lovedCount })}
                   </TabsTrigger>
                   <TabsTrigger
                     value="like"
                     className="data-[state=active]:bg-emerald-50 data-[state=active]:text-emerald-600 data-[state=active]:shadow-md dark:data-[state=active]:bg-emerald-950/30 dark:data-[state=active]:text-emerald-400 rounded-lg px-5 py-2.5 font-semibold transition-all"
                   >
                     <ThumbsUp className="w-4 h-4 mr-1.5 fill-current" />
-                    Liked ({likedCount})
+                    {t('series.tabs.liked', { count: likedCount })}
                   </TabsTrigger>
                   <TabsTrigger
                     value="dislike"
                     className="data-[state=active]:bg-orange-50 data-[state=active]:text-orange-600 data-[state=active]:shadow-md dark:data-[state=active]:bg-orange-950/30 dark:data-[state=active]:text-orange-400 rounded-lg px-5 py-2.5 font-semibold transition-all"
                   >
                     <ThumbsDown className="w-4 h-4 mr-1.5 fill-current" />
-                    Dislike ({dislikedCount})
+                    {t('series.tabs.disliked', { count: dislikedCount })}
                   </TabsTrigger>
                 </TabsList>
 
@@ -283,8 +287,8 @@ export default function SeriesPage() {
                     onRemoveRating={handleRemoveRating}
                     onUpdateRating={handleUpdateRating}
                     isLoading={isLoading}
-                    emptyMessage="No loved shows yet"
-                    emptySubMessage="Mark shows with ❤️ to see them here"
+                    emptyMessage={t('series.empty.lovedTitle')}
+                    emptySubMessage={t('series.empty.lovedSubtitle')}
                   />
                 </TabsContent>
 
@@ -294,8 +298,8 @@ export default function SeriesPage() {
                     onRemoveRating={handleRemoveRating}
                     onUpdateRating={handleUpdateRating}
                     isLoading={isLoading}
-                    emptyMessage="No liked shows yet"
-                    emptySubMessage="Search and rate shows above to get started"
+                    emptyMessage={t('series.empty.likedTitle')}
+                    emptySubMessage={t('series.empty.likedSubtitle')}
                   />
                 </TabsContent>
 
@@ -305,8 +309,8 @@ export default function SeriesPage() {
                     onRemoveRating={handleRemoveRating}
                     onUpdateRating={handleUpdateRating}
                     isLoading={isLoading}
-                    emptyMessage="Not for you yet"
-                    emptySubMessage="Mark shows you don't like to see them here"
+                    emptyMessage={t('series.empty.dislikedTitle')}
+                    emptySubMessage={t('series.empty.dislikedSubtitle')}
                   />
                 </TabsContent>
               </Tabs>

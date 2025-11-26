@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { Button } from '../ui/Button';
 import { Badge } from '../ui/Badge';
 import { Card } from '../ui/Card';
@@ -30,6 +31,8 @@ export function SearchResultCard({
   onAddRating,
   onAddToWatchlist,
 }: SearchResultCardProps) {
+  const { t } = useTranslation();
+
   return (
     <Card className="p-4">
       <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 sm:items-center">
@@ -42,7 +45,7 @@ export function SearchResultCard({
             />
           ) : (
             <div className="h-36 w-24 bg-gray-200 rounded flex items-center justify-center">
-              <span className="text-xs text-gray-500">No Image</span>
+              <span className="text-xs text-gray-500">{t('series.noImage')}</span>
             </div>
           )}
         </div>
@@ -81,7 +84,7 @@ export function SearchResultCard({
                 className="flex-1 sm:flex-none h-9 font-semibold bg-linear-to-br from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 shadow-sm hover:shadow"
               >
                 <Heart className="w-4 h-4" />
-                Love It
+                {t('series.buttons.loveIt')}
               </Button>
               <Button
                 size="sm"
@@ -92,7 +95,7 @@ export function SearchResultCard({
                 className="flex-1 sm:flex-none h-9 font-semibold shadow-sm hover:shadow"
               >
                 <ThumbsUp className="w-4 h-4" />
-                Like It
+                {t('series.buttons.likeIt')}
               </Button>
               <Button
                 size="sm"
@@ -103,7 +106,7 @@ export function SearchResultCard({
                 className="flex-1 sm:flex-none h-9 font-medium"
               >
                 <ThumbsDown className="w-4 h-4" />
-                Dislike
+                {t('series.buttons.dislike')}
               </Button>
             </div>
 
@@ -118,7 +121,7 @@ export function SearchResultCard({
                 className="flex-1 sm:flex-none h-9 font-medium"
               >
                 <Eye className="w-4 h-4" />
-                Want to Watch
+                {t('series.buttons.wantToWatch')}
               </Button>
               <Button
                 size="sm"
@@ -129,7 +132,7 @@ export function SearchResultCard({
                 className="flex-1 sm:flex-none h-9 font-medium"
               >
                 <EyeOff className="w-4 h-4" />
-                Not Interested
+                {t('series.buttons.notInterested')}
               </Button>
             </div>
           </div>

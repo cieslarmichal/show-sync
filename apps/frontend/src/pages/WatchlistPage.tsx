@@ -6,8 +6,11 @@ import { SeriesWatchlist } from '../api/types/series.ts';
 import SeriesWatchlistList from '../components/SeriesWatchlistList.tsx';
 import { SeriesContext } from '../context/SeriesContext';
 import { useSEO } from '../hooks/useSEO';
+import { useTranslation } from 'react-i18next';
 
 export default function WatchlistPage() {
+  const { t } = useTranslation();
+
   useSEO({
     title: 'Watchlist - ShowSync',
     description: 'Manage your TV show watchlist. Track shows you want to watch.',
@@ -24,7 +27,7 @@ export default function WatchlistPage() {
         const response = await getMySeriesWatchlist(1, 20, 'wantToWatch');
         setMyWatchlist(response.data);
       } catch {
-        toast.error('Could not load your watchlist. Please refresh the page.');
+        toast.error(t('watchlist.loadError'));
       } finally {
         setIsLoading(false);
       }
@@ -40,9 +43,9 @@ export default function WatchlistPage() {
       setMyWatchlist((prev) => prev.filter((item) => item.seriesTmdbId !== seriesTmdbId));
 
       await refreshCounts();
-      toast.success('Show removed from watchlist');
+      toast.success(t('watchlist.removeSuccess'));
     } catch {
-      toast.error('Could not remove show from watchlist. Please try again.');
+      toast.error(t('watchlist.removeError'));
     }
   };
 
@@ -57,19 +60,19 @@ export default function WatchlistPage() {
             {/* Header */}
             <div className="text-center">
               <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-foreground leading-[1.1] mb-4">
-                Your Watchlist
+                {t('watchlist.title')}
               </h1>
               <p className="text-lg sm:text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-                Track shows you want to watch and never lose sight of your next binge-worthy series.
+                {t('watchlist.subtitle')}
               </p>
             </div>
 
             {/* Watchlist Section */}
             <div>
               <div className="flex items-center justify-between gap-3 mb-6">
-                <h2 className="text-xl font-semibold tracking-tight text-foreground">Want to Watch</h2>
+                <h2 className="text-xl font-semibold tracking-tight text-foreground">{t('watchlist.wantToWatch')}</h2>
                 <span className="text-sm font-semibold text-muted-foreground px-3 py-1.5 bg-muted/50 rounded-full">
-                  {myWatchlist.length} {myWatchlist.length === 1 ? 'show' : 'shows'}
+                  {t('watchlist.showsCount', { count: myWatchlist.length })}
                 </span>
               </div>
 

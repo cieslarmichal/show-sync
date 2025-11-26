@@ -1,4 +1,5 @@
 import { useState, useContext } from 'react';
+import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 import {
   Sparkles,
@@ -48,6 +49,7 @@ export function RecommendationCard({
   const [isImageLoading, setIsImageLoading] = useState(true);
   const [isProcessing, setIsProcessing] = useState(false);
   const [actionTaken, setActionTaken] = useState<'rating' | 'watchlist' | null>(null);
+  const { t } = useTranslation();
 
   const handleOpenImdb = async (seriesTmdbId: number) => {
     try {
@@ -56,17 +58,17 @@ export function RecommendationCard({
       if (externalIds.imdbId) {
         window.open(`https://www.imdb.com/title/${externalIds.imdbId}`, '_blank', 'noopener,noreferrer');
       } else {
-        toast.error('IMDb ID not available for this show');
+        toast.error(t('watchroom.recommendation.toast.imdbError'));
       }
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Failed to get IMDb link';
 
       if (errorMessage.includes('Too many requests') || errorMessage.includes('Rate limit')) {
-        toast.error('Slow down!', {
-          description: 'Wait a moment before trying again.',
+        toast.error(t('watchroom.recommendation.toast.slowDown'), {
+          description: t('watchroom.recommendation.toast.slowDownDesc'),
         });
       } else {
-        toast.error('Could not open IMDb. Please try again.');
+        toast.error(t('watchroom.recommendation.toast.imdbOpenError'));
       }
     }
   };
@@ -79,8 +81,11 @@ export function RecommendationCard({
 
     try {
       await addSeriesWatchlist(recommendation.seriesTmdbId, type);
-      const typeLabel = type === 'notInterested' ? 'Not Interested' : 'Want to Watch';
-      toast.success(`Added to ${typeLabel}`, {
+      const typeLabel =
+        type === 'notInterested'
+          ? t('watchroom.recommendation.notInterested')
+          : t('watchroom.recommendation.wantToWatch');
+      toast.success(t('watchroom.recommendation.toast.addedWatchlist', { type: typeLabel }), {
         description: recommendation.seriesDetails?.name,
       });
       onAddToWatchlist(recommendation.seriesTmdbId);
@@ -92,11 +97,11 @@ export function RecommendationCard({
       const errorMessage = error instanceof Error ? error.message : 'Failed to add to watchlist';
 
       if (errorMessage.includes('Too many requests') || errorMessage.includes('Rate limit')) {
-        toast.error('Slow down!', {
-          description: 'Wait a moment before trying again.',
+        toast.error(t('watchroom.recommendation.toast.slowDown'), {
+          description: t('watchroom.recommendation.toast.slowDownDesc'),
         });
       } else {
-        toast.error('Could not add to watchlist. Please try again.');
+        toast.error(t('watchroom.recommendation.toast.addedWatchlistError'));
       }
     }
   };
@@ -109,8 +114,13 @@ export function RecommendationCard({
 
     try {
       await addSeriesRating(recommendation.seriesTmdbId, rating);
-      const ratingLabel = rating === 'love' ? 'Love' : rating === 'like' ? 'Like' : 'Dislike';
-      toast.success(`Rated as ${ratingLabel}`, {
+      const ratingLabel =
+        rating === 'love'
+          ? t('watchroom.recommendation.love')
+          : rating === 'like'
+            ? t('watchroom.recommendation.like')
+            : t('watchroom.recommendation.dislike');
+      toast.success(t('watchroom.recommendation.toast.ratedAs', { rating: ratingLabel }), {
         description: recommendation.seriesDetails?.name,
       });
       onAddRating(recommendation.seriesTmdbId);
@@ -122,11 +132,11 @@ export function RecommendationCard({
       const errorMessage = error instanceof Error ? error.message : 'Failed to save rating';
 
       if (errorMessage.includes('Too many requests') || errorMessage.includes('Rate limit')) {
-        toast.error('Slow down!', {
-          description: 'Wait a moment before trying again.',
+        toast.error(t('watchroom.recommendation.toast.slowDown'), {
+          description: t('watchroom.recommendation.toast.slowDownDesc'),
         });
       } else {
-        toast.error('Could not save rating. Please try again.');
+        toast.error(t('watchroom.recommendation.toast.ratingError'));
       }
     }
   };
@@ -146,7 +156,11 @@ export function RecommendationCard({
             <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
               <Check className="w-6 h-6 text-primary" />
             </div>
-            <p className="text-sm font-medium">{actionTaken === 'rating' ? 'Rating saved!' : 'Added to watchlist!'}</p>
+            <p className="text-sm font-medium">
+              {actionTaken === 'rating'
+                ? t('watchroom.recommendation.ratingSaved')
+                : t('watchroom.recommendation.addedToWatchlist')}
+            </p>
           </div>
         </div>
       )}
@@ -252,7 +266,9 @@ export function RecommendationCard({
                       {recommendation.seriesDetails.numberOfSeasons > 0 && (
                         <span>
                           {recommendation.seriesDetails.numberOfSeasons}{' '}
-                          {recommendation.seriesDetails.numberOfSeasons === 1 ? 'Season' : 'Seasons'}
+                          {recommendation.seriesDetails.numberOfSeasons === 1
+                            ? t('watchroom.recommendation.season')
+                            : t('watchroom.recommendation.seasons')}
                         </span>
                       )}
                       {recommendation.seriesDetails.numberOfSeasons > 0 &&
@@ -260,7 +276,9 @@ export function RecommendationCard({
                           <span className="text-muted-foreground/40">·</span>
                         )}
                       {recommendation.seriesDetails.numberOfEpisodes > 0 && (
-                        <span>{recommendation.seriesDetails.numberOfEpisodes} Episodes</span>
+                        <span>
+                          {recommendation.seriesDetails.numberOfEpisodes} {t('watchroom.recommendation.episodes')}
+                        </span>
                       )}
                     </div>
                   </>
@@ -314,7 +332,9 @@ export function RecommendationCard({
           {/* Watch Providers (only show if available) */}
           {recommendation.seriesDetails && recommendation.seriesDetails.watchProviders.length > 0 && (
             <div className="flex flex-wrap items-center gap-2">
-              <span className="text-xs sm:text-sm font-medium text-foreground/80">Available on:</span>
+              <span className="text-xs sm:text-sm font-medium text-foreground/80">
+                {t('watchroom.recommendation.availableOn')}
+              </span>
               <div className="flex items-center gap-1.5">
                 {recommendation.seriesDetails.watchProviders.slice(0, 3).map((provider) => (
                   <div
@@ -340,7 +360,9 @@ export function RecommendationCard({
                 ))}
                 {recommendation.seriesDetails.watchProviders.length > 3 && (
                   <span className="text-xs text-muted-foreground font-medium">
-                    +{recommendation.seriesDetails.watchProviders.length - 3} more
+                    {t('watchroom.recommendation.more', {
+                      count: recommendation.seriesDetails.watchProviders.length - 3,
+                    })}
                   </span>
                 )}
               </div>
@@ -351,7 +373,7 @@ export function RecommendationCard({
           <div className="border-l-2 border-primary/40 pl-2 sm:pl-3 space-y-1 bg-muted/30 py-2 rounded-r">
             <p className="text-xs sm:text-sm font-semibold text-primary flex items-center gap-1.5">
               <Sparkles className="w-3.5 h-3.5" />
-              Why we recommend this
+              {t('watchroom.recommendation.whyRecommend')}
             </p>
             <p className="text-xs sm:text-sm text-foreground/90 leading-relaxed">{recommendation.justification}</p>
           </div>
@@ -370,7 +392,7 @@ export function RecommendationCard({
                   className="flex-1 h-8 sm:h-9 text-xs font-semibold bg-linear-to-br from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 shadow-sm hover:shadow"
                 >
                   <Heart className="w-3.5 sm:w-4 h-3.5 sm:h-4" />
-                  <span>Love</span>
+                  <span>{t('watchroom.recommendation.love')}</span>
                 </Button>
                 <Button
                   size="sm"
@@ -380,7 +402,7 @@ export function RecommendationCard({
                   className="flex-1 h-8 sm:h-9 text-xs font-semibold shadow-sm hover:shadow"
                 >
                   <ThumbsUp className="w-3.5 sm:w-4 h-3.5 sm:h-4" />
-                  <span>Like</span>
+                  <span>{t('watchroom.recommendation.like')}</span>
                 </Button>
                 <Button
                   size="sm"
@@ -390,7 +412,7 @@ export function RecommendationCard({
                   className="flex-1 h-8 sm:h-9 text-xs font-medium"
                 >
                   <ThumbsDown className="w-3.5 sm:w-4 h-3.5 sm:h-4" />
-                  <span>Dislike</span>
+                  <span>{t('watchroom.recommendation.dislike')}</span>
                 </Button>
               </div>
 
@@ -404,8 +426,8 @@ export function RecommendationCard({
                   className="flex-1 h-8 sm:h-9 text-xs font-medium"
                 >
                   <Eye className="w-3.5 sm:w-4 h-3.5 sm:h-4" />
-                  <span className="hidden sm:inline">Want to Watch</span>
-                  <span className="sm:hidden">Watchlist</span>
+                  <span className="hidden sm:inline">{t('watchroom.recommendation.wantToWatch')}</span>
+                  <span className="sm:hidden">{t('watchroom.recommendation.watchlist')}</span>
                 </Button>
                 <Button
                   size="sm"
@@ -415,8 +437,8 @@ export function RecommendationCard({
                   className="flex-1 h-8 sm:h-9 text-xs font-medium"
                 >
                   <EyeOff className="w-3.5 sm:w-4 h-3.5 sm:h-4" />
-                  <span className="hidden sm:inline">Not Interested</span>
-                  <span className="sm:hidden">Skip</span>
+                  <span className="hidden sm:inline">{t('watchroom.recommendation.notInterested')}</span>
+                  <span className="sm:hidden">{t('watchroom.recommendation.skip')}</span>
                 </Button>
               </div>
             </div>

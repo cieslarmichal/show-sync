@@ -123,7 +123,6 @@ const router = createBrowserRouter([
 ]);
 
 function AppContent() {
-  // Inject structured data for SEO
   useStructuredData();
 
   return (

@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { useContext } from 'react';
+import { useTranslation } from 'react-i18next';
 import { AuthContext } from '../../context/AuthContext';
 import { Button } from '../ui/Button';
 import { Skeleton } from '../ui/Skeleton';
@@ -8,6 +9,7 @@ import { UserMenu } from './UserMenu';
 export function MobileAuthSection() {
   const { userData, userDataInitialized } = useContext(AuthContext);
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   if (!userDataInitialized) {
     return <Skeleton className="h-8 w-8 rounded-full bg-muted" />;
@@ -32,7 +34,7 @@ export function MobileAuthSection() {
       onClick={() => navigate('/register')}
       className="text-xs bg-foreground hover:bg-foreground/90 text-background font-semibold h-8 px-3 sm:px-4 rounded-md shadow-sm transition-all active:scale-95"
     >
-      Sign Up
+      {t('nav.signUp')}
     </Button>
   );
 }

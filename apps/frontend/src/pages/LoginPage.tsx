@@ -3,9 +3,11 @@ import { useContext } from 'react';
 import LoginForm from '../components/LoginForm';
 import { useSEO } from '../hooks/useSEO';
 import { AuthContext } from '../context/AuthContext';
+import { useTranslation } from 'react-i18next';
 
 export default function LoginPage() {
   const { userData, userDataInitialized } = useContext(AuthContext);
+  const { t } = useTranslation();
 
   useSEO({
     title: 'Sign In - ShowSync',
@@ -23,7 +25,7 @@ export default function LoginPage() {
   if (!userDataInitialized) {
     return (
       <div className="flex min-h-screen items-center justify-center">
-        <div className="text-lg text-muted-foreground">Loading...</div>
+        <div className="text-lg text-muted-foreground">{t('common.loading')}</div>
       </div>
     );
   }
@@ -43,8 +45,8 @@ export default function LoginPage() {
       <div className="w-full max-w-md space-y-8">
         {/* Header */}
         <div className="text-center">
-          <h2 className="text-3xl font-bold text-foreground tracking-tight">Welcome Back</h2>
-          <p className="mt-2 text-sm text-muted-foreground">Continue discovering great shows together</p>
+          <h2 className="text-3xl font-bold text-foreground tracking-tight">{t('auth.login.title')}</h2>
+          <p className="mt-2 text-sm text-muted-foreground">{t('auth.login.subtitle')}</p>
         </div>
 
         {/* Form Container */}
@@ -53,12 +55,12 @@ export default function LoginPage() {
 
           {/* Sign up link */}
           <div className="text-center text-sm text-muted-foreground">
-            Don't have an account?{' '}
+            {t('auth.login.noAccount')}{' '}
             <Link
               to={registerUrl}
               className="font-semibold text-foreground hover:underline"
             >
-              Sign up
+              {t('auth.login.signUp')}
             </Link>
           </div>
         </div>

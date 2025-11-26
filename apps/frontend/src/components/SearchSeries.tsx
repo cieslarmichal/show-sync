@@ -7,6 +7,7 @@ import { Card } from './ui/Card';
 import { Skeleton } from './ui/Skeleton';
 import { Search } from 'lucide-react';
 import { SearchResultCard } from './series/SearchResultCard';
+import { useTranslation } from 'react-i18next';
 
 interface SearchSeriesProps {
   onAddRating: (series: Series, rating: Rating) => void;
@@ -21,6 +22,7 @@ export default function SearchSeries({
   ratedSeriesIds,
   watchlistSeriesIds,
 }: SearchSeriesProps) {
+  const { t } = useTranslation();
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<Series[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -42,7 +44,7 @@ export default function SearchSeries({
         const searchResult = await searchSeries(debouncedQuery);
         setResults(searchResult.data);
       } catch {
-        setError('Failed to search shows. Please try again.');
+        setError(t('series.searchError'));
       } finally {
         setIsLoading(false);
       }
@@ -69,13 +71,13 @@ export default function SearchSeries({
             htmlFor="series-search"
             className="sr-only"
           >
-            Search for a TV show
+            {t('series.searchLabel')}
           </label>
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
           <Input
             id="series-search"
             type="text"
-            placeholder="Search for a TV show by title..."
+            placeholder={t('series.searchPlaceholder')}
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             className="w-full pl-12 pr-4 py-6 text-base sm:text-lg rounded-full bg-muted border-2 border-transparent focus:border-primary focus:bg-background"
@@ -139,7 +141,7 @@ export default function SearchSeries({
       )}
 
       {!isLoading && query.trim() && results.length === 0 && (
-        <div className="text-center py-8 text-muted-foreground">No shows found for "{query}"</div>
+        <div className="text-center py-8 text-muted-foreground">{t('series.noResults', { query })}</div>
       )}
     </div>
   );

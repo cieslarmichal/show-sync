@@ -1,13 +1,8 @@
 import { Control } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 import { FormControl, FormField, FormItem, FormLabel } from '@/components/ui/Form';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/RadioGroup';
 import { Label } from '@/components/ui/Label';
-
-const SERIES_LENGTH_OPTIONS = [
-  { value: 'all', label: 'All series', description: 'No restrictions on series length' },
-  { value: 'excludeMiniSeries', label: 'No mini-series', description: 'Exclude single-season short series' },
-  { value: 'onlyMiniSeries', label: 'Only mini-series', description: 'Only single-season limited series' },
-] as const;
 
 interface WatchroomFiltersSectionProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -15,6 +10,26 @@ interface WatchroomFiltersSectionProps {
 }
 
 export function WatchroomFiltersSection({ control }: WatchroomFiltersSectionProps) {
+  const { t } = useTranslation();
+
+  const SERIES_LENGTH_OPTIONS = [
+    {
+      value: 'all',
+      label: t('watchroom.roomInfo.seriesLength.all'),
+      description: t('watchroom.filters.allDescription'),
+    },
+    {
+      value: 'excludeMiniSeries',
+      label: t('watchroom.roomInfo.seriesLength.excludeMiniSeries'),
+      description: t('watchroom.filters.excludeDescription'),
+    },
+    {
+      value: 'onlyMiniSeries',
+      label: t('watchroom.roomInfo.seriesLength.onlyMiniSeries'),
+      description: t('watchroom.filters.onlyDescription'),
+    },
+  ] as const;
+
   return (
     <div className="space-y-6 border-t pt-4">
       {/* Series Length Preference */}
@@ -23,7 +38,7 @@ export function WatchroomFiltersSection({ control }: WatchroomFiltersSectionProp
         name="seriesLengthPreference"
         render={({ field }) => (
           <FormItem className="space-y-3">
-            <FormLabel className="text-sm">Series Length</FormLabel>
+            <FormLabel className="text-sm">{t('watchroom.seriesLength')}</FormLabel>
             <FormControl>
               <RadioGroup
                 onValueChange={field.onChange}

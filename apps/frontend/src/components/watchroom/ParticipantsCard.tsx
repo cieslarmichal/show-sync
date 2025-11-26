@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 import { Users, UserMinus, LogOut } from 'lucide-react';
 
@@ -27,6 +28,7 @@ export function ParticipantsCard({ room, isOwner, currentUserId, onRoomUpdated, 
   }>({ open: false });
   const [confirmLeaveDialog, setConfirmLeaveDialog] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
+  const { t } = useTranslation();
 
   const handleRemoveParticipant = async () => {
     if (!confirmRemoveDialog.participantId) {
@@ -36,18 +38,18 @@ export function ParticipantsCard({ room, isOwner, currentUserId, onRoomUpdated, 
     try {
       setIsProcessing(true);
       await removeParticipant(room.id, confirmRemoveDialog.participantId);
-      toast.success('Participant removed successfully!');
+      toast.success(t('watchroom.roomInfo.toast.removeSuccess'));
       setConfirmRemoveDialog({ open: false });
       onRoomUpdated();
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Failed to remove participant.';
 
       if (errorMessage.includes('Too many requests') || errorMessage.includes('Rate limit')) {
-        toast.error('Slow down!', {
-          description: 'Wait a moment before trying again.',
+        toast.error(t('watchroom.roomInfo.toast.slowDown'), {
+          description: t('watchroom.roomInfo.toast.slowDownDesc'),
         });
       } else {
-        toast.error('Could not remove participant. Please try again.');
+        toast.error(t('watchroom.roomInfo.toast.removeError'));
       }
     } finally {
       setIsProcessing(false);
@@ -58,17 +60,17 @@ export function ParticipantsCard({ room, isOwner, currentUserId, onRoomUpdated, 
     try {
       setIsProcessing(true);
       await leaveWatchroom(room.id);
-      toast.success('You have left the room.');
+      toast.success(t('watchroom.roomInfo.toast.leaveSuccess'));
       onLeaveRoom();
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Failed to leave the room.';
 
       if (errorMessage.includes('Too many requests') || errorMessage.includes('Rate limit')) {
-        toast.error('Slow down!', {
-          description: 'Wait a moment before trying again.',
+        toast.error(t('watchroom.roomInfo.toast.slowDown'), {
+          description: t('watchroom.roomInfo.toast.slowDownDesc'),
         });
       } else {
-        toast.error('Could not leave watch room. Please try again.');
+        toast.error(t('watchroom.roomInfo.toast.leaveError'));
       }
       setIsProcessing(false);
     }
@@ -83,10 +85,14 @@ export function ParticipantsCard({ room, isOwner, currentUserId, onRoomUpdated, 
               <Users className="w-4 h-4 text-primary" />
             </div>
             <div>
-              <CardTitle className="text-sm sm:text-base font-bold tracking-tight">Participants</CardTitle>
+              <CardTitle className="text-sm sm:text-base font-bold tracking-tight">
+                {t('watchroom.participants.title')}
+              </CardTitle>
               <p className="text-xs text-muted-foreground">
                 {room.participants.length} / {config.watchroom.maxParticipants}{' '}
-                {room.participants.length === 1 ? 'member' : 'members'}
+                {room.participants.length === 1
+                  ? t('watchroom.participants.member')
+                  : t('watchroom.participants.members')}
               </p>
             </div>
           </div>
@@ -117,7 +123,7 @@ export function ParticipantsCard({ room, isOwner, currentUserId, onRoomUpdated, 
                         variant="outline"
                         className="text-[10px] w-fit bg-primary/5 text-primary border-primary/30 font-medium px-1 py-0"
                       >
-                        Owner
+                        {t('watchroom.participants.owner')}
                       </Badge>
                     )}
                   </div>
@@ -145,7 +151,7 @@ export function ParticipantsCard({ room, isOwner, currentUserId, onRoomUpdated, 
                       side="bottom"
                       className="hidden sm:block"
                     >
-                      <p>Remove {participant.name}</p>
+                      <p>{t('watchroom.participants.remove', { name: participant.name })}</p>
                     </TooltipContent>
                   </Tooltip>
                 )}
@@ -162,7 +168,7 @@ export function ParticipantsCard({ room, isOwner, currentUserId, onRoomUpdated, 
                 data-testid="leave-room-button"
               >
                 <LogOut className="w-3.5 h-3.5 mr-1.5" />
-                Leave Room
+                {t('watchroom.participants.leaveRoom')}
               </Button>
             </div>
           )}
@@ -176,11 +182,9 @@ export function ParticipantsCard({ room, isOwner, currentUserId, onRoomUpdated, 
       >
         <DialogContent>
           <DialogHeader>
-            <DialogTitle className="text-2xl mb-2">Remove Participant?</DialogTitle>
+            <DialogTitle className="text-2xl mb-2">{t('watchroom.roomInfo.removeDialog.title')}</DialogTitle>
             <DialogDescription className="text-base leading-relaxed">
-              Are you sure you want to remove{' '}
-              <span className="font-semibold text-foreground">{confirmRemoveDialog.participantName}</span> from this
-              room? They can rejoin using the invite link.
+              {t('watchroom.roomInfo.removeDialog.description', { name: confirmRemoveDialog.participantName })}
             </DialogDescription>
           </DialogHeader>
           <DialogFooter className="gap-2">
@@ -190,7 +194,7 @@ export function ParticipantsCard({ room, isOwner, currentUserId, onRoomUpdated, 
               disabled={isProcessing}
               className="w-full sm:w-auto"
             >
-              Cancel
+              {t('watchroom.roomInfo.removeDialog.cancel')}
             </Button>
             <Button
               variant="destructive"
@@ -198,7 +202,9 @@ export function ParticipantsCard({ room, isOwner, currentUserId, onRoomUpdated, 
               disabled={isProcessing}
               className="w-full sm:w-auto font-semibold"
             >
-              {isProcessing ? 'Removing...' : 'Remove Participant'}
+              {isProcessing
+                ? t('watchroom.roomInfo.removeDialog.removing')
+                : t('watchroom.roomInfo.removeDialog.confirm')}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -211,9 +217,9 @@ export function ParticipantsCard({ room, isOwner, currentUserId, onRoomUpdated, 
       >
         <DialogContent>
           <DialogHeader>
-            <DialogTitle className="text-2xl mb-2">Leave Room?</DialogTitle>
+            <DialogTitle className="text-2xl mb-2">{t('watchroom.roomInfo.leaveDialog.title')}</DialogTitle>
             <DialogDescription className="text-base leading-relaxed">
-              Are you sure you want to leave this room? You can rejoin anytime using the invite link.
+              {t('watchroom.roomInfo.leaveDialog.description')}
             </DialogDescription>
           </DialogHeader>
           <DialogFooter className="gap-2">
@@ -223,7 +229,7 @@ export function ParticipantsCard({ room, isOwner, currentUserId, onRoomUpdated, 
               disabled={isProcessing}
               className="w-full sm:w-auto"
             >
-              Cancel
+              {t('watchroom.roomInfo.leaveDialog.cancel')}
             </Button>
             <Button
               variant="destructive"
@@ -231,7 +237,7 @@ export function ParticipantsCard({ room, isOwner, currentUserId, onRoomUpdated, 
               disabled={isProcessing}
               className="w-full sm:w-auto font-semibold"
             >
-              {isProcessing ? 'Leaving...' : 'Leave Room'}
+              {isProcessing ? t('watchroom.roomInfo.leaveDialog.leaving') : t('watchroom.roomInfo.leaveDialog.confirm')}
             </Button>
           </DialogFooter>
         </DialogContent>

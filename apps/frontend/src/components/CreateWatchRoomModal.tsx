@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { z } from 'zod';
 import { Plus } from 'lucide-react';
 import { toast } from 'sonner';
+import { useTranslation } from 'react-i18next';
 
 import { Button } from '@/components/ui/Button';
 import {
@@ -21,14 +22,6 @@ import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/Tooltip
 import { createWatchroom } from '../api/queries/watchroom';
 import { WatchroomFiltersSection } from './WatchroomFiltersSection';
 
-const formSchema = z.object({
-  name: z.string().min(1, 'Name is required').max(64, 'Name must be at most 64 characters'),
-  description: z.string().max(256, 'Description must be at most 256 characters').optional(),
-  seriesLengthPreference: z.enum(['all', 'excludeMiniSeries', 'onlyMiniSeries']).optional(),
-});
-
-type FormValues = z.infer<typeof formSchema>;
-
 interface CreateWatchRoomModalProps {
   onRoomCreated: () => void;
   disabled?: boolean;
@@ -36,7 +29,16 @@ interface CreateWatchRoomModalProps {
 }
 
 export function CreateWatchRoomModal({ onRoomCreated, disabled = false, disabledReason }: CreateWatchRoomModalProps) {
+  const { t } = useTranslation();
   const [open, setOpen] = useState(false);
+
+  const formSchema = z.object({
+    name: z.string().min(1, t('validation.nameRequired')).max(64, t('validation.nameMaxLength')),
+    description: z.string().max(256, t('validation.descriptionMaxLength')).optional(),
+    seriesLengthPreference: z.enum(['all', 'excludeMiniSeries', 'onlyMiniSeries']).optional(),
+  });
+
+  type FormValues = z.infer<typeof formSchema>;
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -56,19 +58,19 @@ export function CreateWatchRoomModal({ onRoomCreated, disabled = false, disabled
         seriesLengthPreference: values.seriesLengthPreference,
       });
 
-      toast.success('Watch room created successfully!');
+      toast.success(t('watchroom.createSuccess'));
       setOpen(false);
       form.reset();
       onRoomCreated();
     } catch {
-      toast.error('Could not create watch room. Try a different name or try again later.');
+      toast.error(t('watchroom.createError'));
     }
   }
 
   const buttonElement = (
     <Button disabled={disabled}>
       <Plus className="w-4 h-4 mr-2" />
-      Create Watch Room
+      {t('watchroom.createButton')}
     </Button>
   );
 
@@ -97,9 +99,9 @@ export function CreateWatchRoomModal({ onRoomCreated, disabled = false, disabled
       )}
       <DialogContent className="max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Create Watch Room</DialogTitle>
+          <DialogTitle>{t('watchroom.createTitle')}</DialogTitle>
         </DialogHeader>
-        <DialogDescription>Get TV show suggestions based on what you like.</DialogDescription>
+        <DialogDescription>{t('watchroom.createDescription')}</DialogDescription>
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
@@ -110,11 +112,11 @@ export function CreateWatchRoomModal({ onRoomCreated, disabled = false, disabled
               name="name"
               render={({ field, fieldState }) => (
                 <FormItem>
-                  <FormLabel htmlFor="create-room-name">Room Name</FormLabel>
+                  <FormLabel htmlFor="create-room-name">{t('watchroom.name')}</FormLabel>
                   <FormControl>
                     <Input
                       id="create-room-name"
-                      placeholder="Family Movie Night"
+                      placeholder={t('watchroom.namePlaceholder')}
                       aria-invalid={!!fieldState.error}
                       {...field}
                     />
@@ -128,11 +130,11 @@ export function CreateWatchRoomModal({ onRoomCreated, disabled = false, disabled
               name="description"
               render={({ field, fieldState }) => (
                 <FormItem>
-                  <FormLabel htmlFor="create-room-description">Description (optional)</FormLabel>
+                  <FormLabel htmlFor="create-room-description">{t('watchroom.descriptionLabel')}</FormLabel>
                   <FormControl>
                     <Textarea
                       id="create-room-description"
-                      placeholder="Tell us what kind of shows you're looking for..."
+                      placeholder={t('watchroom.descriptionPlaceholder')}
                       aria-invalid={!!fieldState.error}
                       {...field}
                     />
@@ -148,13 +150,13 @@ export function CreateWatchRoomModal({ onRoomCreated, disabled = false, disabled
                 variant="outline"
                 onClick={() => setOpen(false)}
               >
-                Cancel
+                {t('common.cancel')}
               </Button>
               <Button
                 type="submit"
                 disabled={form.formState.isSubmitting}
               >
-                {form.formState.isSubmitting ? 'Creating...' : 'Create Watch Room'}
+                {form.formState.isSubmitting ? t('watchroom.creating') : t('watchroom.create')}
               </Button>
             </div>
           </form>

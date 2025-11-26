@@ -8,6 +8,7 @@ import { getMyUser } from '../api/queries/getMyUser.ts';
 import { User as UserType } from '../api/types/user.ts';
 import { toast } from 'sonner';
 import { getMyStats } from '../api/queries/getMyStats.ts';
+import { useTranslation } from 'react-i18next';
 import {
   Dialog,
   DialogContent,
@@ -27,25 +28,27 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { changePassword } from '../api/queries/changePassword.ts';
 import { useSEO } from '../hooks/useSEO.ts';
 
-const changePasswordSchema = z
-  .object({
-    oldPassword: z.string().min(1, 'Current password is required'),
-    newPassword: z
-      .string()
-      .min(8, 'New password must be at least 8 characters')
-      .max(64)
-      .regex(/[a-z]/, 'Password must contain at least one lowercase letter')
-      .regex(/[A-Z]/, 'Password must contain at least one uppercase letter')
-      .regex(/\d/, 'Password must contain at least one digit')
-      .regex(/[!@#$%^&*(),.?":{}|<>]/, 'Password must contain at least one special character'),
-    confirmPassword: z.string(),
-  })
-  .refine((data) => data.newPassword === data.confirmPassword, {
-    message: "Passwords don't match",
-    path: ['confirmPassword'],
-  });
-
 export default function ProfilePage() {
+  const { t } = useTranslation();
+
+  const changePasswordSchema = z
+    .object({
+      oldPassword: z.string().min(1, t('validation.currentPasswordRequired')),
+      newPassword: z
+        .string()
+        .min(8, t('validation.passwordMinLength'))
+        .max(64, t('validation.passwordMaxLength'))
+        .regex(/[a-z]/, t('validation.passwordLowercase'))
+        .regex(/[A-Z]/, t('validation.passwordUppercase'))
+        .regex(/\d/, t('validation.passwordDigit'))
+        .regex(/[!@#$%^&*(),.?":{}|<>]/, t('validation.passwordSpecial')),
+      confirmPassword: z.string(),
+    })
+    .refine((data) => data.newPassword === data.confirmPassword, {
+      message: t('validation.passwordMismatch'),
+      path: ['confirmPassword'],
+    });
+
   useSEO({
     title: 'My Profile - ShowSync',
     description: 'Manage your ShowSync account settings, view your activity statistics, and update your preferences.',
@@ -85,7 +88,7 @@ export default function ProfilePage() {
         setWatchRoomsCount(stats.watchRoomsCount);
         setRecommendationCount(stats.recommendationCount);
       } catch {
-        toast.error('Failed to load profile information');
+        toast.error(t('profile.loadError'));
       } finally {
         setIsLoading(false);
       }
@@ -101,11 +104,11 @@ export default function ProfilePage() {
 
     try {
       await deleteUser();
-      toast.success('Account deleted successfully');
+      toast.success(t('profile.deleteSuccess'));
       await clearUserData();
       navigate('/');
     } catch {
-      toast.error('Failed to delete account');
+      toast.error(t('profile.deleteError'));
     }
   };
 
@@ -115,10 +118,10 @@ export default function ProfilePage() {
         oldPassword: values.oldPassword,
         newPassword: values.newPassword,
       });
-      toast.success('Password changed successfully');
+      toast.success(t('profile.passwordSuccess'));
       setIsChangePasswordDialogOpen(false);
     } catch {
-      toast.error('Failed to change password');
+      toast.error(t('profile.passwordError'));
     }
   };
 
@@ -143,8 +146,8 @@ export default function ProfilePage() {
       <div className="min-h-screen bg-background">
         <div className="max-w-4xl mx-auto px-4 py-8">
           <div className="text-center">
-            <h1 className="text-2xl font-bold">Profile</h1>
-            <p className="text-muted-foreground mt-2">Unable to load profile information</p>
+            <h1 className="text-2xl font-bold">{t('profile.title')}</h1>
+            <p className="text-muted-foreground mt-2">{t('profile.loadError')}</p>
           </div>
         </div>
       </div>
@@ -156,8 +159,8 @@ export default function ProfilePage() {
       <div className="max-w-4xl mx-auto px-4 py-8">
         <div className="space-y-8">
           <div>
-            <h1 className="text-3xl font-bold tracking-tight">Your Profile</h1>
-            <p className="text-muted-foreground mt-2">View your activity and manage account settings</p>
+            <h1 className="text-3xl font-bold tracking-tight">{t('profile.yourProfile')}</h1>
+            <p className="text-muted-foreground mt-2">{t('profile.subtitle')}</p>
           </div>
 
           {/* Profile Overview */}
@@ -169,7 +172,9 @@ export default function ProfilePage() {
                 </div>
                 <div>
                   <h2 className="text-xl">{user.name}</h2>
-                  <p className="text-muted-foreground">Joined {new Date(user.createdAt).toLocaleDateString()}</p>
+                  <p className="text-muted-foreground">
+                    {t('profile.memberSince', { date: new Date(user.createdAt).toLocaleDateString() })}
+                  </p>
                 </div>
               </CardTitle>
             </CardHeader>
@@ -179,7 +184,7 @@ export default function ProfilePage() {
                   <div className="flex items-center gap-3">
                     <Mail className="w-5 h-5 text-muted-foreground" />
                     <div>
-                      <p className="text-sm font-medium">Email</p>
+                      <p className="text-sm font-medium">{t('profile.email')}</p>
                       <p className="text-sm text-muted-foreground">{user.email}</p>
                     </div>
                   </div>
@@ -191,26 +196,26 @@ export default function ProfilePage() {
           {/* Account Statistics */}
           <Card>
             <CardHeader>
-              <CardTitle>Your Activity</CardTitle>
-              <CardDescription>Track your ShowSync engagement</CardDescription>
+              <CardTitle>{t('profile.activityTitle')}</CardTitle>
+              <CardDescription>{t('profile.activitySubtitle')}</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <div className="text-center">
                   <div className="text-2xl font-bold text-primary">{ratingsCount}</div>
-                  <p className="text-sm text-muted-foreground">Rated Shows</p>
+                  <p className="text-sm text-muted-foreground">{t('profile.ratedShows')}</p>
                 </div>
                 <div className="text-center">
                   <div className="text-2xl font-bold text-primary">{wantToWatchCount}</div>
-                  <p className="text-sm text-muted-foreground">Want to Watch</p>
+                  <p className="text-sm text-muted-foreground">{t('profile.wantToWatch')}</p>
                 </div>
                 <div className="text-center">
                   <div className="text-2xl font-bold text-primary">{watchRoomsCount}</div>
-                  <p className="text-sm text-muted-foreground">Watch Rooms</p>
+                  <p className="text-sm text-muted-foreground">{t('profile.watchRooms')}</p>
                 </div>
                 <div className="text-center">
                   <div className="text-2xl font-bold text-primary">{recommendationCount}</div>
-                  <p className="text-sm text-muted-foreground">Recommendations</p>
+                  <p className="text-sm text-muted-foreground">{t('profile.recommendations')}</p>
                 </div>
               </div>
             </CardContent>
@@ -219,8 +224,8 @@ export default function ProfilePage() {
           {/* Account Actions */}
           <Card>
             <CardHeader>
-              <CardTitle>Security & Data</CardTitle>
-              <CardDescription>Manage your password and account data</CardDescription>
+              <CardTitle>{t('profile.securityTitle')}</CardTitle>
+              <CardDescription>{t('profile.securitySubtitle')}</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="flex flex-col sm:flex-row gap-3">
@@ -238,12 +243,12 @@ export default function ProfilePage() {
                       variant="outline"
                       className="flex-1"
                     >
-                      Change Password
+                      {t('profile.changePasswordButton')}
                     </Button>
                   </DialogTrigger>
                   <DialogContent>
                     <DialogHeader>
-                      <DialogTitle>Change Password</DialogTitle>
+                      <DialogTitle>{t('profile.changePasswordTitle')}</DialogTitle>
                     </DialogHeader>
                     <Form {...form}>
                       <form
@@ -255,7 +260,7 @@ export default function ProfilePage() {
                           name="oldPassword"
                           render={({ field, fieldState }) => (
                             <FormItem>
-                              <FormLabel>Old Password</FormLabel>
+                              <FormLabel>{t('profile.currentPassword')}</FormLabel>
                               <div className="relative">
                                 <FormControl>
                                   <Input
@@ -284,7 +289,7 @@ export default function ProfilePage() {
                           name="newPassword"
                           render={({ field, fieldState }) => (
                             <FormItem>
-                              <FormLabel>New Password</FormLabel>
+                              <FormLabel>{t('profile.newPassword')}</FormLabel>
                               <div className="relative">
                                 <FormControl>
                                   <Input
@@ -313,7 +318,7 @@ export default function ProfilePage() {
                           name="confirmPassword"
                           render={({ field, fieldState }) => (
                             <FormItem>
-                              <FormLabel>Confirm New Password</FormLabel>
+                              <FormLabel>{t('profile.confirmPassword')}</FormLabel>
                               <div className="relative">
                                 <FormControl>
                                   <Input
@@ -340,12 +345,12 @@ export default function ProfilePage() {
 
                         {/* Password requirements */}
                         <div className="bg-muted/50 rounded-md p-4 space-y-2">
-                          <p className="text-xs font-medium text-foreground">Your password must include:</p>
+                          <p className="text-xs font-medium text-foreground">{t('profile.passwordRequirements')}</p>
                           <ul className="text-xs text-muted-foreground space-y-1 list-disc list-inside">
-                            <li>At least 8 characters</li>
-                            <li>Uppercase and lowercase letters</li>
-                            <li>At least one number</li>
-                            <li>At least one special character (e.g., !@#$%^&*)</li>
+                            <li>{t('profile.passwordReq1')}</li>
+                            <li>{t('profile.passwordReq2')}</li>
+                            <li>{t('profile.passwordReq3')}</li>
+                            <li>{t('profile.passwordReq4')}</li>
                           </ul>
                         </div>
                         <DialogFooter>
@@ -354,14 +359,14 @@ export default function ProfilePage() {
                               type="button"
                               variant="outline"
                             >
-                              Cancel
+                              {t('common.cancel')}
                             </Button>
                           </DialogClose>
                           <Button
                             type="submit"
                             disabled={form.formState.isSubmitting}
                           >
-                            {form.formState.isSubmitting ? 'Changing...' : 'Change Password'}
+                            {form.formState.isSubmitting ? t('profile.changing') : t('profile.changePasswordButton')}
                           </Button>
                         </DialogFooter>
                       </form>
@@ -372,7 +377,7 @@ export default function ProfilePage() {
                   variant="outline"
                   className="flex-1"
                 >
-                  Download Data
+                  {t('profile.downloadData')}
                 </Button>
                 <Dialog>
                   <DialogTrigger asChild>
@@ -380,25 +385,23 @@ export default function ProfilePage() {
                       variant="outline"
                       className="flex-1"
                     >
-                      Delete Account
+                      {t('profile.deleteAccount')}
                     </Button>
                   </DialogTrigger>
                   <DialogContent>
                     <DialogHeader>
-                      <DialogTitle>Are you sure?</DialogTitle>
-                      <DialogDescription>
-                        This will permanently delete your account and all associated data. This action cannot be undone.
-                      </DialogDescription>
+                      <DialogTitle>{t('profile.deleteConfirmTitle')}</DialogTitle>
+                      <DialogDescription>{t('profile.deleteConfirmMessage')}</DialogDescription>
                     </DialogHeader>
                     <DialogFooter>
                       <DialogClose asChild>
-                        <Button variant="outline">Cancel</Button>
+                        <Button variant="outline">{t('common.cancel')}</Button>
                       </DialogClose>
                       <Button
                         variant="destructive"
                         onClick={handleDeleteAccount}
                       >
-                        Delete
+                        {t('common.delete')}
                       </Button>
                     </DialogFooter>
                   </DialogContent>
@@ -407,12 +410,12 @@ export default function ProfilePage() {
               <hr className="border-border" />
               <div className="text-sm text-muted-foreground">
                 <p>
-                  Need help?{' '}
+                  {t('profile.needHelp')}{' '}
                   <a
                     href="mailto:support@show-sync.com"
                     className="text-primary hover:underline"
                   >
-                    Contact support
+                    {t('profile.contactSupport')}
                   </a>
                 </p>
               </div>

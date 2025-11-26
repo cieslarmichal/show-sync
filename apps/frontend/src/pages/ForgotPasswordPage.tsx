@@ -9,14 +9,16 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Input } from '@/components/ui/Input';
 import { requestPasswordReset } from '@/api/queries/requestPasswordReset';
 import { useSEO } from '@/hooks/useSEO';
+import { useTranslation } from 'react-i18next';
 
 const formSchema = z.object({
-  email: z.string().email('Invalid email address').max(64),
+  email: z.string().email().max(64),
 });
 
 type FormValues = z.infer<typeof formSchema>;
 
 export default function ForgotPasswordPage() {
+  const { t } = useTranslation();
   useSEO({
     title: 'Reset Password - ShowSync',
     description: 'Forgot your password? Request a password reset link for your ShowSync account.',
@@ -50,7 +52,7 @@ export default function ForgotPasswordPage() {
         <div className="w-full max-w-md space-y-8">
           {/* Header */}
           <div className="text-center">
-            <h2 className="text-3xl font-bold text-foreground tracking-tight">Check Your Inbox</h2>
+            <h2 className="text-3xl font-bold text-foreground tracking-tight">{t('auth.forgotPassword.checkInbox')}</h2>
           </div>
 
           {/* Success Card */}
@@ -60,16 +62,14 @@ export default function ForgotPasswordPage() {
                 <div className="w-16 h-16 bg-secondary rounded-full flex items-center justify-center mx-auto border-2 border-border">
                   <Mail className="w-8 h-8 text-foreground" />
                 </div>
-                <p className="text-muted-foreground">
-                  If an account exists with that email, we've sent password reset instructions. Check your inbox!
-                </p>
+                <p className="text-muted-foreground">{t('auth.forgotPassword.emailSent')}</p>
               </div>
               <Link to="/login">
                 <Button
                   className="w-full h-11 bg-foreground text-background hover:bg-foreground/90 font-semibold"
                   data-testid="back-to-login-button"
                 >
-                  Back to Sign In
+                  {t('auth.forgotPassword.backToSignIn')}
                 </Button>
               </Link>
             </div>
@@ -84,10 +84,8 @@ export default function ForgotPasswordPage() {
       <div className="w-full max-w-md space-y-8">
         {/* Header */}
         <div className="text-center">
-          <h2 className="text-3xl font-bold text-foreground tracking-tight">Forgot Password?</h2>
-          <p className="mt-2 text-sm text-muted-foreground">
-            No worries. Enter your email and we'll send you reset instructions.
-          </p>
+          <h2 className="text-3xl font-bold text-foreground tracking-tight">{t('auth.forgotPassword.title')}</h2>
+          <p className="mt-2 text-sm text-muted-foreground">{t('auth.forgotPassword.subtitle')}</p>
         </div>
 
         {/* Form Container */}
@@ -106,14 +104,14 @@ export default function ForgotPasswordPage() {
                       htmlFor="email"
                       className="text-sm font-medium text-foreground"
                     >
-                      Email address
+                      {t('auth.login.email')}
                     </FormLabel>
                     <div className="relative">
                       <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                       <FormControl>
                         <Input
                           id="email"
-                          placeholder="Enter your email"
+                          placeholder={t('auth.login.emailPlaceholder')}
                           className="pl-10 h-11"
                           aria-invalid={!!fieldState.error}
                           {...field}
@@ -132,7 +130,9 @@ export default function ForgotPasswordPage() {
                   disabled={!form.formState.isValid || form.formState.isSubmitting}
                   data-testid="reset-password-submit-button"
                 >
-                  {form.formState.isSubmitting ? 'Sending...' : 'Send Reset Instructions'}
+                  {form.formState.isSubmitting
+                    ? t('auth.forgotPassword.sending')
+                    : t('auth.forgotPassword.sendInstructions')}
                 </Button>
               </div>
             </form>
@@ -146,12 +146,12 @@ export default function ForgotPasswordPage() {
 
           {/* Back to login link */}
           <div className="text-center text-sm text-muted-foreground">
-            Remember your password?{' '}
+            {t('auth.forgotPassword.rememberPassword')}{' '}
             <Link
               to="/login"
               className="font-semibold text-foreground hover:underline"
             >
-              Sign in
+              {t('auth.forgotPassword.signIn')}
             </Link>
           </div>
         </div>

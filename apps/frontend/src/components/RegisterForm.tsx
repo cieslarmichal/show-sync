@@ -9,18 +9,19 @@ import { z } from 'zod';
 import { EyeIcon, EyeOffIcon, Mail, Lock, User, Loader2 } from 'lucide-react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { ApiError } from '../api/ApiError';
+import { useTranslation } from 'react-i18next';
 
 const formSchema = z.object({
-  name: z.string().min(1, 'Name is required').max(64),
-  email: z.string().email('Invalid email address').max(255),
+  name: z.string().min(1).max(64),
+  email: z.string().email().max(255),
   password: z
     .string()
-    .min(8, 'Password must be at least 8 characters')
+    .min(8)
     .max(64)
-    .regex(/[a-z]/, 'Password must contain at least one lowercase letter')
-    .regex(/[A-Z]/, 'Password must contain at least one uppercase letter')
-    .regex(/\d/, 'Password must contain at least one digit')
-    .regex(/[!@#$%^&*(),.?":{}|<>]/, 'Password must contain at least one special character'),
+    .regex(/[a-z]/)
+    .regex(/[A-Z]/)
+    .regex(/\d/)
+    .regex(/[!@#$%^&*(),.?":{}|<>]/),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -30,6 +31,7 @@ interface Props {
 }
 
 export default function RegisterForm({ onSuccess }: Props) {
+  const { t } = useTranslation();
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -72,14 +74,14 @@ export default function RegisterForm({ onSuccess }: Props) {
 
         if (error.isErrorType('TooManyRequestsError')) {
           form.setError('root', {
-            message: 'Too many requests. Please try again later.',
+            message: t('auth.register.tooManyRequests'),
           });
           return;
         }
       }
 
       form.setError('root', {
-        message: 'Error during registration',
+        message: t('auth.register.registrationError'),
       });
     } finally {
       setIsSubmitting(false);
@@ -102,14 +104,14 @@ export default function RegisterForm({ onSuccess }: Props) {
                   htmlFor="name"
                   className="text-sm font-medium text-foreground"
                 >
-                  Name
+                  {t('auth.register.name')}
                 </FormLabel>
                 <div className="relative">
                   <User className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                   <FormControl>
                     <Input
                       id="name"
-                      placeholder="Enter your name"
+                      placeholder={t('auth.register.namePlaceholder')}
                       className="pl-10 h-11"
                       aria-invalid={!!fieldState.error}
                       {...field}
@@ -130,14 +132,14 @@ export default function RegisterForm({ onSuccess }: Props) {
                   htmlFor="email"
                   className="text-sm font-medium text-foreground"
                 >
-                  Email address
+                  {t('auth.register.email')}
                 </FormLabel>
                 <div className="relative">
                   <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                   <FormControl>
                     <Input
                       id="email"
-                      placeholder="Enter your email"
+                      placeholder={t('auth.register.emailPlaceholder')}
                       className="pl-10 h-11"
                       aria-invalid={!!fieldState.error}
                       {...field}
@@ -166,17 +168,17 @@ export default function RegisterForm({ onSuccess }: Props) {
               const strengthPercentage = (requirementsMet / 5) * 100;
 
               let strengthColor = 'bg-destructive';
-              let strengthText = 'Weak';
+              let strengthText = t('auth.register.passwordStrength.weak');
 
               if (requirementsMet >= 5) {
                 strengthColor = 'bg-green-500';
-                strengthText = 'Strong';
+                strengthText = t('auth.register.passwordStrength.strong');
               } else if (requirementsMet >= 4) {
                 strengthColor = 'bg-yellow-500';
-                strengthText = 'Good';
+                strengthText = t('auth.register.passwordStrength.good');
               } else if (requirementsMet >= 3) {
                 strengthColor = 'bg-orange-500';
-                strengthText = 'Fair';
+                strengthText = t('auth.register.passwordStrength.fair');
               }
 
               return (
@@ -185,14 +187,14 @@ export default function RegisterForm({ onSuccess }: Props) {
                     htmlFor="password"
                     className="text-sm font-medium text-foreground"
                   >
-                    Password
+                    {t('auth.register.password')}
                   </FormLabel>
                   <div className="relative">
                     <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                     <FormControl>
                       <Input
                         id="password"
-                        placeholder="Enter your password"
+                        placeholder={t('auth.register.passwordPlaceholder')}
                         type={showPassword ? 'text' : 'password'}
                         className="pl-10 h-11"
                         aria-invalid={!!fieldState.error}
@@ -206,7 +208,7 @@ export default function RegisterForm({ onSuccess }: Props) {
                       className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent text-muted-foreground"
                       onClick={() => setShowPassword(!showPassword)}
                       tabIndex={-1}
-                      aria-label={showPassword ? 'Hide password' : 'Show password'}
+                      aria-label={showPassword ? t('auth.register.hidePassword') : t('auth.register.showPassword')}
                     >
                       {showPassword ? <EyeOffIcon className="h-4 w-4" /> : <EyeIcon className="h-4 w-4" />}
                     </Button>
@@ -224,19 +226,19 @@ export default function RegisterForm({ onSuccess }: Props) {
                       </div>
                       <div className="flex flex-wrap gap-x-3 gap-y-0.5 text-[11px]">
                         <span className={hasMinLength ? 'text-green-600 dark:text-green-500' : 'text-muted-foreground'}>
-                          {hasMinLength ? '✓' : '○'} 8+ chars
+                          {hasMinLength ? '✓' : '○'} {t('auth.register.passwordStrength.minLength')}
                         </span>
                         <span className={hasLowercase ? 'text-green-600 dark:text-green-500' : 'text-muted-foreground'}>
-                          {hasLowercase ? '✓' : '○'} lowercase
+                          {hasLowercase ? '✓' : '○'} {t('auth.register.passwordStrength.lowercase')}
                         </span>
                         <span className={hasUppercase ? 'text-green-600 dark:text-green-500' : 'text-muted-foreground'}>
-                          {hasUppercase ? '✓' : '○'} uppercase
+                          {hasUppercase ? '✓' : '○'} {t('auth.register.passwordStrength.uppercase')}
                         </span>
                         <span className={hasDigit ? 'text-green-600 dark:text-green-500' : 'text-muted-foreground'}>
-                          {hasDigit ? '✓' : '○'} digit
+                          {hasDigit ? '✓' : '○'} {t('auth.register.passwordStrength.digit')}
                         </span>
                         <span className={hasSpecial ? 'text-green-600 dark:text-green-500' : 'text-muted-foreground'}>
-                          {hasSpecial ? '✓' : '○'} special character
+                          {hasSpecial ? '✓' : '○'} {t('auth.register.passwordStrength.special')}
                         </span>
                       </div>
                     </div>
@@ -256,10 +258,10 @@ export default function RegisterForm({ onSuccess }: Props) {
               {isSubmitting ? (
                 <>
                   <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                  Creating account..
+                  {t('auth.register.creatingAccount')}
                 </>
               ) : (
-                'Sign up'
+                t('auth.register.signUp')
               )}
             </Button>
           </div>
@@ -268,15 +270,13 @@ export default function RegisterForm({ onSuccess }: Props) {
 
       {existingEmail && (
         <div className="bg-red-50 mt-4 border border-red-200 text-red-700 px-4 py-3 rounded-xl text-sm">
-          <p>
-            Account with email <span className="font-medium">{existingEmail}</span> already exists.
-          </p>
+          <p>{t('auth.register.accountExists', { email: existingEmail })}</p>
           <div className="mt-2 flex items-center justify-center gap-1">
             <Link
               to="/forgot-password"
               className="text-black font-medium"
             >
-              Reset password
+              {t('auth.register.resetPassword')}
             </Link>
           </div>
         </div>

@@ -5,8 +5,10 @@ import { Card } from '../components/ui/Card';
 import { Heart, BrainCircuit, PartyPopper, Users, Sparkles, Clock, CheckCircle2 } from 'lucide-react';
 import { useSEO } from '../hooks/useSEO';
 import { AuthContext } from '../context/AuthContext';
+import { useTranslation } from 'react-i18next';
 
 export default function HomePage() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { userData, userDataInitialized } = useContext(AuthContext);
 
@@ -46,7 +48,7 @@ export default function HomePage() {
   if (!userDataInitialized) {
     return (
       <div className="flex min-h-screen items-center justify-center">
-        <div className="text-lg text-muted-foreground">Loading...</div>
+        <div className="text-lg text-muted-foreground">{t('common.loading')}</div>
       </div>
     );
   }
@@ -72,23 +74,24 @@ export default function HomePage() {
             {/* Hero Section */}
             <div className="text-center pt-8 sm:pt-12">
               <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold text-foreground mb-6 tracking-tight leading-[1.1] max-w-4xl mx-auto px-4 animate-in fade-in slide-in-from-bottom-4 duration-700">
-                Stop arguing about <span className="text-primary inline-block">what to watch</span>
+                {t('home.hero.title')}{' '}
+                <span className="text-primary inline-block">{t('home.hero.titleHighlight')}</span>
               </h1>
               <p className="text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto mb-10 leading-relaxed px-4 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-150">
-                Get personalized recommendations that everyone agrees on.
+                {t('home.hero.subtitle')}
               </p>
               <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 mb-8 text-sm px-4">
                 <div className="flex items-center gap-2 px-3 py-1.5 bg-primary/5 rounded-full">
                   <CheckCircle2 className="h-4 w-4 text-primary shrink-0" />
-                  <span className="text-foreground font-medium">Free to start</span>
+                  <span className="text-foreground font-medium">{t('home.hero.badge1')}</span>
                 </div>
                 <div className="flex items-center gap-2 px-3 py-1.5 bg-primary/5 rounded-full">
                   <CheckCircle2 className="h-4 w-4 text-primary shrink-0" />
-                  <span className="text-foreground font-medium">No credit card needed</span>
+                  <span className="text-foreground font-medium">{t('home.hero.badge2')}</span>
                 </div>
                 <div className="flex items-center gap-2 px-3 py-1.5 bg-primary/5 rounded-full">
                   <Clock className="h-4 w-4 text-primary shrink-0" />
-                  <span className="text-foreground font-medium">Setup in 2 minutes</span>
+                  <span className="text-foreground font-medium">{t('home.hero.badge3')}</span>
                 </div>
               </div>
               <div className="flex flex-col sm:flex-row gap-4 justify-center items-center px-4 mt-10">
@@ -97,7 +100,7 @@ export default function HomePage() {
                   onClick={() => navigate('/register')}
                   className="bg-foreground text-background hover:bg-foreground/90 transition-all shadow-lg hover:shadow-xl hover:scale-[1.02] w-full sm:w-auto text-base font-semibold px-8 h-12"
                 >
-                  Get Started Free
+                  {t('home.hero.cta')}
                 </Button>
                 <Button
                   variant="outline"
@@ -105,7 +108,7 @@ export default function HomePage() {
                   onClick={() => navigate('/login')}
                   className="border-border hover:bg-accent w-full sm:w-auto text-base h-12"
                 >
-                  Sign In
+                  {t('home.hero.signIn')}
                 </Button>
               </div>
             </div>
@@ -113,8 +116,10 @@ export default function HomePage() {
             {/* How It Works Section */}
             <div className="space-y-12">
               <div className="text-center">
-                <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground mb-4">How It Works</h2>
-                <p className="text-lg text-muted-foreground">Three simple steps. Zero arguments about what to watch.</p>
+                <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground mb-4">
+                  {t('home.howItWorks.title')}
+                </h2>
+                <p className="text-lg text-muted-foreground">{t('home.howItWorks.subtitle')}</p>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12 text-center">
                 <div className="space-y-4 group">
@@ -123,11 +128,8 @@ export default function HomePage() {
                       <Heart className="h-8 w-8 text-primary" />
                     </div>
                   </div>
-                  <h3 className="text-xl font-semibold text-foreground">1. Rate Your Shows</h3>
-                  <p className="text-muted-foreground leading-relaxed">
-                    Quickly rate shows you've watched. Love it, like it, or dislike it. Takes less than a minute to
-                    build your taste profile.
-                  </p>
+                  <h3 className="text-xl font-semibold text-foreground">{t('home.howItWorks.step1Title')}</h3>
+                  <p className="text-muted-foreground leading-relaxed">{t('home.howItWorks.step1Desc')}</p>
                 </div>
                 <div className="space-y-4 group">
                   <div className="flex justify-center">
@@ -135,11 +137,8 @@ export default function HomePage() {
                       <Users className="h-8 w-8 text-primary" />
                     </div>
                   </div>
-                  <h3 className="text-xl font-semibold text-foreground">2. Invite Your Crew</h3>
-                  <p className="text-muted-foreground leading-relaxed">
-                    Create a watch room and share it with friends, family, or your partner. Or keep it for just
-                    yourself.
-                  </p>
+                  <h3 className="text-xl font-semibold text-foreground">{t('home.howItWorks.step2Title')}</h3>
+                  <p className="text-muted-foreground leading-relaxed">{t('home.howItWorks.step2Desc')}</p>
                 </div>
                 <div className="space-y-4 group">
                   <div className="flex justify-center">
@@ -147,10 +146,8 @@ export default function HomePage() {
                       <PartyPopper className="h-8 w-8 text-primary" />
                     </div>
                   </div>
-                  <h3 className="text-xl font-semibold text-foreground">3. Watch the Magic Happen</h3>
-                  <p className="text-muted-foreground leading-relaxed">
-                    Get instant recommendations that balance everyone's taste. No scrolling for hours. No compromising.
-                  </p>
+                  <h3 className="text-xl font-semibold text-foreground">{t('home.howItWorks.step3Title')}</h3>
+                  <p className="text-muted-foreground leading-relaxed">{t('home.howItWorks.step3Desc')}</p>
                 </div>
               </div>
             </div>
@@ -159,9 +156,9 @@ export default function HomePage() {
             <div className="space-y-12">
               <div className="text-center">
                 <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground mb-4">
-                  Why People Love ShowSync
+                  {t('home.features.title')}
                 </h2>
-                <p className="text-lg text-muted-foreground">The smartest way to decide what to watch next.</p>
+                <p className="text-lg text-muted-foreground">{t('home.features.subtitle')}</p>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
                 <Card className="p-8 border-2 hover:border-primary/50 hover:shadow-lg transition-all duration-300">
@@ -170,11 +167,8 @@ export default function HomePage() {
                       <BrainCircuit className="h-6 w-6 text-primary" />
                     </div>
                     <div>
-                      <h3 className="text-lg font-semibold text-foreground mb-2">Actually Smart Recommendations</h3>
-                      <p className="text-muted-foreground leading-relaxed">
-                        We analyze your unique taste and find hidden gems you'll love — not just the same popular shows
-                        everyone recommends.
-                      </p>
+                      <h3 className="text-lg font-semibold text-foreground mb-2">{t('home.features.smartTitle')}</h3>
+                      <p className="text-muted-foreground leading-relaxed">{t('home.features.smartDesc')}</p>
                     </div>
                   </div>
                 </Card>
@@ -184,11 +178,8 @@ export default function HomePage() {
                       <Users className="h-6 w-6 text-primary" />
                     </div>
                     <div>
-                      <h3 className="text-lg font-semibold text-foreground mb-2">Perfect for Groups or Solo</h3>
-                      <p className="text-muted-foreground leading-relaxed">
-                        Whether it's date night, family time, or just you on the couch - get recommendations that work
-                        for any situation and adapt to everyone's watchlists.
-                      </p>
+                      <h3 className="text-lg font-semibold text-foreground mb-2">{t('home.features.groupsTitle')}</h3>
+                      <p className="text-muted-foreground leading-relaxed">{t('home.features.groupsDesc')}</p>
                     </div>
                   </div>
                 </Card>
@@ -198,10 +189,8 @@ export default function HomePage() {
                       <Clock className="h-6 w-6 text-primary" />
                     </div>
                     <div>
-                      <h3 className="text-lg font-semibold text-foreground mb-2">Save Hours of Scrolling</h3>
-                      <p className="text-muted-foreground leading-relaxed">
-                        Stop spending more time choosing than watching. Get your perfect match in seconds, not hours.
-                      </p>
+                      <h3 className="text-lg font-semibold text-foreground mb-2">{t('home.features.timeTitle')}</h3>
+                      <p className="text-muted-foreground leading-relaxed">{t('home.features.timeDesc')}</p>
                     </div>
                   </div>
                 </Card>
@@ -211,8 +200,10 @@ export default function HomePage() {
                       <Sparkles className="h-6 w-6 text-primary" />
                     </div>
                     <div>
-                      <h3 className="text-lg font-semibold text-foreground mb-2">No More Compromises</h3>
-                      <p className="text-muted-foreground leading-relaxed">Find shows that everyone will enjoy.</p>
+                      <h3 className="text-lg font-semibold text-foreground mb-2">
+                        {t('home.features.noCompromiseTitle')}
+                      </h3>
+                      <p className="text-muted-foreground leading-relaxed">{t('home.features.noCompromiseDesc')}</p>
                     </div>
                   </div>
                 </Card>
@@ -221,21 +212,18 @@ export default function HomePage() {
 
             {/* CTA Section */}
             <div className="text-center py-16 px-4">
-              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground mb-6">
-                Ready to end the "what should we watch?" debate?
-              </h2>
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground mb-6">{t('home.cta.title')}</h2>
               <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-10 leading-relaxed">
-                Join thousands of people who've already stopped wasting time scrolling. Get your first recommendation in
-                under 2 minutes.
+                {t('home.cta.description')}
               </p>
               <Button
                 size="lg"
                 onClick={() => navigate('/register')}
                 className="bg-foreground text-background hover:bg-foreground/90 transition-all shadow-lg hover:shadow-xl hover:scale-[1.02] text-base font-semibold px-8 h-12"
               >
-                Get Started Free
+                {t('home.cta.button')}
               </Button>
-              <p className="text-sm text-muted-foreground mt-6">No credit card required • Free trial included</p>
+              <p className="text-sm text-muted-foreground mt-6">{t('home.cta.noCreditCard')}</p>
             </div>
           </div>
         </div>

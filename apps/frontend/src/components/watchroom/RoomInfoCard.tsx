@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 import { Copy, Trash2, Calendar, Users, UserMinus, LogOut, Film } from 'lucide-react';
 
@@ -39,11 +40,12 @@ export function RoomInfoCard({
   }>({ open: false });
   const [confirmLeaveDialog, setConfirmLeaveDialog] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
+  const { t } = useTranslation();
 
   const SERIES_LENGTH_LABELS = {
-    all: 'All series',
-    excludeMiniSeries: 'No mini-series',
-    onlyMiniSeries: 'Only mini-series',
+    all: t('watchroom.roomInfo.seriesLength.all'),
+    excludeMiniSeries: t('watchroom.roomInfo.seriesLength.excludeMiniSeries'),
+    onlyMiniSeries: t('watchroom.roomInfo.seriesLength.onlyMiniSeries'),
   };
 
   const hasActiveFilters = room.seriesLengthPreference !== 'all';
@@ -52,17 +54,17 @@ export function RoomInfoCard({
     try {
       setIsProcessing(true);
       await deleteWatchroom(room.id);
-      toast.success('Watch room deleted successfully!');
+      toast.success(t('watchroom.roomInfo.toast.deleteSuccess'));
       onRoomDeleted();
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Failed to delete room.';
 
       if (errorMessage.includes('Too many requests') || errorMessage.includes('Rate limit')) {
-        toast.error('Slow down!', {
-          description: 'Wait a moment before trying again.',
+        toast.error(t('watchroom.roomInfo.toast.slowDown'), {
+          description: t('watchroom.roomInfo.toast.slowDownDesc'),
         });
       } else {
-        toast.error('Could not delete watch room. Please try again.');
+        toast.error(t('watchroom.roomInfo.toast.deleteError'));
       }
       setIsProcessing(false);
       setConfirmDeleteDialog(false);
@@ -77,18 +79,18 @@ export function RoomInfoCard({
     try {
       setIsProcessing(true);
       await removeParticipant(room.id, confirmRemoveDialog.participantId);
-      toast.success('Participant removed successfully!');
+      toast.success(t('watchroom.roomInfo.toast.removeSuccess'));
       setConfirmRemoveDialog({ open: false });
       onRoomUpdated();
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Failed to remove participant.';
 
       if (errorMessage.includes('Too many requests') || errorMessage.includes('Rate limit')) {
-        toast.error('Slow down!', {
-          description: 'Wait a moment before trying again.',
+        toast.error(t('watchroom.roomInfo.toast.slowDown'), {
+          description: t('watchroom.roomInfo.toast.slowDownDesc'),
         });
       } else {
-        toast.error('Could not remove participant. Please try again.');
+        toast.error(t('watchroom.roomInfo.toast.removeError'));
       }
     } finally {
       setIsProcessing(false);
@@ -99,17 +101,17 @@ export function RoomInfoCard({
     try {
       setIsProcessing(true);
       await leaveWatchroom(room.id);
-      toast.success('You have left the room.');
+      toast.success(t('watchroom.roomInfo.toast.leaveSuccess'));
       onLeaveRoom();
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Failed to leave the room.';
 
       if (errorMessage.includes('Too many requests') || errorMessage.includes('Rate limit')) {
-        toast.error('Slow down!', {
-          description: 'Wait a moment before trying again.',
+        toast.error(t('watchroom.roomInfo.toast.slowDown'), {
+          description: t('watchroom.roomInfo.toast.slowDownDesc'),
         });
       } else {
-        toast.error('Could not leave watch room. Please try again.');
+        toast.error(t('watchroom.roomInfo.toast.leaveError'));
       }
       setIsProcessing(false);
     }
@@ -137,7 +139,7 @@ export function RoomInfoCard({
                 <div className="flex items-center gap-2">
                   <div className="flex items-center gap-1.5 text-xs text-muted-foreground shrink-0">
                     <Film className="w-3.5 h-3.5" />
-                    <span className="font-medium">Length:</span>
+                    <span className="font-medium">{t('watchroom.roomInfo.length')}</span>
                   </div>
                   <Badge
                     variant="secondary"
@@ -151,7 +153,7 @@ export function RoomInfoCard({
 
             {/* Meta Info */}
             <div className="flex items-center gap-2 text-xs text-muted-foreground">
-              <span>Created by {room.ownerName}</span>
+              <span>{t('watchroom.roomInfo.createdBy', { name: room.ownerName })}</span>
               <span>•</span>
               <div className="flex items-center gap-1">
                 <Calendar className="w-3 h-3" />
@@ -175,7 +177,7 @@ export function RoomInfoCard({
                 data-testid="copy-invite-link-button"
               >
                 <Copy className="w-3 h-3 mr-1" />
-                Share
+                {t('watchroom.roomInfo.share')}
               </Button>
               {isOwner ? (
                 <>
@@ -193,7 +195,7 @@ export function RoomInfoCard({
                     className="shadow-sm hover:shadow-md hover:bg-destructive/10 hover:text-destructive hover:border-destructive transition-all h-8 text-xs"
                   >
                     <Trash2 className="w-3 h-3 mr-1" />
-                    Delete
+                    {t('watchroom.roomInfo.delete')}
                   </Button>
                 </>
               ) : (
@@ -205,7 +207,7 @@ export function RoomInfoCard({
                   data-testid="leave-room-button"
                 >
                   <LogOut className="w-3.5 h-3.5 mr-1.5" />
-                  Leave
+                  {t('watchroom.roomInfo.leave')}
                 </Button>
               )}
             </div>
@@ -220,7 +222,9 @@ export function RoomInfoCard({
                 <div className="w-7 h-7 rounded-lg bg-primary/10 flex items-center justify-center">
                   <Users className="w-4 h-4 text-primary" />
                 </div>
-                <CardTitle className="text-sm sm:text-base font-bold tracking-tight">Participants</CardTitle>
+                <CardTitle className="text-sm sm:text-base font-bold tracking-tight">
+                  {t('watchroom.roomInfo.participants')}
+                </CardTitle>
               </div>
               <span className="text-xs text-muted-foreground">
                 {room.participants.length}/{config.watchroom.maxParticipants}
@@ -245,7 +249,7 @@ export function RoomInfoCard({
                         variant="outline"
                         className="text-[10px] bg-primary/5 text-primary border-primary/30 font-medium px-1 py-0"
                       >
-                        Owner
+                        {t('watchroom.roomInfo.owner')}
                       </Badge>
                     )}
                   </div>
@@ -272,7 +276,7 @@ export function RoomInfoCard({
                         side="bottom"
                         className="hidden sm:block"
                       >
-                        <p>Remove {participant.name}</p>
+                        <p>{t('watchroom.participants.remove', { name: participant.name })}</p>
                       </TooltipContent>
                     </Tooltip>
                   )}
@@ -290,10 +294,9 @@ export function RoomInfoCard({
       >
         <DialogContent>
           <DialogHeader>
-            <DialogTitle className="text-2xl mb-2">Delete Watch Room?</DialogTitle>
+            <DialogTitle className="text-2xl mb-2">{t('watchroom.roomInfo.deleteDialog.title')}</DialogTitle>
             <DialogDescription className="text-base leading-relaxed">
-              Are you sure you want to delete <span className="font-semibold text-foreground">"{room.name}"</span>? This
-              will remove all participants and recommendations. This action cannot be undone.
+              {t('watchroom.roomInfo.deleteDialog.description', { name: room.name })}
             </DialogDescription>
           </DialogHeader>
           <DialogFooter className="gap-2">
@@ -303,7 +306,7 @@ export function RoomInfoCard({
               disabled={isProcessing}
               className="w-full sm:w-auto"
             >
-              Cancel
+              {t('watchroom.roomInfo.deleteDialog.cancel')}
             </Button>
             <Button
               variant="destructive"
@@ -311,7 +314,9 @@ export function RoomInfoCard({
               disabled={isProcessing}
               className="w-full sm:w-auto font-semibold"
             >
-              {isProcessing ? 'Deleting...' : 'Delete Room'}
+              {isProcessing
+                ? t('watchroom.roomInfo.deleteDialog.deleting')
+                : t('watchroom.roomInfo.deleteDialog.confirm')}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -324,11 +329,9 @@ export function RoomInfoCard({
       >
         <DialogContent>
           <DialogHeader>
-            <DialogTitle className="text-2xl mb-2">Remove Participant?</DialogTitle>
+            <DialogTitle className="text-2xl mb-2">{t('watchroom.roomInfo.removeDialog.title')}</DialogTitle>
             <DialogDescription className="text-base leading-relaxed">
-              Are you sure you want to remove{' '}
-              <span className="font-semibold text-foreground">{confirmRemoveDialog.participantName}</span> from this
-              room? They can rejoin using the invite link.
+              {t('watchroom.roomInfo.removeDialog.description', { name: confirmRemoveDialog.participantName })}
             </DialogDescription>
           </DialogHeader>
           <DialogFooter className="gap-2">
@@ -338,7 +341,7 @@ export function RoomInfoCard({
               disabled={isProcessing}
               className="w-full sm:w-auto"
             >
-              Cancel
+              {t('watchroom.roomInfo.removeDialog.cancel')}
             </Button>
             <Button
               variant="destructive"
@@ -346,7 +349,9 @@ export function RoomInfoCard({
               disabled={isProcessing}
               className="w-full sm:w-auto font-semibold"
             >
-              {isProcessing ? 'Removing...' : 'Remove Participant'}
+              {isProcessing
+                ? t('watchroom.roomInfo.removeDialog.removing')
+                : t('watchroom.roomInfo.removeDialog.confirm')}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -359,9 +364,9 @@ export function RoomInfoCard({
       >
         <DialogContent>
           <DialogHeader>
-            <DialogTitle className="text-2xl mb-2">Leave Room?</DialogTitle>
+            <DialogTitle className="text-2xl mb-2">{t('watchroom.roomInfo.leaveDialog.title')}</DialogTitle>
             <DialogDescription className="text-base leading-relaxed">
-              Are you sure you want to leave this room? You can rejoin anytime using the invite link.
+              {t('watchroom.roomInfo.leaveDialog.description')}
             </DialogDescription>
           </DialogHeader>
           <DialogFooter className="gap-2">
@@ -371,7 +376,7 @@ export function RoomInfoCard({
               disabled={isProcessing}
               className="w-full sm:w-auto"
             >
-              Cancel
+              {t('watchroom.roomInfo.leaveDialog.cancel')}
             </Button>
             <Button
               variant="destructive"
@@ -379,7 +384,7 @@ export function RoomInfoCard({
               disabled={isProcessing}
               className="w-full sm:w-auto font-semibold"
             >
-              {isProcessing ? 'Leaving...' : 'Leave Room'}
+              {isProcessing ? t('watchroom.roomInfo.leaveDialog.leaving') : t('watchroom.roomInfo.leaveDialog.confirm')}
             </Button>
           </DialogFooter>
         </DialogContent>

@@ -3,8 +3,10 @@ import { useContext } from 'react';
 import { AuthContext } from '../context/AuthContext';
 import { useTheme } from '../hooks/useTheme';
 import { Mail, Phone, MapPin, Heart, Tv, User, Github, Users, Bookmark } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 export default function Footer() {
+  const { t } = useTranslation();
   const { userData } = useContext(AuthContext);
   const { effectiveTheme } = useTheme();
 
@@ -62,9 +64,7 @@ export default function Footer() {
                 ShowSync
               </h2>
             </Link>
-            <p className="text-sm text-muted-foreground leading-relaxed max-w-xs">
-              Find shows your whole group will enjoy. Get recommendations based on group preferences.
-            </p>
+            <p className="text-sm text-muted-foreground leading-relaxed max-w-xs">{t('footer.tagline')}</p>
           </div>
 
           {/* Navigation Section */}
@@ -73,7 +73,7 @@ export default function Footer() {
               className="lg:mx-auto"
               aria-label="Footer navigation"
             >
-              <h3 className="text-sm font-semibold mb-4 text-foreground tracking-tight">Navigation</h3>
+              <h3 className="text-sm font-semibold mb-4 text-foreground tracking-tight">{t('footer.navigation')}</h3>
               <ul className="space-y-3 text-sm">
                 <li>
                   <Link
@@ -84,7 +84,7 @@ export default function Footer() {
                       className="h-4 w-4 group-hover:scale-110 transition-transform"
                       aria-hidden="true"
                     />
-                    <span>TV Shows</span>
+                    <span>{t('nav.tvShows')}</span>
                   </Link>
                 </li>
                 <li>
@@ -96,7 +96,7 @@ export default function Footer() {
                       className="h-4 w-4 group-hover:scale-110 transition-transform"
                       aria-hidden="true"
                     />
-                    <span>Watchlist</span>
+                    <span>{t('nav.watchlist')}</span>
                   </Link>
                 </li>
                 <li>
@@ -108,7 +108,7 @@ export default function Footer() {
                       className="h-4 w-4 group-hover:scale-110 transition-transform"
                       aria-hidden="true"
                     />
-                    <span>Watch Rooms</span>
+                    <span>{t('nav.watchRooms')}</span>
                   </Link>
                 </li>
                 <li>
@@ -120,7 +120,7 @@ export default function Footer() {
                       className="h-4 w-4 group-hover:scale-110 transition-transform"
                       aria-hidden="true"
                     />
-                    <span>Profile</span>
+                    <span>{t('nav.profile')}</span>
                   </Link>
                 </li>
               </ul>
@@ -129,7 +129,7 @@ export default function Footer() {
 
           {/* Contact Section */}
           <div className={userData ? 'col-span-2 lg:col-span-1 lg:ml-auto' : 'col-start-2 lg:col-start-3 lg:ml-auto'}>
-            <h3 className="text-sm font-semibold mb-4 text-foreground tracking-tight">Contact</h3>
+            <h3 className="text-sm font-semibold mb-4 text-foreground tracking-tight">{t('footer.contact')}</h3>
             <address className="space-y-3 text-sm not-italic">
               <div className="flex items-start gap-3 text-muted-foreground group">
                 <Mail
@@ -166,7 +166,7 @@ export default function Footer() {
                   rel="noopener noreferrer"
                   className="hover:text-foreground transition-colors hover:underline underline-offset-4"
                 >
-                  Cracow, Poland
+                  {t('footer.location')}
                 </a>
               </div>
             </address>
@@ -180,12 +180,12 @@ export default function Footer() {
           <div className="flex flex-wrap items-center justify-center sm:justify-start gap-x-1.5 gap-y-1 text-center sm:text-left">
             <span className="whitespace-nowrap">© {currentYear} ShowSync.</span>
             <span className="inline-flex items-center gap-1 sm:gap-1.5">
-              <span>Made with</span>
+              <span>{t('footer.madeWith')}</span>
               <Heart
                 className="h-2.5 w-2.5 sm:h-3 sm:w-3 inline fill-current text-red-500 animate-pulse"
                 aria-label="love"
               />
-              <span>by</span>
+              <span>{t('footer.by')}</span>
             </span>
             <a
               href="https://github.com/cieslarmichal"
@@ -201,7 +201,7 @@ export default function Footer() {
             </a>
           </div>
           <div className="text-center sm:text-right">
-            <span className="whitespace-nowrap">All rights reserved</span>
+            <span className="whitespace-nowrap">{t('footer.rights')}</span>
           </div>
         </div>
       </div>

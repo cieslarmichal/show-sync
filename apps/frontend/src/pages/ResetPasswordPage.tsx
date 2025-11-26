@@ -10,27 +10,28 @@ import { Input } from '@/components/ui/Input';
 import { validateOneTimeToken } from '@/api/queries/validateOneTimeToken';
 import { resetPassword } from '@/api/queries/resetPassword';
 import { useSEO } from '@/hooks/useSEO';
+import { useTranslation } from 'react-i18next';
 
 const formSchema = z
   .object({
     newPassword: z
       .string()
-      .min(8, 'Password must be at least 8 characters')
-      .max(128, 'Password must not exceed 128 characters')
-      .regex(/[A-Z]/, 'Password must contain at least one uppercase letter')
-      .regex(/[a-z]/, 'Password must contain at least one lowercase letter')
-      .regex(/[0-9]/, 'Password must contain at least one number')
-      .regex(/[!@#$%^&*(),.?":{}|<>]/, 'Password must contain at least one special character'),
+      .min(8)
+      .max(128)
+      .regex(/[A-Z]/)
+      .regex(/[a-z]/)
+      .regex(/[0-9]/)
+      .regex(/[!@#$%^&*(),.?":{}|<>]/),
     confirmPassword: z.string(),
   })
   .refine((data) => data.newPassword === data.confirmPassword, {
-    message: 'Passwords do not match',
     path: ['confirmPassword'],
   });
 
 type FormValues = z.infer<typeof formSchema>;
 
 export default function ResetPasswordPage() {
+  const { t } = useTranslation();
   useSEO({
     title: 'Set New Password - ShowSync',
     description: 'Create a new password for your ShowSync account.',
@@ -108,14 +109,14 @@ export default function ResetPasswordPage() {
       <div className="min-h-screen bg-background flex justify-center py-12 px-4 sm:px-6 lg:px-8 pt-32">
         <div className="w-full max-w-md space-y-8">
           <div className="text-center">
-            <h2 className="text-3xl font-bold text-foreground tracking-tight">Validating Token</h2>
+            <h2 className="text-3xl font-bold text-foreground tracking-tight">{t('auth.resetPassword.validating')}</h2>
           </div>
           <div className="bg-card rounded-xl border border-border p-8 shadow-sm">
             <div className="text-center space-y-6">
               <div className="w-16 h-16 bg-secondary rounded-full flex items-center justify-center mx-auto border-2 border-border">
                 <Loader2 className="w-8 h-8 text-foreground animate-spin" />
               </div>
-              <p className="text-muted-foreground">Verifying your reset link...</p>
+              <p className="text-muted-foreground">{t('auth.resetPassword.verifying')}</p>
             </div>
           </div>
         </div>
@@ -129,7 +130,7 @@ export default function ResetPasswordPage() {
       <div className="min-h-screen bg-background flex justify-center py-12 px-4 sm:px-6 lg:px-8 pt-32">
         <div className="w-full max-w-md space-y-8">
           <div className="text-center">
-            <h2 className="text-3xl font-bold text-foreground tracking-tight">Link Expired</h2>
+            <h2 className="text-3xl font-bold text-foreground tracking-tight">{t('auth.resetPassword.linkExpired')}</h2>
           </div>
           <div className="bg-card rounded-xl border border-border p-8 shadow-sm">
             <div className="text-center space-y-6">
@@ -137,10 +138,8 @@ export default function ResetPasswordPage() {
                 <XCircle className="w-8 h-8 text-destructive" />
               </div>
               <div className="space-y-2">
-                <p className="text-foreground font-medium">This reset link is no longer valid.</p>
-                <p className="text-muted-foreground text-sm">
-                  Password reset links expire after 1 hour for security. Request a new one below.
-                </p>
+                <p className="text-foreground font-medium">{t('auth.resetPassword.invalidLink')}</p>
+                <p className="text-muted-foreground text-sm">{t('auth.resetPassword.expiredMessage')}</p>
               </div>
               <div className="space-y-3">
                 <Link to="/forgot-password">
@@ -148,7 +147,7 @@ export default function ResetPasswordPage() {
                     className="w-full h-11 bg-foreground text-background hover:bg-foreground/90 font-semibold"
                     data-testid="request-new-link-button"
                   >
-                    Request New Reset Link
+                    {t('auth.resetPassword.requestNew')}
                   </Button>
                 </Link>
                 <Link to="/login">
@@ -157,7 +156,7 @@ export default function ResetPasswordPage() {
                     className="w-full h-11"
                     data-testid="back-to-login-button"
                   >
-                    Back to Sign In
+                    {t('auth.resetPassword.backToSignIn')}
                   </Button>
                 </Link>
               </div>
@@ -174,7 +173,9 @@ export default function ResetPasswordPage() {
       <div className="min-h-screen bg-background flex justify-center py-12 px-4 sm:px-6 lg:px-8 pt-32">
         <div className="w-full max-w-md space-y-8">
           <div className="text-center">
-            <h2 className="text-3xl font-bold text-foreground tracking-tight">Password Updated!</h2>
+            <h2 className="text-3xl font-bold text-foreground tracking-tight">
+              {t('auth.resetPassword.successTitle')}
+            </h2>
           </div>
           <div className="bg-card rounded-xl border border-border p-8 shadow-sm">
             <div className="text-center space-y-6">
@@ -182,15 +183,15 @@ export default function ResetPasswordPage() {
                 <CheckCircle className="w-8 h-8 text-green-500" />
               </div>
               <div className="space-y-2">
-                <p className="text-foreground font-medium">Your new password is active!</p>
-                <p className="text-muted-foreground text-sm">Taking you to sign in...</p>
+                <p className="text-foreground font-medium">{t('auth.resetPassword.successMessage')}</p>
+                <p className="text-muted-foreground text-sm">{t('auth.resetPassword.redirecting')}</p>
               </div>
               <Link to="/login">
                 <Button
                   className="w-full h-11 bg-foreground text-background hover:bg-foreground/90 font-semibold"
                   data-testid="go-to-login-button"
                 >
-                  Go to Sign In
+                  {t('auth.resetPassword.goToSignIn')}
                 </Button>
               </Link>
             </div>
@@ -206,8 +207,8 @@ export default function ResetPasswordPage() {
       <div className="w-full max-w-md space-y-8">
         {/* Header */}
         <div className="text-center">
-          <h2 className="text-3xl font-bold text-foreground tracking-tight">Create New Password</h2>
-          <p className="mt-2 text-sm text-muted-foreground">Choose a strong password you haven't used before</p>
+          <h2 className="text-3xl font-bold text-foreground tracking-tight">{t('auth.resetPassword.title')}</h2>
+          <p className="mt-2 text-sm text-muted-foreground">{t('auth.resetPassword.subtitle')}</p>
         </div>
 
         {/* Form Container */}
@@ -226,7 +227,7 @@ export default function ResetPasswordPage() {
                       htmlFor="newPassword"
                       className="text-sm font-medium text-foreground"
                     >
-                      New Password
+                      {t('auth.resetPassword.newPassword')}
                     </FormLabel>
                     <div className="relative">
                       <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
@@ -234,7 +235,7 @@ export default function ResetPasswordPage() {
                         <Input
                           id="newPassword"
                           type={showNewPassword ? 'text' : 'password'}
-                          placeholder="Enter new password"
+                          placeholder={t('auth.resetPassword.newPasswordPlaceholder')}
                           className="pl-10 h-11"
                           aria-invalid={!!fieldState.error}
                           {...field}
@@ -247,7 +248,7 @@ export default function ResetPasswordPage() {
                         className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent text-muted-foreground"
                         onClick={() => setShowNewPassword(!showNewPassword)}
                         tabIndex={-1}
-                        aria-label={showNewPassword ? 'Hide password' : 'Show password'}
+                        aria-label={showNewPassword ? t('auth.login.hidePassword') : t('auth.login.showPassword')}
                       >
                         {showNewPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                       </Button>
@@ -266,7 +267,7 @@ export default function ResetPasswordPage() {
                       htmlFor="confirmPassword"
                       className="text-sm font-medium text-foreground"
                     >
-                      Confirm Password
+                      {t('auth.resetPassword.confirmPassword')}
                     </FormLabel>
                     <div className="relative">
                       <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
@@ -274,7 +275,7 @@ export default function ResetPasswordPage() {
                         <Input
                           id="confirmPassword"
                           type={showConfirmPassword ? 'text' : 'password'}
-                          placeholder="Confirm new password"
+                          placeholder={t('auth.resetPassword.confirmPasswordPlaceholder')}
                           className="pl-10 h-11"
                           aria-invalid={!!fieldState.error}
                           {...field}
@@ -287,7 +288,7 @@ export default function ResetPasswordPage() {
                         className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent text-muted-foreground"
                         onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                         tabIndex={-1}
-                        aria-label={showConfirmPassword ? 'Hide password' : 'Show password'}
+                        aria-label={showConfirmPassword ? t('auth.login.hidePassword') : t('auth.login.showPassword')}
                       >
                         {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                       </Button>
@@ -304,7 +305,9 @@ export default function ResetPasswordPage() {
                   disabled={!form.formState.isValid || form.formState.isSubmitting}
                   data-testid="reset-password-button"
                 >
-                  {form.formState.isSubmitting ? 'Resetting Password...' : 'Reset Password'}
+                  {form.formState.isSubmitting
+                    ? t('auth.resetPassword.resetting')
+                    : t('auth.resetPassword.resetButton')}
                 </Button>
               </div>
             </form>
@@ -318,23 +321,23 @@ export default function ResetPasswordPage() {
 
           {/* Password requirements */}
           <div className="bg-muted/50 rounded-md p-4 space-y-2">
-            <p className="text-xs font-medium text-foreground">Your password must include:</p>
+            <p className="text-xs font-medium text-foreground">{t('auth.resetPassword.requirements')}</p>
             <ul className="text-xs text-muted-foreground space-y-1 list-disc list-inside">
-              <li>At least 8 characters</li>
-              <li>Uppercase and lowercase letters</li>
-              <li>At least one number</li>
-              <li>At least one special character (e.g., !@#$%^&*)</li>
+              <li>{t('auth.register.requirement1')}</li>
+              <li>{t('auth.register.requirement3')}</li>
+              <li>{t('auth.register.requirement4')}</li>
+              <li>{t('auth.register.requirement5')}</li>
             </ul>
           </div>
 
           {/* Back to login link */}
           <div className="text-center text-sm text-muted-foreground">
-            Remember your password?{' '}
+            {t('auth.resetPassword.rememberPassword')}{' '}
             <Link
               to="/login"
               className="font-semibold text-foreground hover:underline"
             >
-              Sign in
+              {t('auth.resetPassword.signIn')}
             </Link>
           </div>
         </div>

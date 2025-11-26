@@ -1,6 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, useWatch } from 'react-hook-form';
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { z } from 'zod';
 import { Star } from 'lucide-react';
 import { toast } from 'sonner';
@@ -14,14 +15,6 @@ import { Label } from '@/components/ui/Label';
 import { submitRecommendationFeedback } from '../api/queries/submitRecommendationFeedback';
 import { checkRecommendationFeedback } from '../api/queries/checkRecommendationFeedback';
 
-const formSchema = z.object({
-  rating: z.number().min(1).max(5),
-  foundSomething: z.enum(['true', 'false']),
-  comment: z.string().max(1000, 'Comment must be at most 1000 characters').optional(),
-});
-
-type FormValues = z.infer<typeof formSchema>;
-
 interface RecommendationFeedbackFormProps {
   watchroomId: string;
   recommendationRequestId: string;
@@ -31,6 +24,15 @@ export function RecommendationFeedbackForm({ watchroomId, recommendationRequestI
   const [hoveredStar, setHoveredStar] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [feedbackExists, setFeedbackExists] = useState(false);
+  const { t } = useTranslation();
+
+  const formSchema = z.object({
+    rating: z.number().min(1).max(5),
+    foundSomething: z.enum(['true', 'false']),
+    comment: z.string().max(1000, t('validation.commentMaxLength')).optional(),
+  });
+
+  type FormValues = z.infer<typeof formSchema>;
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -78,13 +80,13 @@ export function RecommendationFeedbackForm({ watchroomId, recommendationRequestI
       });
 
       setFeedbackExists(true);
-      toast.success('Thank you for your feedback!');
+      toast.success(t('watchroom.feedback.toast.success'));
     } catch (error: unknown) {
       if (error instanceof Error && 'status' in error && (error as { status: number }).status === 409) {
-        toast.error('You have already submitted feedback for these recommendations.');
+        toast.error(t('watchroom.feedback.toast.alreadySubmitted'));
         setFeedbackExists(true);
       } else {
-        toast.error('Failed to submit feedback. Please try again.');
+        toast.error(t('watchroom.feedback.toast.error'));
       }
     }
   }
@@ -103,9 +105,9 @@ export function RecommendationFeedbackForm({ watchroomId, recommendationRequestI
       <CardHeader className="pb-2">
         <CardTitle className="text-sm flex items-center gap-1.5">
           <span>📊</span>
-          <span>Rate these recommendations</span>
+          <span>{t('watchroom.feedback.title')}</span>
         </CardTitle>
-        <CardDescription className="text-[11px]">Help us improve our suggestions</CardDescription>
+        <CardDescription className="text-[11px]">{t('watchroom.feedback.description')}</CardDescription>
       </CardHeader>
       <CardContent className="pt-2">
         <Form {...form}>
@@ -119,7 +121,7 @@ export function RecommendationFeedbackForm({ watchroomId, recommendationRequestI
               name="rating"
               render={({ field }) => (
                 <FormItem className="space-y-1.5">
-                  <FormLabel className="text-xs">Rating</FormLabel>
+                  <FormLabel className="text-xs">{t('watchroom.feedback.ratingLabel')}</FormLabel>
                   <FormControl>
                     <div className="flex gap-1">
                       {[1, 2, 3, 4, 5].map((star) => (
@@ -153,7 +155,7 @@ export function RecommendationFeedbackForm({ watchroomId, recommendationRequestI
               name="foundSomething"
               render={({ field }) => (
                 <FormItem className="space-y-1.5">
-                  <FormLabel className="text-xs">Found something to watch?</FormLabel>
+                  <FormLabel className="text-xs">{t('watchroom.feedback.foundLabel')}</FormLabel>
                   <FormControl>
                     <RadioGroup
                       value={field.value}
@@ -169,7 +171,7 @@ export function RecommendationFeedbackForm({ watchroomId, recommendationRequestI
                           htmlFor="found-yes"
                           className="cursor-pointer text-xs"
                         >
-                          Yes
+                          {t('watchroom.feedback.yes')}
                         </Label>
                       </div>
                       <div className="flex items-center space-x-1.5">
@@ -181,7 +183,7 @@ export function RecommendationFeedbackForm({ watchroomId, recommendationRequestI
                           htmlFor="found-no"
                           className="cursor-pointer text-xs"
                         >
-                          No
+                          {t('watchroom.feedback.no')}
                         </Label>
                       </div>
                     </RadioGroup>
@@ -197,10 +199,10 @@ export function RecommendationFeedbackForm({ watchroomId, recommendationRequestI
               name="comment"
               render={({ field }) => (
                 <FormItem className="space-y-1.5">
-                  <FormLabel className="text-xs">Additional thoughts (optional)</FormLabel>
+                  <FormLabel className="text-xs">{t('watchroom.feedback.commentLabel')}</FormLabel>
                   <FormControl>
                     <Textarea
-                      placeholder="What did you like or dislike?"
+                      placeholder={t('watchroom.feedback.commentPlaceholder')}
                       className="text-xs min-h-16 resize-none"
                       {...field}
                     />
@@ -215,7 +217,7 @@ export function RecommendationFeedbackForm({ watchroomId, recommendationRequestI
               disabled={form.formState.isSubmitting || !rating || !foundSomething}
               className="w-full h-8 text-xs font-semibold"
             >
-              {form.formState.isSubmitting ? 'Submitting...' : 'Submit Feedback'}
+              {form.formState.isSubmitting ? t('watchroom.feedback.submitting') : t('watchroom.feedback.submit')}
             </Button>
           </form>
         </Form>

@@ -9,8 +9,10 @@ import type { Watchroom } from '../api/types/watchroom.ts';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/Card.tsx';
 import { Button } from '../components/ui/Button.tsx';
 import { config } from '../config.ts';
+import { useTranslation } from 'react-i18next';
 
 export default function JoinWatchRoomPage() {
+  const { t } = useTranslation();
   const { publicLinkId } = useParams<{ publicLinkId: string }>();
   const [room, setRoom] = useState<Watchroom | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -30,7 +32,7 @@ export default function JoinWatchRoomPage() {
       const fetchedRoom = await getPublicWatchroomDetails(id);
       setRoom(fetchedRoom);
     } catch {
-      toast.error('Failed to load watch room details.');
+      toast.error(t('watchroom.loadError'));
     } finally {
       setIsLoading(false);
     }
@@ -49,13 +51,13 @@ export default function JoinWatchRoomPage() {
     try {
       setIsJoining(true);
       const watchroom = await joinWatchroom(publicLinkId);
-      toast.success('Successfully joined the watch room!');
+      toast.success(t('watchroom.joinSuccess'));
       navigate(`/watchrooms/${watchroom.id}`);
     } catch (error) {
       // Check if user is already a participant (409 conflict)
       if (error instanceof Error && error.message.includes('HTTP 409')) {
-        toast.info('You are already a member of this room!', {
-          description: 'Redirecting to the room...',
+        toast.info(t('watchroom.alreadyMember'), {
+          description: t('watchroom.redirecting'),
         });
         // Navigate to the room since they're already in it
         if (room) {
@@ -63,11 +65,11 @@ export default function JoinWatchRoomPage() {
         }
       } else if (error instanceof Error && error.message.includes('HTTP 400')) {
         // Room is full
-        toast.error('Cannot join room', {
-          description: 'This watch room has reached its maximum capacity.',
+        toast.error(t('watchroom.cannotJoin'), {
+          description: t('watchroom.roomFull'),
         });
       } else {
-        toast.error('Failed to join the watch room.');
+        toast.error(t('watchroom.joinError'));
       }
     } finally {
       setIsJoining(false);
@@ -80,7 +82,7 @@ export default function JoinWatchRoomPage() {
         <div className="relative overflow-hidden">
           <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808008_1px,transparent_1px),linear-gradient(to_bottom,#80808008_1px,transparent_1px)] bg-size-[4rem_4rem]" />
           <div className="relative flex items-start justify-center p-4 py-12 md:py-16">
-            <p className="text-muted-foreground">Loading room details...</p>
+            <p className="text-muted-foreground">{t('watchroom.loadingDetails')}</p>
           </div>
         </div>
       </div>
@@ -95,15 +97,15 @@ export default function JoinWatchRoomPage() {
           <div className="relative flex items-start justify-center p-4 py-12 md:py-16">
             <Card className="w-full max-w-md border-2 shadow-md">
               <CardHeader>
-                <CardTitle>Room Not Found</CardTitle>
-                <CardDescription>The watch room you're looking for doesn't exist.</CardDescription>
+                <CardTitle>{t('watchroom.notFoundTitle')}</CardTitle>
+                <CardDescription>{t('watchroom.notFound')}</CardDescription>
               </CardHeader>
               <CardContent>
                 <Button
                   onClick={() => navigate('/')}
                   className="w-full"
                 >
-                  Go Home
+                  {t('common.goHome')}
                 </Button>
               </CardContent>
             </Card>
@@ -132,10 +134,11 @@ export default function JoinWatchRoomPage() {
                 <UserPlus className="w-10 h-10 text-primary-foreground" />
               </div>
               <div className="space-y-2">
-                <CardTitle className="text-3xl font-bold tracking-tight text-foreground">Join {room.name}</CardTitle>
+                <CardTitle className="text-3xl font-bold tracking-tight text-foreground">
+                  {t('watchroom.joinTitle')} {room.name}
+                </CardTitle>
                 <CardDescription className="text-base mt-3 leading-relaxed text-foreground/80">
-                  You've been invited by <span className="font-semibold text-foreground">{ownerName}</span> to join this
-                  watch room
+                  {t('watchroom.invitedBy', { name: ownerName })}
                 </CardDescription>
               </div>
             </CardHeader>
@@ -143,7 +146,7 @@ export default function JoinWatchRoomPage() {
               {room.description && (
                 <div className="p-4 rounded-lg bg-foreground/5 border-2 border-foreground/10">
                   <p className="text-xs font-semibold uppercase tracking-wider mb-2 text-foreground/60">
-                    About This Room
+                    {t('watchroom.aboutThisRoom')}
                   </p>
                   <p className="text-sm leading-relaxed text-foreground">{room.description}</p>
                 </div>
@@ -155,7 +158,9 @@ export default function JoinWatchRoomPage() {
                 </div>
                 <div className="flex items-baseline gap-2">
                   <span className="text-2xl font-bold text-foreground">{participantCount}</span>
-                  <span className="text-sm text-foreground/60">of {config.watchroom.maxParticipants} members</span>
+                  <span className="text-sm text-foreground/60">
+                    {t('watchroom.ofMembers', { max: config.watchroom.maxParticipants })}
+                  </span>
                 </div>
               </div>
 
@@ -163,15 +168,13 @@ export default function JoinWatchRoomPage() {
                 {isRoomFull && !isAlreadyParticipant && (
                   <div className="mb-4 p-4 rounded-lg bg-destructive/10 border-2 border-destructive">
                     <p className="text-sm text-center text-destructive font-semibold">
-                      Room is at capacity ({config.watchroom.maxParticipants} members)
+                      {t('watchroom.roomAtCapacity', { max: config.watchroom.maxParticipants })}
                     </p>
                   </div>
                 )}
                 {isAlreadyParticipant && (
                   <div className="mb-4 p-4 rounded-lg bg-primary/10 border-2 border-primary/30">
-                    <p className="text-sm text-center text-primary font-semibold">
-                      ✓ You're already a member of this room
-                    </p>
+                    <p className="text-sm text-center text-primary font-semibold">✓ {t('watchroom.alreadyMember')}</p>
                   </div>
                 )}
                 <Button
@@ -183,17 +186,17 @@ export default function JoinWatchRoomPage() {
                   {isJoining ? (
                     <>
                       <Sparkles className="w-5 h-5 mr-2 animate-pulse" />
-                      Joining Room...
+                      {t('watchroom.joining')}
                     </>
                   ) : userData ? (
                     <>
                       <UserPlus className="w-5 h-5 mr-2" />
-                      Join Watch Room
+                      {t('watchroom.join')}
                     </>
                   ) : (
                     <>
                       <UserPlus className="w-5 h-5 mr-2" />
-                      Sign In to Join
+                      {t('watchroom.signInToJoin')}
                     </>
                   )}
                 </Button>

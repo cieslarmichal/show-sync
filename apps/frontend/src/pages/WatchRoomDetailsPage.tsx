@@ -2,6 +2,7 @@ import { useEffect, useState, useContext } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { ArrowLeft } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 import { AuthContext } from '../context/AuthContext.tsx';
 import { getWatchroomDetails } from '../api/queries/watchroom.ts';
@@ -12,6 +13,7 @@ import { RoomInfoCard } from '../components/watchroom/RoomInfoCard.tsx';
 import { RecommendationsSection } from '../components/watchroom/RecommendationsSection.tsx';
 
 export default function WatchRoomDetailsPage() {
+  const { t } = useTranslation();
   const { watchroomId } = useParams<{ watchroomId: string }>();
   const [room, setRoom] = useState<WatchroomDetails | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -24,7 +26,7 @@ export default function WatchRoomDetailsPage() {
       const fetchedRoom = await getWatchroomDetails(id);
       setRoom(fetchedRoom);
     } catch {
-      toast.error('Could not load watch room. Please try again.');
+      toast.error(t('watchroom.loadError'));
       navigate('/watchrooms');
     } finally {
       setIsLoading(false);
@@ -42,7 +44,7 @@ export default function WatchRoomDetailsPage() {
     if (room) {
       const link = `${window.location.origin}/watchrooms/public/${room.publicLinkId}`;
       navigator.clipboard.writeText(link);
-      toast.success('Room link copied to clipboard!');
+      toast.success(t('watchroom.linkCopied'));
     }
   };
 
@@ -57,7 +59,7 @@ export default function WatchRoomDetailsPage() {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
-        <p className="text-muted-foreground">Loading room details...</p>
+        <p className="text-muted-foreground">{t('watchroom.loadingDetails')}</p>
       </div>
     );
   }
@@ -67,15 +69,15 @@ export default function WatchRoomDetailsPage() {
       <div className="min-h-screen bg-background flex items-center justify-center">
         <Card className="w-full max-w-md">
           <CardHeader>
-            <CardTitle>Room Not Found</CardTitle>
-            <CardDescription>The watch room you are looking for does not exist.</CardDescription>
+            <CardTitle>{t('watchroom.notFoundTitle')}</CardTitle>
+            <CardDescription>{t('watchroom.notFoundMessage')}</CardDescription>
           </CardHeader>
           <CardContent>
             <Button
               onClick={() => navigate('/watchrooms')}
               className="w-full"
             >
-              Back to Watch Rooms
+              {t('watchroom.backToRooms')}
             </Button>
           </CardContent>
         </Card>
@@ -96,8 +98,8 @@ export default function WatchRoomDetailsPage() {
           className="group -ml-2 hover:bg-primary/5 transition-all text-xs sm:text-sm mb-3"
         >
           <ArrowLeft className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1.5 sm:mr-2 group-hover:-translate-x-1 transition-transform" />
-          <span className="hidden sm:inline">Back to Watch Rooms</span>
-          <span className="inline sm:hidden">Back</span>
+          <span className="hidden sm:inline">{t('watchroom.backToRooms')}</span>
+          <span className="inline sm:hidden">{t('common.back')}</span>
         </Button>
 
         <div className="grid grid-cols-1 lg:grid-cols-[380px,1fr] gap-4 lg:gap-6">

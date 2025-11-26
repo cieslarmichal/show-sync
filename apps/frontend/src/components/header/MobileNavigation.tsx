@@ -1,5 +1,6 @@
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useContext } from 'react';
+import { useTranslation } from 'react-i18next';
 import { AuthContext } from '../../context/AuthContext';
 import { cn } from '../../lib/utils';
 import { Button } from '../ui/Button';
@@ -13,6 +14,7 @@ export function MobileNavigation({ onItemClick }: MobileNavigationProps) {
   const { userData, userDataInitialized } = useContext(AuthContext);
   const navigate = useNavigate();
   const location = useLocation();
+  const { t } = useTranslation();
   const sections = useNavigationSections(userData);
 
   const handleNavigation = (href: string) => {
@@ -54,13 +56,13 @@ export function MobileNavigation({ onItemClick }: MobileNavigationProps) {
             onClick={() => handleNavigation('/login')}
             className="w-full justify-start px-3 py-2.5 text-sm font-medium rounded-md transition-colors text-foreground hover:text-foreground hover:bg-accent"
           >
-            Sign In
+            {t('nav.signIn')}
           </Button>
           <Button
             onClick={() => handleNavigation('/register')}
             className="w-full justify-start px-3 py-2.5 text-sm font-semibold rounded-md bg-foreground text-background hover:bg-foreground/90 transition-colors"
           >
-            Sign Up
+            {t('nav.signUp')}
           </Button>
         </div>
       )}

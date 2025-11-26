@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 import { Sparkles, TvMinimalPlay, Info } from 'lucide-react';
 
@@ -41,6 +42,7 @@ export function RecommendationsSection({
   const [fadingOutCards, setFadingOutCards] = useState<Set<string>>(new Set());
   const [quota, setQuota] = useState<{ current: number; max: number } | null>(null);
   const [isLoadingQuota, setIsLoadingQuota] = useState(false);
+  const { t } = useTranslation();
 
   const fetchRecommendations = async () => {
     try {
@@ -129,8 +131,8 @@ export function RecommendationsSection({
   const handleGenerateRecommendations = async () => {
     // Check quota before attempting
     if (isQuotaExhausted) {
-      toast.error('Recommendation limit reached', {
-        description: `You've used all ${quota?.max} available generations. This limit helps us manage AI costs.`,
+      toast.error(t('watchroom.recommendations.toast.limitReached'), {
+        description: t('watchroom.recommendations.toast.limitReachedDesc', { max: quota?.max }),
       });
       return;
     }
@@ -140,8 +142,8 @@ export function RecommendationsSection({
 
       const { recommendationRequestId } = await generateRecommendations(watchroomId);
 
-      toast.success('Generating suggestions...', {
-        description: 'This will take a moment. Results will be ready shortly.',
+      toast.success(t('watchroom.recommendations.toast.generatingSuccess'), {
+        description: t('watchroom.recommendations.toast.generatingSuccessDesc'),
       });
 
       // Poll for status using requestId every 2 seconds, max 30 attempts (60 seconds total)
@@ -169,16 +171,18 @@ export function RecommendationsSection({
               // Silently fail - not critical
             }
 
-            toast.success('Suggestions ready!', {
-              description: `Found ${fetchedRecommendations.length} shows for your watch room.`,
+            toast.success(t('watchroom.recommendations.toast.readySuccess'), {
+              description: t('watchroom.recommendations.toast.readySuccessDesc', {
+                count: fetchedRecommendations.length,
+              }),
             });
             setIsGenerating(false);
             return;
           }
 
           if (statusResult.status === 'failed') {
-            toast.error('Could not generate suggestions', {
-              description: 'Something went wrong. Please try again.',
+            toast.error(t('watchroom.recommendations.toast.generateError'), {
+              description: t('watchroom.recommendations.toast.generateErrorDesc'),
             });
             setIsGenerating(false);
             return;
@@ -188,8 +192,8 @@ export function RecommendationsSection({
         }
 
         if (attempts >= maxAttempts) {
-          toast.error('This is taking longer than usual', {
-            description: 'Give it a minute, then refresh the page.',
+          toast.error(t('watchroom.recommendations.toast.takingLong'), {
+            description: t('watchroom.recommendations.toast.takingLongDesc'),
           });
           setIsGenerating(false);
           return;
@@ -203,12 +207,12 @@ export function RecommendationsSection({
       const errorMessage = error instanceof Error ? error.message : 'Could not generate suggestions.';
 
       if (errorMessage.includes('Too many requests') || errorMessage.includes('Rate limit')) {
-        toast.error('Slow down!', {
-          description: 'Wait a moment before generating again (limit: 5 times per minute).',
+        toast.error(t('watchroom.recommendations.toast.slowDown'), {
+          description: t('watchroom.recommendations.toast.slowDownDesc'),
         });
       } else if (errorMessage.includes('quota') || errorMessage.includes('limit exceeded')) {
-        toast.error('Recommendation limit reached', {
-          description: 'You have reached your maximum number of recommendation generations.',
+        toast.error(t('watchroom.recommendations.toast.quotaError'), {
+          description: t('watchroom.recommendations.toast.quotaErrorDesc'),
         });
         // Refresh quota to update UI
         try {
@@ -221,7 +225,7 @@ export function RecommendationsSection({
           // Silently fail
         }
       } else {
-        toast.error('Could not generate suggestions. Please try again.');
+        toast.error(t('watchroom.recommendations.toast.generalError'));
       }
       setIsGenerating(false);
     }
@@ -270,10 +274,10 @@ export function RecommendationsSection({
               <div className="w-6 sm:w-7 h-6 sm:h-7 rounded-lg bg-linear-to-br from-primary to-primary/70 flex items-center justify-center">
                 <Sparkles className="w-3.5 sm:w-4 h-3.5 sm:h-4 text-primary-foreground" />
               </div>
-              <CardTitle className="text-sm sm:text-lg font-bold">Recommendations</CardTitle>
+              <CardTitle className="text-sm sm:text-lg font-bold">{t('watchroom.recommendations.title')}</CardTitle>
             </div>
             <CardDescription className="text-[11px] sm:text-xs hidden sm:block">
-              Show suggestions based on everyone's preferences
+              {t('watchroom.recommendations.description')}
             </CardDescription>
           </div>
           {isOwner && (
@@ -287,12 +291,12 @@ export function RecommendationsSection({
                 {isGenerating ? (
                   <>
                     <Sparkles className="w-3.5 h-3.5 mr-1.5 animate-spin" />
-                    Generating...
+                    {t('watchroom.recommendations.generating')}
                   </>
                 ) : (
                   <>
                     <Sparkles className="w-3.5 h-3.5 mr-1.5" />
-                    Generate
+                    {t('watchroom.recommendations.generate')}
                   </>
                 )}
               </Button>
@@ -301,7 +305,7 @@ export function RecommendationsSection({
                   {isQuotaExhausted ? (
                     <>
                       <span className="text-destructive font-medium">
-                        Limit reached ({quota.current}/{quota.max})
+                        {t('watchroom.recommendations.limitReached', { current: quota.current, max: quota.max })}
                       </span>
                       <Tooltip>
                         <TooltipTrigger asChild>
@@ -310,14 +314,14 @@ export function RecommendationsSection({
                           </button>
                         </TooltipTrigger>
                         <TooltipContent>
-                          <p>Limit helps manage AI costs</p>
+                          <p>{t('watchroom.recommendations.limitInfo')}</p>
                         </TooltipContent>
                       </Tooltip>
                     </>
                   ) : isNearLimit ? (
                     <>
                       <span className="text-amber-600 dark:text-amber-500 font-medium">
-                        {remainingGenerations} left
+                        {t('watchroom.recommendations.remaining', { count: remainingGenerations ?? 0 })}
                       </span>
                       <Tooltip>
                         <TooltipTrigger asChild>
@@ -326,14 +330,14 @@ export function RecommendationsSection({
                           </button>
                         </TooltipTrigger>
                         <TooltipContent>
-                          <p>Close to your {quota.max} generation limit</p>
+                          <p>{t('watchroom.recommendations.nearLimitInfo', { max: quota.max })}</p>
                         </TooltipContent>
                       </Tooltip>
                     </>
                   ) : (
                     <>
                       <span className="text-muted-foreground">
-                        {quota.current}/{quota.max} used
+                        {t('watchroom.recommendations.used', { current: quota.current, max: quota.max })}
                       </span>
                       <Tooltip>
                         <TooltipTrigger asChild>
@@ -342,7 +346,7 @@ export function RecommendationsSection({
                           </button>
                         </TooltipTrigger>
                         <TooltipContent>
-                          <p>{quota.max} total recommendation requests per account</p>
+                          <p>{t('watchroom.recommendations.usedInfo', { max: quota.max })}</p>
                         </TooltipContent>
                       </Tooltip>
                     </>
@@ -356,7 +360,9 @@ export function RecommendationsSection({
       <CardContent className="pt-2 sm:pt-3">
         {isLoadingRecommendations ? (
           <div className="space-y-3 sm:space-y-4">
-            <p className="text-[11px] sm:text-sm text-muted-foreground px-1">Loading recommendations...</p>
+            <p className="text-[11px] sm:text-sm text-muted-foreground px-1">
+              {t('watchroom.recommendations.loading')}
+            </p>
             {[...Array(3)].map((_, i) => (
               <div
                 key={i}
@@ -388,25 +394,25 @@ export function RecommendationsSection({
               <TvMinimalPlay className="w-7 sm:w-10 md:w-12 h-7 sm:h-10 md:h-12 text-primary animate-pulse" />
             </div>
             <h3 className="text-sm sm:text-lg md:text-xl font-bold text-foreground mb-2 sm:mb-3">
-              No recommendations yet
+              {t('watchroom.recommendations.noRecommendations')}
             </h3>
             <p className="text-[11px] sm:text-sm md:text-base text-muted-foreground max-w-lg mx-auto leading-relaxed">
               {isOwner ? (
                 participantCount < 2 ? (
                   <>
-                    Invite at least one more person to generate group recommendations.{' '}
+                    {t('watchroom.recommendations.inviteMore')}{' '}
                     <button
                       onClick={onCopyLink}
                       className="text-primary hover:text-primary/80 underline underline-offset-2 font-semibold transition-colors inline-flex items-center gap-1"
                     >
-                      Copy invite link
+                      {t('watchroom.recommendations.copyInvite')}
                     </button>
                   </>
                 ) : (
-                  'Click the "Generate" button above to get show suggestions for your group!'
+                  t('watchroom.recommendations.clickGenerate')
                 )
               ) : (
-                'The room owner will generate recommendations when everyone has joined.'
+                t('watchroom.recommendations.ownerGenerates')
               )}
             </p>
           </div>
@@ -431,24 +437,18 @@ export function RecommendationsSection({
               <div className="flex items-start gap-1.5 sm:gap-2">
                 <Info className="w-3 sm:w-3.5 h-3 sm:h-3.5 text-muted-foreground shrink-0 mt-0.5" />
                 <div className="space-y-0.5 sm:space-y-1 text-[11px] sm:text-xs">
-                  <p className="font-semibold text-foreground text-xs sm:text-sm">How it works:</p>
+                  <p className="font-semibold text-foreground text-xs sm:text-sm">
+                    {t('watchroom.recommendations.howItWorks')}
+                  </p>
                   <ul className="space-y-0.5 text-muted-foreground leading-relaxed">
-                    <li>
-                      <span className="font-medium text-foreground">Love/Like/Dislike</span> → saves rating to your
-                      profile and improves future recommendations
-                    </li>
-                    <li>
-                      <span className="font-medium text-foreground">Want to Watch</span> → adds to your watchlist
-                    </li>
-                    <li>
-                      <span className="font-medium text-foreground">Not Interested</span> → just removes from this list
-                      (no negative impact on recommendations)
+                    <li>{t('watchroom.recommendations.loveAction')}</li>
+                    <li>{t('watchroom.recommendations.watchlistAction')}</li>
+                    <li>{t('watchroom.recommendations.notInterestedAction')}</li>
+                    <li className="text-[10px] sm:text-[11px] italic pt-0.5">
+                      {t('watchroom.recommendations.actionInfo')}
                     </li>
                     <li className="text-[10px] sm:text-[11px] italic pt-0.5">
-                      ℹ️ Any action hides the show from future recommendations
-                    </li>
-                    <li className="text-[10px] sm:text-[11px] italic pt-0.5">
-                      🎯 Update room description with preferences (mood, genre, themes) for better results
+                      {t('watchroom.recommendations.descriptionTip')}
                     </li>
                   </ul>
                 </div>

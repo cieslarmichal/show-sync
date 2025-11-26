@@ -13,6 +13,7 @@ import { ApiError } from '../api/ApiError';
 import { resendVerificationEmail } from '../api/queries/resendVerificationEmail';
 import { toast } from 'sonner';
 import { config } from '../config';
+import { useTranslation } from 'react-i18next';
 
 const formSchema = z.object({
   email: z.string().email().max(254),
@@ -22,6 +23,7 @@ const formSchema = z.object({
 type FormValues = z.infer<typeof formSchema>;
 
 export default function LoginForm() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [showPassword, setShowPassword] = useState(false);
@@ -43,12 +45,12 @@ export default function LoginForm() {
     setIsResendingEmail(true);
     try {
       await resendVerificationEmail({ email: unverifiedEmail });
-      toast.success('Verification email sent! Please check your inbox.');
+      toast.success(t('auth.login.verificationSent'));
       setEmailNotVerified(false);
       setUnverifiedEmail('');
     } catch (error) {
       console.error('Failed to resend verification email', error);
-      toast.error('Failed to send verification email. Please try again.');
+      toast.error(t('auth.login.verificationFailed'));
     } finally {
       setIsResendingEmail(false);
     }
@@ -80,14 +82,14 @@ export default function LoginForm() {
         // Handle rate limiting
         if (error.isErrorType('TooManyRequestsError')) {
           form.setError('root', {
-            message: 'Too many login attempts. Please wait 10 minutes before trying again.',
+            message: t('auth.login.tooManyAttempts'),
           });
           return;
         }
       }
 
       form.setError('root', {
-        message: 'Invalid email or password',
+        message: t('auth.login.invalidCredentials'),
       });
     }
   }
@@ -108,14 +110,14 @@ export default function LoginForm() {
                   htmlFor="email"
                   className="text-sm font-medium text-foreground"
                 >
-                  Email address
+                  {t('auth.login.email')}
                 </FormLabel>
                 <div className="relative">
                   <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                   <FormControl>
                     <Input
                       id="email"
-                      placeholder="Enter your email"
+                      placeholder={t('auth.login.emailPlaceholder')}
                       className="pl-10 h-11"
                       aria-invalid={!!fieldState.error}
                       {...field}
@@ -135,14 +137,14 @@ export default function LoginForm() {
                   htmlFor="password"
                   className="text-sm font-medium text-foreground"
                 >
-                  Password
+                  {t('auth.login.password')}
                 </FormLabel>
                 <div className="relative">
                   <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                   <FormControl>
                     <Input
                       id="password"
-                      placeholder="Enter your password"
+                      placeholder={t('auth.login.passwordPlaceholder')}
                       type={showPassword ? 'text' : 'password'}
                       className="pl-10 h-11"
                       aria-invalid={!!fieldState.error}
@@ -172,7 +174,7 @@ export default function LoginForm() {
               to="/forgot-password"
               className="text-sm font-medium text-foreground hover:underline"
             >
-              Forgot your password?
+              {t('auth.login.forgotPassword')}
             </Link>
           </div>
 
@@ -183,7 +185,7 @@ export default function LoginForm() {
               disabled={!form.formState.isValid || form.formState.isSubmitting}
               data-testid="login-submit-button"
             >
-              {form.formState.isSubmitting ? 'Signing in...' : 'Sign in'}
+              {form.formState.isSubmitting ? t('auth.login.signingIn') : t('auth.login.signIn')}
             </Button>
           </div>
         </form>
@@ -198,9 +200,9 @@ export default function LoginForm() {
           <div className="flex items-start gap-3">
             <Mail className="h-5 w-5 text-muted-foreground mt-0.5 shrink-0" />
             <div className="flex-1">
-              <p className="text-sm font-medium text-foreground">Email Not Verified</p>
+              <p className="text-sm font-medium text-foreground">{t('auth.login.emailNotVerified')}</p>
               <p className="text-sm text-muted-foreground">
-                Please verify your email address before signing in.{' '}
+                {t('auth.login.emailNotVerifiedMessage')}{' '}
                 <Button
                   onClick={handleResendVerificationEmail}
                   disabled={isResendingEmail}
@@ -210,10 +212,10 @@ export default function LoginForm() {
                   {isResendingEmail ? (
                     <>
                       <Loader className="h-3 w-3 animate-spin" />
-                      Sending...
+                      {t('auth.login.sending')}
                     </>
                   ) : (
-                    'Resend verification email'
+                    t('auth.login.resendVerification')
                   )}
                 </Button>
               </p>

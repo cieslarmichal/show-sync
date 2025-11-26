@@ -1,4 +1,5 @@
 import { X } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { SeriesDetails, Rating } from '../../api/types/series';
 import { Button } from '../ui/Button';
 import { Tooltip, TooltipContent, TooltipTrigger } from '../ui/Tooltip';
@@ -23,6 +24,8 @@ export function SeriesRatingCard({
   onRemove,
   onUpdateRating,
 }: SeriesRatingCardProps) {
+  const { t } = useTranslation();
+
   return (
     <div
       data-testid="series-rating-card"
@@ -39,7 +42,7 @@ export function SeriesRatingCard({
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center bg-muted">
-            <span className="text-xs text-center text-muted-foreground p-2">No Image Available</span>
+            <span className="text-xs text-center text-muted-foreground p-2">{t('series.noImage')}</span>
           </div>
         )}
         <div className="absolute inset-0 bg-linear-to-t from-black/60 via-black/20 to-transparent transition-opacity duration-300" />

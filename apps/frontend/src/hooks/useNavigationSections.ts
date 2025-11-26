@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 
 export interface NavSection {
   name: string;
@@ -11,14 +12,19 @@ interface User {
   email: string;
 }
 
-const sections: NavSection[] = [
-  { name: 'Home', href: '/', authHref: '/dashboard' },
-  { name: 'TV Shows', href: '/series', requiresAuth: true },
-  { name: 'Watchlist', href: '/watchlist', requiresAuth: true },
-  { name: 'Watch Rooms', href: '/watchrooms', requiresAuth: true },
-];
-
 export const useNavigationSections = (userData: User | null) => {
+  const { t } = useTranslation();
+
+  const sections: NavSection[] = useMemo(
+    () => [
+      { name: t('nav.home'), href: '/', authHref: '/dashboard' },
+      { name: t('nav.tvShows'), href: '/series', requiresAuth: true },
+      { name: t('nav.watchlist'), href: '/watchlist', requiresAuth: true },
+      { name: t('nav.watchRooms'), href: '/watchrooms', requiresAuth: true },
+    ],
+    [t],
+  );
+
   return useMemo(
     () =>
       sections
@@ -27,6 +33,6 @@ export const useNavigationSections = (userData: User | null) => {
           ...section,
           href: userData && section.authHref ? section.authHref : section.href,
         })),
-    [userData],
+    [userData, sections],
   );
 };

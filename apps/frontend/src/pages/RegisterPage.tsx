@@ -9,8 +9,10 @@ import { resendVerificationEmail } from '../api/queries/resendVerificationEmail'
 import { toast } from 'sonner';
 import { Loader } from 'lucide-react';
 import { config } from '../config';
+import { useTranslation } from 'react-i18next';
 
 export default function RegisterPage() {
+  const { t } = useTranslation();
   const { userData, userDataInitialized } = useContext(AuthContext);
   const navigate = useNavigate();
 
@@ -40,10 +42,10 @@ export default function RegisterPage() {
     setIsResendingEmail(true);
     try {
       await resendVerificationEmail({ email: registeredEmail });
-      toast.success('Verification email sent! Please check your inbox.');
+      toast.success(t('auth.login.verificationSent'));
     } catch (error) {
       console.error('Failed to resend verification email', error);
-      toast.error('Failed to send verification email. Please try again.');
+      toast.error(t('auth.login.verificationFailed'));
     } finally {
       setIsResendingEmail(false);
     }
@@ -55,7 +57,7 @@ export default function RegisterPage() {
   if (!userDataInitialized) {
     return (
       <div className="flex min-h-screen items-center justify-center">
-        <div className="text-lg text-muted-foreground">Loading...</div>
+        <div className="text-lg text-muted-foreground">{t('common.loading')}</div>
       </div>
     );
   }
@@ -78,15 +80,15 @@ export default function RegisterPage() {
             {config.emailVerification.enabled ? (
               <>
                 <EmailConfirmationStep
-                  title="Verify Your Email"
-                  message="We've sent you a verification email. Click the link in the email to activate your account."
-                  buttonText="Go to Sign In"
+                  title={t('auth.register.verifyEmailTitle')}
+                  message={t('auth.register.verifyEmailMessage')}
+                  buttonText={t('auth.register.goToSignIn')}
                   onButtonClick={() => navigate(signInUrl)}
                   buttonTestId="back-to-sign-in-button"
                 />
                 <div className="pt-2 border-t border-border">
                   <p className="text-sm text-muted-foreground text-center">
-                    Didn't receive the email?{' '}
+                    {t('auth.register.didntReceive')}{' '}
                     <Button
                       onClick={handleResendVerificationEmail}
                       disabled={isResendingEmail}
@@ -96,10 +98,10 @@ export default function RegisterPage() {
                       {isResendingEmail ? (
                         <>
                           <Loader className="h-3 w-3 animate-spin" />
-                          Sending...
+                          {t('auth.register.sending')}
                         </>
                       ) : (
-                        'Send again'
+                        t('auth.register.sendAgain')
                       )}
                     </Button>
                   </p>
@@ -107,9 +109,9 @@ export default function RegisterPage() {
               </>
             ) : (
               <EmailConfirmationStep
-                title="You're All Set!"
-                message="Your account is ready. Sign in to start rating shows and creating watch rooms."
-                buttonText="Go to Sign In"
+                title={t('auth.register.allSetTitle')}
+                message={t('auth.register.allSetMessage')}
+                buttonText={t('auth.register.goToSignIn')}
                 onButtonClick={() => navigate(signInUrl)}
                 icon="check"
                 buttonTestId="back-to-sign-in-button"
@@ -126,8 +128,8 @@ export default function RegisterPage() {
       <div className="w-full max-w-md space-y-8">
         {/* Header */}
         <div className="text-center">
-          <h2 className="text-3xl font-bold text-foreground tracking-tight">Start Discovering</h2>
-          <p className="mt-2 text-sm text-muted-foreground">Create your free account in seconds</p>
+          <h2 className="text-3xl font-bold text-foreground tracking-tight">{t('auth.register.title')}</h2>
+          <p className="mt-2 text-sm text-muted-foreground">{t('auth.register.subtitle')}</p>
         </div>
 
         {/* Form Container */}
@@ -136,12 +138,12 @@ export default function RegisterPage() {
 
           {/* Sign in link */}
           <div className="text-center text-sm text-muted-foreground">
-            Already have an account?{' '}
+            {t('auth.register.hasAccount')}{' '}
             <Link
               to={signInUrl}
               className="font-semibold text-foreground hover:underline"
             >
-              Sign in
+              {t('auth.register.signIn')}
             </Link>
           </div>
         </div>

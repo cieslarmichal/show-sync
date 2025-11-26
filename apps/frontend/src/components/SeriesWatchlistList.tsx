@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import { SeriesWatchlist, SeriesDetails } from '../api/types/series';
 import { Skeleton } from './ui/Skeleton';
 import { getSeriesDetailsBatch } from '../api/queries/getSeriesDetailsBatch';
@@ -18,6 +19,7 @@ export default function SeriesWatchlistList({
   const [seriesDetails, setSeriesDetails] = useState<Map<number, SeriesDetails>>(new Map());
   const [removingIds, setRemovingIds] = useState<Set<number>>(new Set());
   const timeoutIds = useRef<Map<number, NodeJS.Timeout>>(new Map());
+  const { t } = useTranslation();
 
   useEffect(() => {
     const loadSeriesDetails = async () => {
@@ -102,8 +104,8 @@ export default function SeriesWatchlistList({
     <div className="space-y-3">
       {watchlist.length === 0 ? (
         <div className="text-center py-8 text-muted-foreground">
-          <p>No watchlist items yet</p>
-          <p className="text-sm mt-1">Shows you add to your watchlist will appear here.</p>
+          <p>{t('series.noWatchlistItems')}</p>
+          <p className="text-sm mt-1">{t('series.noWatchlistItemsDesc')}</p>
         </div>
       ) : (
         <div className="max-h-[400px] sm:max-h-[500px] overflow-y-auto">

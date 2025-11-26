@@ -11,8 +11,10 @@ import { useForm } from 'react-hook-form';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../components/ui/Form';
 import { Input } from '../components/ui/Input';
 import { Card, CardContent } from '../components/ui/Card';
+import { useTranslation } from 'react-i18next';
 
 export default function VerifyEmailPage() {
+  const { t } = useTranslation();
   const queryParams = new URLSearchParams(window.location.search);
   const token = queryParams.get('token');
   const [emailVerified, setEmailVerified] = useState(false);
@@ -52,13 +54,13 @@ export default function VerifyEmailPage() {
       setEmailResent(true);
     } catch (error) {
       console.error('Failed to resend verification email', error);
-      toast.error('An error occurred while sending the email. Please try again.');
+      toast.error(t('verifyEmail.resendError'));
     }
   }
 
   useEffect(() => {
     if (!token) {
-      toast.error('No token in the link.');
+      toast.error(t('verifyEmail.noToken'));
       navigate('/login');
       return;
     }
@@ -75,10 +77,10 @@ export default function VerifyEmailPage() {
               <Loader className="h-6 w-6 text-foreground animate-spin" />
             </div>
             <div>
-              <h2 className="text-2xl font-bold text-foreground">Verifying account...</h2>
+              <h2 className="text-2xl font-bold text-foreground">{t('verifyEmail.verifying')}</h2>
             </div>
           </div>
-          <p className="text-muted-foreground">Please wait while we verify your account.</p>
+          <p className="text-muted-foreground">{t('verifyEmail.pleaseWait')}</p>
         </div>
       );
     }
@@ -104,14 +106,14 @@ export default function VerifyEmailPage() {
             </div>
           </div>
           <div>
-            <h2 className="text-2xl font-bold text-foreground mb-2">Account verified!</h2>
-            <p className="text-muted-foreground">You can now log in and start using ShowSync.</p>
+            <h2 className="text-2xl font-bold text-foreground mb-2">{t('verifyEmail.verified')}</h2>
+            <p className="text-muted-foreground">{t('verifyEmail.canLogin')}</p>
           </div>
           <Button
             onClick={() => navigate('/login')}
             className="w-full"
           >
-            Go to Login
+            {t('verifyEmail.goToLogin')}
           </Button>
         </div>
       );
@@ -126,18 +128,18 @@ export default function VerifyEmailPage() {
             </div>
           </div>
           <div>
-            <h2 className="text-2xl font-bold text-foreground mb-2">Verification link sent</h2>
-            <p className="text-muted-foreground">Click the link in your email to activate your account.</p>
+            <h2 className="text-2xl font-bold text-foreground mb-2">{t('verifyEmail.linkSent')}</h2>
+            <p className="text-muted-foreground">{t('verifyEmail.clickLink')}</p>
           </div>
           <Button
             onClick={() => navigate('/login')}
             className="w-full"
           >
-            Go to Login
+            {t('verifyEmail.goToLogin')}
           </Button>
           <div className="pt-2">
             <p className="text-sm text-muted-foreground">
-              Didn't receive the email?{' '}
+              {t('verifyEmail.didntReceive')}{' '}
               <Button
                 onClick={() => {
                   setEmailResent(false);
@@ -146,7 +148,7 @@ export default function VerifyEmailPage() {
                 variant="link"
                 className="h-auto p-0 text-sm font-semibold"
               >
-                Send again
+                {t('verifyEmail.sendAgain')}
               </Button>
             </p>
           </div>
@@ -158,8 +160,8 @@ export default function VerifyEmailPage() {
       return (
         <div className="space-y-6">
           <div className="space-y-2">
-            <h2 className="text-2xl font-bold text-foreground">Verification error</h2>
-            <p className="text-muted-foreground">The verification link has expired or is invalid.</p>
+            <h2 className="text-2xl font-bold text-foreground">{t('verifyEmail.error')}</h2>
+            <p className="text-muted-foreground">{t('verifyEmail.errorMessage')}</p>
           </div>
           {!showResendForm ? (
             <Button
@@ -167,7 +169,7 @@ export default function VerifyEmailPage() {
               className="w-full"
             >
               <Mail className="h-4 w-4" />
-              Send new verification link
+              {t('verifyEmail.sendNew')}
             </Button>
           ) : (
             <Form {...resendForm}>
@@ -180,7 +182,7 @@ export default function VerifyEmailPage() {
                   name="email"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-foreground font-medium">Email address</FormLabel>
+                      <FormLabel className="text-foreground font-medium">{t('verifyEmail.emailAddress')}</FormLabel>
                       <div className="relative">
                         <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground pointer-events-none" />
                         <FormControl>
@@ -205,10 +207,10 @@ export default function VerifyEmailPage() {
                   {resendForm.formState.isSubmitting ? (
                     <>
                       <Loader className="h-4 w-4 animate-spin" />
-                      Sending...
+                      {t('verifyEmail.sending')}
                     </>
                   ) : (
-                    'Send verification link'
+                    t('verifyEmail.sendLink')
                   )}
                 </Button>
               </form>
@@ -227,8 +229,8 @@ export default function VerifyEmailPage() {
     <div className="min-h-screen bg-background flex justify-center py-12 px-4 sm:px-6 lg:px-8 pt-32">
       <div className="w-full max-w-md space-y-8">
         <div className="text-center">
-          <h2 className="text-3xl font-bold text-foreground tracking-tight">Email Verification</h2>
-          <p className="mt-2 text-sm text-muted-foreground">Verify your account to continue</p>
+          <h2 className="text-3xl font-bold text-foreground tracking-tight">{t('verifyEmail.pageTitle')}</h2>
+          <p className="mt-2 text-sm text-muted-foreground">{t('verifyEmail.pageSubtitle')}</p>
         </div>
         <Card className="rounded-xl border border-border shadow-sm">
           <CardContent className="pt-6">{content}</CardContent>

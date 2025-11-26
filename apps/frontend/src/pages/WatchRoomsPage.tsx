@@ -13,8 +13,11 @@ import { AuthContext } from '../context/AuthContext.tsx';
 import { config } from '../config.ts';
 import { SeriesContext } from '../context/SeriesContext.tsx';
 import { useSEO } from '../hooks/useSEO.ts';
+import { useTranslation } from 'react-i18next';
 
 export default function WatchRoomsPage() {
+  const { t } = useTranslation();
+
   useSEO({
     title: 'Watch Rooms - ShowSync',
     description: 'Create watch rooms to get smart show suggestions. Invite friends or discover shows for solo binging.',
@@ -39,7 +42,7 @@ export default function WatchRoomsPage() {
       setTotal(response.metadata.total);
       setTotalPages(Math.ceil(response.metadata.total / pageSize));
     } catch {
-      toast.error('Could not load watch rooms. Please refresh the page.');
+      toast.error(t('watchroom.loadError'));
     } finally {
       setIsLoading(false);
     }
@@ -86,13 +89,13 @@ export default function WatchRoomsPage() {
 
   const canCreateRoom = totalCount >= config.series.minRatedShowsToCreateWatchRoom;
   const disabledReason = !canCreateRoom
-    ? `To create a watch room, you need at least ${config.series.minRatedShowsToCreateWatchRoom} rated shows. You have: ${totalCount} total.`
+    ? t('watchroom.needMoreRatings', { count: config.series.minRatedShowsToCreateWatchRoom })
     : undefined;
 
   const handleCopyLink = (publicLinkId: string) => {
     const link = `${window.location.origin}/watchrooms/public/${publicLinkId}`;
     navigator.clipboard.writeText(link);
-    toast.success('Room link copied to clipboard!');
+    toast.success(t('watchroom.linkCopied'));
   };
 
   const handleOpenWatchRoom = (roomId: string) => {
@@ -111,10 +114,10 @@ export default function WatchRoomsPage() {
             <div className="text-center space-y-6">
               <div className="space-y-3">
                 <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-foreground leading-[1.1]">
-                  Watch Rooms
+                  {t('watchroom.title')}
                 </h1>
                 <p className="text-lg sm:text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-                  Get personalized recommendations for your group or just for yourself
+                  {t('watchroom.subtitle')}
                 </p>
               </div>
               <div>
@@ -138,10 +141,8 @@ export default function WatchRoomsPage() {
                       <Users className="w-10 h-10 text-primary" />
                     </div>
                     <div className="space-y-2">
-                      <h3 className="text-2xl font-bold text-foreground">No watch rooms yet</h3>
-                      <p className="text-base text-muted-foreground leading-relaxed">
-                        Create your first room to get personalized show recommendations
-                      </p>
+                      <h3 className="text-2xl font-bold text-foreground">{t('watchroom.noRooms')}</h3>
+                      <p className="text-base text-muted-foreground leading-relaxed">{t('watchroom.createFirst')}</p>
                     </div>
                   </div>
                 </CardContent>
@@ -173,7 +174,7 @@ export default function WatchRoomsPage() {
                             </Badge>
                             {isOwner && (
                               <Badge className="shrink-0 bg-primary/10 text-primary border border-primary/20 font-medium text-xs whitespace-nowrap">
-                                Owner
+                                {t('watchroom.owner')}
                               </Badge>
                             )}
                             <div className="flex items-center text-xs text-muted-foreground ml-auto">
@@ -195,7 +196,7 @@ export default function WatchRoomsPage() {
                               {room.description}
                             </CardDescription>
                           ) : (
-                            <p className="text-sm text-muted-foreground/50 italic">No description yet</p>
+                            <p className="text-sm text-muted-foreground/50 italic">{t('watchroom.noDescription')}</p>
                           )}
                         </CardContent>
 
@@ -206,7 +207,7 @@ export default function WatchRoomsPage() {
                               onClick={() => handleOpenWatchRoom(room.id)}
                               className="flex-1 shadow-sm hover:shadow-md transition-all"
                             >
-                              Open
+                              {t('watchroom.open')}
                               <ExternalLink className="w-4 h-4 ml-2" />
                             </Button>
                             <Button
@@ -216,7 +217,7 @@ export default function WatchRoomsPage() {
                               className="flex-1 shadow-sm hover:shadow-md transition-all"
                             >
                               <Copy className="w-4 h-4 mr-2" />
-                              Share
+                              {t('watchroom.share')}
                             </Button>
                           </div>
                         </CardFooter>
@@ -229,7 +230,7 @@ export default function WatchRoomsPage() {
                 {totalPages > 1 && (
                   <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-2">
                     <p className="text-sm text-muted-foreground">
-                      Showing {rooms.length} of {total} {total === 1 ? 'room' : 'rooms'}
+                      {t('watchroom.showing', { count: rooms.length, total })}
                     </p>
                     <div className="flex items-center gap-2">
                       <Button
@@ -239,18 +240,16 @@ export default function WatchRoomsPage() {
                         disabled={page === 1}
                       >
                         <ChevronLeft className="w-4 h-4 mr-1" />
-                        Previous
+                        {t('watchroom.previous')}
                       </Button>
-                      <span className="text-sm px-3">
-                        Page {page} of {totalPages}
-                      </span>
+                      <span className="text-sm px-3">{t('watchroom.pageOf', { page, total: totalPages })}</span>
                       <Button
                         variant="outline"
                         size="sm"
                         onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
                         disabled={page === totalPages}
                       >
-                        Next
+                        {t('watchroom.next')}
                         <ChevronRight className="w-4 h-4 ml-1" />
                       </Button>
                     </div>

@@ -1,4 +1,5 @@
 import { X } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { SeriesDetails, WatchlistType } from '../../api/types/series';
 import { Button } from '../ui/Button';
 import { Tooltip, TooltipContent, TooltipTrigger } from '../ui/Tooltip';
@@ -12,6 +13,8 @@ interface SeriesWatchlistCardProps {
 }
 
 export function SeriesWatchlistCard({ seriesTmdbId, details, type, isRemoving, onRemove }: SeriesWatchlistCardProps) {
+  const { t } = useTranslation();
+
   return (
     <div
       data-testid="series-watchlist-card"
@@ -30,7 +33,7 @@ export function SeriesWatchlistCard({ seriesTmdbId, details, type, isRemoving, o
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center bg-muted">
-            <span className="text-xs text-center text-muted-foreground p-2">No Image Available</span>
+            <span className="text-xs text-center text-muted-foreground p-2">{t('series.noImage')}</span>
           </div>
         )}
         <div className="absolute inset-0 bg-linear-to-t from-black/60 via-black/20 to-transparent opacity-100 group-hover:opacity-100 transition-opacity" />

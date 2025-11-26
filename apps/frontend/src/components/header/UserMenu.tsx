@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { User, LogOut } from 'lucide-react';
 import { Menubar, MenubarContent, MenubarItem, MenubarMenu, MenubarTrigger } from '@/components/ui/Menubar';
 
@@ -9,6 +10,7 @@ interface UserMenuProps {
 
 export function UserMenu({ initial, size = 'large' }: UserMenuProps) {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const sizeClasses = size === 'small' ? 'h-8 w-8 text-xs' : 'h-10 w-10 text-sm';
 
   return (
@@ -28,14 +30,14 @@ export function UserMenu({ initial, size = 'large' }: UserMenuProps) {
             className="hover:text-primary cursor-pointer flex items-center gap-2"
           >
             <User className="h-4 w-4" />
-            Profile
+            {t('nav.profile')}
           </MenubarItem>
           <MenubarItem
             onClick={() => navigate('/logout')}
             className="hover:text-primary cursor-pointer flex items-center gap-2"
           >
             <LogOut className="h-4 w-4" />
-            Log out
+            {t('nav.logOut')}
           </MenubarItem>
         </MenubarContent>
       </MenubarMenu>

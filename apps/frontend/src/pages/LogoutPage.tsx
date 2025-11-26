@@ -1,8 +1,10 @@
 import { useContext, useEffect } from 'react';
 import { AuthContext } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 export default function LogoutPage() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
 
   const { clearUserData } = useContext(AuthContext);
@@ -16,5 +18,5 @@ export default function LogoutPage() {
     handleLogout();
   }, [clearUserData, navigate]);
 
-  return <div>Logging out...</div>;
+  return <div>{t('auth.logout.loggingOut')}</div>;
 }

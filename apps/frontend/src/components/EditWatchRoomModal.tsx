@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { z } from 'zod';
 import { Pencil } from 'lucide-react';
 import { toast } from 'sonner';
+import { useTranslation } from 'react-i18next';
 
 import { Button } from '@/components/ui/Button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/Dialog';
@@ -13,14 +14,6 @@ import { Textarea } from '@/components/ui/Textarea';
 import { updateWatchroom } from '../api/queries/watchroom';
 import { DialogDescription } from '@radix-ui/react-dialog';
 import { WatchroomFiltersSection } from './WatchroomFiltersSection';
-
-const formSchema = z.object({
-  name: z.string().min(1, 'Name is required').max(64, 'Name must be at most 64 characters'),
-  description: z.string().max(256, 'Description must be at most 256 characters').optional(),
-  seriesLengthPreference: z.enum(['all', 'excludeMiniSeries', 'onlyMiniSeries']).optional(),
-});
-
-type FormValues = z.infer<typeof formSchema>;
 
 interface EditWatchRoomModalProps {
   watchroomId: string;
@@ -37,7 +30,16 @@ export function EditWatchRoomModal({
   currentSeriesLengthPreference,
   onRoomUpdated,
 }: EditWatchRoomModalProps) {
+  const { t } = useTranslation();
   const [open, setOpen] = useState(false);
+
+  const formSchema = z.object({
+    name: z.string().min(1, t('validation.nameRequired')).max(64, t('validation.nameMaxLength')),
+    description: z.string().max(256, t('validation.descriptionMaxLength')).optional(),
+    seriesLengthPreference: z.enum(['all', 'excludeMiniSeries', 'onlyMiniSeries']).optional(),
+  });
+
+  type FormValues = z.infer<typeof formSchema>;
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -67,11 +69,11 @@ export function EditWatchRoomModal({
         seriesLengthPreference: values.seriesLengthPreference,
       });
 
-      toast.success('Watch room updated successfully!');
+      toast.success(t('watchroom.updateSuccess'));
       setOpen(false);
       onRoomUpdated();
     } catch {
-      toast.error('Failed to update watch room. Please try again.');
+      toast.error(t('watchroom.updateError'));
     }
   }
 
@@ -87,15 +89,15 @@ export function EditWatchRoomModal({
           className="shadow-sm hover:shadow-md transition-all h-8 text-xs"
         >
           <Pencil className="w-3 h-3 mr-1" />
-          <span className="hidden sm:inline">Edit Room</span>
-          <span className="inline sm:hidden">Edit</span>
+          <span className="hidden sm:inline">{t('watchroom.editRoom')}</span>
+          <span className="inline sm:hidden">{t('common.edit')}</span>
         </Button>
       </DialogTrigger>
       <DialogContent className="max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Edit Watch Room</DialogTitle>
+          <DialogTitle>{t('watchroom.editTitle')}</DialogTitle>
         </DialogHeader>
-        <DialogDescription>Get TV show suggestions based on what you like.</DialogDescription>
+        <DialogDescription>{t('watchroom.createDescription')}</DialogDescription>
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
@@ -106,11 +108,11 @@ export function EditWatchRoomModal({
               name="name"
               render={({ field, fieldState }) => (
                 <FormItem>
-                  <FormLabel htmlFor="edit-room-name">Room Name</FormLabel>
+                  <FormLabel htmlFor="edit-room-name">{t('watchroom.name')}</FormLabel>
                   <FormControl>
                     <Input
                       id="edit-room-name"
-                      placeholder="Family Movie Night"
+                      placeholder={t('watchroom.namePlaceholder')}
                       aria-invalid={!!fieldState.error}
                       {...field}
                     />
@@ -124,11 +126,11 @@ export function EditWatchRoomModal({
               name="description"
               render={({ field, fieldState }) => (
                 <FormItem>
-                  <FormLabel htmlFor="edit-room-description">Description (optional)</FormLabel>
+                  <FormLabel htmlFor="edit-room-description">{t('watchroom.descriptionLabel')}</FormLabel>
                   <FormControl>
                     <Textarea
                       id="edit-room-description"
-                      placeholder="Tell us what kind of shows you're looking for..."
+                      placeholder={t('watchroom.descriptionPlaceholder')}
                       aria-invalid={!!fieldState.error}
                       {...field}
                     />
@@ -144,13 +146,13 @@ export function EditWatchRoomModal({
                 variant="outline"
                 onClick={() => setOpen(false)}
               >
-                Cancel
+                {t('common.cancel')}
               </Button>
               <Button
                 type="submit"
                 disabled={form.formState.isSubmitting}
               >
-                {form.formState.isSubmitting ? 'Saving...' : 'Save Changes'}
+                {form.formState.isSubmitting ? t('watchroom.saving') : t('watchroom.saveChanges')}
               </Button>
             </div>
           </form>
