@@ -13,7 +13,7 @@ export default function HomePage() {
   useSEO({
     title: 'ShowSync - Stop Arguing About What to Watch',
     description:
-      "End the endless scrolling and debate. Get personalized TV show recommendations that match your group's taste. Find shows everyone actually wants to watch.",
+      "End the endless scrolling and debate. Get personalized TV show recommendations that match your group's taste and watchlists. Factor in likes, dislikes, Want to Watch, and Not Interested to find shows everyone actually wants to watch.",
     keywords: [
       'tv show recommendations',
       'watch party',
@@ -23,6 +23,22 @@ export default function HomePage() {
       'tv shows',
       'watch together',
       'streaming recommendations',
+      'what to watch',
+      'watchlist',
+      'your next show',
+      'personalized recommendations',
+      'group watchlists',
+      'like and dislike',
+      'want to watch',
+      'series suggestions',
+      'binge-worthy shows',
+      'tv series',
+      'streaming services',
+      'show picker',
+      'entertainment choices',
+      'tv guide',
+      'watchroom',
+      'tv show finder',
     ],
   });
 
@@ -109,8 +125,8 @@ export default function HomePage() {
                   </div>
                   <h3 className="text-xl font-semibold text-foreground">1. Rate Your Shows</h3>
                   <p className="text-muted-foreground leading-relaxed">
-                    Quickly rate shows you've watched. Love it, like it, or skip it. Takes less than a minute to build
-                    your taste profile.
+                    Quickly rate shows you've watched. Love it, like it, or dislike it. Takes less than a minute to
+                    build your taste profile.
                   </p>
                 </div>
                 <div className="space-y-4 group">
@@ -121,7 +137,8 @@ export default function HomePage() {
                   </div>
                   <h3 className="text-xl font-semibold text-foreground">2. Invite Your Crew</h3>
                   <p className="text-muted-foreground leading-relaxed">
-                    Create a watch room and share it with friends, family, or your partner. Or keep it solo—your choice!
+                    Create a watch room and share it with friends, family, or your partner. Or keep it for just
+                    yourself.
                   </p>
                 </div>
                 <div className="space-y-4 group">
@@ -169,8 +186,8 @@ export default function HomePage() {
                     <div>
                       <h3 className="text-lg font-semibold text-foreground mb-2">Perfect for Groups or Solo</h3>
                       <p className="text-muted-foreground leading-relaxed">
-                        Whether it's date night, family time, or just you on the couch — get recommendations that work
-                        for any situation.
+                        Whether it's date night, family time, or just you on the couch - get recommendations that work
+                        for any situation and adapt to everyone's watchlists.
                       </p>
                     </div>
                   </div>
@@ -195,10 +212,7 @@ export default function HomePage() {
                     </div>
                     <div>
                       <h3 className="text-lg font-semibold text-foreground mb-2">No More Compromises</h3>
-                      <p className="text-muted-foreground leading-relaxed">
-                        Find shows that genuinely appeal to everyone. No settling for something half your group doesn't
-                        want to watch.
-                      </p>
+                      <p className="text-muted-foreground leading-relaxed">Find shows that everyone will enjoy.</p>
                     </div>
                   </div>
                 </Card>
