@@ -84,6 +84,8 @@ describe('RecommendationPromptBuilder', () => {
         seriesInfoMap,
         'Crime Drama Fans',
         'A group for people who love intense crime dramas',
+        [],
+        'all',
       );
 
       expect(result).toContain('WATCH ROOM: "Crime Drama Fans"');
@@ -128,7 +130,7 @@ describe('RecommendationPromptBuilder', () => {
         },
       ];
 
-      const result = promptBuilder.build(participantRatings, [], [], [], seriesInfoMap, 'Test Room', undefined);
+      const result = promptBuilder.build(participantRatings, [], [], [], seriesInfoMap, 'Test Room', undefined, [], 'all');
 
       expect(result).toContain('WATCH ROOM: "Test Room"');
       expect(result).not.toContain('Description:');
@@ -158,7 +160,7 @@ describe('RecommendationPromptBuilder', () => {
         },
       ];
 
-      const result = promptBuilder.build(participantRatings, [], [], [], seriesInfoMap, 'Test Room', undefined);
+      const result = promptBuilder.build(participantRatings, [], [], [], seriesInfoMap, 'Test Room', 'Test Description', [], 'all');
 
       expect(result).toContain('❤️ LOVED (HIGHEST PRIORITY - Core preferences):');
       expect(result).toContain('- Breaking Bad');
@@ -182,7 +184,7 @@ describe('RecommendationPromptBuilder', () => {
         },
       ];
 
-      const result = promptBuilder.build(participantRatings, [], [], [], seriesInfoMap, 'Test Room', undefined);
+      const result = promptBuilder.build(participantRatings, [], [], [], seriesInfoMap, 'Test Room', 'Test Description', [], 'all');
 
       expect(result).toContain('👍 LIKED (Secondary preferences):');
       expect(result).toContain('- The Office (Comedy)');
@@ -213,7 +215,7 @@ describe('RecommendationPromptBuilder', () => {
         },
       ];
 
-      const result = promptBuilder.build(participantRatings, [], [], [], seriesInfoMap, 'Test Room', undefined);
+      const result = promptBuilder.build(participantRatings, [], [], [], seriesInfoMap, 'Test Room', undefined, [], 'all');
 
       expect(result).toContain('Participant 1:');
       expect(result).toContain('Breaking Bad');
@@ -248,7 +250,7 @@ describe('RecommendationPromptBuilder', () => {
         },
       ];
 
-      const result = promptBuilder.build(participantRatings, [], [], [], seriesInfoMap, 'Test Room', undefined);
+      const result = promptBuilder.build(participantRatings, [], [], [], seriesInfoMap, 'Test Room', undefined, [], 'all');
 
       expect(result).toContain('Participant 1:');
       expect(result).not.toContain('Participant 2:');
@@ -281,6 +283,8 @@ describe('RecommendationPromptBuilder', () => {
         seriesInfoMap,
         'Test Room',
         undefined,
+        [],
+        'all',
       );
 
       expect(result).toContain('SERIES MARKED AS NOT INTERESTED:');
@@ -302,7 +306,7 @@ describe('RecommendationPromptBuilder', () => {
         },
       ];
 
-      const result = promptBuilder.build(participantRatings, [], [], [], seriesInfoMap, 'Test Room', undefined);
+      const result = promptBuilder.build(participantRatings, [999], [], [], seriesInfoMap, 'Test Room', undefined, [], 'all');
 
       expect(result).not.toContain('SERIES MARKED AS NOT INTERESTED:');
     });
@@ -331,6 +335,8 @@ describe('RecommendationPromptBuilder', () => {
         seriesInfoMap,
         'Test Room',
         undefined,
+        [],
+        'all',
       );
 
       expect(result).not.toContain('SERIES MARKED AS NOT INTERESTED:');
@@ -350,7 +356,7 @@ describe('RecommendationPromptBuilder', () => {
         },
       ];
 
-      const result = promptBuilder.build(participantRatings, [], [], [], seriesInfoMap, 'Test Room', undefined);
+      const result = promptBuilder.build(participantRatings, [], [], [], seriesInfoMap, 'Test Room', 'Test Description', [], 'all');
 
       expect(result).toContain('TASK:');
       expect(result).toContain('Recommend 5-10 BRAND NEW TV series');
@@ -384,7 +390,7 @@ describe('RecommendationPromptBuilder', () => {
         },
       ];
 
-      const result = promptBuilder.build(participantRatings, [], [], [], seriesInfoMap, 'Test Room', undefined);
+      const result = promptBuilder.build(participantRatings, [], [], [], seriesInfoMap, 'Test Room', undefined, [], 'all');
 
       expect(result).toContain('Summary: First sentence here.');
       expect(result).not.toContain('Second sentence here');
@@ -405,7 +411,7 @@ describe('RecommendationPromptBuilder', () => {
         },
       ];
 
-      const result = promptBuilder.build(participantRatings, [], [], [], seriesInfoMap, 'Test Room', undefined);
+      const result = promptBuilder.build(participantRatings, [], [], [], seriesInfoMap, 'Test Room', undefined, [], 'all');
 
       expect(result).toContain('Summary: Exciting first sentence.');
       expect(result).not.toContain('Another sentence here');
@@ -425,7 +431,7 @@ describe('RecommendationPromptBuilder', () => {
         },
       ];
 
-      const result = promptBuilder.build(participantRatings, [], [], [], seriesInfoMap, 'Test Room', undefined);
+      const result = promptBuilder.build(participantRatings, [], [], [], seriesInfoMap, 'Test Room', undefined, [], 'all');
 
       expect(result).toContain('Summary: What will happen.');
       expect(result).not.toContain('We shall see');
@@ -443,7 +449,7 @@ describe('RecommendationPromptBuilder', () => {
         },
       ];
 
-      const result = promptBuilder.build(participantRatings, [], [], [], seriesInfoMap, 'Test Room', undefined);
+      const result = promptBuilder.build(participantRatings, [], [], [], seriesInfoMap, 'Test Room', undefined, [], 'all');
 
       // When overview is empty, the summary will be just empty
       expect(result).toContain('Summary:');
@@ -465,7 +471,7 @@ describe('RecommendationPromptBuilder', () => {
         },
       ];
 
-      const result = promptBuilder.build(participantRatings, [], [], [], seriesInfoMap, 'Test Room', undefined);
+      const result = promptBuilder.build(participantRatings, [], [], [], seriesInfoMap, 'Test Room', 'Test Description', [], 'all');
 
       expect(result).toContain('Rating: 9.5/10');
       expect(result).toContain('Rating: 8.0/10');
@@ -484,7 +490,7 @@ describe('RecommendationPromptBuilder', () => {
         },
       ];
 
-      const result = promptBuilder.build(participantRatings, [], [], [], seriesInfoMap, 'Test Room', undefined);
+      const result = promptBuilder.build(participantRatings, [], [], [], seriesInfoMap, 'Test Room', undefined, [], 'all');
 
       expect(result).toContain('❤️ LOVED (HIGHEST PRIORITY - Core preferences):');
       expect(result).not.toContain('👍 LIKED (Secondary preferences):');
@@ -502,7 +508,7 @@ describe('RecommendationPromptBuilder', () => {
         },
       ];
 
-      const result = promptBuilder.build(participantRatings, [], [], [], seriesInfoMap, 'Test Room', undefined);
+      const result = promptBuilder.build(participantRatings, [], [], [], seriesInfoMap, 'Test Room', undefined, [], 'all');
 
       expect(result).not.toContain('❤️ LOVED (HIGHEST PRIORITY - Core preferences):');
       expect(result).toContain('👍 LIKED (Secondary preferences):');
@@ -520,7 +526,7 @@ describe('RecommendationPromptBuilder', () => {
         },
       ];
 
-      const result = promptBuilder.build(participantRatings, [], [], [], seriesInfoMap, 'Test Room', undefined);
+      const result = promptBuilder.build(participantRatings, [], [], [], seriesInfoMap, 'Test Room', undefined, [], 'all');
 
       expect(result).toContain('Breaking Bad');
       expect(result).not.toContain('999');
@@ -542,7 +548,7 @@ describe('RecommendationPromptBuilder', () => {
         },
       ];
 
-      const result = promptBuilder.build(participantRatings, [2], [], [], seriesInfoMap, 'Test Room', 'A description');
+      const result = promptBuilder.build(participantRatings, [2], [], [], seriesInfoMap, 'Test Room', 'A description', [], 'all');
 
       const watchRoomIndex = result.indexOf('WATCH ROOM:');
       const participantsIndex = result.indexOf('PARTICIPANTS AND THEIR SERIES RATINGS:');
@@ -552,6 +558,200 @@ describe('RecommendationPromptBuilder', () => {
       expect(watchRoomIndex).toBeLessThan(participantsIndex);
       expect(participantsIndex).toBeLessThan(notInterestedIndex);
       expect(notInterestedIndex).toBeLessThan(taskIndex);
+    });
+
+    it('includes streaming platform filters in prompt', () => {
+      const seriesInfoMap = new Map([
+        [1, createSeriesInfo(1, 'Breaking Bad', 'Great show.', ['Drama'], 9.5)],
+      ]);
+
+      const participantRatings = [
+        {
+          participantId: 'user1',
+          lovedSeriesIds: [1],
+          likedSeriesIds: [],
+          dislikedSeriesIds: [],
+        },
+      ];
+
+      const result = promptBuilder.build(
+        participantRatings,
+        [],
+        [],
+        [],
+        seriesInfoMap,
+        'Test Room',
+        undefined,
+        ['Netflix', 'HBO Max'],
+        'all',
+      );
+
+      expect(result).toContain('GROUP FILTERS & CONSTRAINTS:');
+      expect(result).toContain('📺 Available Streaming Platforms: Netflix, HBO Max');
+      expect(result).toContain('CRITICAL: Only recommend series available on these platforms');
+      expect(result).toContain('CRITICAL: Only recommend series available on: Netflix, HBO Max');
+    });
+
+    it('omits filter section when no filters are active', () => {
+      const seriesInfoMap = new Map([
+        [1, createSeriesInfo(1, 'Breaking Bad', 'Great show.', ['Drama'], 9.5)],
+      ]);
+
+      const participantRatings = [
+        {
+          participantId: 'user1',
+          lovedSeriesIds: [1],
+          likedSeriesIds: [],
+          dislikedSeriesIds: [],
+        },
+      ];
+
+      const result = promptBuilder.build(
+        participantRatings,
+        [],
+        [],
+        [],
+        seriesInfoMap,
+        'Test Room',
+        undefined,
+        [],
+        'all',
+      );
+
+      expect(result).not.toContain('GROUP FILTERS & CONSTRAINTS:');
+    });
+
+    it('includes onlyMiniSeries filter in prompt', () => {
+      const seriesInfoMap = new Map([
+        [1, createSeriesInfo(1, 'Breaking Bad', 'Great show.', ['Drama'], 9.5)],
+      ]);
+
+      const participantRatings = [
+        {
+          participantId: 'user1',
+          lovedSeriesIds: [1],
+          likedSeriesIds: [],
+          dislikedSeriesIds: [],
+        },
+      ];
+
+      const result = promptBuilder.build(
+        participantRatings,
+        [],
+        [],
+        [],
+        seriesInfoMap,
+        'Test Room',
+        undefined,
+        [],
+        'onlyMiniSeries',
+      );
+
+      expect(result).toContain('GROUP FILTERS & CONSTRAINTS:');
+      expect(result).toContain('📏 Series Length: ONLY mini-series (1 season, fewer than 10 episodes)');
+      expect(result).toContain('CRITICAL: Recommend ONLY mini-series or limited series');
+      expect(result).toContain(
+        'CRITICAL: Only recommend mini-series or limited series (1 season, fewer than 10 episodes)',
+      );
+    });
+
+    it('includes excludeMiniSeries filter in prompt', () => {
+      const seriesInfoMap = new Map([
+        [1, createSeriesInfo(1, 'Breaking Bad', 'Great show.', ['Drama'], 9.5)],
+      ]);
+
+      const participantRatings = [
+        {
+          participantId: 'user1',
+          lovedSeriesIds: [1],
+          likedSeriesIds: [],
+          dislikedSeriesIds: [],
+        },
+      ];
+
+      const result = promptBuilder.build(
+        participantRatings,
+        [],
+        [],
+        [],
+        seriesInfoMap,
+        'Test Room',
+        undefined,
+        [],
+        'excludeMiniSeries',
+      );
+
+      expect(result).toContain('GROUP FILTERS & CONSTRAINTS:');
+      expect(result).toContain('📏 Series Length: NO mini-series');
+      expect(result).toContain('Avoid recommending mini-series (1 season with fewer than 10 episodes)');
+    });
+
+
+    it('includes all filters when all are active', () => {
+      const seriesInfoMap = new Map([
+        [1, createSeriesInfo(1, 'Breaking Bad', 'Great show.', ['Drama'], 9.5)],
+      ]);
+
+      const participantRatings = [
+        {
+          participantId: 'user1',
+          lovedSeriesIds: [1],
+          likedSeriesIds: [],
+          dislikedSeriesIds: [],
+        },
+      ];
+
+      const result = promptBuilder.build(
+        participantRatings,
+        [],
+        [],
+        [],
+        seriesInfoMap,
+        'Test Room',
+        undefined,
+        ['Netflix', 'Disney+'],
+        'onlyMiniSeries',
+      );
+
+      expect(result).toContain('GROUP FILTERS & CONSTRAINTS:');
+      expect(result).toContain('📺 Available Streaming Platforms: Netflix, Disney+');
+      expect(result).toContain('📏 Series Length: ONLY mini-series');
+    });
+
+    it('maintains proper section order with filters', () => {
+      const seriesInfoMap = new Map([
+        [1, createSeriesInfo(1, 'Breaking Bad', 'Great show.', ['Drama'], 9.5)],
+      ]);
+
+      const participantRatings = [
+        {
+          participantId: 'user1',
+          lovedSeriesIds: [1],
+          likedSeriesIds: [],
+          dislikedSeriesIds: [],
+        },
+      ];
+
+      const result = promptBuilder.build(
+        participantRatings,
+        [],
+        [],
+        [],
+        seriesInfoMap,
+        'Test Room',
+        'A description',
+        ['Netflix'],
+        'onlyMiniSeries',
+      );
+
+      const watchRoomIndex = result.indexOf('WATCH ROOM:');
+      const filtersIndex = result.indexOf('GROUP FILTERS & CONSTRAINTS:');
+      const participantsIndex = result.indexOf('PARTICIPANTS AND THEIR SERIES RATINGS:');
+      const taskIndex = result.indexOf('TASK:');
+
+      expect(watchRoomIndex).toBeLessThan(filtersIndex);
+      expect(filtersIndex).toBeLessThan(participantsIndex);
+      expect(participantsIndex).toBeLessThan(taskIndex);
     });
   });
 });

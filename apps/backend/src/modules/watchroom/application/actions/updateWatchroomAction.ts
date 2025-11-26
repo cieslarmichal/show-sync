@@ -10,6 +10,8 @@ export interface UpdateWatchroomActionPayload {
   readonly userId: string;
   readonly name?: string | undefined;
   readonly description?: string | undefined;
+  readonly availablePlatforms?: string[] | undefined;
+  readonly seriesLengthPreference?: 'all' | 'excludeMiniSeries' | 'onlyMiniSeries' | undefined;
 }
 
 export class UpdateWatchroomAction {
@@ -22,7 +24,7 @@ export class UpdateWatchroomAction {
   }
 
   public async execute(payload: UpdateWatchroomActionPayload, context: ExecutionContext): Promise<Watchroom> {
-    const { watchroomId, userId, name, description } = payload;
+    const { watchroomId, userId, name, description, availablePlatforms, seriesLengthPreference } = payload;
 
     this.loggerService.debug({
       message: 'Updating watchroom...',
@@ -32,6 +34,8 @@ export class UpdateWatchroomAction {
       userId,
       name,
       description,
+      availablePlatforms,
+      seriesLengthPreference,
     });
 
     const existingWatchroom = await this.watchroomRepository.findOne({ id: watchroomId });
@@ -54,6 +58,8 @@ export class UpdateWatchroomAction {
     const updatedWatchroom = await this.watchroomRepository.update(watchroomId, {
       name,
       description,
+      availablePlatforms: payload.availablePlatforms,
+      seriesLengthPreference: payload.seriesLengthPreference,
     });
 
     this.loggerService.info({

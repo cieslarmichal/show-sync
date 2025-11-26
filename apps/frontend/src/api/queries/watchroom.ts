@@ -2,10 +2,20 @@ import { apiRequest } from '../apiRequest';
 import type { Watchroom, WatchroomDetails } from '../types/watchroom';
 import type { Recommendation } from '../types/recommendation';
 
-export const createWatchroom = async (payload: { name: string; description?: string }): Promise<Watchroom> => {
+export const createWatchroom = async (payload: {
+  name: string;
+  description?: string;
+  availablePlatforms?: string[];
+  seriesLengthPreference?: 'all' | 'excludeMiniSeries' | 'onlyMiniSeries';
+}): Promise<Watchroom> => {
   return apiRequest<Watchroom>('/watchrooms', {
     method: 'POST',
-    body: payload,
+    body: {
+      name: payload.name,
+      description: payload.description,
+      availablePlatforms: payload.availablePlatforms,
+      seriesLengthPreference: payload.seriesLengthPreference,
+    },
   });
 };
 
@@ -65,7 +75,12 @@ export const deleteWatchroom = async (watchroomId: string): Promise<void> => {
 
 export const updateWatchroom = async (
   watchroomId: string,
-  payload: { name?: string; description?: string },
+  payload: {
+    name?: string;
+    description?: string;
+    availablePlatforms?: string[];
+    seriesLengthPreference?: 'all' | 'excludeMiniSeries' | 'onlyMiniSeries';
+  },
 ): Promise<Watchroom> => {
   return apiRequest<Watchroom>(`/watchrooms/${watchroomId}`, {
     method: 'PATCH',

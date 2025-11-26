@@ -3,7 +3,10 @@ export interface Watchroom {
   readonly name: string;
   readonly description?: string | undefined;
   readonly ownerId: string;
+  readonly ownerName: string;
   readonly publicLinkId: string;
+  readonly availablePlatforms: string[];
+  readonly seriesLengthPreference: 'all' | 'excludeMiniSeries' | 'onlyMiniSeries';
   readonly createdAt: string;
   readonly participants: WatchroomParticipant[];
 }

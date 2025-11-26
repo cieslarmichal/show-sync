@@ -19,6 +19,8 @@ interface WatchroomRow {
   ownerId: string;
   ownerName: string;
   publicLinkId: string;
+  availablePlatforms: string[] | null;
+  seriesLengthPreference: string | null;
   createdAt: Date;
 }
 
@@ -40,6 +42,8 @@ export class WatchroomRepositoryImpl implements WatchroomRepository {
           description: data.description ?? null,
           ownerId: data.ownerId,
           publicLinkId: data.publicLinkId,
+          availablePlatforms: data.availablePlatforms ?? [],
+          seriesLengthPreference: data.seriesLengthPreference ?? 'all',
         });
 
         await tx.insert(watchroomParticipants).values({
@@ -89,6 +93,8 @@ export class WatchroomRepositoryImpl implements WatchroomRepository {
         ownerId: watchrooms.ownerId,
         ownerName: users.name,
         publicLinkId: watchrooms.publicLinkId,
+        availablePlatforms: watchrooms.availablePlatforms,
+        seriesLengthPreference: watchrooms.seriesLengthPreference,
         createdAt: watchrooms.createdAt,
       })
       .from(watchrooms)
@@ -132,6 +138,8 @@ export class WatchroomRepositoryImpl implements WatchroomRepository {
         ownerId: watchrooms.ownerId,
         ownerName: users.name,
         publicLinkId: watchrooms.publicLinkId,
+        availablePlatforms: watchrooms.availablePlatforms,
+        seriesLengthPreference: watchrooms.seriesLengthPreference,
         createdAt: watchrooms.createdAt,
       })
       .from(watchrooms)
@@ -186,6 +194,14 @@ export class WatchroomRepositoryImpl implements WatchroomRepository {
 
     if (data.description !== undefined) {
       updateData = { ...updateData, description: data.description };
+    }
+
+    if (data.availablePlatforms !== undefined) {
+      updateData = { ...updateData, availablePlatforms: data.availablePlatforms };
+    }
+
+    if (data.seriesLengthPreference !== undefined) {
+      updateData = { ...updateData, seriesLengthPreference: data.seriesLengthPreference };
     }
 
     await this.databaseClient.db.update(watchrooms).set(updateData).where(eq(watchrooms.id, watchroomId));
@@ -248,6 +264,11 @@ export class WatchroomRepositoryImpl implements WatchroomRepository {
       ownerId: watchroomData.ownerId,
       ownerName: watchroomData.ownerName,
       publicLinkId: watchroomData.publicLinkId,
+      availablePlatforms: watchroomData.availablePlatforms ?? [],
+      seriesLengthPreference: (watchroomData.seriesLengthPreference ?? 'all') as
+        | 'all'
+        | 'excludeMiniSeries'
+        | 'onlyMiniSeries',
       createdAt: watchroomData.createdAt,
       participants: participants.map((p) => ({
         id: p.id,

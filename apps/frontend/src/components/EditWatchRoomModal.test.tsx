@@ -167,6 +167,9 @@ describe('EditWatchRoomModal', () => {
       ownerId: 'user123',
       createdAt: new Date().toISOString(),
       participants: [],
+      availablePlatforms: [],
+      ownerName: 'Test User',
+      seriesLengthPreference: 'all' as const,
     });
 
     render(<EditWatchRoomModal {...defaultProps} />);
@@ -208,6 +211,9 @@ describe('EditWatchRoomModal', () => {
       ownerId: 'user123',
       createdAt: new Date().toISOString(),
       participants: [],
+      availablePlatforms: [],
+      ownerName: 'Test User',
+      seriesLengthPreference: 'all' as const,
     });
 
     render(<EditWatchRoomModal {...defaultProps} />);
@@ -237,6 +243,9 @@ describe('EditWatchRoomModal', () => {
       ownerId: 'user123',
       createdAt: new Date().toISOString(),
       participants: [],
+      availablePlatforms: [],
+      ownerName: 'Test User',
+      seriesLengthPreference: 'all' as const,
     });
 
     render(<EditWatchRoomModal {...defaultProps} />);
@@ -358,6 +367,9 @@ describe('EditWatchRoomModal', () => {
       ownerId: 'user123',
       createdAt: new Date().toISOString(),
       participants: [],
+      availablePlatforms: [],
+      ownerName: 'Test User',
+      seriesLengthPreference: 'all' as const,
     });
 
     render(<EditWatchRoomModal {...defaultProps} />);

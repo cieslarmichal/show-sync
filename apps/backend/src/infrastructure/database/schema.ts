@@ -115,6 +115,8 @@ export const watchrooms = pgTable(
       .notNull()
       .references(() => users.id, { onDelete: 'cascade' }),
     publicLinkId: varchar('public_link_id', { length: 21 }).notNull().unique(),
+    availablePlatforms: text('available_platforms').array().default([]),
+    seriesLengthPreference: varchar('series_length_preference', { length: 20 }).default('all'),
     createdAt: timestamp('created_at').notNull().defaultNow(),
   },
   (table) => [index('idx_watchrooms_owner_id').on(table.ownerId)],

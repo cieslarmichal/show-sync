@@ -20,13 +20,22 @@ import { WatchroomRepositoryImpl } from '../infrastructure/repositories/watchroo
 
 const watchroomNameSchema = Type.String({ minLength: 1, maxLength: 64 });
 const watchroomDescriptionSchema = Type.String({ maxLength: 256 });
+const availablePlatformsSchema = Type.Array(Type.String());
+const seriesLengthPreferenceSchema = Type.Union([
+  Type.Literal('all'),
+  Type.Literal('excludeMiniSeries'),
+  Type.Literal('onlyMiniSeries'),
+]);
 
 const watchroomSchema = Type.Object({
   id: Type.String({ format: 'uuid' }),
   name: watchroomNameSchema,
   description: Type.Optional(watchroomDescriptionSchema),
   ownerId: Type.String({ format: 'uuid' }),
+  ownerName: Type.String(),
   publicLinkId: Type.String(),
+  availablePlatforms: availablePlatformsSchema,
+  seriesLengthPreference: seriesLengthPreferenceSchema,
   createdAt: Type.String({ format: 'date-time' }),
   participants: Type.Array(
     Type.Object({
@@ -63,7 +72,10 @@ export const watchroomRoutes: FastifyPluginAsyncTypebox<{
       id: watchroom.id,
       name: watchroom.name,
       ownerId: watchroom.ownerId,
+      ownerName: watchroom.ownerName,
       publicLinkId: watchroom.publicLinkId,
+      availablePlatforms: watchroom.availablePlatforms,
+      seriesLengthPreference: watchroom.seriesLengthPreference,
       createdAt: watchroom.createdAt.toISOString(),
       participants: watchroom.participants,
     };
@@ -80,6 +92,8 @@ export const watchroomRoutes: FastifyPluginAsyncTypebox<{
       body: Type.Object({
         name: watchroomNameSchema,
         description: Type.Optional(watchroomDescriptionSchema),
+        availablePlatforms: Type.Optional(availablePlatformsSchema),
+        seriesLengthPreference: Type.Optional(seriesLengthPreferenceSchema),
       }),
       response: {
         201: watchroomSchema,
@@ -94,12 +108,14 @@ export const watchroomRoutes: FastifyPluginAsyncTypebox<{
       }
 
       const { userId } = request.user;
-      const { name, description } = request.body;
+      const { name, description, availablePlatforms, seriesLengthPreference } = request.body;
 
       const watchroom = await createWatchroomAction.execute(
         {
           name,
           description,
+          availablePlatforms,
+          seriesLengthPreference,
           ownerId: userId,
         },
         {
@@ -240,6 +256,8 @@ export const watchroomRoutes: FastifyPluginAsyncTypebox<{
       body: Type.Object({
         name: Type.Optional(watchroomNameSchema),
         description: Type.Optional(watchroomDescriptionSchema),
+        availablePlatforms: Type.Optional(availablePlatformsSchema),
+        seriesLengthPreference: Type.Optional(seriesLengthPreferenceSchema),
       }),
       response: {
         200: watchroomSchema,
@@ -255,7 +273,7 @@ export const watchroomRoutes: FastifyPluginAsyncTypebox<{
 
       const { watchroomId } = request.params;
       const { userId } = request.user;
-      const { name, description } = request.body;
+      const { name, description, availablePlatforms, seriesLengthPreference } = request.body;
 
       const watchroom = await updateWatchroomAction.execute(
         {
@@ -263,6 +281,8 @@ export const watchroomRoutes: FastifyPluginAsyncTypebox<{
           userId,
           name,
           description,
+          availablePlatforms,
+          seriesLengthPreference,
         },
         {
           requestId: request.id,

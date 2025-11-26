@@ -25,14 +25,17 @@ export class RecommendationPromptBuilder {
     seriesInfoMap: Map<number, SeriesInfo>,
     watchroomName: string,
     watchroomDescription: string | undefined,
+    availablePlatforms: string[],
+    seriesLengthPreference: 'all' | 'excludeMiniSeries' | 'onlyMiniSeries',
   ): string {
     const sections = [
       this.buildWatchroomSection(watchroomName, watchroomDescription),
+      this.buildFiltersSection(availablePlatforms, seriesLengthPreference),
       this.buildParticipantsSection(participantRatings, seriesInfoMap),
       this.buildNotInterestedSection(notInterestedSeriesIds, seriesInfoMap),
       this.buildDislikedSection(dislikedSeriesIds, seriesInfoMap),
       this.buildWantToWatchSection(wantToWatchSeriesIds, seriesInfoMap),
-      this.buildTaskSection(),
+      this.buildTaskSection(availablePlatforms, seriesLengthPreference),
     ];
 
     return sections.filter(Boolean).join('\n');
@@ -50,6 +53,36 @@ export class RecommendationPromptBuilder {
     }
 
     return section + `\n---\n`;
+  }
+
+  private buildFiltersSection(
+    availablePlatforms: string[],
+    seriesLengthPreference: 'all' | 'excludeMiniSeries' | 'onlyMiniSeries',
+  ): string {
+    const filters: string[] = [];
+
+    if (availablePlatforms.length > 0) {
+      filters.push(`📺 Available Streaming Platforms: ${availablePlatforms.join(', ')}`);
+      filters.push(`   CRITICAL: Only recommend series available on these platforms.`);
+    }
+
+    if (seriesLengthPreference === 'onlyMiniSeries') {
+      filters.push(`📏 Series Length: ONLY mini-series (1 season, fewer than 10 episodes)`);
+      filters.push(`   CRITICAL: Recommend ONLY mini-series or limited series.`);
+    } else if (seriesLengthPreference === 'excludeMiniSeries') {
+      filters.push(`📏 Series Length: NO mini-series`);
+      filters.push(`   Avoid recommending mini-series (1 season with fewer than 10 episodes).`);
+    }
+
+    if (filters.length === 0) {
+      return '';
+    }
+
+    let section = `\nGROUP FILTERS & CONSTRAINTS:\n`;
+    section += filters.join('\n');
+    section += `\n\n---\n`;
+
+    return section;
   }
 
   private buildParticipantsSection(
@@ -205,22 +238,53 @@ export class RecommendationPromptBuilder {
     return section;
   }
 
-  private buildTaskSection(): string {
+  private buildTaskSection(
+    availablePlatforms: string[],
+    seriesLengthPreference: 'all' | 'excludeMiniSeries' | 'onlyMiniSeries',
+  ): string {
+    const criticalRequirements = [
+      `Do NOT include ANY series from the "SERIES RATINGS" lists above`,
+      `Do NOT include ANY series from the "NOT INTERESTED" list above`,
+      `Do NOT include ANY series from the "DISLIKED SERIES" list above`,
+      `Do NOT include ANY series from the "WATCHLIST (Want to Watch)" list above`,
+      `Only recommend series that are DIFFERENT from those already listed`,
+    ];
+
+    if (availablePlatforms.length > 0) {
+      criticalRequirements.push(
+        `CRITICAL: Only recommend series available on: ${availablePlatforms.join(', ')}`,
+      );
+    }
+
+    if (seriesLengthPreference === 'onlyMiniSeries') {
+      criticalRequirements.push(
+        `CRITICAL: Only recommend mini-series or limited series (1 season, fewer than 10 episodes)`,
+      );
+    } else if (seriesLengthPreference === 'excludeMiniSeries') {
+      criticalRequirements.push(`Avoid mini-series (1 season with fewer than 10 episodes)`);
+    }
+
+    criticalRequirements.push(
+      `Focus on finding series that reflect shared themes, genres, tones, or storytelling styles`,
+    );
+    criticalRequirements.push(
+      `Return the EXACT TITLE of each series as it appears in TMDB (The Movie Database)`,
+    );
+    criticalRequirements.push(
+      `Provide a brief justification for each recommendation explaining why it fits the group's taste`,
+    );
+
+    // Format requirements with proper numbering
+    const numberedRequirements = criticalRequirements.map((req, idx) => `${(idx + 1).toString()}. ${req}`);
+
     return (
       `\n---\n\n` +
       `TASK:\n` +
       `Recommend 5-10 BRAND NEW TV series that this group would likely enjoy watching together.\n` +
       `\n` +
       `CRITICAL REQUIREMENTS:\n` +
-      `1. Do NOT include ANY series from the "SERIES RATINGS" lists above\n` +
-      `2. Do NOT include ANY series from the "NOT INTERESTED" list above\n` +
-      `3. Do NOT include ANY series from the "DISLIKED SERIES" list above\n` +
-      `4. Do NOT include ANY series from the "WATCHLIST (Want to Watch)" list above\n` +
-      `5. Only recommend series that are DIFFERENT from those already listed\n` +
-      `6. Focus on finding series that reflect shared themes, genres, tones, or storytelling styles\n` +
-      `7. Return the EXACT TITLE of each series as it appears in TMDB (The Movie Database)\n` +
-      `8. Provide a brief justification for each recommendation explaining why it fits the group's taste\n` +
-      `\n` +
+      numberedRequirements.join('\n') +
+      `\n\n` +
       `RECOMMENDATION STRATEGY:\n` +
       `1. PRIORITIZE finding series similar to ❤️ LOVED series - these are the strongest positive signals\n` +
       `2. Use 👍 LIKED series as secondary positive signals to understand broader taste\n` +
@@ -231,7 +295,7 @@ export class RecommendationPromptBuilder {
       `7. If multiple participants DISLIKE similar content, that's a strong signal to avoid\n` +
       `8. Watchlist items show interest direction but shouldn't be recommended (they're already planned)\n` +
       `\n` +
-      `Remember: The goal is to find NEW series that match LOVED preferences while avoiding DISLIKED content.`
+      `Remember: The goal is to find NEW series that match LOVED preferences while avoiding DISLIKED content and respecting the group's filters.`
     );
   }
 

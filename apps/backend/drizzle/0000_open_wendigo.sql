@@ -97,6 +97,8 @@ CREATE TABLE "watchrooms" (
 	"description" varchar(256),
 	"owner_id" uuid NOT NULL,
 	"public_link_id" varchar(21) NOT NULL,
+	"available_platforms" text[] DEFAULT '{}',
+	"series_length_preference" varchar(20) DEFAULT 'all',
 	"created_at" timestamp DEFAULT now() NOT NULL,
 	CONSTRAINT "watchrooms_public_link_id_unique" UNIQUE("public_link_id")
 );

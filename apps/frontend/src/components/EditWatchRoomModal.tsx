@@ -12,10 +12,13 @@ import { Input } from '@/components/ui/Input';
 import { Textarea } from '@/components/ui/Textarea';
 import { updateWatchroom } from '../api/queries/watchroom';
 import { DialogDescription } from '@radix-ui/react-dialog';
+import { WatchroomFiltersSection } from './WatchroomFiltersSection';
 
 const formSchema = z.object({
   name: z.string().min(1, 'Name is required').max(64, 'Name must be at most 64 characters'),
   description: z.string().max(256, 'Description must be at most 256 characters').optional(),
+  availablePlatforms: z.array(z.string()).optional(),
+  seriesLengthPreference: z.enum(['all', 'excludeMiniSeries', 'onlyMiniSeries']).optional(),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -24,6 +27,8 @@ interface EditWatchRoomModalProps {
   watchroomId: string;
   currentName: string;
   currentDescription?: string;
+  currentAvailablePlatforms?: string[];
+  currentSeriesLengthPreference?: 'all' | 'excludeMiniSeries' | 'onlyMiniSeries';
   onRoomUpdated: () => void;
 }
 
@@ -31,6 +36,8 @@ export function EditWatchRoomModal({
   watchroomId,
   currentName,
   currentDescription,
+  currentAvailablePlatforms,
+  currentSeriesLengthPreference,
   onRoomUpdated,
 }: EditWatchRoomModalProps) {
   const [open, setOpen] = useState(false);
@@ -41,6 +48,8 @@ export function EditWatchRoomModal({
     defaultValues: {
       name: currentName,
       description: currentDescription || '',
+      availablePlatforms: currentAvailablePlatforms || [],
+      seriesLengthPreference: currentSeriesLengthPreference || 'all',
     },
   });
 
@@ -49,15 +58,19 @@ export function EditWatchRoomModal({
       form.reset({
         name: currentName,
         description: currentDescription || '',
+        availablePlatforms: currentAvailablePlatforms || [],
+        seriesLengthPreference: currentSeriesLengthPreference || 'all',
       });
     }
-  }, [open, currentName, currentDescription, form]);
+  }, [open, currentName, currentDescription, currentAvailablePlatforms, currentSeriesLengthPreference, form]);
 
   async function onSubmit(values: FormValues) {
     try {
       await updateWatchroom(watchroomId, {
         name: values.name,
         description: values.description || undefined,
+        availablePlatforms: values.availablePlatforms,
+        seriesLengthPreference: values.seriesLengthPreference,
       });
 
       toast.success('Watch room updated successfully!');
@@ -84,7 +97,7 @@ export function EditWatchRoomModal({
           <span className="inline sm:hidden">Edit</span>
         </Button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent className="max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Edit Watch Room</DialogTitle>
         </DialogHeader>
@@ -130,6 +143,7 @@ export function EditWatchRoomModal({
                 </FormItem>
               )}
             />
+            <WatchroomFiltersSection control={form.control} />
             <div className="flex justify-end gap-2">
               <Button
                 type="button"

@@ -1,5 +1,5 @@
 {
-  "id": "909cdb99-de20-438f-8342-04cef5f3d78e",
+  "id": "abc50776-997f-4fad-8df0-69401db24351",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -1112,6 +1112,20 @@
           "type": "varchar(21)",
           "primaryKey": false,
           "notNull": true
+        },
+        "available_platforms": {
+          "name": "available_platforms",
+          "type": "text[]",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'{}'"
+        },
+        "series_length_preference": {
+          "name": "series_length_preference",
+          "type": "varchar(20)",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'all'"
         },
         "created_at": {
           "name": "created_at",

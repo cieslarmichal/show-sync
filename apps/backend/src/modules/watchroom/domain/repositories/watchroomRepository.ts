@@ -6,11 +6,15 @@ export interface CreateWatchroomData {
   readonly description?: string | undefined;
   readonly ownerId: string;
   readonly publicLinkId: string;
+  readonly availablePlatforms?: string[] | undefined;
+  readonly seriesLengthPreference?: 'all' | 'excludeMiniSeries' | 'onlyMiniSeries' | undefined;
 }
 
 export interface UpdateWatchroomData {
   readonly name?: string | undefined;
   readonly description?: string | undefined;
+  readonly availablePlatforms?: string[] | undefined;
+  readonly seriesLengthPreference?: 'all' | 'excludeMiniSeries' | 'onlyMiniSeries' | undefined;
 }
 
 export interface FindWatchroomParams {

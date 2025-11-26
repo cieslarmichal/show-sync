@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { toast } from 'sonner';
-import { Copy, Trash2, Calendar, Users, UserMinus, LogOut } from 'lucide-react';
+import { Copy, Trash2, Calendar, Users, UserMinus, LogOut, Tv, Film } from 'lucide-react';
 
 import { deleteWatchroom, removeParticipant, leaveWatchroom } from '../../api/queries/watchroom.ts';
 import type { WatchroomDetails } from '../../api/types/watchroom.ts';
@@ -39,6 +39,14 @@ export function RoomInfoCard({
   }>({ open: false });
   const [confirmLeaveDialog, setConfirmLeaveDialog] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
+
+  const SERIES_LENGTH_LABELS = {
+    all: 'All series',
+    excludeMiniSeries: 'No mini-series',
+    onlyMiniSeries: 'Only mini-series',
+  };
+
+  const hasActiveFilters = room.availablePlatforms.length > 0 || room.seriesLengthPreference !== 'all';
 
   const handleDeleteRoom = async () => {
     try {
@@ -118,21 +126,64 @@ export function RoomInfoCard({
 
             {/* Description */}
             {room.description && (
-              <CardDescription className="text-xs sm:text-sm leading-relaxed text-muted-foreground line-clamp-2">
+              <CardDescription className="text-xs sm:text-sm leading-relaxed text-muted-foreground">
                 {room.description}
               </CardDescription>
             )}
 
+            {/* Active Filters */}
+            {hasActiveFilters && (
+              <div className="flex flex-wrap gap-x-4 gap-y-2">
+                {room.availablePlatforms.length > 0 && (
+                  <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-1.5 text-xs text-muted-foreground shrink-0">
+                      <Tv className="w-3.5 h-3.5" />
+                      <span className="font-medium">Platforms:</span>
+                    </div>
+                    <div className="flex flex-wrap gap-1.5">
+                      {room.availablePlatforms.map((platform) => (
+                        <Badge
+                          key={platform}
+                          variant="secondary"
+                          className="text-xs font-normal"
+                        >
+                          {platform}
+                        </Badge>
+                      ))}
+                    </div>
+                  </div>
+                )}
+                {room.seriesLengthPreference !== 'all' && (
+                  <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-1.5 text-xs text-muted-foreground shrink-0">
+                      <Film className="w-3.5 h-3.5" />
+                      <span className="font-medium">Length:</span>
+                    </div>
+                    <Badge
+                      variant="secondary"
+                      className="text-xs font-normal"
+                    >
+                      {SERIES_LENGTH_LABELS[room.seriesLengthPreference]}
+                    </Badge>
+                  </div>
+                )}
+              </div>
+            )}
+
             {/* Meta Info */}
-            <div className="flex items-center text-xs text-muted-foreground pt-1">
-              <Calendar className="w-3 h-3 mr-1" />
-              <span>
-                {new Date(room.createdAt).toLocaleDateString('en-US', {
-                  month: 'short',
-                  day: 'numeric',
-                  year: 'numeric',
-                })}
-              </span>
+            <div className="flex items-center gap-2 text-xs text-muted-foreground">
+              <span>Created by {room.ownerName}</span>
+              <span>•</span>
+              <div className="flex items-center gap-1">
+                <Calendar className="w-3 h-3" />
+                <span>
+                  {new Date(room.createdAt).toLocaleDateString('en-US', {
+                    month: 'short',
+                    day: 'numeric',
+                    year: 'numeric',
+                  })}
+                </span>
+              </div>
             </div>
 
             {/* Action Buttons */}
@@ -153,6 +204,8 @@ export function RoomInfoCard({
                     watchroomId={room.id}
                     currentName={room.name}
                     currentDescription={room.description}
+                    currentAvailablePlatforms={room.availablePlatforms}
+                    currentSeriesLengthPreference={room.seriesLengthPreference}
                     onRoomUpdated={onRoomUpdated}
                   />
                   <Button

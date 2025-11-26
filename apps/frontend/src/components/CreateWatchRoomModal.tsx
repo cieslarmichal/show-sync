@@ -19,10 +19,13 @@ import { Input } from '@/components/ui/Input';
 import { Textarea } from '@/components/ui/Textarea';
 import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/Tooltip';
 import { createWatchroom } from '../api/queries/watchroom';
+import { WatchroomFiltersSection } from './WatchroomFiltersSection';
 
 const formSchema = z.object({
   name: z.string().min(1, 'Name is required').max(64, 'Name must be at most 64 characters'),
   description: z.string().max(256, 'Description must be at most 256 characters').optional(),
+  availablePlatforms: z.array(z.string()).optional(),
+  seriesLengthPreference: z.enum(['all', 'excludeMiniSeries', 'onlyMiniSeries']).optional(),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -42,6 +45,8 @@ export function CreateWatchRoomModal({ onRoomCreated, disabled = false, disabled
     defaultValues: {
       name: '',
       description: '',
+      availablePlatforms: [],
+      seriesLengthPreference: 'all',
     },
   });
 
@@ -50,6 +55,8 @@ export function CreateWatchRoomModal({ onRoomCreated, disabled = false, disabled
       await createWatchroom({
         name: values.name,
         description: values.description || undefined,
+        availablePlatforms: values.availablePlatforms,
+        seriesLengthPreference: values.seriesLengthPreference,
       });
 
       toast.success('Watch room created successfully!');
@@ -91,7 +98,7 @@ export function CreateWatchRoomModal({ onRoomCreated, disabled = false, disabled
       ) : (
         <DialogTrigger asChild>{buttonElement}</DialogTrigger>
       )}
-      <DialogContent>
+      <DialogContent className="max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Create Watch Room</DialogTitle>
         </DialogHeader>
@@ -137,6 +144,7 @@ export function CreateWatchRoomModal({ onRoomCreated, disabled = false, disabled
                 </FormItem>
               )}
             />
+            <WatchroomFiltersSection control={form.control} />
             <div className="flex justify-end gap-2">
               <Button
                 type="button"

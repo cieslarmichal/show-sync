@@ -136,6 +136,9 @@ describe('CreateWatchRoomModal', () => {
       ownerId: 'user123',
       createdAt: new Date().toISOString(),
       participants: [],
+      availablePlatforms: [],
+      ownerName: 'Test User',
+      seriesLengthPreference: 'all' as const,
     });
 
     render(<CreateWatchRoomModal onRoomCreated={mockOnRoomCreated} />);
@@ -174,6 +177,9 @@ describe('CreateWatchRoomModal', () => {
       ownerId: 'user123',
       createdAt: new Date().toISOString(),
       participants: [],
+      availablePlatforms: [],
+      ownerName: 'Test User',
+      seriesLengthPreference: 'all' as const,
     });
 
     render(<CreateWatchRoomModal onRoomCreated={mockOnRoomCreated} />);
@@ -206,6 +212,9 @@ describe('CreateWatchRoomModal', () => {
       ownerId: 'user123',
       createdAt: new Date().toISOString(),
       participants: [],
+      availablePlatforms: [],
+      ownerName: 'Test User',
+      seriesLengthPreference: 'all' as const,
     });
 
     render(<CreateWatchRoomModal onRoomCreated={mockOnRoomCreated} />);
@@ -307,6 +316,9 @@ describe('CreateWatchRoomModal', () => {
       ownerId: 'user123',
       createdAt: new Date().toISOString(),
       participants: [],
+      availablePlatforms: [],
+      ownerName: 'Test User',
+      seriesLengthPreference: 'all' as const,
     });
 
     render(<CreateWatchRoomModal onRoomCreated={mockOnRoomCreated} />);
@@ -347,6 +359,9 @@ describe('CreateWatchRoomModal', () => {
       ownerId: 'user123',
       createdAt: new Date().toISOString(),
       participants: [],
+      availablePlatforms: [],
+      ownerName: 'Test User',
+      seriesLengthPreference: 'all' as const,
     });
 
     render(<CreateWatchRoomModal onRoomCreated={mockOnRoomCreated} />);
