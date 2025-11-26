@@ -13,12 +13,8 @@ const SERIES_LENGTH_LABELS = {
   onlyMiniSeries: 'Only mini-series',
 };
 
-export function ActiveFiltersCard({
-  availablePlatforms,
-  seriesLengthPreference,
-}: ActiveFiltersCardProps) {
-  const hasActiveFilters =
-    availablePlatforms.length > 0 || seriesLengthPreference !== 'all';
+export function ActiveFiltersCard({ availablePlatforms, seriesLengthPreference }: ActiveFiltersCardProps) {
+  const hasActiveFilters = availablePlatforms.length > 0 || seriesLengthPreference !== 'all';
 
   if (!hasActiveFilters) {
     return null;
@@ -71,7 +67,6 @@ export function ActiveFiltersCard({
             </Badge>
           </div>
         )}
-
       </CardContent>
     </Card>
   );

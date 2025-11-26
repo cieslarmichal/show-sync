@@ -251,9 +251,7 @@ export class RecommendationPromptBuilder {
     ];
 
     if (availablePlatforms.length > 0) {
-      criticalRequirements.push(
-        `CRITICAL: Only recommend series available on: ${availablePlatforms.join(', ')}`,
-      );
+      criticalRequirements.push(`CRITICAL: Only recommend series available on: ${availablePlatforms.join(', ')}`);
     }
 
     if (seriesLengthPreference === 'onlyMiniSeries') {
@@ -267,9 +265,7 @@ export class RecommendationPromptBuilder {
     criticalRequirements.push(
       `Focus on finding series that reflect shared themes, genres, tones, or storytelling styles`,
     );
-    criticalRequirements.push(
-      `Return the EXACT TITLE of each series as it appears in TMDB (The Movie Database)`,
-    );
+    criticalRequirements.push(`Return the EXACT TITLE of each series as it appears in TMDB (The Movie Database)`);
     criticalRequirements.push(
       `Provide a brief justification for each recommendation explaining why it fits the group's taste`,
     );
