@@ -197,6 +197,8 @@ describe('EditWatchRoomModal', () => {
       expect(mockUpdateWatchroom).toHaveBeenCalledWith('123', {
         name: 'Updated Room',
         description: 'Updated Description',
+        availablePlatforms: [],
+        seriesLengthPreference: 'all',
       });
     });
   });
@@ -391,6 +393,8 @@ describe('EditWatchRoomModal', () => {
       expect(mockUpdateWatchroom).toHaveBeenCalledWith('123', {
         name: 'Test Room',
         description: undefined,
+        availablePlatforms: [],
+        seriesLengthPreference: 'all',
       });
     });
   });

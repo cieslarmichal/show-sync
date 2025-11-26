@@ -163,6 +163,8 @@ describe('CreateWatchRoomModal', () => {
       expect(mockCreateWatchroom).toHaveBeenCalledWith({
         name: 'Test Room',
         description: 'Test Description',
+        availablePlatforms: [],
+        seriesLengthPreference: 'all',
       });
     });
   });
@@ -383,6 +385,8 @@ describe('CreateWatchRoomModal', () => {
       expect(mockCreateWatchroom).toHaveBeenCalledWith({
         name: 'Test Room',
         description: undefined,
+        availablePlatforms: [],
+        seriesLengthPreference: 'all',
       });
     });
   });
