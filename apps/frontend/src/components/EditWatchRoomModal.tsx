@@ -17,7 +17,6 @@ import { WatchroomFiltersSection } from './WatchroomFiltersSection';
 const formSchema = z.object({
   name: z.string().min(1, 'Name is required').max(64, 'Name must be at most 64 characters'),
   description: z.string().max(256, 'Description must be at most 256 characters').optional(),
-  availablePlatforms: z.array(z.string()).optional(),
   seriesLengthPreference: z.enum(['all', 'excludeMiniSeries', 'onlyMiniSeries']).optional(),
 });
 
@@ -27,7 +26,6 @@ interface EditWatchRoomModalProps {
   watchroomId: string;
   currentName: string;
   currentDescription?: string;
-  currentAvailablePlatforms?: string[];
   currentSeriesLengthPreference?: 'all' | 'excludeMiniSeries' | 'onlyMiniSeries';
   onRoomUpdated: () => void;
 }
@@ -36,7 +34,6 @@ export function EditWatchRoomModal({
   watchroomId,
   currentName,
   currentDescription,
-  currentAvailablePlatforms,
   currentSeriesLengthPreference,
   onRoomUpdated,
 }: EditWatchRoomModalProps) {
@@ -48,7 +45,6 @@ export function EditWatchRoomModal({
     defaultValues: {
       name: currentName,
       description: currentDescription || '',
-      availablePlatforms: currentAvailablePlatforms || [],
       seriesLengthPreference: currentSeriesLengthPreference || 'all',
     },
   });
@@ -58,18 +54,16 @@ export function EditWatchRoomModal({
       form.reset({
         name: currentName,
         description: currentDescription || '',
-        availablePlatforms: currentAvailablePlatforms || [],
         seriesLengthPreference: currentSeriesLengthPreference || 'all',
       });
     }
-  }, [open, currentName, currentDescription, currentAvailablePlatforms, currentSeriesLengthPreference, form]);
+  }, [open, currentName, currentDescription, currentSeriesLengthPreference, form]);
 
   async function onSubmit(values: FormValues) {
     try {
       await updateWatchroom(watchroomId, {
         name: values.name,
         description: values.description || undefined,
-        availablePlatforms: values.availablePlatforms,
         seriesLengthPreference: values.seriesLengthPreference,
       });
 

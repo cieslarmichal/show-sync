@@ -148,7 +148,6 @@ export class GenerateRecommendationsAction {
         seriesInfoMap,
         watchroom.name,
         watchroom.description,
-        watchroom.availablePlatforms,
         watchroom.seriesLengthPreference,
       );
 
@@ -325,7 +324,6 @@ export class GenerateRecommendationsAction {
     seriesInfoMap: Map<number, SeriesInfo>,
     watchroomName: string,
     watchroomDescription: string | undefined,
-    availablePlatforms: string[],
     seriesLengthPreference: 'all' | 'excludeMiniSeries' | 'onlyMiniSeries',
   ): Promise<AIRecommendation[]> {
     const userMessage = this.promptBuilder.build(
@@ -336,7 +334,6 @@ export class GenerateRecommendationsAction {
       seriesInfoMap,
       watchroomName,
       watchroomDescription,
-      availablePlatforms,
       seriesLengthPreference,
     );
 

@@ -1,10 +1,7 @@
 import { Control } from 'react-hook-form';
-import { FormControl, FormDescription, FormField, FormItem, FormLabel } from '@/components/ui/Form';
-import { Checkbox } from '@/components/ui/Checkbox';
+import { FormControl, FormField, FormItem, FormLabel } from '@/components/ui/Form';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/RadioGroup';
 import { Label } from '@/components/ui/Label';
-
-const STREAMING_PLATFORMS = ['Netflix', 'HBO Max', 'Disney+', 'Amazon Prime Video', 'Apple TV+', 'Hulu'] as const;
 
 const SERIES_LENGTH_OPTIONS = [
   { value: 'all', label: 'All series', description: 'No restrictions on series length' },
@@ -22,54 +19,8 @@ export function WatchroomFiltersSection({ control }: WatchroomFiltersSectionProp
     <div className="space-y-6 border-t pt-4">
       <div>
         <h3 className="text-sm font-medium mb-3">Filters (Optional)</h3>
-        <p className="text-xs text-muted-foreground mb-4">
-          These filters help narrow down recommendations to match your preferences.
-        </p>
+        <p className="text-xs text-muted-foreground mb-4">Adjust how long the series should be.</p>
       </div>
-
-      {/* Streaming Platforms */}
-      <FormField
-        control={control}
-        name="availablePlatforms"
-        render={() => (
-          <FormItem>
-            <FormLabel className="text-sm">Available Platforms</FormLabel>
-            <FormDescription className="text-xs">Select the streaming services you have access to</FormDescription>
-            <div className="grid grid-cols-2 gap-3 mt-2">
-              {STREAMING_PLATFORMS.map((platform) => (
-                <FormField
-                  key={platform}
-                  control={control}
-                  name="availablePlatforms"
-                  render={({ field }) => {
-                    return (
-                      <FormItem
-                        key={platform}
-                        className="flex flex-row items-center space-x-2 space-y-0"
-                      >
-                        <FormControl>
-                          <Checkbox
-                            checked={field.value?.includes(platform)}
-                            onCheckedChange={(checked) => {
-                              const current = field.value || [];
-                              if (checked) {
-                                field.onChange([...current, platform]);
-                              } else {
-                                field.onChange(current.filter((val: string) => val !== platform));
-                              }
-                            }}
-                          />
-                        </FormControl>
-                        <Label className="text-sm font-normal cursor-pointer">{platform}</Label>
-                      </FormItem>
-                    );
-                  }}
-                />
-              ))}
-            </div>
-          </FormItem>
-        )}
-      />
 
       {/* Series Length Preference */}
       <FormField

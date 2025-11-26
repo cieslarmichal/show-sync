@@ -136,7 +136,6 @@ describe('CreateWatchRoomModal', () => {
       ownerId: 'user123',
       createdAt: new Date().toISOString(),
       participants: [],
-      availablePlatforms: [],
       ownerName: 'Test User',
       seriesLengthPreference: 'all' as const,
     });
@@ -163,7 +162,6 @@ describe('CreateWatchRoomModal', () => {
       expect(mockCreateWatchroom).toHaveBeenCalledWith({
         name: 'Test Room',
         description: 'Test Description',
-        availablePlatforms: [],
         seriesLengthPreference: 'all',
       });
     });
@@ -179,7 +177,6 @@ describe('CreateWatchRoomModal', () => {
       ownerId: 'user123',
       createdAt: new Date().toISOString(),
       participants: [],
-      availablePlatforms: [],
       ownerName: 'Test User',
       seriesLengthPreference: 'all' as const,
     });
@@ -214,7 +211,6 @@ describe('CreateWatchRoomModal', () => {
       ownerId: 'user123',
       createdAt: new Date().toISOString(),
       participants: [],
-      availablePlatforms: [],
       ownerName: 'Test User',
       seriesLengthPreference: 'all' as const,
     });
@@ -318,7 +314,6 @@ describe('CreateWatchRoomModal', () => {
       ownerId: 'user123',
       createdAt: new Date().toISOString(),
       participants: [],
-      availablePlatforms: [],
       ownerName: 'Test User',
       seriesLengthPreference: 'all' as const,
     });
@@ -361,7 +356,6 @@ describe('CreateWatchRoomModal', () => {
       ownerId: 'user123',
       createdAt: new Date().toISOString(),
       participants: [],
-      availablePlatforms: [],
       ownerName: 'Test User',
       seriesLengthPreference: 'all' as const,
     });
@@ -385,7 +379,6 @@ describe('CreateWatchRoomModal', () => {
       expect(mockCreateWatchroom).toHaveBeenCalledWith({
         name: 'Test Room',
         description: undefined,
-        availablePlatforms: [],
         seriesLengthPreference: 'all',
       });
     });

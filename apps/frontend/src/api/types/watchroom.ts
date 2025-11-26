@@ -5,7 +5,6 @@ export interface Watchroom {
   readonly ownerId: string;
   readonly ownerName: string;
   readonly publicLinkId: string;
-  readonly availablePlatforms: string[];
   readonly seriesLengthPreference: 'all' | 'excludeMiniSeries' | 'onlyMiniSeries';
   readonly createdAt: string;
   readonly participants: WatchroomParticipant[];

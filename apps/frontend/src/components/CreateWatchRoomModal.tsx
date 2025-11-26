@@ -24,7 +24,6 @@ import { WatchroomFiltersSection } from './WatchroomFiltersSection';
 const formSchema = z.object({
   name: z.string().min(1, 'Name is required').max(64, 'Name must be at most 64 characters'),
   description: z.string().max(256, 'Description must be at most 256 characters').optional(),
-  availablePlatforms: z.array(z.string()).optional(),
   seriesLengthPreference: z.enum(['all', 'excludeMiniSeries', 'onlyMiniSeries']).optional(),
 });
 
@@ -45,7 +44,6 @@ export function CreateWatchRoomModal({ onRoomCreated, disabled = false, disabled
     defaultValues: {
       name: '',
       description: '',
-      availablePlatforms: [],
       seriesLengthPreference: 'all',
     },
   });
@@ -55,7 +53,6 @@ export function CreateWatchRoomModal({ onRoomCreated, disabled = false, disabled
       await createWatchroom({
         name: values.name,
         description: values.description || undefined,
-        availablePlatforms: values.availablePlatforms,
         seriesLengthPreference: values.seriesLengthPreference,
       });
 

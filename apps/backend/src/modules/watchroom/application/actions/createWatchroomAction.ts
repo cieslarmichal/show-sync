@@ -7,7 +7,6 @@ import type { Watchroom } from '../../domain/types/watchroom.ts';
 export interface CreateWatchroomActionPayload {
   readonly name: string;
   readonly description?: string | undefined;
-  readonly availablePlatforms?: string[] | undefined;
   readonly seriesLengthPreference?: 'all' | 'excludeMiniSeries' | 'onlyMiniSeries' | undefined;
   readonly ownerId: string;
 }
@@ -39,7 +38,6 @@ export class CreateWatchroomAction {
     const watchroom = await this.watchroomRepository.create({
       name,
       description,
-      availablePlatforms: payload.availablePlatforms,
       seriesLengthPreference: payload.seriesLengthPreference,
       ownerId,
       publicLinkId,

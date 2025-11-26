@@ -25,17 +25,16 @@ export class RecommendationPromptBuilder {
     seriesInfoMap: Map<number, SeriesInfo>,
     watchroomName: string,
     watchroomDescription: string | undefined,
-    availablePlatforms: string[],
     seriesLengthPreference: 'all' | 'excludeMiniSeries' | 'onlyMiniSeries',
   ): string {
     const sections = [
       this.buildWatchroomSection(watchroomName, watchroomDescription),
-      this.buildFiltersSection(availablePlatforms, seriesLengthPreference),
+      this.buildFiltersSection(seriesLengthPreference),
       this.buildParticipantsSection(participantRatings, seriesInfoMap),
       this.buildNotInterestedSection(notInterestedSeriesIds, seriesInfoMap),
       this.buildDislikedSection(dislikedSeriesIds, seriesInfoMap),
       this.buildWantToWatchSection(wantToWatchSeriesIds, seriesInfoMap),
-      this.buildTaskSection(availablePlatforms, seriesLengthPreference),
+      this.buildTaskSection(seriesLengthPreference),
     ];
 
     return sections.filter(Boolean).join('\n');
@@ -55,16 +54,8 @@ export class RecommendationPromptBuilder {
     return section + `\n---\n`;
   }
 
-  private buildFiltersSection(
-    availablePlatforms: string[],
-    seriesLengthPreference: 'all' | 'excludeMiniSeries' | 'onlyMiniSeries',
-  ): string {
+  private buildFiltersSection(seriesLengthPreference: 'all' | 'excludeMiniSeries' | 'onlyMiniSeries'): string {
     const filters: string[] = [];
-
-    if (availablePlatforms.length > 0) {
-      filters.push(`📺 Available Streaming Platforms: ${availablePlatforms.join(', ')}`);
-      filters.push(`   CRITICAL: Only recommend series available on these platforms.`);
-    }
 
     if (seriesLengthPreference === 'onlyMiniSeries') {
       filters.push(`📏 Series Length: ONLY mini-series (1 season, fewer than 10 episodes)`);
@@ -238,10 +229,7 @@ export class RecommendationPromptBuilder {
     return section;
   }
 
-  private buildTaskSection(
-    availablePlatforms: string[],
-    seriesLengthPreference: 'all' | 'excludeMiniSeries' | 'onlyMiniSeries',
-  ): string {
+  private buildTaskSection(seriesLengthPreference: 'all' | 'excludeMiniSeries' | 'onlyMiniSeries'): string {
     const criticalRequirements = [
       `Do NOT include ANY series from the "SERIES RATINGS" lists above`,
       `Do NOT include ANY series from the "NOT INTERESTED" list above`,
@@ -249,10 +237,6 @@ export class RecommendationPromptBuilder {
       `Do NOT include ANY series from the "WATCHLIST (Want to Watch)" list above`,
       `Only recommend series that are DIFFERENT from those already listed`,
     ];
-
-    if (availablePlatforms.length > 0) {
-      criticalRequirements.push(`CRITICAL: Only recommend series available on: ${availablePlatforms.join(', ')}`);
-    }
 
     if (seriesLengthPreference === 'onlyMiniSeries') {
       criticalRequirements.push(

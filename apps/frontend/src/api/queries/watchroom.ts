@@ -5,7 +5,6 @@ import type { Recommendation } from '../types/recommendation';
 export const createWatchroom = async (payload: {
   name: string;
   description?: string;
-  availablePlatforms?: string[];
   seriesLengthPreference?: 'all' | 'excludeMiniSeries' | 'onlyMiniSeries';
 }): Promise<Watchroom> => {
   return apiRequest<Watchroom>('/watchrooms', {
@@ -13,7 +12,6 @@ export const createWatchroom = async (payload: {
     body: {
       name: payload.name,
       description: payload.description,
-      availablePlatforms: payload.availablePlatforms,
       seriesLengthPreference: payload.seriesLengthPreference,
     },
   });
@@ -78,7 +76,6 @@ export const updateWatchroom = async (
   payload: {
     name?: string;
     description?: string;
-    availablePlatforms?: string[];
     seriesLengthPreference?: 'all' | 'excludeMiniSeries' | 'onlyMiniSeries';
   },
 ): Promise<Watchroom> => {

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { toast } from 'sonner';
-import { Copy, Trash2, Calendar, Users, UserMinus, LogOut, Tv, Film } from 'lucide-react';
+import { Copy, Trash2, Calendar, Users, UserMinus, LogOut, Film } from 'lucide-react';
 
 import { deleteWatchroom, removeParticipant, leaveWatchroom } from '../../api/queries/watchroom.ts';
 import type { WatchroomDetails } from '../../api/types/watchroom.ts';
@@ -46,7 +46,7 @@ export function RoomInfoCard({
     onlyMiniSeries: 'Only mini-series',
   };
 
-  const hasActiveFilters = room.availablePlatforms.length > 0 || room.seriesLengthPreference !== 'all';
+  const hasActiveFilters = room.seriesLengthPreference !== 'all';
 
   const handleDeleteRoom = async () => {
     try {
@@ -134,39 +134,18 @@ export function RoomInfoCard({
             {/* Active Filters */}
             {hasActiveFilters && (
               <div className="flex flex-wrap gap-x-4 gap-y-2">
-                {room.availablePlatforms.length > 0 && (
-                  <div className="flex items-center gap-2">
-                    <div className="flex items-center gap-1.5 text-xs text-muted-foreground shrink-0">
-                      <Tv className="w-3.5 h-3.5" />
-                      <span className="font-medium">Platforms:</span>
-                    </div>
-                    <div className="flex flex-wrap gap-1.5">
-                      {room.availablePlatforms.map((platform) => (
-                        <Badge
-                          key={platform}
-                          variant="secondary"
-                          className="text-xs font-normal"
-                        >
-                          {platform}
-                        </Badge>
-                      ))}
-                    </div>
+                <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-1.5 text-xs text-muted-foreground shrink-0">
+                    <Film className="w-3.5 h-3.5" />
+                    <span className="font-medium">Length:</span>
                   </div>
-                )}
-                {room.seriesLengthPreference !== 'all' && (
-                  <div className="flex items-center gap-2">
-                    <div className="flex items-center gap-1.5 text-xs text-muted-foreground shrink-0">
-                      <Film className="w-3.5 h-3.5" />
-                      <span className="font-medium">Length:</span>
-                    </div>
-                    <Badge
-                      variant="secondary"
-                      className="text-xs font-normal"
-                    >
-                      {SERIES_LENGTH_LABELS[room.seriesLengthPreference]}
-                    </Badge>
-                  </div>
-                )}
+                  <Badge
+                    variant="secondary"
+                    className="text-xs font-normal"
+                  >
+                    {SERIES_LENGTH_LABELS[room.seriesLengthPreference]}
+                  </Badge>
+                </div>
               </div>
             )}
 
@@ -204,7 +183,6 @@ export function RoomInfoCard({
                     watchroomId={room.id}
                     currentName={room.name}
                     currentDescription={room.description}
-                    currentAvailablePlatforms={room.availablePlatforms}
                     currentSeriesLengthPreference={room.seriesLengthPreference}
                     onRoomUpdated={onRoomUpdated}
                   />
