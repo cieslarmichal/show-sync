@@ -415,7 +415,7 @@
   },
   "watchroom": {
     "title": "Pokoje oglądania",
-    "subtitle": "Twórz pokoje, aby otrzymywać rekomendacje z innymi",
+    "subtitle": "Twórz pokoje, aby otrzymywać rekomendacje",
     "createButton": "Stwórz pokój oglądania",
     "createTitle": "Stwórz pokój oglądania",
     "editTitle": "Edytuj pokój oglądania",
@@ -735,7 +735,7 @@
   },
   "watchlist": {
     "title": "Twoja lista oglądania",
-    "subtitle": "Śledź seriale, które chcesz obejrzeć i nigdy nie trać z oczu swojego następnego serialowego maratonu.",
+    "subtitle": "Śledź seriale, które chcesz obejrzeć i zawsze miej je pod ręką.",
     "wantToWatch": "Chcę obejrzeć",
     "showsCount": "{{count}} serial",
     "showsCount_plural": "{{count}} seriali",
