@@ -122,7 +122,18 @@ export default function HomePage() {
               <div className="text-xs text-muted-foreground font-medium">{t('home.trustBadges.poweredBy')}</div>
               <div className="text-sm font-semibold text-muted-foreground">OpenAI</div>
               <div className="w-px h-6 bg-border" />
-              <div className="text-sm font-semibold text-muted-foreground">TMDB</div>
+              <a
+                href="https://www.themoviedb.org"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:opacity-80 transition-opacity"
+              >
+                <img
+                  src="/tmdb-logo.svg"
+                  alt="TMDB"
+                  className="h-4"
+                />
+              </a>
               <div className="w-px h-6 bg-border" />
               <div className="flex items-center gap-2">
                 <CheckCircle2 className="h-4 w-4 text-primary" />
@@ -132,26 +143,27 @@ export default function HomePage() {
 
             {/* Problem Statement */}
             <div className="text-center max-w-3xl mx-auto space-y-6 py-8">
-              <h2 className="text-2xl sm:text-3xl font-bold text-foreground">
-                {t('home.problemStatement.title')}
-              </h2>
+              <h2 className="text-2xl sm:text-3xl font-bold text-foreground">{t('home.problemStatement.title')}</h2>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 text-left">
                 <div className="space-y-2">
                   <div className="text-4xl">😫</div>
                   <p className="text-sm text-muted-foreground">
-                    <strong className="text-foreground">{t('home.problemStatement.solo')}</strong> {t('home.problemStatement.soloDesc')}
+                    <strong className="text-foreground">{t('home.problemStatement.solo')}</strong>{' '}
+                    {t('home.problemStatement.soloDesc')}
                   </p>
                 </div>
                 <div className="space-y-2">
                   <div className="text-4xl">😤</div>
                   <p className="text-sm text-muted-foreground">
-                    <strong className="text-foreground">{t('home.problemStatement.groups')}</strong> {t('home.problemStatement.groupsDesc')}
+                    <strong className="text-foreground">{t('home.problemStatement.groups')}</strong>{' '}
+                    {t('home.problemStatement.groupsDesc')}
                   </p>
                 </div>
                 <div className="space-y-2">
                   <div className="text-4xl">🤯</div>
                   <p className="text-sm text-muted-foreground">
-                    <strong className="text-foreground">{t('home.problemStatement.everyone')}</strong> {t('home.problemStatement.everyoneDesc')}
+                    <strong className="text-foreground">{t('home.problemStatement.everyone')}</strong>{' '}
+                    {t('home.problemStatement.everyoneDesc')}
                   </p>
                 </div>
               </div>
@@ -238,8 +250,8 @@ export default function HomePage() {
               </div>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12">
                 {/* Step 1 with visual */}
-                <div className="space-y-6 group text-center">
-                  <div className="flex justify-center">
+                <div className="flex flex-col group text-center h-full">
+                  <div className="flex justify-center mb-6">
                     <div className="relative">
                       <div className="p-6 bg-primary/10 rounded-2xl group-hover:bg-primary/20 transition-all duration-300 group-hover:scale-105">
                         <Heart className="h-10 w-10 text-primary" />
@@ -249,12 +261,12 @@ export default function HomePage() {
                       </div>
                     </div>
                   </div>
-                  <div className="space-y-3">
+                  <div className="space-y-3 mb-6 min-h-[140px]">
                     <h3 className="text-xl font-bold text-foreground">{t('home.howItWorks.step1Title')}</h3>
                     <p className="text-muted-foreground leading-relaxed">{t('home.howItWorks.step1Desc')}</p>
                   </div>
                   {/* Visual placeholder */}
-                  <div className="rounded-xl overflow-hidden border border-border bg-muted/30 aspect-4/3 flex items-center justify-center">
+                  <div className="rounded-xl overflow-hidden border border-border bg-muted/30 aspect-4/3 flex items-center justify-center mt-auto">
                     <div className="text-xs text-muted-foreground text-center p-4">
                       <ListChecks className="h-8 w-8 mx-auto mb-2 opacity-40" />
                       [Rating Interface GIF]
@@ -263,8 +275,8 @@ export default function HomePage() {
                 </div>
 
                 {/* Step 2 with visual */}
-                <div className="space-y-6 group text-center">
-                  <div className="flex justify-center">
+                <div className="flex flex-col group text-center h-full">
+                  <div className="flex justify-center mb-6">
                     <div className="relative">
                       <div className="p-6 bg-primary/10 rounded-2xl group-hover:bg-primary/20 transition-all duration-300 group-hover:scale-105">
                         <BrainCircuit className="h-10 w-10 text-primary" />
@@ -274,12 +286,12 @@ export default function HomePage() {
                       </div>
                     </div>
                   </div>
-                  <div className="space-y-3">
+                  <div className="space-y-3 mb-6 min-h-[140px]">
                     <h3 className="text-xl font-bold text-foreground">{t('home.howItWorks.step2Title')}</h3>
                     <p className="text-muted-foreground leading-relaxed">{t('home.howItWorks.step2Desc')}</p>
                   </div>
                   {/* Visual placeholder */}
-                  <div className="rounded-xl overflow-hidden border border-border bg-muted/30 aspect-4/3 flex items-center justify-center">
+                  <div className="rounded-xl overflow-hidden border border-border bg-muted/30 aspect-4/3 flex items-center justify-center mt-auto">
                     <div className="text-xs text-muted-foreground text-center p-4">
                       <Sparkles className="h-8 w-8 mx-auto mb-2 opacity-40" />
                       [Recommendations GIF]
@@ -288,8 +300,8 @@ export default function HomePage() {
                 </div>
 
                 {/* Step 3 with visual */}
-                <div className="space-y-6 group text-center">
-                  <div className="flex justify-center">
+                <div className="flex flex-col group text-center h-full">
+                  <div className="flex justify-center mb-6">
                     <div className="relative">
                       <div className="p-6 bg-primary/10 rounded-2xl group-hover:bg-primary/20 transition-all duration-300 group-hover:scale-105">
                         <PartyPopper className="h-10 w-10 text-primary" />
@@ -299,12 +311,12 @@ export default function HomePage() {
                       </div>
                     </div>
                   </div>
-                  <div className="space-y-3">
+                  <div className="space-y-3 mb-6 min-h-[140px]">
                     <h3 className="text-xl font-bold text-foreground">{t('home.howItWorks.step3Title')}</h3>
                     <p className="text-muted-foreground leading-relaxed">{t('home.howItWorks.step3Desc')}</p>
                   </div>
                   {/* Visual placeholder */}
-                  <div className="rounded-xl overflow-hidden border border-border bg-muted/30 aspect-4/3 flex items-center justify-center">
+                  <div className="rounded-xl overflow-hidden border border-border bg-muted/30 aspect-4/3 flex items-center justify-center mt-auto">
                     <div className="text-xs text-muted-foreground text-center p-4">
                       <PartyPopper className="h-8 w-8 mx-auto mb-2 opacity-40" />
                       [Watch Room GIF]
@@ -376,33 +388,23 @@ export default function HomePage() {
 
             {/* FAQ Section */}
             <div className="max-w-3xl mx-auto space-y-6">
-              <h2 className="text-3xl sm:text-4xl font-bold text-foreground text-center mb-8">
-                {t('home.faq.title')}
-              </h2>
+              <h2 className="text-3xl sm:text-4xl font-bold text-foreground text-center mb-8">{t('home.faq.title')}</h2>
               <div className="space-y-4">
                 <Card className="p-6">
                   <h3 className="font-bold text-foreground mb-2">{t('home.faq.q1')}</h3>
-                  <p className="text-muted-foreground text-sm">
-                    {t('home.faq.a1')}
-                  </p>
+                  <p className="text-muted-foreground text-sm">{t('home.faq.a1')}</p>
                 </Card>
                 <Card className="p-6">
                   <h3 className="font-bold text-foreground mb-2">{t('home.faq.q2')}</h3>
-                  <p className="text-muted-foreground text-sm">
-                    {t('home.faq.a2')}
-                  </p>
+                  <p className="text-muted-foreground text-sm">{t('home.faq.a2')}</p>
                 </Card>
                 <Card className="p-6">
                   <h3 className="font-bold text-foreground mb-2">{t('home.faq.q3')}</h3>
-                  <p className="text-muted-foreground text-sm">
-                    {t('home.faq.a3')}
-                  </p>
+                  <p className="text-muted-foreground text-sm">{t('home.faq.a3')}</p>
                 </Card>
                 <Card className="p-6">
                   <h3 className="font-bold text-foreground mb-2">{t('home.faq.q4')}</h3>
-                  <p className="text-muted-foreground text-sm">
-                    {t('home.faq.a4')}
-                  </p>
+                  <p className="text-muted-foreground text-sm">{t('home.faq.a4')}</p>
                 </Card>
               </div>
             </div>
@@ -434,19 +436,6 @@ export default function HomePage() {
                   <CheckCircle2 className="h-4 w-4 text-primary" />
                   <span>{t('home.ctaExtras.cancel')}</span>
                 </div>
-              </div>
-            </div>
-
-            {/* TMDB Attribution */}
-            <div className="text-center py-8 border-t border-border">
-              <div className="flex flex-col items-center gap-4">
-                <div className="flex items-center gap-3">
-                  <div className="text-sm font-semibold text-muted-foreground">{t('home.tmdbAttribution.poweredBy')}</div>
-                  <div className="px-3 py-1 bg-primary/10 rounded text-sm font-semibold">TMDB</div>
-                </div>
-                <p className="text-xs text-muted-foreground max-w-2xl">
-                  {t('home.tmdbAttribution.disclaimer')}
-                </p>
               </div>
             </div>
           </div>

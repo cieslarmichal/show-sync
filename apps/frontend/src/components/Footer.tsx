@@ -174,8 +174,31 @@ export default function Footer() {
         </div>
       </div>
 
+      {/* TMDB Attribution */}
+      <div className="border-t border-border mt-4 sm:mt-8 pt-4 sm:pt-6 max-w-6xl mx-auto px-3 sm:px-4">
+        <div className="flex flex-col items-center gap-2 text-center">
+          <div className="flex items-center gap-2">
+            <span className="text-[10px] sm:text-xs text-muted-foreground">{t('footer.poweredBy')}</span>
+            <a
+              href="https://www.themoviedb.org"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:opacity-80 transition-opacity"
+              aria-label="The Movie Database"
+            >
+              <img
+                src="/tmdb-logo.svg"
+                alt="TMDB"
+                className="h-3 sm:h-4"
+              />
+            </a>
+          </div>
+          <p className="text-[9px] sm:text-[10px] text-muted-foreground max-w-md">{t('footer.tmdbDisclaimer')}</p>
+        </div>
+      </div>
+
       {/* Bottom Bar */}
-      <div className="border-t border-border mt-4 sm:mt-10 pt-4 sm:pt-6 max-w-6xl mx-auto px-3 sm:px-4">
+      <div className="border-t border-border mt-4 sm:mt-6 pt-4 sm:pt-6 max-w-6xl mx-auto px-3 sm:px-4">
         <div className="flex flex-col sm:flex-row items-center justify-between gap-2 sm:gap-4 text-[10px] sm:text-xs text-muted-foreground">
           <div className="flex flex-wrap items-center justify-center sm:justify-start gap-x-1.5 gap-y-1 text-center sm:text-left">
             <span className="whitespace-nowrap">© {currentYear} ShowSync.</span>

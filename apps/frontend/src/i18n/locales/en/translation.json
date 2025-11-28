@@ -683,7 +683,9 @@
     "email": "Email",
     "location": "Cracow, Poland",
     "rights": "All rights reserved.",
-    "allRightsReserved": "All rights reserved."
+    "allRightsReserved": "All rights reserved.",
+    "poweredBy": "Powered by",
+    "tmdbDisclaimer": "This product uses the TMDB API but is not endorsed or certified by TMDB."
   },
   "validation": {
     "required": "This field is required",
@@ -737,14 +739,14 @@
   },
   "seo": {
     "default": {
-      "title": "ShowSync - AI-Powered Show Recommendations for Groups",
-      "description": "Find the perfect TV shows for your watch party. Get AI-powered recommendations based on group preferences. Create watch rooms and discover shows everyone will love.",
-      "keywords": "tv show recommendations, watch party, group recommendations, ai recommendations, show matching, tv shows, watch together, streaming recommendations"
+      "title": "ShowSync - AI-Powered Show Recommendations for You & Groups",
+      "description": "Discover your next favorite series with AI-powered recommendations. Perfect for solo watching or group watch parties. Stop endless scrolling and start watching.",
+      "keywords": "tv show recommendations, ai recommendations, personalized recommendations, watch party, group recommendations, show matching, tv shows, watch together, streaming recommendations, what to watch next, solo watching, individual recommendations"
     },
     "home": {
-      "title": "ShowSync - Stop Arguing About What to Watch",
-      "description": "End the endless scrolling and debate. Get personalized TV show recommendations that match your group's taste and watchlists. Factor in likes, dislikes, Want to Watch, and Not Interested to find shows everyone actually wants to watch.",
-      "keywords": "tv show recommendations, watch party, group recommendations, smart suggestions, show matching, tv shows, watch together, streaming recommendations, what to watch, watchlist, your next show, personalized recommendations, group watchlists, like and dislike, want to watch, series suggestions, binge-worthy shows, tv series, streaming services, show picker, entertainment choices, tv guide, watchroom, tv show finder"
+      "title": "ShowSync - Discover Your Next Favorite Series",
+      "description": "Get AI-powered TV show recommendations tailored to your taste—whether you're watching solo or with friends. Rate shows, build your profile, and never waste time scrolling again. Perfect for individuals and groups.",
+      "keywords": "tv show recommendations, ai recommendations, personalized recommendations, what to watch, discover new shows, tv series finder, streaming recommendations, watch party, group recommendations, solo watching, individual recommendations, show matching, watchlist, rate shows, tv shows, binge-worthy shows, series suggestions, streaming services, watch together, find shows, entertainment choices, tv guide, show picker, next show to watch"
     },
     "dashboard": {
       "title": "Dashboard - ShowSync",
@@ -753,8 +755,8 @@
     },
     "series": {
       "title": "Shows - ShowSync",
-      "description": "Browse, rate, and manage your TV shows. Tell us what you like to get better suggestions.",
-      "keywords": "tv shows, rate shows, rated shows, tv recommendations, show list"
+      "description": "Browse, rate, and manage your TV shows. Build your personal taste profile to get better AI-powered recommendations.",
+      "keywords": "tv shows, rate shows, rated shows, tv recommendations, show list, build taste profile, personal recommendations, discover shows, browse series"
     },
     "watchlist": {
       "title": "Watchlist - ShowSync",
@@ -763,8 +765,8 @@
     },
     "watchRooms": {
       "title": "Watch Rooms - ShowSync",
-      "description": "Create and manage watch rooms. Get AI-powered recommendations for groups based on shared preferences.",
-      "keywords": "watch rooms, group recommendations, watch party, shared watchlist, group tv shows"
+      "description": "Create watch rooms and get AI-powered recommendations that match everyone's preferences. Perfect for groups, couples, and families.",
+      "keywords": "watch rooms, group recommendations, watch party, shared watchlist, group tv shows, watch together, couple recommendations, family shows, group watching, shared preferences"
     },
     "profile": {
       "title": "Profile - ShowSync",

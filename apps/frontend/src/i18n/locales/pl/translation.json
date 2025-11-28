@@ -89,7 +89,7 @@
       "smartTitle": "AI, które Cię rozumie",
       "smartDesc": "Nasz silnik rekomendacji uczy się Twojego unikalnego gustu — nie tylko tego, co jest popularne. Odkrywaj perełki, które naprawdę pokochasz.",
       "groupsTitle": "Sam lub ze znajomymi",
-      "groupsDesc": "Śledź swoją osobistą listę lub twórz pokoje, aby znaleźć seriale, które spodoba się całej grupie.",
+      "groupsDesc": "Śledź swoją osobistą listę i twórz pokoje, aby znaleźć seriale, które spodobają się całej grupie.",
       "timeTitle": "Przestań marnować czas",
       "timeDesc": "Koniec z niekończącym się przewijaniem i dyskusjami. Otrzymaj rekomendacje AI, które równoważą gusta wszystkich w sekundę.",
       "noCompromiseTitle": "Sprawiedliwe dla wszystkich",
@@ -686,7 +686,9 @@
     "email": "E-mail",
     "location": "Kraków, Polska",
     "rights": "Wszelkie prawa zastrzeżone.",
-    "allRightsReserved": "Wszelkie prawa zastrzeżone."
+    "allRightsReserved": "Wszelkie prawa zastrzeżone.",
+    "poweredBy": "Wspierane przez",
+    "tmdbDisclaimer": "Ten produkt używa API TMDB, ale nie jest zatwierdzony ani certyfikowany przez TMDB."
   },
   "validation": {
     "required": "To pole jest wymagane",
@@ -740,14 +742,14 @@
   },
   "seo": {
     "default": {
-      "title": "ShowSync - Rekomendacje seriali AI dla grup",
-      "description": "Znajdź idealne seriale dla swojego wieczoru filmowego. Otrzymuj rekomendacje oparte na preferencjach grupy dzięki AI. Twórz pokoje oglądania i odkrywaj seriale, które pokochają wszyscy.",
-      "keywords": "rekomendacje seriali, wieczór filmowy, rekomendacje grupowe, rekomendacje ai, dopasowanie seriali, seriale telewizyjne, oglądanie razem, rekomendacje streamingowe"
+      "title": "ShowSync - Rekomendacje seriali AI dla Ciebie i grup",
+      "description": "Odkryj swój następny ulubiony serial dzięki rekomendacjom AI. Idealne do oglądania samemu lub z grupą przyjaciół. Przestań przewijać, zacznij oglądać.",
+      "keywords": "rekomendacje seriali, rekomendacje ai, spersonalizowane rekomendacje, wieczór filmowy, rekomendacje grupowe, dopasowanie seriali, seriale telewizyjne, oglądanie razem, rekomendacje streamingowe, co oglądać, oglądanie samemu, indywidualne rekomendacje"
     },
     "home": {
-      "title": "ShowSync - Przestań się spierać o to, co oglądać",
-      "description": "Zakończ niekończące się przewijanie i dyskusje. Otrzymuj spersonalizowane rekomendacje seriali dopasowane do gustu Twojej grupy i list oglądania. Uwzględniaj polubienia, niepolubienia, Chcę obejrzeć i Nie interesuje mnie, aby znaleźć seriale, które wszyscy naprawdę chcą oglądać.",
-      "keywords": "rekomendacje seriali, wieczór filmowy, rekomendacje grupowe, inteligentne sugestie, dopasowanie seriali, seriale telewizyjne, oglądanie razem, rekomendacje streamingowe, co oglądać, lista oglądania, Twój następny serial, spersonalizowane rekomendacje, grupowe listy oglądania, polubienia i niepolubienia, chcę obejrzeć, sugestie seriali, seriale do oglądania w jeden wieczór, seriale telewizyjne, usługi streamingowe, wybór serialu, rozrywka, przewodnik telewizyjny, pokój oglądania, wyszukiwarka seriali"
+      "title": "ShowSync - Odkryj swój następny ulubiony serial",
+      "description": "Otrzymuj rekomendacje seriali dopasowane do Twojego gustu dzięki AI—niezależnie czy oglądasz sam, czy z przyjaciółmi. Oceniaj seriale, buduj swój profil i nigdy więcej nie trać czasu na przewijanie. Idealne dla osób i grup.",
+      "keywords": "rekomendacje seriali, rekomendacje ai, spersonalizowane rekomendacje, co oglądać, odkryj nowe seriale, wyszukiwarka seriali, rekomendacje streamingowe, wieczór filmowy, rekomendacje grupowe, oglądanie samemu, indywidualne rekomendacje, dopasowanie seriali, lista oglądania, oceniaj seriale, seriale telewizyjne, seriale do oglądania w jeden wieczór, sugestie seriali, usługi streamingowe, oglądanie razem, znajdź seriale, rozrywka, przewodnik telewizyjny, wybór serialu, następny serial do obejrzenia"
     },
     "dashboard": {
       "title": "Panel - ShowSync",
@@ -756,8 +758,8 @@
     },
     "series": {
       "title": "Seriale - ShowSync",
-      "description": "Przeglądaj, oceniaj i zarządzaj swoimi serialami. Powiedz nam, co lubisz, aby otrzymać lepsze sugestie.",
-      "keywords": "seriale telewizyjne, oceniaj seriale, ocenione seriale, rekomendacje seriali, lista seriali"
+      "description": "Przeglądaj, oceniaj i zarządzaj swoimi serialami. Zbuduj swój osobisty profil gustów, aby otrzymać lepsze rekomendacje AI.",
+      "keywords": "seriale telewizyjne, oceniaj seriale, ocenione seriale, rekomendacje seriali, lista seriali, profil gustów, osobiste rekomendacje, odkryj seriale, przeglądaj seriale"
     },
     "watchlist": {
       "title": "Lista oglądania - ShowSync",
@@ -766,8 +768,8 @@
     },
     "watchRooms": {
       "title": "Pokoje oglądania - ShowSync",
-      "description": "Twórz i zarządzaj pokojami oglądania. Otrzymuj rekomendacje AI dla grup oparte na wspólnych preferencjach.",
-      "keywords": "pokoje oglądania, rekomendacje grupowe, wieczór filmowy, wspólna lista oglądania, grupowe seriale"
+      "description": "Twórz pokoje oglądania i otrzymuj rekomendacje AI dopasowane do preferencji wszystkich. Idealne dla grup, par i rodzin.",
+      "keywords": "pokoje oglądania, rekomendacje grupowe, wieczór filmowy, wspólna lista oglądania, grupowe seriale, oglądanie razem, rekomendacje dla par, seriale rodzinne, oglądanie w grupie, wspólne preferencje"
     },
     "profile": {
       "title": "Profil - ShowSync",

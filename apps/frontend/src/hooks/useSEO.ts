@@ -29,7 +29,7 @@ export function useSEO(configOrKey: Partial<SEOConfig> | string): void {
         title: t(`${translationKey}.title`),
         description: t(`${translationKey}.description`),
         keywords: t(`${translationKey}.keywords`, ''),
-        noindex: t(`${translationKey}.noindex`, { defaultValue: false }) as boolean,
+        noindex: t(`${translationKey}.noindex`, { defaultValue: false }) as unknown as boolean,
         locale: i18n.language === 'pl' ? 'pl_PL' : 'en_US',
       };
     } else {
