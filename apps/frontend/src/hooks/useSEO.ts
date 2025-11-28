@@ -8,7 +8,7 @@ import { updateMetaTags, injectStructuredData, type SEOConfig } from '../utils/s
  * @example
  * // Use with translation key
  * useSEO('home');
- * 
+ *
  * // Use with custom config (overrides translations)
  * useSEO({
  *   title: 'Shows - ShowSync',
@@ -24,7 +24,7 @@ export function useSEO(configOrKey: Partial<SEOConfig> | string): void {
     // If a string is passed, use it as a translation key
     if (typeof configOrKey === 'string') {
       const translationKey = `seo.${configOrKey}`;
-      
+
       config = {
         title: t(`${translationKey}.title`),
         description: t(`${translationKey}.description`),

@@ -51,7 +51,7 @@ export default function SearchSeries({
     };
 
     performSearch();
-  }, [debouncedQuery]);
+  }, [debouncedQuery, t]);
 
   const handleAddRating = (series: Series, rating: Rating) => {
     onAddRating(series, rating);

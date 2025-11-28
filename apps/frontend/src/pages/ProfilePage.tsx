@@ -91,7 +91,7 @@ export default function ProfilePage() {
     };
 
     loadUserDetails();
-  }, []);
+  }, [t]);
 
   const handleDeleteAccount = async () => {
     if (!user) {

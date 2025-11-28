@@ -5,7 +5,7 @@ import { useSEO } from '../hooks/useSEO';
 
 export default function NotFoundPage() {
   const { t } = useTranslation();
-  
+
   useSEO('notFound');
 
   return (

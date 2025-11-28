@@ -16,9 +16,9 @@ import { useSEO } from '../hooks/useSEO';
 
 export default function VerifyEmailPage() {
   const { t } = useTranslation();
-  
+
   useSEO('verifyEmail');
-  
+
   const queryParams = new URLSearchParams(window.location.search);
   const token = queryParams.get('token');
   const [emailVerified, setEmailVerified] = useState(false);

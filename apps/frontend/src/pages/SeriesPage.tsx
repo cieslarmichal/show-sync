@@ -54,7 +54,7 @@ export default function SeriesPage() {
     };
 
     loadRatings();
-  }, []);
+  }, [t]);
 
   useEffect(() => {
     const loadWatchlist = async () => {

@@ -25,7 +25,6 @@ export default function ForgotPasswordPage() {
 
   type FormValues = z.infer<typeof formSchema>;
   useSEO('forgotPassword');
-  });
 
   const [isSubmitted, setIsSubmitted] = useState(false);
 

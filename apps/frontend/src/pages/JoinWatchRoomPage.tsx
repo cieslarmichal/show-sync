@@ -1,4 +1,4 @@
-import { useEffect, useState, useContext } from 'react';
+import { useEffect, useState, useContext, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { Users, UserPlus, Sparkles } from 'lucide-react';
@@ -20,23 +20,26 @@ export default function JoinWatchRoomPage() {
   const { userData } = useContext(AuthContext);
   const navigate = useNavigate();
 
+  const fetchRoomDetails = useCallback(
+    async (id: string) => {
+      try {
+        setIsLoading(true);
+        const fetchedRoom = await getPublicWatchroomDetails(id);
+        setRoom(fetchedRoom);
+      } catch {
+        toast.error(t('watchroom.loadError'));
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [t],
+  );
+
   useEffect(() => {
     if (publicLinkId) {
       fetchRoomDetails(publicLinkId);
     }
-  }, [publicLinkId]);
-
-  const fetchRoomDetails = async (id: string) => {
-    try {
-      setIsLoading(true);
-      const fetchedRoom = await getPublicWatchroomDetails(id);
-      setRoom(fetchedRoom);
-    } catch {
-      toast.error(t('watchroom.loadError'));
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  }, [publicLinkId, fetchRoomDetails]);
 
   const handleJoin = async () => {
     if (!publicLinkId) {

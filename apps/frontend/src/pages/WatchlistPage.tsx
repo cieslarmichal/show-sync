@@ -30,7 +30,7 @@ export default function WatchlistPage() {
     };
 
     loadWatchlist();
-  }, []);
+  }, [t]);
 
   const handleRemoveWatchlist = async (seriesTmdbId: number): Promise<void> => {
     try {
