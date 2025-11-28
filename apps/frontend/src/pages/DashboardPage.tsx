@@ -23,11 +23,7 @@ import { useSEO } from '../hooks/useSEO';
 export default function DashboardPage() {
   const { t } = useTranslation();
 
-  useSEO({
-    title: 'Dashboard - ShowSync',
-    description: 'Your personal ShowSync dashboard. View your show ratings and create watch rooms.',
-    noindex: true, // Private page, don't index
-  });
+  useSEO('dashboard');
 
   const { userDataInitialized } = useContext(AuthContext);
   const { totalCount } = useContext(SeriesContext);

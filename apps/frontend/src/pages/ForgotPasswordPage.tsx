@@ -24,10 +24,7 @@ export default function ForgotPasswordPage() {
   );
 
   type FormValues = z.infer<typeof formSchema>;
-  useSEO({
-    title: 'Reset Password - ShowSync',
-    description: 'Forgot your password? Request a password reset link for your ShowSync account.',
-    keywords: ['reset password', 'forgot password', 'password recovery'],
+  useSEO('forgotPassword');
   });
 
   const [isSubmitted, setIsSubmitted] = useState(false);

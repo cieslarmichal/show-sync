@@ -18,11 +18,7 @@ import { useTranslation } from 'react-i18next';
 export default function WatchRoomsPage() {
   const { t, i18n } = useTranslation();
 
-  useSEO({
-    title: 'Watch Rooms - ShowSync',
-    description: 'Create watch rooms to get smart show suggestions. Invite friends or discover shows for solo binging.',
-    keywords: ['watch rooms', 'group recommendations', 'watch party', 'show recommendations', 'watch together'],
-  });
+  useSEO('watchRooms');
 
   const [rooms, setRooms] = useState<Watchroom[]>([]);
   const [isLoading, setIsLoading] = useState(true);

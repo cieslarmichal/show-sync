@@ -680,5 +680,72 @@
     "sendLink": "Wyślij link weryfikacyjny",
     "noToken": "Brak tokenu w linku.",
     "resendError": "Wystąpił błąd podczas wysyłania e-maila. Spróbuj ponownie."
+  },
+  "seo": {
+    "default": {
+      "title": "ShowSync - Rekomendacje seriali AI dla grup",
+      "description": "Znajdź idealne seriale dla swojego wieczoru filmowego. Otrzymuj rekomendacje oparte na preferencjach grupy dzięki AI. Twórz pokoje oglądania i odkrywaj seriale, które pokochają wszyscy.",
+      "keywords": "rekomendacje seriali, wieczór filmowy, rekomendacje grupowe, rekomendacje ai, dopasowanie seriali, seriale telewizyjne, oglądanie razem, rekomendacje streamingowe"
+    },
+    "home": {
+      "title": "ShowSync - Przestań się spierać o to, co oglądać",
+      "description": "Zakończ niekończące się przewijanie i dyskusje. Otrzymuj spersonalizowane rekomendacje seriali dopasowane do gustu Twojej grupy i list oglądania. Uwzględniaj polubienia, niepolubienia, Chcę obejrzeć i Nie interesuje mnie, aby znaleźć seriale, które wszyscy naprawdę chcą oglądać.",
+      "keywords": "rekomendacje seriali, wieczór filmowy, rekomendacje grupowe, inteligentne sugestie, dopasowanie seriali, seriale telewizyjne, oglądanie razem, rekomendacje streamingowe, co oglądać, lista oglądania, Twój następny serial, spersonalizowane rekomendacje, grupowe listy oglądania, polubienia i niepolubienia, chcę obejrzeć, sugestie seriali, seriale do oglądania w jeden wieczór, seriale telewizyjne, usługi streamingowe, wybór serialu, rozrywka, przewodnik telewizyjny, pokój oglądania, wyszukiwarka seriali"
+    },
+    "dashboard": {
+      "title": "Panel - ShowSync",
+      "description": "Twój osobisty panel ShowSync. Zobacz swoje oceny seriali i twórz pokoje oglądania.",
+      "noindex": true
+    },
+    "series": {
+      "title": "Seriale - ShowSync",
+      "description": "Przeglądaj, oceniaj i zarządzaj swoimi serialami. Powiedz nam, co lubisz, aby otrzymać lepsze sugestie.",
+      "keywords": "seriale telewizyjne, oceniaj seriale, ocenione seriale, rekomendacje seriali, lista seriali"
+    },
+    "watchlist": {
+      "title": "Lista oglądania - ShowSync",
+      "description": "Zarządzaj swoją listą oglądania. Śledź seriale, które chcesz obejrzeć i nigdy nie trać z oczu swojego następnego serialowego maratonu.",
+      "keywords": "lista oglądania, chcę obejrzeć, seriale do obejrzenia, tracker seriali, menedżer listy oglądania"
+    },
+    "watchRooms": {
+      "title": "Pokoje oglądania - ShowSync",
+      "description": "Twórz i zarządzaj pokojami oglądania. Otrzymuj rekomendacje AI dla grup oparte na wspólnych preferencjach.",
+      "keywords": "pokoje oglądania, rekomendacje grupowe, wieczór filmowy, wspólna lista oglądania, grupowe seriale"
+    },
+    "profile": {
+      "title": "Profil - ShowSync",
+      "description": "Zarządzaj swoim profilem i ustawieniami konta ShowSync.",
+      "noindex": true
+    },
+    "login": {
+      "title": "Zaloguj się - ShowSync",
+      "description": "Zaloguj się do swojego konta ShowSync, aby otrzymać spersonalizowane rekomendacje seriali.",
+      "noindex": true
+    },
+    "register": {
+      "title": "Zarejestruj się - ShowSync",
+      "description": "Utwórz darmowe konto ShowSync, aby otrzymać spersonalizowane rekomendacje seriali dla siebie i swojej grupy.",
+      "noindex": true
+    },
+    "forgotPassword": {
+      "title": "Nie pamiętam hasła - ShowSync",
+      "description": "Zresetuj hasło do swojego konta ShowSync.",
+      "noindex": true
+    },
+    "resetPassword": {
+      "title": "Resetuj hasło - ShowSync",
+      "description": "Ustaw nowe hasło do swojego konta ShowSync.",
+      "noindex": true
+    },
+    "verifyEmail": {
+      "title": "Weryfikacja e-mail - ShowSync",
+      "description": "Zweryfikuj swój adres e-mail, aby aktywować konto ShowSync.",
+      "noindex": true
+    },
+    "notFound": {
+      "title": "Strona nie znaleziona - ShowSync",
+      "description": "Strona, której szukasz, nie istnieje.",
+      "noindex": true
+    }
   }
 }

@@ -5,12 +5,13 @@
 export interface SEOConfig {
   title: string;
   description: string;
-  keywords?: string[];
+  keywords?: string | string[];
   ogImage?: string;
   ogType?: 'website' | 'article';
   canonical?: string;
   noindex?: boolean;
   nofollow?: boolean;
+  locale?: string;
 }
 
 const DEFAULT_SEO: SEOConfig = {
@@ -28,6 +29,7 @@ const DEFAULT_SEO: SEOConfig = {
     'streaming recommendations',
   ],
   ogType: 'website',
+  locale: 'en_US',
 };
 
 /**
@@ -39,11 +41,18 @@ export function updateMetaTags(config: Partial<SEOConfig>): void {
   // Update title
   document.title = seo.title;
 
+  // Update html lang attribute
+  if (seo.locale) {
+    const lang = seo.locale.split('_')[0];
+    document.documentElement.lang = lang;
+  }
+
   // Update or create meta tags
   updateMetaTag('name', 'description', seo.description);
 
-  if (seo.keywords && seo.keywords.length > 0) {
-    updateMetaTag('name', 'keywords', seo.keywords.join(', '));
+  if (seo.keywords) {
+    const keywordsString = Array.isArray(seo.keywords) ? seo.keywords.join(', ') : seo.keywords;
+    updateMetaTag('name', 'keywords', keywordsString);
   }
 
   // Robots meta
@@ -61,6 +70,7 @@ export function updateMetaTags(config: Partial<SEOConfig>): void {
   updateMetaTag('property', 'og:description', seo.description);
   updateMetaTag('property', 'og:type', seo.ogType || 'website');
   updateMetaTag('property', 'og:url', seo.canonical || window.location.href);
+  updateMetaTag('property', 'og:locale', seo.locale || 'en_US');
 
   if (seo.ogImage) {
     updateMetaTag('property', 'og:image', seo.ogImage);

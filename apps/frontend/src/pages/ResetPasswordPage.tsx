@@ -37,11 +37,7 @@ export default function ResetPasswordPage() {
   );
 
   type FormValues = z.infer<typeof formSchema>;
-  useSEO({
-    title: 'Set New Password - ShowSync',
-    description: 'Create a new password for your ShowSync account.',
-    keywords: ['reset password', 'new password', 'change password'],
-  });
+  useSEO('resetPassword');
 
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();

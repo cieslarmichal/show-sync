@@ -1,9 +1,12 @@
 import { Link } from 'react-router-dom';
 import { Button } from '../components/ui/Button';
 import { useTranslation } from 'react-i18next';
+import { useSEO } from '../hooks/useSEO';
 
 export default function NotFoundPage() {
   const { t } = useTranslation();
+  
+  useSEO('notFound');
 
   return (
     <div className="flex min-h-[calc(100vh-80px)] flex-col items-center justify-center px-4">

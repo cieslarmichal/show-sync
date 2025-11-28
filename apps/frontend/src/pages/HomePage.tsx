@@ -12,37 +12,7 @@ export default function HomePage() {
   const navigate = useNavigate();
   const { userData, userDataInitialized } = useContext(AuthContext);
 
-  useSEO({
-    title: 'ShowSync - Stop Arguing About What to Watch',
-    description:
-      "End the endless scrolling and debate. Get personalized TV show recommendations that match your group's taste and watchlists. Factor in likes, dislikes, Want to Watch, and Not Interested to find shows everyone actually wants to watch.",
-    keywords: [
-      'tv show recommendations',
-      'watch party',
-      'group recommendations',
-      'smart suggestions',
-      'show matching',
-      'tv shows',
-      'watch together',
-      'streaming recommendations',
-      'what to watch',
-      'watchlist',
-      'your next show',
-      'personalized recommendations',
-      'group watchlists',
-      'like and dislike',
-      'want to watch',
-      'series suggestions',
-      'binge-worthy shows',
-      'tv series',
-      'streaming services',
-      'show picker',
-      'entertainment choices',
-      'tv guide',
-      'watchroom',
-      'tv show finder',
-    ],
-  });
+  useSEO('home');
 
   // Show loading state while checking authentication
   if (!userDataInitialized) {

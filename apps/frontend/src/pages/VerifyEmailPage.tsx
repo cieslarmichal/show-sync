@@ -12,9 +12,13 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Input } from '../components/ui/Input';
 import { Card, CardContent } from '../components/ui/Card';
 import { useTranslation } from 'react-i18next';
+import { useSEO } from '../hooks/useSEO';
 
 export default function VerifyEmailPage() {
   const { t } = useTranslation();
+  
+  useSEO('verifyEmail');
+  
   const queryParams = new URLSearchParams(window.location.search);
   const token = queryParams.get('token');
   const [emailVerified, setEmailVerified] = useState(false);

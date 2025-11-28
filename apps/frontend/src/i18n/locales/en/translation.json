@@ -677,5 +677,72 @@
     "sendLink": "Send verification link",
     "noToken": "No token in the link.",
     "resendError": "An error occurred while sending the email. Please try again."
+  },
+  "seo": {
+    "default": {
+      "title": "ShowSync - AI-Powered Show Recommendations for Groups",
+      "description": "Find the perfect TV shows for your watch party. Get AI-powered recommendations based on group preferences. Create watch rooms and discover shows everyone will love.",
+      "keywords": "tv show recommendations, watch party, group recommendations, ai recommendations, show matching, tv shows, watch together, streaming recommendations"
+    },
+    "home": {
+      "title": "ShowSync - Stop Arguing About What to Watch",
+      "description": "End the endless scrolling and debate. Get personalized TV show recommendations that match your group's taste and watchlists. Factor in likes, dislikes, Want to Watch, and Not Interested to find shows everyone actually wants to watch.",
+      "keywords": "tv show recommendations, watch party, group recommendations, smart suggestions, show matching, tv shows, watch together, streaming recommendations, what to watch, watchlist, your next show, personalized recommendations, group watchlists, like and dislike, want to watch, series suggestions, binge-worthy shows, tv series, streaming services, show picker, entertainment choices, tv guide, watchroom, tv show finder"
+    },
+    "dashboard": {
+      "title": "Dashboard - ShowSync",
+      "description": "Your personal ShowSync dashboard. View your show ratings and create watch rooms.",
+      "noindex": true
+    },
+    "series": {
+      "title": "Shows - ShowSync",
+      "description": "Browse, rate, and manage your TV shows. Tell us what you like to get better suggestions.",
+      "keywords": "tv shows, rate shows, rated shows, tv recommendations, show list"
+    },
+    "watchlist": {
+      "title": "Watchlist - ShowSync",
+      "description": "Manage your watchlist. Track shows you want to watch and never lose sight of your next binge-worthy series.",
+      "keywords": "watchlist, want to watch, tv shows to watch, show tracker, watchlist manager"
+    },
+    "watchRooms": {
+      "title": "Watch Rooms - ShowSync",
+      "description": "Create and manage watch rooms. Get AI-powered recommendations for groups based on shared preferences.",
+      "keywords": "watch rooms, group recommendations, watch party, shared watchlist, group tv shows"
+    },
+    "profile": {
+      "title": "Profile - ShowSync",
+      "description": "Manage your ShowSync profile and account settings.",
+      "noindex": true
+    },
+    "login": {
+      "title": "Sign In - ShowSync",
+      "description": "Sign in to your ShowSync account to get personalized TV show recommendations.",
+      "noindex": true
+    },
+    "register": {
+      "title": "Sign Up - ShowSync",
+      "description": "Create a free ShowSync account to get personalized TV show recommendations for you and your group.",
+      "noindex": true
+    },
+    "forgotPassword": {
+      "title": "Forgot Password - ShowSync",
+      "description": "Reset your ShowSync account password.",
+      "noindex": true
+    },
+    "resetPassword": {
+      "title": "Reset Password - ShowSync",
+      "description": "Set a new password for your ShowSync account.",
+      "noindex": true
+    },
+    "verifyEmail": {
+      "title": "Verify Email - ShowSync",
+      "description": "Verify your email address to activate your ShowSync account.",
+      "noindex": true
+    },
+    "notFound": {
+      "title": "Page Not Found - ShowSync",
+      "description": "The page you're looking for doesn't exist.",
+      "noindex": true
+    }
   }
 }

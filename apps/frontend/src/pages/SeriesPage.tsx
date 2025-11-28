@@ -19,11 +19,7 @@ import { useSEO } from '../hooks/useSEO';
 export default function SeriesPage() {
   const { t } = useTranslation();
 
-  useSEO({
-    title: 'Shows - ShowSync',
-    description: 'Browse, rate, and manage your TV shows. Tell us what you like to get better suggestions.',
-    keywords: ['tv shows', 'rate shows', 'rated shows', 'tv recommendations', 'show list'],
-  });
+  useSEO('series');
 
   const { refreshCounts } = useContext(SeriesContext);
   const [ratedSeriesIds, setRatedSeriesIds] = useState<Set<number>>(new Set());

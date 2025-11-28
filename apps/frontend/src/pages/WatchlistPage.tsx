@@ -11,11 +11,7 @@ import { useTranslation } from 'react-i18next';
 export default function WatchlistPage() {
   const { t } = useTranslation();
 
-  useSEO({
-    title: 'Watchlist - ShowSync',
-    description: 'Manage your TV show watchlist. Track shows you want to watch.',
-    keywords: ['watchlist', 'want to watch', 'tv shows', 'watch later'],
-  });
+  useSEO('watchlist');
 
   const { refreshCounts } = useContext(SeriesContext);
   const [myWatchlist, setMyWatchlist] = useState<SeriesWatchlist[]>([]);

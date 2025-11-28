@@ -9,12 +9,7 @@ export default function LoginPage() {
   const { userData, userDataInitialized } = useContext(AuthContext);
   const { t } = useTranslation();
 
-  useSEO({
-    title: 'Sign In - ShowSync',
-    description:
-      'Sign in to ShowSync and find shows your whole group will enjoy. Access your ratings, watch rooms, and AI-powered recommendations.',
-    keywords: ['login', 'sign in', 'account access', 'tv show recommendations'],
-  });
+  useSEO('login');
 
   const [searchParams] = useSearchParams();
   const redirect = searchParams.get('redirect');

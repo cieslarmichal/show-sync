@@ -15,12 +15,7 @@ export default function RegisterPage() {
   const { userData, userDataInitialized } = useContext(AuthContext);
   const navigate = useNavigate();
 
-  useSEO({
-    title: 'Create Account - ShowSync',
-    description:
-      'Join ShowSync for free and get AI-powered TV recommendations. Find shows everyone will love with smart matching for groups and solo viewers.',
-    keywords: ['sign up', 'register', 'create account', 'join showsync', 'free account'],
-  });
+  useSEO('register');
 
   const [searchParams] = useSearchParams();
   const redirect = searchParams.get('redirect');

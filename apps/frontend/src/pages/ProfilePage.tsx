@@ -49,11 +49,7 @@ export default function ProfilePage() {
       path: ['confirmPassword'],
     });
 
-  useSEO({
-    title: 'My Profile - ShowSync',
-    description: 'Manage your ShowSync account settings, view your activity statistics, and update your preferences.',
-    keywords: ['profile', 'account settings', 'user profile', 'account management'],
-  });
+  useSEO('profile');
 
   const { userData, clearUserData } = useContext(AuthContext);
   const [userDetails, setUserDetails] = useState<UserType | null>(null);
