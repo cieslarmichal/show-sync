@@ -16,7 +16,7 @@ import { useSEO } from '../hooks/useSEO.ts';
 import { useTranslation } from 'react-i18next';
 
 export default function WatchRoomsPage() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   useSEO({
     title: 'Watch Rooms - ShowSync',
@@ -180,7 +180,7 @@ export default function WatchRoomsPage() {
                             <div className="flex items-center text-xs text-muted-foreground ml-auto">
                               <Calendar className="w-3 h-3 mr-1.5 shrink-0" />
                               <span className="whitespace-nowrap">
-                                {new Date(room.createdAt).toLocaleDateString('en-US', {
+                                {new Date(room.createdAt).toLocaleDateString(i18n.language, {
                                   month: 'short',
                                   day: 'numeric',
                                   year: 'numeric',

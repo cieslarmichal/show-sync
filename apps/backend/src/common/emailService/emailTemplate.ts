@@ -1,4 +1,5 @@
 import type { Config } from '../../core/config.ts';
+import type { Language } from '../types/language.ts';
 
 export type EmailTemplateName = keyof Config['resend']['emails'];
 
@@ -18,6 +19,7 @@ interface EmailTemplateDataMap extends Record<EmailTemplateName, unknown> {
 export type EmailTemplate = {
   [K in keyof EmailTemplateDataMap]: {
     readonly name: K;
+    readonly language: Language;
     readonly data: EmailTemplateDataMap[K];
   };
 }[keyof EmailTemplateDataMap];

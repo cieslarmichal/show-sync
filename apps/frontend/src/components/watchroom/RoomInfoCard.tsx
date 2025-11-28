@@ -40,7 +40,7 @@ export function RoomInfoCard({
   }>({ open: false });
   const [confirmLeaveDialog, setConfirmLeaveDialog] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   const SERIES_LENGTH_LABELS = {
     all: t('watchroom.roomInfo.seriesLength.all'),
@@ -158,7 +158,7 @@ export function RoomInfoCard({
               <div className="flex items-center gap-1">
                 <Calendar className="w-3 h-3" />
                 <span>
-                  {new Date(room.createdAt).toLocaleDateString('en-US', {
+                  {new Date(room.createdAt).toLocaleDateString(i18n.language, {
                     month: 'short',
                     day: 'numeric',
                     year: 'numeric',

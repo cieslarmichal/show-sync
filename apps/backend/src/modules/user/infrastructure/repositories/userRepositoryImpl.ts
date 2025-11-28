@@ -1,6 +1,7 @@
 import { eq } from 'drizzle-orm';
 
 import { IdService } from '../../../../common/id/idService.ts';
+import type { Language } from '../../../../common/types/language.ts';
 import type { DatabaseClient } from '../../../../infrastructure/database/databaseClient.ts';
 import { users } from '../../../../infrastructure/database/schema.ts';
 import type { Transaction } from '../../../../infrastructure/database/transaction.ts';
@@ -23,6 +24,7 @@ export class UserRepositoryImpl implements UserRepository {
         email: userData.email,
         password: userData.password,
         isEmailVerified: userData.isEmailVerified ?? false,
+        language: userData.language,
       })
       .returning();
 
@@ -76,6 +78,7 @@ export class UserRepositoryImpl implements UserRepository {
       email: dbUser.email,
       password: dbUser.password,
       isEmailVerified: dbUser.isEmailVerified,
+      language: dbUser.language as Language,
       createdAt: dbUser.createdAt,
     };
 

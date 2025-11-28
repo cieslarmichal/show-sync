@@ -1,3 +1,4 @@
+import type { Language } from '../../../../common/types/language.ts';
 import type { EmailTemplateName } from '../../../../common/emailService/emailTemplate.ts';
 
 export interface Email {
@@ -5,6 +6,7 @@ export interface Email {
   readonly recipient: string;
   readonly templateName: EmailTemplateName;
   readonly payload: string;
+  readonly language: Language;
   readonly status: EmailStatus;
   readonly createdAt: Date;
 }

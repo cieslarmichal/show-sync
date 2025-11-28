@@ -10,15 +10,23 @@ import { Input } from '@/components/ui/Input';
 import { requestPasswordReset } from '@/api/queries/requestPasswordReset';
 import { useSEO } from '@/hooks/useSEO';
 import { useTranslation } from 'react-i18next';
-
-const formSchema = z.object({
-  email: z.string().email().max(64),
-});
-
-type FormValues = z.infer<typeof formSchema>;
+import { useMemo } from 'react';
 
 export default function ForgotPasswordPage() {
   const { t } = useTranslation();
+
+  const formSchema = useMemo(
+    () =>
+      z.object({
+        email: z
+          .string()
+          .email(t('validation.invalidEmail'))
+          .max(64, t('validation.emailMaxLength')),
+      }),
+    [t],
+  );
+
+  type FormValues = z.infer<typeof formSchema>;
   useSEO({
     title: 'Reset Password - ShowSync',
     description: 'Forgot your password? Request a password reset link for your ShowSync account.',

@@ -6,6 +6,7 @@ export const users = pgTable('users', {
   email: varchar('email', { length: 255 }).notNull().unique(),
   password: text('password').notNull(),
   isEmailVerified: boolean('is_email_verified').notNull().default(false),
+  language: varchar('language', { length: 2 }).notNull().default('en'),
   createdAt: timestamp('created_at').notNull().defaultNow(),
 });
 
@@ -60,6 +61,7 @@ export const emails = pgTable(
     recipient: varchar('recipient', { length: 255 }).notNull(),
     status: varchar('status', { length: 20 }).notNull(),
     templateName: varchar('template_name', { length: 20 }).notNull(),
+    language: varchar('language', { length: 2 }).notNull().default('en'),
     createdAt: timestamp('created_at').notNull().defaultNow(),
   },
   (table) => [

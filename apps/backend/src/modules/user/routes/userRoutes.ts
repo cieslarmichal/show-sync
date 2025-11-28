@@ -23,6 +23,7 @@ import { LogoutUserAction } from '../application/actions/logoutUserAction.ts';
 import { RefreshTokenAction } from '../application/actions/refreshTokenAction.ts';
 import { ResendVerificationEmailAction } from '../application/actions/resendVerificationEmailAction.ts';
 import { SendResetPasswordEmailAction } from '../application/actions/sendResetPasswordEmailAction.ts';
+import { UpdateUserLanguageAction } from '../application/actions/updateUserLanguageAction.ts';
 import { ValidateOneTimeTokenAction } from '../application/actions/validateOneTimeTokenAction.ts';
 import { VerifyUserEmailAction } from '../application/actions/verifyUserEmailAction.ts';
 import { PasswordService } from '../application/services/passwordService.ts';
@@ -39,6 +40,7 @@ import {
   loginResponseSchema,
   passwordSchema,
   registerRequestSchema,
+  updateUserLanguageRequestSchema,
   userSchema,
   type UserDto,
 } from './userSchemas.ts';
@@ -67,6 +69,7 @@ export const userRoutes: FastifyPluginAsyncTypebox<{
       name: user.name,
       email: user.email,
       isEmailVerified: user.isEmailVerified,
+      language: user.language,
       createdAt: user.createdAt.toISOString(),
     };
   };
@@ -163,6 +166,7 @@ export const userRoutes: FastifyPluginAsyncTypebox<{
     oneTimeTokenRepository,
     databaseClient,
   );
+  const updateUserLanguageAction = new UpdateUserLanguageAction(userRepository, loggerService);
 
   const authenticationMiddleware = createAuthenticationMiddleware(tokenService);
 
@@ -182,6 +186,7 @@ export const userRoutes: FastifyPluginAsyncTypebox<{
           name: request.body.name,
           email: request.body.email,
           password: request.body.password,
+          language: request.body.language || 'en',
         },
         {
           requestId: request.id,
@@ -426,6 +431,39 @@ export const userRoutes: FastifyPluginAsyncTypebox<{
       const { token, newPassword } = request.body;
 
       await changePasswordByTokenAction.execute({ token, newPassword });
+
+      return reply.status(204).send();
+    },
+  });
+
+  fastify.patch('/users/me/language', {
+    schema: {
+      body: updateUserLanguageRequestSchema,
+      response: {
+        204: Type.Null(),
+      },
+    },
+    config: {
+      rateLimit: config.rateLimit.profile,
+    },
+    preHandler: [authenticationMiddleware],
+    handler: async (request, reply) => {
+      if (!request.user) {
+        throw new UnauthorizedAccessError({
+          reason: 'User not authenticated',
+        });
+      }
+
+      const { userId } = request.user;
+      const { language } = request.body;
+
+      await updateUserLanguageAction.execute(
+        { userId, language },
+        {
+          requestId: request.id,
+          userId,
+        },
+      );
 
       return reply.status(204).send();
     },

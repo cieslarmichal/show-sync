@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -12,26 +12,31 @@ import { resetPassword } from '@/api/queries/resetPassword';
 import { useSEO } from '@/hooks/useSEO';
 import { useTranslation } from 'react-i18next';
 
-const formSchema = z
-  .object({
-    newPassword: z
-      .string()
-      .min(8)
-      .max(128)
-      .regex(/[A-Z]/)
-      .regex(/[a-z]/)
-      .regex(/[0-9]/)
-      .regex(/[!@#$%^&*(),.?":{}|<>]/),
-    confirmPassword: z.string(),
-  })
-  .refine((data) => data.newPassword === data.confirmPassword, {
-    path: ['confirmPassword'],
-  });
-
-type FormValues = z.infer<typeof formSchema>;
-
 export default function ResetPasswordPage() {
   const { t } = useTranslation();
+
+  const formSchema = useMemo(
+    () =>
+      z
+        .object({
+          newPassword: z
+            .string()
+            .min(8, t('validation.passwordMinLength'))
+            .max(128, t('validation.passwordMaxLength'))
+            .regex(/[A-Z]/, t('validation.passwordUppercase'))
+            .regex(/[a-z]/, t('validation.passwordLowercase'))
+            .regex(/[0-9]/, t('validation.passwordDigit'))
+            .regex(/[!@#$%^&*(),.?":{}|<>]/, t('validation.passwordSpecial')),
+          confirmPassword: z.string(),
+        })
+        .refine((data) => data.newPassword === data.confirmPassword, {
+          path: ['confirmPassword'],
+          message: t('validation.passwordsMatch'),
+        }),
+    [t],
+  );
+
+  type FormValues = z.infer<typeof formSchema>;
   useSEO({
     title: 'Set New Password - ShowSync',
     description: 'Create a new password for your ShowSync account.',
@@ -323,10 +328,11 @@ export default function ResetPasswordPage() {
           <div className="bg-muted/50 rounded-md p-4 space-y-2">
             <p className="text-xs font-medium text-foreground">{t('auth.resetPassword.requirements')}</p>
             <ul className="text-xs text-muted-foreground space-y-1 list-disc list-inside">
-              <li>{t('auth.register.requirement1')}</li>
-              <li>{t('auth.register.requirement3')}</li>
-              <li>{t('auth.register.requirement4')}</li>
-              <li>{t('auth.register.requirement5')}</li>
+              <li>{t('auth.resetPassword.requirement1')}</li>
+              <li>{t('auth.resetPassword.requirement2')}</li>
+              <li>{t('auth.resetPassword.requirement3')}</li>
+              <li>{t('auth.resetPassword.requirement4')}</li>
+              <li>{t('auth.resetPassword.requirement5')}</li>
             </ul>
           </div>
 

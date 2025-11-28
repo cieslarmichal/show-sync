@@ -55,7 +55,7 @@ export function SeriesWatchlistCard({ seriesTmdbId, details, type, isRemoving, o
             side="bottom"
             className="hidden sm:block"
           >
-            Remove from watchlist
+            {t('series.removeFromWatchlist')}
           </TooltipContent>
         </Tooltip>
 

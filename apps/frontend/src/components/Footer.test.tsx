@@ -42,7 +42,7 @@ describe('Footer', () => {
   it('should render app description', () => {
     renderFooter();
 
-    expect(screen.getByText(/Find shows your whole group will enjoy/i)).toBeInTheDocument();
+    expect(screen.getByText(/Find Your Next Favorite Show/i)).toBeInTheDocument();
   });
 
   it('should render contact section', () => {
@@ -115,6 +115,7 @@ describe('Footer', () => {
       name: 'Test User',
       createdAt: new Date().toISOString(),
       isEmailVerified: true,
+      language: 'en' as const,
     };
     renderFooter(userData);
 
@@ -161,6 +162,7 @@ describe('Footer', () => {
       name: 'Test User',
       createdAt: new Date().toISOString(),
       isEmailVerified: true,
+      language: 'en' as const,
     };
     renderFooter(userData);
 
@@ -175,6 +177,7 @@ describe('Footer', () => {
       name: 'Test User',
       createdAt: new Date().toISOString(),
       isEmailVerified: true,
+      language: 'en' as const,
     };
     renderFooter(userData);
 
@@ -189,6 +192,7 @@ describe('Footer', () => {
       name: 'Test User',
       createdAt: new Date().toISOString(),
       isEmailVerified: true,
+      language: 'en' as const,
     };
     renderFooter(userData);
 
@@ -203,6 +207,7 @@ describe('Footer', () => {
       name: 'Test User',
       createdAt: new Date().toISOString(),
       isEmailVerified: true,
+      language: 'en' as const,
     };
     renderFooter(userData);
 

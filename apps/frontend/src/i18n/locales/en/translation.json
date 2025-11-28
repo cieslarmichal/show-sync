@@ -238,7 +238,32 @@
     },
     "resetPassword": {
       "title": "Reset Password",
-      "subtitle": "Enter your new password"
+      "subtitle": "Enter your new password",
+      "validating": "Validating Reset Link",
+      "verifying": "Please wait while we verify your reset link...",
+      "linkExpired": "Link Expired",
+      "invalidLink": "This password reset link is invalid or has expired",
+      "expiredMessage": "Please request a new password reset link to continue",
+      "requestNew": "Request New Link",
+      "backToSignIn": "Back to Sign In",
+      "successTitle": "Password Reset Successful!",
+      "successMessage": "Your password has been updated successfully",
+      "redirecting": "Redirecting you to sign in...",
+      "goToSignIn": "Go to Sign In",
+      "newPassword": "New Password",
+      "newPasswordPlaceholder": "Enter your new password",
+      "confirmPassword": "Confirm Password",
+      "confirmPasswordPlaceholder": "Confirm your new password",
+      "resetting": "Resetting Password...",
+      "resetButton": "Reset Password",
+      "requirements": "Password Requirements:",
+      "requirement1": "At least 8 characters",
+      "requirement2": "Contains lowercase letter",
+      "requirement3": "Contains uppercase letter",
+      "requirement4": "Contains digit",
+      "requirement5": "Contains special character",
+      "rememberPassword": "Remember your password?",
+      "signIn": "Sign in"
     },
     "logout": {
       "loggingOut": "Logging out..."
@@ -275,6 +300,8 @@
     "removeRatingError": "Could not remove rating. Please try again.",
     "ratingUpdated": "Rating updated to {{emoji}}",
     "updateRatingError": "Could not update your rating. Please try again.",
+    "removeFromWatchlist": "Remove from watchlist",
+    "removeFromRatings": "Remove from ratings",
     "yourRatings": "Your Ratings",
     "showCount": "{{count}} show",
     "showCount_plural": "{{count}} shows",
@@ -303,6 +330,16 @@
     "watchlist": {
       "wantToWatch": "Want to Watch",
       "notInterested": "Not Interested"
+    },
+    "empty": {
+      "allTitle": "No rated shows yet",
+      "allSubtitle": "Search for shows above and rate the ones you like, love, or dislike!",
+      "lovedTitle": "No loved shows yet",
+      "lovedSubtitle": "Shows you love will appear here",
+      "likedTitle": "No liked shows yet",
+      "likedSubtitle": "Shows you like will appear here",
+      "dislikedTitle": "No disliked shows yet",
+      "dislikedSubtitle": "Shows you dislike will appear here"
     }
   },
   "watchroom": {
@@ -565,9 +602,10 @@
     "contactSupport": "Contact support"
   },
   "notFound": {
-    "title": "404",
-    "subtitle": "Page Not Found",
-    "message": "The page you are looking for doesn't exist or has been moved."
+    "title": "Page Not Found",
+    "description": "The page you are looking for doesn't exist or has been moved.",
+    "goHome": "Go to Home",
+    "goDashboard": "Go to Dashboard"
   },
   "footer": {
     "tagline": "Find Your Next Favorite Show",
@@ -585,6 +623,7 @@
     "required": "This field is required",
     "invalidEmail": "Invalid email address",
     "nameRequired": "Name is required",
+    "roomNameRequired": "Room name is required",
     "passwordMinLength": "Password must be at least 8 characters",
     "passwordLowercase": "Password must contain at least one lowercase letter",
     "passwordUppercase": "Password must contain at least one uppercase letter",
@@ -596,7 +635,8 @@
     "descriptionMaxLength": "Description must be at most 256 characters",
     "commentMaxLength": "Comment must be at most 1000 characters",
     "currentPasswordRequired": "Current password is required",
-    "passwordMismatch": "Passwords don't match"
+    "passwordMismatch": "Passwords don't match",
+    "passwordsMatch": "Passwords do not match"
   },
   "watchlist": {
     "title": "Your Watchlist",

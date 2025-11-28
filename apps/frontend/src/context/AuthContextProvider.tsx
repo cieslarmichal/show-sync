@@ -109,6 +109,14 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
           if (isMounted) {
             setUserData(user);
             setUserDataInitialized(true);
+
+            // Sync language from user preferences
+            if (user.language) {
+              const i18n = (await import('i18next')).default;
+              if (i18n.language !== user.language) {
+                i18n.changeLanguage(user.language);
+              }
+            }
           }
         } catch {
           // Failed to fetch user data - token might be invalid

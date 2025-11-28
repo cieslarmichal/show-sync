@@ -29,7 +29,7 @@ import { changePassword } from '../api/queries/changePassword.ts';
 import { useSEO } from '../hooks/useSEO.ts';
 
 export default function ProfilePage() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   const changePasswordSchema = z
     .object({
@@ -173,7 +173,7 @@ export default function ProfilePage() {
                 <div>
                   <h2 className="text-xl">{user.name}</h2>
                   <p className="text-muted-foreground">
-                    {t('profile.memberSince', { date: new Date(user.createdAt).toLocaleDateString() })}
+                    {t('profile.memberSince', { date: new Date(user.createdAt).toLocaleDateString(i18n.language) })}
                   </p>
                 </div>
               </CardTitle>

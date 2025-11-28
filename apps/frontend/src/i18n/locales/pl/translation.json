@@ -238,7 +238,32 @@
     },
     "resetPassword": {
       "title": "Zresetuj hasło",
-      "subtitle": "Wprowadź nowe hasło"
+      "subtitle": "Wprowadź nowe hasło",
+      "validating": "Weryfikacja linku resetującego",
+      "verifying": "Poczekaj, weryfikujemy Twój link resetujący...",
+      "linkExpired": "Link wygasł",
+      "invalidLink": "Ten link do resetowania hasła jest nieprawidłowy lub wygasł",
+      "expiredMessage": "Poproś o nowy link do resetowania hasła, aby kontynuować",
+      "requestNew": "Poproś o nowy link",
+      "backToSignIn": "Wróć do logowania",
+      "successTitle": "Hasło zresetowane pomyślnie!",
+      "successMessage": "Twoje hasło zostało pomyślnie zaktualizowane",
+      "redirecting": "Przekierowywanie do logowania...",
+      "goToSignIn": "Przejdź do logowania",
+      "newPassword": "Nowe hasło",
+      "newPasswordPlaceholder": "Wprowadź nowe hasło",
+      "confirmPassword": "Potwierdź hasło",
+      "confirmPasswordPlaceholder": "Potwierdź nowe hasło",
+      "resetting": "Resetowanie hasła...",
+      "resetButton": "Zresetuj hasło",
+      "requirements": "Wymagania hasła:",
+      "requirement1": "Minimum 8 znaków",
+      "requirement2": "Zawiera małą literę",
+      "requirement3": "Zawiera wielką literę",
+      "requirement4": "Zawiera cyfrę",
+      "requirement5": "Zawiera znak specjalny",
+      "rememberPassword": "Pamiętasz swoje hasło?",
+      "signIn": "Zaloguj się"
     },
     "logout": {
       "loggingOut": "Wylogowywanie..."
@@ -275,6 +300,8 @@
     "removeRatingError": "Nie udało się usunąć oceny. Spróbuj ponownie.",
     "ratingUpdated": "Ocena zmieniona na {{emoji}}",
     "updateRatingError": "Nie udało się zaktualizować oceny. Spróbuj ponownie.",
+    "removeFromWatchlist": "Usuń z listy",
+    "removeFromRatings": "Usuń z ocen",
     "yourRatings": "Twoje oceny",
     "showCount": "{{count}} serial",
     "showCount_plural": "{{count}} seriali",
@@ -303,6 +330,16 @@
     "watchlist": {
       "wantToWatch": "Chcę obejrzeć",
       "notInterested": "Nie interesuje mnie"
+    },
+    "empty": {
+      "allTitle": "Brak ocenionych seriali",
+      "allSubtitle": "Wyszukaj seriale powyżej i oceń te, które lubisz, uwielbiasz lub nie lubisz!",
+      "lovedTitle": "Brak ulubionych seriali",
+      "lovedSubtitle": "Seriale, które uwielbiasz, pojawią się tutaj",
+      "likedTitle": "Brak lubianych seriali",
+      "likedSubtitle": "Seriale, które lubisz, pojawią się tutaj",
+      "dislikedTitle": "Brak nielubianych seriali",
+      "dislikedSubtitle": "Seriale, których nie lubisz, pojawią się tutaj"
     }
   },
   "watchroom": {
@@ -565,9 +602,10 @@
     "contactSupport": "Skontaktuj się z pomocą techniczną"
   },
   "notFound": {
-    "title": "404",
-    "subtitle": "Strona nie znaleziona",
-    "message": "Strona, której szukasz, nie istnieje lub została przeniesiona."
+    "title": "Strona nie znaleziona",
+    "description": "Strona, której szukasz, nie istnieje lub została przeniesiona.",
+    "goHome": "Przejdź do strony głównej",
+    "goDashboard": "Przejdź do panelu"
   },
   "footer": {
     "tagline": "Znajdź swój następny ulubiony serial",
@@ -585,6 +623,7 @@
     "required": "To pole jest wymagane",
     "invalidEmail": "Nieprawidłowy adres e-mail",
     "nameRequired": "Imię jest wymagane",
+    "roomNameRequired": "Nazwa jest wymagana",
     "passwordMinLength": "Hasło musi mieć co najmniej 8 znaków",
     "passwordLowercase": "Hasło musi zawierać co najmniej jedną małą literę",
     "passwordUppercase": "Hasło musi zawierać co najmniej jedną wielką literę",
@@ -596,7 +635,8 @@
     "descriptionMaxLength": "Opis może mieć maksymalnie 256 znaków",
     "commentMaxLength": "Komentarz może mieć maksymalnie 1000 znaków",
     "currentPasswordRequired": "Obecne hasło jest wymagane",
-    "passwordMismatch": "Hasła nie pasują do siebie"
+    "passwordMismatch": "Hasła nie pasują do siebie",
+    "passwordsMatch": "Hasła nie pasują do siebie"
   },
   "watchlist": {
     "title": "Twoja lista oglądania",

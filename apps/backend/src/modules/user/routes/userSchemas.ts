@@ -15,6 +15,7 @@ export const userSchema = Type.Object({
   name: Type.String({ minLength: 1, maxLength: 64 }),
   email: emailSchema,
   isEmailVerified: Type.Boolean(),
+  language: Type.Union([Type.Literal('en'), Type.Literal('pl')]),
   createdAt: Type.String({ format: 'date-time' }),
 });
 
@@ -22,6 +23,7 @@ export const registerRequestSchema = Type.Object({
   name: Type.String({ minLength: 1, maxLength: 64 }),
   email: emailSchema,
   password: passwordSchema,
+  language: Type.Optional(Type.Union([Type.Literal('en'), Type.Literal('pl')])),
 });
 
 export const loginRequestSchema = Type.Object({
@@ -38,8 +40,13 @@ export const changePasswordRequestSchema = Type.Object({
   newPassword: Type.String(),
 });
 
+export const updateUserLanguageRequestSchema = Type.Object({
+  language: Type.Union([Type.Literal('en'), Type.Literal('pl')]),
+});
+
 export type UserDto = Static<typeof userSchema>;
 export type RegisterRequest = Static<typeof registerRequestSchema>;
 export type LoginRequest = Static<typeof loginRequestSchema>;
 export type LoginResponse = Static<typeof loginResponseSchema>;
 export type ChangePasswordRequest = Static<typeof changePasswordRequestSchema>;
+export type UpdateUserLanguageRequest = Static<typeof updateUserLanguageRequestSchema>;

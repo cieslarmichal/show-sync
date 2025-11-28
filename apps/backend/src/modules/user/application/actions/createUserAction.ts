@@ -4,6 +4,7 @@ import { ResourceAlreadyExistsError } from '../../../../common/errors/resourceAl
 import { IdService } from '../../../../common/id/idService.ts';
 import type { LoggerService } from '../../../../common/logger/loggerService.ts';
 import type { ExecutionContext } from '../../../../common/types/executionContext.ts';
+import type { Language } from '../../../../common/types/language.ts';
 import type { Config } from '../../../../core/config.ts';
 import type { DatabaseClient } from '../../../../infrastructure/database/databaseClient.ts';
 import type { EmailRepository } from '../../domain/repositories/emailRepository.ts';
@@ -16,6 +17,7 @@ export interface CreateUserActionPayload {
   readonly name: string;
   readonly email: string;
   readonly password: string;
+  readonly language: Language;
 }
 
 export class CreateUserAction {
@@ -46,7 +48,7 @@ export class CreateUserAction {
   }
 
   public async execute(payload: CreateUserActionPayload, context: ExecutionContext): Promise<User> {
-    const { name, email: emailInput, password } = payload;
+    const { name, email: emailInput, password, language } = payload;
 
     const email = emailInput.toLowerCase().trim();
 
@@ -55,6 +57,7 @@ export class CreateUserAction {
       event: 'user.create.start',
       requestId: context.requestId,
       email,
+      language,
     });
 
     const existingUser = await this.userRepository.findByEmail(email);
@@ -77,6 +80,7 @@ export class CreateUserAction {
         password: hashedPassword,
         name,
         isEmailVerified: !this.config.emailVerification.enabled,
+        language,
       });
 
       // Send verification email only if feature is enabled
@@ -99,6 +103,7 @@ export class CreateUserAction {
 
         const emailTemplate: EmailTemplate = {
           name: 'verifyAccount',
+          language: createdUser.language,
           data: { verificationLink },
         };
 
@@ -107,6 +112,7 @@ export class CreateUserAction {
             recipient: createdUser.email,
             templateName: emailTemplate.name,
             payload: JSON.stringify(emailTemplate.data),
+            language: emailTemplate.language,
           },
           tx,
         );

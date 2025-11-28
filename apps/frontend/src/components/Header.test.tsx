@@ -94,6 +94,7 @@ describe('Header', () => {
       name: 'Test User',
       createdAt: new Date().toISOString(),
       isEmailVerified: true,
+      language: 'en' as const,
     };
     renderHeader(userData, true);
 
@@ -109,6 +110,7 @@ describe('Header', () => {
       name: 'Test User',
       createdAt: new Date().toISOString(),
       isEmailVerified: true,
+      language: 'en' as const,
     };
     renderHeader(userData, true);
 
@@ -133,6 +135,7 @@ describe('Header', () => {
       name: 'Test User',
       createdAt: new Date().toISOString(),
       isEmailVerified: true,
+      language: 'en' as const,
     };
     renderHeader(userData, true);
 
@@ -154,6 +157,7 @@ describe('Header', () => {
       name: 'Test User',
       createdAt: new Date().toISOString(),
       isEmailVerified: true,
+      language: 'en' as const,
     };
     renderHeader(userData, true);
 
@@ -172,6 +176,7 @@ describe('Header', () => {
       name: 'Test User',
       createdAt: new Date().toISOString(),
       isEmailVerified: true,
+      language: 'en' as const,
     };
     renderHeader(userData, true);
 
@@ -196,6 +201,7 @@ describe('Header', () => {
       name: 'Test User',
       createdAt: new Date().toISOString(),
       isEmailVerified: true,
+      language: 'en' as const,
     };
     renderHeader(userData, true);
 
@@ -220,6 +226,7 @@ describe('Header', () => {
       name: 'Test User',
       createdAt: new Date().toISOString(),
       isEmailVerified: true,
+      language: 'en' as const,
     };
     renderHeader(userData, true);
 
@@ -244,6 +251,7 @@ describe('Header', () => {
       name: 'Test User',
       createdAt: new Date().toISOString(),
       isEmailVerified: true,
+      language: 'en' as const,
     };
     renderHeader(userData, true);
 
@@ -268,6 +276,7 @@ describe('Header', () => {
       name: 'Test User',
       createdAt: new Date().toISOString(),
       isEmailVerified: true,
+      language: 'en' as const,
     };
     renderHeader(userData, true);
 

@@ -24,17 +24,17 @@ export class EmailServiceImpl implements EmailService {
   public async sendEmail(payload: SendEmailPayload): Promise<void> {
     const { toEmail, template } = payload;
 
-    const emailTemplate = this.config.resend.emails[template.name];
+    const emailTemplate = this.config.resend.emails[template.name][template.language];
 
-    let htmlTemplate = this.templateCache.get(template.name);
+    let htmlTemplate = this.templateCache.get(`${template.name}-${template.language}`);
 
     if (!htmlTemplate) {
       const htmlTemplateFilePath = path.join(__dirname, '../../../emails', emailTemplate.templateFile);
       htmlTemplate = readFileSync(htmlTemplateFilePath, 'utf-8');
-      this.templateCache.set(template.name, htmlTemplate);
+      this.templateCache.set(`${template.name}-${template.language}`, htmlTemplate);
     }
 
-    const htmlContent = htmlTemplate.replace(/{{\s*(\w+)\s*}}/g, (_, key: string) => {
+    const htmlContent = htmlTemplate.replace(/{{{\s*(\w+)\s*}}}/g, (_, key: string) => {
       if (key in template.data) {
         return template.data[key as keyof typeof template.data];
       }

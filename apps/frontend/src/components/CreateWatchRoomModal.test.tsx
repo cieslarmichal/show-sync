@@ -71,11 +71,11 @@ describe('CreateWatchRoomModal', () => {
       expect(screen.getByLabelText(/room name/i)).toBeInTheDocument();
     });
 
-    const submitButton = screen.getByRole('button', { name: /^create watch room$/i });
+    const submitButton = screen.getByRole('button', { name: /^create$/i });
     await user.click(submitButton);
 
     await waitFor(() => {
-      expect(screen.getByText('Name is required')).toBeInTheDocument();
+      expect(screen.getByText('Room name is required')).toBeInTheDocument();
     });
   });
 
@@ -93,7 +93,7 @@ describe('CreateWatchRoomModal', () => {
     const nameInput = screen.getByLabelText(/room name/i);
     await user.type(nameInput, 'a'.repeat(65));
 
-    const submitButton = screen.getByRole('button', { name: /^create watch room$/i });
+    const submitButton = screen.getByRole('button', { name: /^create$/i });
     await user.click(submitButton);
 
     await waitFor(() => {
@@ -118,7 +118,7 @@ describe('CreateWatchRoomModal', () => {
     const descriptionInput = screen.getByLabelText(/description/i);
     await user.type(descriptionInput, 'a'.repeat(257));
 
-    const submitButton = screen.getByRole('button', { name: /^create watch room$/i });
+    const submitButton = screen.getByRole('button', { name: /^create$/i });
     await user.click(submitButton);
 
     await waitFor(() => {
@@ -155,7 +155,7 @@ describe('CreateWatchRoomModal', () => {
     await user.type(nameInput, 'Test Room');
     await user.type(descriptionInput, 'Test Description');
 
-    const submitButton = screen.getByRole('button', { name: /^create watch room$/i });
+    const submitButton = screen.getByRole('button', { name: /^create$/i });
     await user.click(submitButton);
 
     await waitFor(() => {
@@ -193,7 +193,7 @@ describe('CreateWatchRoomModal', () => {
     const nameInput = screen.getByLabelText(/room name/i);
     await user.type(nameInput, 'Test Room');
 
-    const submitButton = screen.getByRole('button', { name: /^create watch room$/i });
+    const submitButton = screen.getByRole('button', { name: /^create$/i });
     await user.click(submitButton);
 
     await waitFor(() => {
@@ -227,7 +227,7 @@ describe('CreateWatchRoomModal', () => {
     const nameInput = screen.getByLabelText(/room name/i);
     await user.type(nameInput, 'Test Room');
 
-    const submitButton = screen.getByRole('button', { name: /^create watch room$/i });
+    const submitButton = screen.getByRole('button', { name: /^create$/i });
     await user.click(submitButton);
 
     await waitFor(() => {
@@ -251,7 +251,7 @@ describe('CreateWatchRoomModal', () => {
     const nameInput = screen.getByLabelText(/room name/i);
     await user.type(nameInput, 'Test Room');
 
-    const submitButton = screen.getByRole('button', { name: /^create watch room$/i });
+    const submitButton = screen.getByRole('button', { name: /^create$/i });
     await user.click(submitButton);
 
     await waitFor(() => {
@@ -296,7 +296,7 @@ describe('CreateWatchRoomModal', () => {
     const nameInput = screen.getByLabelText(/room name/i);
     await user.type(nameInput, 'Test Room');
 
-    const submitButton = screen.getByRole('button', { name: /^create watch room$/i });
+    const submitButton = screen.getByRole('button', { name: /^create$/i });
     await user.click(submitButton);
 
     await waitFor(() => {
@@ -330,7 +330,7 @@ describe('CreateWatchRoomModal', () => {
     const nameInput = screen.getByLabelText(/room name/i);
     await user.type(nameInput, 'Test Room');
 
-    const submitButton = screen.getByRole('button', { name: /^create watch room$/i });
+    const submitButton = screen.getByRole('button', { name: /^create$/i });
     await user.click(submitButton);
 
     await waitFor(() => {
@@ -372,7 +372,7 @@ describe('CreateWatchRoomModal', () => {
     const nameInput = screen.getByLabelText(/room name/i);
     await user.type(nameInput, 'Test Room');
 
-    const submitButton = screen.getByRole('button', { name: /^create watch room$/i });
+    const submitButton = screen.getByRole('button', { name: /^create$/i });
     await user.click(submitButton);
 
     await waitFor(() => {

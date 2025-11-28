@@ -278,6 +278,8 @@ export default function SeriesPage() {
                     onRemoveRating={handleRemoveRating}
                     onUpdateRating={handleUpdateRating}
                     isLoading={isLoading}
+                    emptyMessage={t('series.empty.allTitle')}
+                    emptySubMessage={t('series.empty.allSubtitle')}
                   />
                 </TabsContent>
 

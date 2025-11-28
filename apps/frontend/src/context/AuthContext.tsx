@@ -1,4 +1,4 @@
-import { createContext } from 'react';
+import { createContext, useContext } from 'react';
 import { User } from '../api/types/user';
 
 export type AuthContextType = {
@@ -16,3 +16,5 @@ export const AuthContext = createContext<AuthContextType>({
   refreshUserData: async () => {},
   accessToken: null,
 });
+
+export const useAuth = () => useContext(AuthContext);

@@ -63,8 +63,14 @@ export const handlers = [
       id: '123e4567-e89b-12d3-a456-426614174000',
       name: 'Test User',
       email: 'test@example.com',
+      isEmailVerified: true,
+      language: 'en',
       createdAt: new Date().toISOString(),
     });
+  }),
+
+  http.patch(`${API_BASE_URL}/users/me/language`, () => {
+    return HttpResponse.json({}, { status: 204 });
   }),
 
   // User profile endpoints

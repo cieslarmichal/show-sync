@@ -1,4 +1,4 @@
-import { Languages } from 'lucide-react';
+import { Globe } from 'lucide-react';
 import { Button } from './ui/Button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from './ui/DropdownMenu';
 import { useTranslation } from 'react-i18next';
@@ -17,7 +17,7 @@ export function LanguageToggle() {
           className="h-9 w-9"
           aria-label={t('language.toggle')}
         >
-          <Languages className="h-4 w-4" />
+          <Globe className="h-4 w-4" />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">

@@ -61,6 +61,7 @@ export class SendResetPasswordEmailAction {
 
     const emailTemplate: EmailTemplate = {
       name: 'resetPassword',
+      language: user.language,
       data: { resetLink },
     };
 
@@ -84,6 +85,7 @@ export class SendResetPasswordEmailAction {
               recipient: user.email,
               templateName: emailTemplate.name,
               payload: JSON.stringify(emailTemplate.data),
+              language: emailTemplate.language,
             },
             tx,
           );

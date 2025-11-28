@@ -1,3 +1,4 @@
+import type { Language } from '../../../../common/types/language.ts';
 import type { Transaction } from '../../../../infrastructure/database/transaction.ts';
 import type { User } from '../types/user.ts';
 
@@ -6,10 +7,12 @@ export interface CreateUserData {
   readonly email: string;
   readonly password: string;
   readonly isEmailVerified?: boolean;
+  readonly language: Language;
 }
 
 export interface UpdateUserData {
   readonly isEmailVerified?: boolean;
+  readonly language?: Language;
 }
 
 export interface UserRepository {

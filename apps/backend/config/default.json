@@ -69,12 +69,24 @@
     "fromEmail": "ShowSync <noreply@show-sync.com>",
     "emails": {
       "verifyAccount": {
-        "templateFile": "verifyAccount.html",
-        "subject": "Verify your ShowSync account"
+        "pl": {
+          "templateFile": "pl_verifyAccount.html",
+          "subject": "Zweryfikuj swoje konto ShowSync"
+        },
+        "en": {
+          "templateFile": "verifyAccount.html",
+          "subject": "Verify your ShowSync account"
+        }
       },
       "resetPassword": {
-        "templateFile": "resetPassword.html",
-        "subject": "Reset your ShowSync password"
+        "pl": {
+          "templateFile": "pl_resetPassword.html",
+          "subject": "Zresetuj swoje hasło do ShowSync"
+        },
+        "en": {
+          "templateFile": "en_resetPassword.html",
+          "subject": "Reset your ShowSync password"
+        }
       }
     }
   },

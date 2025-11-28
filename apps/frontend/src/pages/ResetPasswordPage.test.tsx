@@ -40,8 +40,8 @@ describe('ResetPasswordPage', () => {
       { withRouter: false },
     );
 
-    expect(screen.getByText('Validating Token')).toBeInTheDocument();
-    expect(screen.getByText('Verifying your reset link...')).toBeInTheDocument();
+    expect(screen.getByText('Validating Reset Link')).toBeInTheDocument();
+    expect(screen.getByText('Please wait while we verify your reset link...')).toBeInTheDocument();
   });
 
   it('should show invalid token state when token is missing', async () => {
@@ -61,7 +61,7 @@ describe('ResetPasswordPage', () => {
       expect(screen.getByText('Link Expired')).toBeInTheDocument();
     });
 
-    expect(screen.getByText(/This reset link is no longer valid/)).toBeInTheDocument();
+    expect(screen.getByText(/This password reset link is invalid or has expired/)).toBeInTheDocument();
     expect(screen.getByTestId('request-new-link-button')).toBeInTheDocument();
     expect(screen.getByTestId('back-to-login-button')).toBeInTheDocument();
   });
@@ -86,7 +86,7 @@ describe('ResetPasswordPage', () => {
     });
   });
 
-  it('should show reset form when token is valid', async () => {
+  it('should show reset password form when token is valid', async () => {
     vi.spyOn(validateOneTimeTokenModule, 'validateOneTimeToken').mockResolvedValue({ valid: true });
 
     await renderWithProviders(
@@ -102,7 +102,7 @@ describe('ResetPasswordPage', () => {
     );
 
     await waitFor(() => {
-      expect(screen.getByText('Create New Password')).toBeInTheDocument();
+      expect(screen.getByRole('heading', { name: 'Reset Password' })).toBeInTheDocument();
     });
 
     expect(screen.getByLabelText('New Password')).toBeInTheDocument();
@@ -128,7 +128,7 @@ describe('ResetPasswordPage', () => {
     );
 
     await waitFor(() => {
-      expect(screen.getByText('Create New Password')).toBeInTheDocument();
+      expect(screen.getByRole('heading', { name: 'Reset Password' })).toBeInTheDocument();
     });
 
     const newPasswordInput = screen.getByLabelText('New Password');
@@ -169,13 +169,13 @@ describe('ResetPasswordPage', () => {
     );
 
     await waitFor(() => {
-      expect(screen.getByText('Create New Password')).toBeInTheDocument();
+      expect(screen.getByRole('heading', { name: 'Reset Password' })).toBeInTheDocument();
     });
 
     const newPasswordInput = screen.getByLabelText('New Password');
     const confirmPasswordInput = screen.getByLabelText('Confirm Password');
 
-    await user.type(newPasswordInput, 'ValidPassword123');
+    await user.type(newPasswordInput, 'ValidPassword123!');
     await user.type(confirmPasswordInput, 'DifferentPassword123');
     await user.tab();
 
@@ -202,7 +202,7 @@ describe('ResetPasswordPage', () => {
     );
 
     await waitFor(() => {
-      expect(screen.getByText('Create New Password')).toBeInTheDocument();
+      expect(screen.getByRole('heading', { name: 'Reset Password' })).toBeInTheDocument();
     });
 
     const newPasswordInput = screen.getByLabelText('New Password');
@@ -236,7 +236,7 @@ describe('ResetPasswordPage', () => {
     );
 
     await waitFor(() => {
-      expect(screen.getByText('Create New Password')).toBeInTheDocument();
+      expect(screen.getByRole('heading', { name: 'Reset Password' })).toBeInTheDocument();
     });
 
     const newPasswordInput = screen.getByLabelText('New Password');
@@ -260,7 +260,7 @@ describe('ResetPasswordPage', () => {
     });
 
     await waitFor(() => {
-      expect(screen.getByText('Password Updated!')).toBeInTheDocument();
+      expect(screen.getByText('Password Reset Successful!')).toBeInTheDocument();
     });
   });
 
@@ -283,7 +283,7 @@ describe('ResetPasswordPage', () => {
     );
 
     await waitFor(() => {
-      expect(screen.getByText('Create New Password')).toBeInTheDocument();
+      expect(screen.getByRole('heading', { name: 'Reset Password' })).toBeInTheDocument();
     });
 
     const newPasswordInput = screen.getByLabelText('New Password');

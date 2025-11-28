@@ -33,7 +33,7 @@ export function CreateWatchRoomModal({ onRoomCreated, disabled = false, disabled
   const [open, setOpen] = useState(false);
 
   const formSchema = z.object({
-    name: z.string().min(1, t('validation.nameRequired')).max(64, t('validation.nameMaxLength')),
+    name: z.string().min(1, t('validation.roomNameRequired')).max(64, t('validation.nameMaxLength')),
     description: z.string().max(256, t('validation.descriptionMaxLength')).optional(),
     seriesLengthPreference: z.enum(['all', 'excludeMiniSeries', 'onlyMiniSeries']).optional(),
   });

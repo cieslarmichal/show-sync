@@ -3,6 +3,7 @@ import { and, eq } from 'drizzle-orm';
 import type { EmailTemplateName } from '../../../../common/emailService/emailTemplate.ts';
 import { RepositoryError } from '../../../../common/errors/repositoryError.ts';
 import { IdService } from '../../../../common/id/idService.ts';
+import type { Language } from '../../../../common/types/language.ts';
 import type { DatabaseClient } from '../../../../infrastructure/database/databaseClient.ts';
 import { emails } from '../../../../infrastructure/database/schema.ts';
 import type { Transaction } from '../../../../infrastructure/database/transaction.ts';
@@ -25,6 +26,7 @@ export class EmailRepositoryImpl implements EmailRepository {
         recipient: payload.recipient,
         payload: payload.payload,
         templateName: payload.templateName,
+        language: payload.language,
         status: 'pending',
       });
     } catch (error) {
@@ -95,7 +97,7 @@ export class EmailRepositoryImpl implements EmailRepository {
   }
 
   private map(rawEntity: typeof emails.$inferSelect): Email {
-    const { createdAt, id, payload, status, templateName, recipient } = rawEntity;
+    const { createdAt, id, payload, status, templateName, recipient, language } = rawEntity;
 
     return {
       createdAt,
@@ -104,6 +106,7 @@ export class EmailRepositoryImpl implements EmailRepository {
       status: status as EmailStatus,
       templateName: templateName as EmailTemplateName,
       recipient,
+      language: language as Language,
     };
   }
 }

@@ -1,4 +1,5 @@
 import type { EmailTemplateName } from '../../../../common/emailService/emailTemplate.ts';
+import type { Language } from '../../../../common/types/language.ts';
 import type { Transaction } from '../../../../infrastructure/database/transaction.ts';
 import type { Email, EmailStatus } from '../types/email.ts';
 
@@ -6,6 +7,7 @@ export interface CreateEmailData {
   readonly recipient: string;
   readonly templateName: EmailTemplateName;
   readonly payload: string;
+  readonly language: Language;
 }
 
 export interface FindEmailParams {

@@ -4,40 +4,50 @@ import { Button } from '@/components/ui/Button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/Form';
 import { Input } from '@/components/ui/Input';
 import { registerUser } from '../api/queries/register';
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { z } from 'zod';
 import { EyeIcon, EyeOffIcon, Mail, Lock, User, Loader2 } from 'lucide-react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { ApiError } from '../api/ApiError';
 import { useTranslation } from 'react-i18next';
 
-const formSchema = z.object({
-  name: z.string().min(1).max(64),
-  email: z.string().email().max(255),
-  password: z
-    .string()
-    .min(8)
-    .max(64)
-    .regex(/[a-z]/)
-    .regex(/[A-Z]/)
-    .regex(/\d/)
-    .regex(/[!@#$%^&*(),.?":{}|<>]/),
-});
-
-type FormValues = z.infer<typeof formSchema>;
-
 interface Props {
   onSuccess?: (email?: string) => void;
 }
 
 export default function RegisterForm({ onSuccess }: Props) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const redirectTo = searchParams.get('redirect');
   const [existingEmail, setExistingEmail] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const formSchema = useMemo(
+    () =>
+      z.object({
+        name: z
+          .string()
+          .min(1, t('validation.nameRequired'))
+          .max(64, t('validation.nameMaxLength')),
+        email: z
+          .string()
+          .email(t('validation.invalidEmail'))
+          .max(255, t('validation.emailMaxLength')),
+        password: z
+          .string()
+          .min(8, t('validation.passwordMinLength'))
+          .max(64, t('validation.passwordMaxLength'))
+          .regex(/[a-z]/, t('validation.passwordLowercase'))
+          .regex(/[A-Z]/, t('validation.passwordUppercase'))
+          .regex(/\d/, t('validation.passwordDigit'))
+          .regex(/[!@#$%^&*(),.?":{}|<>]/, t('validation.passwordSpecial')),
+      }),
+    [t],
+  );
+
+  type FormValues = z.infer<typeof formSchema>;
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -57,6 +67,7 @@ export default function RegisterForm({ onSuccess }: Props) {
         name: values.name,
         email: values.email,
         password: values.password,
+        language: i18n.language as 'en' | 'pl',
       });
 
       // Call onSuccess callback if provided, otherwise redirect to dashboard

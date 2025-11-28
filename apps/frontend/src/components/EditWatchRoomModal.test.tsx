@@ -107,7 +107,7 @@ describe('EditWatchRoomModal', () => {
     await user.click(submitButton);
 
     await waitFor(() => {
-      expect(screen.getByText('Name is required')).toBeInTheDocument();
+      expect(screen.getByText('Room name is required')).toBeInTheDocument();
     });
   });
 

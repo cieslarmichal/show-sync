@@ -137,6 +137,7 @@ export class EmailProcessingService {
         toEmail: email.recipient,
         template: {
           name: email.templateName,
+          language: email.language,
           data: emailData,
         },
       });

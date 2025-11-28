@@ -15,6 +15,13 @@
       "when": 1764181167883,
       "tag": "0001_fine_young_avengers",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1764347605369,
+      "tag": "0002_silent_glorian",
+      "breakpoints": true
     }
   ]
 }

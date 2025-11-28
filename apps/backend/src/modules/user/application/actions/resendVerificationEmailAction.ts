@@ -96,6 +96,7 @@ export class ResendVerificationEmailAction {
 
       const emailTemplate: EmailTemplate = {
         name: 'verifyAccount',
+        language: user.language,
         data: { verificationLink },
       };
 
@@ -104,6 +105,7 @@ export class ResendVerificationEmailAction {
           recipient: user.email,
           templateName: emailTemplate.name,
           payload: JSON.stringify(emailTemplate.data),
+          language: emailTemplate.language,
         },
         tx,
       );

@@ -75,7 +75,7 @@ export function SeriesRatingCard({
             side="bottom"
             className="hidden sm:block"
           >
-            Remove from ratings
+            {t('series.removeFromRatings')}
           </TooltipContent>
         </Tooltip>
 

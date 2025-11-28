@@ -5,6 +5,7 @@ type RegisterUserRequest = {
   name: string;
   email: string;
   password: string;
+  language: 'en' | 'pl';
 };
 
 export const registerUser = async (input: RegisterUserRequest): Promise<User> => {
@@ -14,6 +15,7 @@ export const registerUser = async (input: RegisterUserRequest): Promise<User> =>
       name: input.name,
       email: input.email,
       password: input.password,
+      language: input.language,
     },
   });
 };

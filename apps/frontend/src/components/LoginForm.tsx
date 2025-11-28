@@ -1,6 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 
 import { Button } from '@/components/ui/Button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/Form';
@@ -15,15 +15,25 @@ import { toast } from 'sonner';
 import { config } from '../config';
 import { useTranslation } from 'react-i18next';
 
-const formSchema = z.object({
-  email: z.string().email().max(254),
-  password: z.string().min(8).max(64),
-});
-
-type FormValues = z.infer<typeof formSchema>;
-
 export default function LoginForm() {
   const { t } = useTranslation();
+
+  const formSchema = useMemo(
+    () =>
+      z.object({
+        email: z
+          .string()
+          .email(t('validation.invalidEmail'))
+          .max(254, t('validation.emailMaxLength')),
+        password: z
+          .string()
+          .min(8, t('validation.passwordMinLength'))
+          .max(64, t('validation.passwordMaxLength')),
+      }),
+    [t],
+  );
+
+  type FormValues = z.infer<typeof formSchema>;
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [showPassword, setShowPassword] = useState(false);

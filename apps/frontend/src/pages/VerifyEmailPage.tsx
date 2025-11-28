@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { verifyEmail } from '../api/queries/verifyEmail';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { toast } from 'sonner';
 import { Button } from '../components/ui/Button';
 import { Loader, Mail } from 'lucide-react';
@@ -24,9 +24,16 @@ export default function VerifyEmailPage() {
   const [emailResent, setEmailResent] = useState(false);
   const navigate = useNavigate();
 
-  const resendSchema = z.object({
-    email: z.string().email().max(254),
-  });
+  const resendSchema = useMemo(
+    () =>
+      z.object({
+        email: z
+          .string()
+          .email(t('validation.invalidEmail'))
+          .max(254, t('validation.emailMaxLength')),
+      }),
+    [t],
+  );
   type ResendFormValues = z.infer<typeof resendSchema>;
 
   const resendForm = useForm<ResendFormValues>({

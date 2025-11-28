@@ -2,12 +2,39 @@ import '@testing-library/jest-dom';
 import { cleanup } from '@testing-library/react';
 import { afterEach, beforeAll, afterAll } from 'vitest';
 import { server } from './mocks/server';
+import i18n from 'i18next';
+import { initReactI18next } from 'react-i18next';
+import translationEN from '../i18n/locales/en/translation.json';
+import translationPL from '../i18n/locales/pl/translation.json';
+import * as z from 'zod';
 
 /**
  * Test Setup File
  *
  * Runs before each test file to set up the testing environment
  */
+
+// Initialize i18next for tests with actual translations
+i18n.use(initReactI18next).init({
+  lng: 'en',
+  fallbackLng: 'en',
+  ns: ['translation'],
+  defaultNS: 'translation',
+  resources: {
+    en: {
+      translation: translationEN,
+    },
+    pl: {
+      translation: translationPL,
+    },
+  },
+  interpolation: {
+    escapeValue: false,
+  },
+});
+
+// Configure Zod with English locale for tests
+z.config(z.locales.en());
 
 // Start MSW server before all tests
 beforeAll(() => {

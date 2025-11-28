@@ -1,6 +1,7 @@
 import { fakerPL as faker } from '@faker-js/faker';
 import { v7 as uuidv7 } from 'uuid';
 
+import type { Language } from '../src/common/types/language.ts';
 import type { CreateUserData } from '../src/modules/user/domain/repositories/userRepository.ts';
 
 export class Generator {
@@ -109,12 +110,17 @@ export class Generator {
     });
   }
 
+  public static language(): Language {
+    return this.arrayElement<Language>(['en', 'pl']);
+  }
+
   public static userData(input?: Partial<CreateUserData>): CreateUserData {
     return {
       name: faker.person.fullName(),
       email: Generator.email(),
       password: Generator.password(),
       isEmailVerified: true,
+      language: Generator.language(),
       ...input,
     };
   }

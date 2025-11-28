@@ -93,12 +93,24 @@ const configSchema = Type.Object({
     fromEmail: Type.String({ minLength: 1 }),
     emails: Type.Object({
       verifyAccount: Type.Object({
-        templateFile: Type.String({ minLength: 1 }),
-        subject: Type.String({ minLength: 1 }),
+        en: Type.Object({
+          subject: Type.String({ minLength: 1 }),
+          templateFile: Type.String({ minLength: 1 }),
+        }),
+        pl: Type.Object({
+          subject: Type.String({ minLength: 1 }),
+          templateFile: Type.String({ minLength: 1 }),
+        }),
       }),
       resetPassword: Type.Object({
-        templateFile: Type.String({ minLength: 1 }),
-        subject: Type.String({ minLength: 1 }),
+        en: Type.Object({
+          subject: Type.String({ minLength: 1 }),
+          templateFile: Type.String({ minLength: 1 }),
+        }),
+        pl: Type.Object({
+          subject: Type.String({ minLength: 1 }),
+          templateFile: Type.String({ minLength: 1 }),
+        }),
       }),
     }),
   }),
