@@ -36,9 +36,7 @@ describe('UpdateUserLanguageAction', () => {
       const userData = Generator.userData({ password });
 
       const hashedPassword = await passwordService.hashPassword(password);
-      const user = await userRepository.create({ ...userData, password: hashedPassword });
-
-      expect(user.language).toBe('en');
+      const user = await userRepository.create({ ...userData, password: hashedPassword, language: 'pl' });
 
       await updateUserLanguageAction.execute(
         {
@@ -58,31 +56,7 @@ describe('UpdateUserLanguageAction', () => {
       const userData = Generator.userData({ password });
 
       const hashedPassword = await passwordService.hashPassword(password);
-      const user = await userRepository.create({ ...userData, password: hashedPassword });
-
-      expect(user.language).toBe('en');
-
-      await updateUserLanguageAction.execute(
-        {
-          userId: user.id,
-          language: 'en',
-        },
-        createTestExecutionContext(),
-      );
-
-      const updatedUser = await userRepository.findById(user.id);
-
-      expect(updatedUser?.language).toBe('en');
-    });
-
-    it('should update user language preference to Polish', async () => {
-      const password = Generator.password();
-      const userData = Generator.userData({ password });
-
-      const hashedPassword = await passwordService.hashPassword(password);
-      const user = await userRepository.create({ ...userData, password: hashedPassword });
-
-      expect(user.language).toBe('en');
+      const user = await userRepository.create({ ...userData, password: hashedPassword, language: 'en' });
 
       await updateUserLanguageAction.execute(
         {
@@ -95,28 +69,6 @@ describe('UpdateUserLanguageAction', () => {
       const updatedUser = await userRepository.findById(user.id);
 
       expect(updatedUser?.language).toBe('pl');
-    });
-
-    it('should update language from Polish to English', async () => {
-      const password = Generator.password();
-      const userData = Generator.userData({ password, language: 'pl' });
-
-      const hashedPassword = await passwordService.hashPassword(password);
-      const user = await userRepository.create({ ...userData, password: hashedPassword });
-
-      expect(user.language).toBe('pl');
-
-      await updateUserLanguageAction.execute(
-        {
-          userId: user.id,
-          language: 'en',
-        },
-        createTestExecutionContext(),
-      );
-
-      const updatedUser = await userRepository.findById(user.id);
-
-      expect(updatedUser?.language).toBe('en');
     });
   });
 });

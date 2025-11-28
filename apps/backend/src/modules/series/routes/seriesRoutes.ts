@@ -50,6 +50,10 @@ import {
   type SeriesRatingDto,
 } from './seriesSchemas.ts';
 
+const parseLanguage = (acceptLanguageHeader: string | undefined): 'en' | 'pl' => {
+  return acceptLanguageHeader === 'pl' ? 'pl' : 'en';
+};
+
 export const seriesRoutes: FastifyPluginAsyncTypebox<{
   config: Config;
   loggerService: LoggerService;
@@ -135,9 +139,10 @@ export const seriesRoutes: FastifyPluginAsyncTypebox<{
     },
     preHandler: [authenticationMiddleware],
     handler: async (request, reply) => {
-      const { query, page = 1 } = request.query;
+      const { query } = request.query;
+      const language = parseLanguage(request.headers['accept-language']);
 
-      const result = await searchSeriesAction.execute({ query, page });
+      const result = await searchSeriesAction.execute({ query, language });
 
       const responseData = {
         data: result.results.map(mapSeriesToResponse),
@@ -145,6 +150,7 @@ export const seriesRoutes: FastifyPluginAsyncTypebox<{
       };
 
       reply.header('Cache-Control', 'public, max-age=1800, must-revalidate');
+      reply.header('Vary', 'Accept-Language');
 
       return reply.send(responseData);
     },
@@ -160,12 +166,14 @@ export const seriesRoutes: FastifyPluginAsyncTypebox<{
     preHandler: [authenticationMiddleware],
     handler: async (request, reply) => {
       const { seriesTmdbId } = request.params;
+      const language = parseLanguage(request.headers['accept-language']);
 
-      const externalIds = await getSeriesExternalIdsAction.execute({ seriesTmdbId });
+      const externalIds = await getSeriesExternalIdsAction.execute({ seriesTmdbId, language });
 
       const responseData = mapSeriesExternalIdsToResponse(externalIds);
 
       reply.header('Cache-Control', 'public, max-age=604800, must-revalidate');
+      reply.header('Vary', 'Accept-Language');
 
       return reply.send(responseData);
     },
@@ -181,6 +189,7 @@ export const seriesRoutes: FastifyPluginAsyncTypebox<{
     preHandler: [authenticationMiddleware],
     handler: async (request, reply) => {
       const { ids, includeProviders = false } = request.query;
+      const language = parseLanguage(request.headers['accept-language']);
 
       const seriesIds = ids
         .split(',')
@@ -194,11 +203,12 @@ export const seriesRoutes: FastifyPluginAsyncTypebox<{
         });
       }
 
-      const results = await getSeriesDetailsBatchAction.execute({ seriesIds, includeProviders });
+      const results = await getSeriesDetailsBatchAction.execute({ seriesIds, language, includeProviders });
 
       const responseData = results.map(mapSeriesDetailsToResponse);
 
       reply.header('Cache-Control', 'public, max-age=86400, must-revalidate');
+      reply.header('Vary', 'Accept-Language');
 
       return reply.send({ data: responseData });
     },

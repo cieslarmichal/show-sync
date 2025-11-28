@@ -10,6 +10,7 @@ import type { DatabaseClient } from '../../../infrastructure/database/databaseCl
 import { UserSeriesRatingRepositoryImpl } from '../../series/infrastructure/repositories/userSeriesRatingRepositoryImpl.ts';
 import { UserSeriesWatchlistRepositoryImpl } from '../../series/infrastructure/repositories/userSeriesWatchlistRepositoryImpl.ts';
 import { TmdbServiceImpl } from '../../series/infrastructure/services/tmdbServiceImpl.ts';
+import { UserRepositoryImpl } from '../../user/infrastructure/repositories/userRepositoryImpl.ts';
 import { WatchroomRepositoryImpl } from '../../watchroom/infrastructure/repositories/watchroomRepositoryImpl.ts';
 import { CheckRecommendationFeedbackExistsAction } from '../application/actions/checkRecommendationFeedbackExistsAction.ts';
 import { CheckRecommendationRequestStatusAction } from '../application/actions/checkRecommendationRequestStatusAction.ts';
@@ -46,6 +47,7 @@ export const recommendationRoutes: FastifyPluginAsyncTypebox<{
   const recommendationFeedbackRepository = new RecommendationFeedbackRepositoryImpl(databaseClient);
   const seriesRatingRepository = new UserSeriesRatingRepositoryImpl(databaseClient);
   const seriesWatchlistRepository = new UserSeriesWatchlistRepositoryImpl(databaseClient);
+  const userRepository = new UserRepositoryImpl(databaseClient);
   const tmdbService = new TmdbServiceImpl(config.tmdb.apiKey, config.tmdb.baseUrl, loggerService);
 
   const recommendationPromptBuilder = new RecommendationPromptBuilder();
@@ -63,6 +65,7 @@ export const recommendationRoutes: FastifyPluginAsyncTypebox<{
     recommendationRequestRepository,
     seriesRatingRepository,
     seriesWatchlistRepository,
+    userRepository,
     tmdbService,
     openRouterService,
     loggerService,

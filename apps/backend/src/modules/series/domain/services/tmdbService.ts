@@ -1,10 +1,5 @@
 import type { TmdbSeries, TmdbSeriesDetails, TmdbSeriesExternalIds } from '../types/tmdbSeries.ts';
 
-export interface SearchSeriesParams {
-  readonly query: string;
-  readonly page: number;
-}
-
 export interface SeriesSearchResult {
   readonly page: number;
   readonly results: TmdbSeries[];
@@ -13,7 +8,7 @@ export interface SeriesSearchResult {
 }
 
 export interface TmdbService {
-  searchSeries(params: SearchSeriesParams): Promise<SeriesSearchResult>;
-  getSeriesDetails(seriesTmdbId: number, includeProviders?: boolean): Promise<TmdbSeriesDetails>;
-  getSeriesExternalIds(seriesTmdbId: number): Promise<TmdbSeriesExternalIds>;
+  searchSeries(query: string, language: string): Promise<SeriesSearchResult>;
+  getSeriesDetails(seriesTmdbId: number, language: string, includeProviders?: boolean): Promise<TmdbSeriesDetails>;
+  getSeriesExternalIds(seriesTmdbId: number, language: string): Promise<TmdbSeriesExternalIds>;
 }

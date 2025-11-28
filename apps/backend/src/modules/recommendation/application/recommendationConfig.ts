@@ -18,7 +18,8 @@ Core principles:
 5. When multiple participants LOVE similar themes/genres, that's your strongest signal
 6. Consider both obvious and subtle connections (themes, mood, pacing, character types)
 7. Balance popular acclaimed series with lesser-known quality recommendations
-8. Ensure all recommended titles exist and use their exact TMDB names
+8. CRITICAL: Always use ORIGINAL ENGLISH titles for series names (e.g., "Breaking Bad", not "Breaking Bad: Nie ma ścieżek odwrotu")
+9. Justifications should be in the user's language, but series names must be in original English
 
 Your recommendations should be thoughtful, well-justified, and demonstrate clear understanding of why each series would resonate with the group based on their collective preferences, especially their LOVED series.`;
 

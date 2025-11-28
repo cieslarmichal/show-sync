@@ -524,6 +524,15 @@
       "skip": "Skip",
       "ratingSaved": "Rating saved!",
       "addedToWatchlist": "Added to watchlist!",
+      "status": {
+        "Ended": "Ended",
+        "Returning Series": "Returning Series",
+        "Canceled": "Canceled",
+        "Cancelled": "Cancelled",
+        "In Production": "In Production",
+        "Planned": "Planned",
+        "Pilot": "Pilot"
+      },
       "toast": {
         "imdbError": "IMDb ID not available for this show",
         "imdbOpenError": "Could not open IMDb. Please try again.",

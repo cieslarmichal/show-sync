@@ -514,7 +514,10 @@
       "more": "+{{count}} więcej",
       "season": "Sezon",
       "seasons": "Sezony",
-      "episodes": "Odcinki",
+      "episodes_one": "{{count}} odcinek",
+      "episodes_few": "{{count}} odcinki",
+      "episodes_many": "{{count}} odcinków",
+      "episodes_other": "{{count}} odcinków",
       "love": "Uwielbiam",
       "like": "Lubię",
       "dislike": "Nie lubię",
@@ -524,6 +527,15 @@
       "skip": "Pomiń",
       "ratingSaved": "Ocena zapisana!",
       "addedToWatchlist": "Dodano do listy!",
+      "status": {
+        "Ended": "Zakończony",
+        "Returning Series": "Kontynuowany",
+        "Canceled": "Anulowany",
+        "Cancelled": "Anulowany",
+        "In Production": "W produkcji",
+        "Planned": "Planowany",
+        "Pilot": "Pilot"
+      },
       "toast": {
         "imdbError": "ID IMDb niedostępne dla tego serialu",
         "imdbOpenError": "Nie udało się otworzyć IMDb. Spróbuj ponownie.",

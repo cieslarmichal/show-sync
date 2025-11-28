@@ -3,7 +3,7 @@ import type { TmdbSeries } from '../../domain/types/tmdbSeries.ts';
 
 export interface SearchSeriesActionPayload {
   readonly query: string;
-  readonly page: number;
+  readonly language: string;
 }
 
 export interface SeriesSearchActionResult {
@@ -20,11 +20,10 @@ export class SearchSeriesAction {
     this.tmdbService = tmdbService;
   }
 
-  public async execute(input: SearchSeriesActionPayload): Promise<SeriesSearchActionResult> {
-    const result = await this.tmdbService.searchSeries({
-      query: input.query,
-      page: input.page,
-    });
+  public async execute(payload: SearchSeriesActionPayload): Promise<SeriesSearchActionResult> {
+    const { query, language } = payload;
+
+    const result = await this.tmdbService.searchSeries(query, language);
 
     return result;
   }

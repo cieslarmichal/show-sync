@@ -277,7 +277,9 @@ export function RecommendationCard({
                         )}
                       {recommendation.seriesDetails.numberOfEpisodes > 0 && (
                         <span>
-                          {recommendation.seriesDetails.numberOfEpisodes} {t('watchroom.recommendation.episodes')}
+                          {t('watchroom.recommendation.episodes', {
+                            count: recommendation.seriesDetails.numberOfEpisodes,
+                          })}
                         </span>
                       )}
                     </div>
@@ -299,7 +301,9 @@ export function RecommendationCard({
                             : 'border-green-500/30 text-green-600 dark:text-green-400'
                       }`}
                     >
-                      {recommendation.seriesDetails.status}
+                      {t(`watchroom.recommendation.status.${recommendation.seriesDetails.status}`, {
+                        defaultValue: recommendation.seriesDetails.status,
+                      })}
                     </Badge>
                   </>
                 )}

@@ -1,4 +1,5 @@
 import { PromptSanitizer } from '../../../../common/sanitization/promptSanitizer.ts';
+import type { Language } from '../../../../common/types/language.ts';
 
 interface SeriesInfo {
   readonly tmdbId: number;
@@ -26,18 +27,33 @@ export class RecommendationPromptBuilder {
     watchroomName: string,
     watchroomDescription: string | undefined,
     seriesLengthPreference: 'all' | 'excludeMiniSeries' | 'onlyMiniSeries',
+    language: Language = 'en',
   ): string {
     const sections = [
+      this.buildLanguageInstructions(language),
       this.buildWatchroomSection(watchroomName, watchroomDescription),
       this.buildFiltersSection(seriesLengthPreference),
       this.buildParticipantsSection(participantRatings, seriesInfoMap),
       this.buildNotInterestedSection(notInterestedSeriesIds, seriesInfoMap),
       this.buildDislikedSection(dislikedSeriesIds, seriesInfoMap),
       this.buildWantToWatchSection(wantToWatchSeriesIds, seriesInfoMap),
-      this.buildTaskSection(seriesLengthPreference),
+      this.buildTaskSection(seriesLengthPreference, language),
     ];
 
     return sections.filter(Boolean).join('\n');
+  }
+
+  private buildLanguageInstructions(language: Language): string {
+    if (language === 'pl') {
+      return (
+        `LANGUAGE INSTRUCTIONS:\n` +
+        `- Write all justifications in POLISH\n` +
+        `- Use ORIGINAL ENGLISH titles for series names (e.g., "Breaking Bad", not "Breaking Bad: Nie ma ścieżek odwrotu")\n` +
+        `- Example: "Breaking Bad - Doskonały wybór dla fanów..." (title in English, explanation in Polish)\n` +
+        `\n---\n`
+      );
+    }
+    return '';
   }
 
   private buildWatchroomSection(watchroomName: string, watchroomDescription: string | undefined): string {
@@ -229,7 +245,10 @@ export class RecommendationPromptBuilder {
     return section;
   }
 
-  private buildTaskSection(seriesLengthPreference: 'all' | 'excludeMiniSeries' | 'onlyMiniSeries'): string {
+  private buildTaskSection(
+    seriesLengthPreference: 'all' | 'excludeMiniSeries' | 'onlyMiniSeries',
+    language: Language,
+  ): string {
     const criticalRequirements = [
       `Do NOT include ANY series from the "SERIES RATINGS" lists above`,
       `Do NOT include ANY series from the "NOT INTERESTED" list above`,
@@ -249,10 +268,16 @@ export class RecommendationPromptBuilder {
     criticalRequirements.push(
       `Focus on finding series that reflect shared themes, genres, tones, or storytelling styles`,
     );
+    criticalRequirements.push(`CRITICAL: Use ORIGINAL ENGLISH titles (e.g., "Game of Thrones", not "Gra o tron")`);
     criticalRequirements.push(`Return the EXACT TITLE of each series as it appears in TMDB (The Movie Database)`);
-    criticalRequirements.push(
-      `Provide a brief justification for each recommendation explaining why it fits the group's taste`,
-    );
+
+    if (language === 'pl') {
+      criticalRequirements.push(`Write justifications in POLISH, but keep series titles in ENGLISH`);
+    } else {
+      criticalRequirements.push(
+        `Provide a brief justification for each recommendation explaining why it fits the group's taste`,
+      );
+    }
 
     // Format requirements with proper numbering
     const numberedRequirements = criticalRequirements.map((req, idx) => `${(idx + 1).toString()}. ${req}`);

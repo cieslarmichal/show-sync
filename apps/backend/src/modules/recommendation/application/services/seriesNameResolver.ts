@@ -1,3 +1,4 @@
+import type { Language } from '../../../../common/types/language.ts';
 import type { TmdbService } from '../../../series/domain/services/tmdbService.ts';
 
 interface AIRecommendation {
@@ -27,13 +28,11 @@ export class SeriesNameResolver {
     recommendations: AIRecommendation[],
     ratedSeriesIds: number[],
     watchlistSeriesIds: number[],
+    language: Language,
   ): Promise<ResolutionResult> {
     const results = await Promise.allSettled(
       recommendations.map(async (recommendation) => {
-        const searchResult = await this.tmdbService.searchSeries({
-          query: recommendation.seriesName,
-          page: 1,
-        });
+        const searchResult = await this.tmdbService.searchSeries(recommendation.seriesName, language);
 
         const firstResult = searchResult.results[0];
 

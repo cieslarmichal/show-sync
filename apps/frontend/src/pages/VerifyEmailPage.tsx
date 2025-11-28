@@ -27,10 +27,7 @@ export default function VerifyEmailPage() {
   const resendSchema = useMemo(
     () =>
       z.object({
-        email: z
-          .string()
-          .email(t('validation.invalidEmail'))
-          .max(254, t('validation.emailMaxLength')),
+        email: z.string().email(t('validation.invalidEmail')).max(254, t('validation.emailMaxLength')),
       }),
     [t],
   );

@@ -3,6 +3,7 @@ import type { TmdbSeriesExternalIds } from '../../domain/types/tmdbSeries.ts';
 
 interface GetSeriesExternalIdsPayload {
   readonly seriesTmdbId: number;
+  readonly language: string;
 }
 
 export class GetSeriesExternalIdsAction {
@@ -13,8 +14,8 @@ export class GetSeriesExternalIdsAction {
   }
 
   public async execute(payload: GetSeriesExternalIdsPayload): Promise<TmdbSeriesExternalIds> {
-    const { seriesTmdbId } = payload;
+    const { seriesTmdbId, language } = payload;
 
-    return this.tmdbService.getSeriesExternalIds(seriesTmdbId);
+    return this.tmdbService.getSeriesExternalIds(seriesTmdbId, language);
   }
 }

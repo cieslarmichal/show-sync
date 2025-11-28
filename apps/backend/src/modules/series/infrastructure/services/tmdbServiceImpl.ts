@@ -2,7 +2,7 @@ import { InMemoryCache } from '../../../../common/cache/inMemoryCache.ts';
 import { ExternalServiceError } from '../../../../common/errors/externalServiceError.ts';
 import { ResourceNotFoundError } from '../../../../common/errors/resourceNotFoundError.ts';
 import type { LoggerService } from '../../../../common/logger/loggerService.ts';
-import type { SearchSeriesParams, SeriesSearchResult, TmdbService } from '../../domain/services/tmdbService.ts';
+import type { SeriesSearchResult, TmdbService } from '../../domain/services/tmdbService.ts';
 import type {
   TmdbSeries,
   TmdbSeriesDetails,
@@ -99,10 +99,8 @@ export class TmdbServiceImpl implements TmdbService {
     this.watchProvidersCache = new InMemoryCache<TmdbWatchProvider[]>(7 * 24 * 60 * 60 * 1000, 1000, logger);
   }
 
-  public async searchSeries(params: SearchSeriesParams): Promise<SeriesSearchResult> {
-    const { query, page } = params;
-
-    const cacheKey = `search:${query}:${page.toString()}`;
+  public async searchSeries(query: string, language: string): Promise<SeriesSearchResult> {
+    const cacheKey = `search:${query}:${language}`;
 
     const cachedResult = this.searchCache.get(cacheKey);
     if (cachedResult) {
@@ -111,7 +109,8 @@ export class TmdbServiceImpl implements TmdbService {
 
     const url = new URL(`${this.baseUrl}/search/tv`);
     url.searchParams.append('query', query);
-    url.searchParams.append('page', page.toString());
+    url.searchParams.append('page', '1');
+    url.searchParams.append('language', language);
     url.searchParams.append('include_adult', 'false');
 
     try {
@@ -152,19 +151,12 @@ export class TmdbServiceImpl implements TmdbService {
     }
   }
 
-  private mapToSeriesSearchResult(apiResponse: TmdbApiSearchResponse): SeriesSearchResult {
-    const result: SeriesSearchResult = {
-      page: apiResponse.page,
-      results: apiResponse.results.map((item) => this.mapToSeries(item)),
-      totalPages: apiResponse.total_pages,
-      totalResults: apiResponse.total_results,
-    };
-
-    return result;
-  }
-
-  public async getSeriesDetails(seriesTmdbId: number, includeProviders = false): Promise<TmdbSeriesDetails> {
-    const cacheKey = `details:${seriesTmdbId.toString()}:${includeProviders.toString()}`;
+  public async getSeriesDetails(
+    seriesTmdbId: number,
+    language: string,
+    includeProviders = false,
+  ): Promise<TmdbSeriesDetails> {
+    const cacheKey = `details:${seriesTmdbId.toString()}:${language}:${includeProviders.toString()}`;
 
     const cachedDetails = this.detailsCache.get(cacheKey);
     if (cachedDetails) {
@@ -172,6 +164,7 @@ export class TmdbServiceImpl implements TmdbService {
     }
 
     const url = new URL(`${this.baseUrl}/tv/${seriesTmdbId.toString()}`);
+    url.searchParams.append('language', language);
 
     try {
       const response = await fetch(url.toString(), {
@@ -203,7 +196,7 @@ export class TmdbServiceImpl implements TmdbService {
 
       let watchProviders: TmdbWatchProvider[] = [];
       if (includeProviders) {
-        watchProviders = await this.getWatchProviders(seriesTmdbId);
+        watchProviders = await this.getWatchProviders(seriesTmdbId, language);
       }
 
       const result = this.mapToSeriesDetails(data, watchProviders);
@@ -224,8 +217,8 @@ export class TmdbServiceImpl implements TmdbService {
     }
   }
 
-  private async getWatchProviders(seriesTmdbId: number): Promise<TmdbWatchProvider[]> {
-    const cacheKey = `watchProviders:${seriesTmdbId.toString()}`;
+  private async getWatchProviders(seriesTmdbId: number, language: string): Promise<TmdbWatchProvider[]> {
+    const cacheKey = `watchProviders:${seriesTmdbId.toString()}:${language}`;
 
     const cachedProviders = this.watchProvidersCache.get(cacheKey);
     if (cachedProviders) {
@@ -233,6 +226,7 @@ export class TmdbServiceImpl implements TmdbService {
     }
 
     const url = new URL(`${this.baseUrl}/tv/${seriesTmdbId.toString()}/watch/providers`);
+    url.searchParams.append('language', language);
 
     try {
       const response = await fetch(url.toString(), {
@@ -292,8 +286,8 @@ export class TmdbServiceImpl implements TmdbService {
     }
   }
 
-  public async getSeriesExternalIds(seriesTmdbId: number): Promise<TmdbSeriesExternalIds> {
-    const cacheKey = `externalIds:${seriesTmdbId.toString()}`;
+  public async getSeriesExternalIds(seriesTmdbId: number, language: string): Promise<TmdbSeriesExternalIds> {
+    const cacheKey = `externalIds:${seriesTmdbId.toString()}:${language}`;
 
     const cachedExternalIds = this.externalIdsCache.get(cacheKey);
     if (cachedExternalIds) {
@@ -301,6 +295,7 @@ export class TmdbServiceImpl implements TmdbService {
     }
 
     const url = new URL(`${this.baseUrl}/tv/${seriesTmdbId.toString()}/external_ids`);
+    url.searchParams.append('language', language);
 
     try {
       const response = await fetch(url.toString(), {
@@ -346,6 +341,17 @@ export class TmdbServiceImpl implements TmdbService {
         originalError: error,
       });
     }
+  }
+
+  private mapToSeriesSearchResult(apiResponse: TmdbApiSearchResponse): SeriesSearchResult {
+    const result: SeriesSearchResult = {
+      page: apiResponse.page,
+      results: apiResponse.results.map((item) => this.mapToSeries(item)),
+      totalPages: apiResponse.total_pages,
+      totalResults: apiResponse.total_results,
+    };
+
+    return result;
   }
 
   private mapToSeries(apiSeries: TmdbApiSeriesResponse): TmdbSeries {

@@ -61,17 +61,7 @@
     "maxRequestsPerUser": 100
   },
   "resend": {
-    "apiKey": "api-key",
-    "emails": {
-      "verifyAccount": {
-        "en": "test_template_verify_en",
-        "pl": "test_template_verify_pl"
-      },
-      "resetPassword": {
-        "en": "test_template_reset_en",
-        "pl": "test_template_reset_pl"
-      }
-    }
+    "apiKey": "api-key"
   },
   "emailVerification": {
     "enabled": false

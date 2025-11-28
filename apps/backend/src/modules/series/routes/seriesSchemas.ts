@@ -49,7 +49,6 @@ export const seriesSearchResultSchema = Type.Object({
 
 export const seriesSearchQuerySchema = Type.Object({
   query: Type.String({ minLength: 1 }),
-  page: Type.Optional(Type.Number({ minimum: 1, maximum: 500 })),
 });
 
 export const seriesParamsSchema = Type.Object({

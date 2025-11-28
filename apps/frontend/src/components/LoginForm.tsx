@@ -21,14 +21,8 @@ export default function LoginForm() {
   const formSchema = useMemo(
     () =>
       z.object({
-        email: z
-          .string()
-          .email(t('validation.invalidEmail'))
-          .max(254, t('validation.emailMaxLength')),
-        password: z
-          .string()
-          .min(8, t('validation.passwordMinLength'))
-          .max(64, t('validation.passwordMaxLength')),
+        email: z.string().email(t('validation.invalidEmail')).max(254, t('validation.emailMaxLength')),
+        password: z.string().min(8, t('validation.passwordMinLength')).max(64, t('validation.passwordMaxLength')),
       }),
     [t],
   );

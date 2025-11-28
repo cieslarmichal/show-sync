@@ -3,10 +3,12 @@ import { ResourceNotFoundError } from '../../../../common/errors/resourceNotFoun
 import type { LoggerService } from '../../../../common/logger/loggerService.ts';
 import type { OpenRouterService } from '../../../../common/openRouter/openRouterService.ts';
 import type { ExecutionContext } from '../../../../common/types/executionContext.ts';
+import type { Language } from '../../../../common/types/language.ts';
 import type { DatabaseClient } from '../../../../infrastructure/database/databaseClient.ts';
 import type { UserSeriesRatingRepository } from '../../../series/domain/repositories/userSeriesRatingRepository.ts';
 import type { UserSeriesWatchlistRepository } from '../../../series/domain/repositories/userSeriesWatchlistRepository.ts';
 import type { TmdbService } from '../../../series/domain/services/tmdbService.ts';
+import type { UserRepository } from '../../../user/domain/repositories/userRepository.ts';
 import type { WatchroomRepository } from '../../../watchroom/domain/repositories/watchroomRepository.ts';
 import type { Watchroom } from '../../../watchroom/domain/types/watchroom.ts';
 import type { RecommendationRepository } from '../../domain/repositories/recommendationRepository.ts';
@@ -58,6 +60,7 @@ export class GenerateRecommendationsAction {
   private readonly recommendationRequestRepository: RecommendationRequestRepository;
   private readonly seriesRatingRepository: UserSeriesRatingRepository;
   private readonly seriesWatchlistRepository: UserSeriesWatchlistRepository;
+  private readonly userRepository: UserRepository;
   private readonly tmdbService: TmdbService;
   private readonly openRouterService: OpenRouterService;
   private readonly loggerService: LoggerService;
@@ -71,6 +74,7 @@ export class GenerateRecommendationsAction {
     recommendationRequestRepository: RecommendationRequestRepository,
     seriesRatingRepository: UserSeriesRatingRepository,
     seriesWatchlistRepository: UserSeriesWatchlistRepository,
+    userRepository: UserRepository,
     tmdbService: TmdbService,
     openRouterService: OpenRouterService,
     loggerService: LoggerService,
@@ -83,6 +87,7 @@ export class GenerateRecommendationsAction {
     this.recommendationRequestRepository = recommendationRequestRepository;
     this.seriesRatingRepository = seriesRatingRepository;
     this.seriesWatchlistRepository = seriesWatchlistRepository;
+    this.userRepository = userRepository;
     this.tmdbService = tmdbService;
     this.openRouterService = openRouterService;
     this.loggerService = loggerService;
@@ -106,10 +111,20 @@ export class GenerateRecommendationsAction {
       const watchroom = await this.getWatchroom(watchroomId, userId);
       const participantIds = [watchroom.ownerId, ...watchroom.participants.map((p) => p.id)];
 
-      const [participantRatings, participantWatchlists] = await Promise.all([
+      const [owner, participantRatings, participantWatchlists] = await Promise.all([
+        this.userRepository.findById(watchroom.ownerId),
         this.fetchParticipantRatings(participantIds),
         this.fetchParticipantWatchlists(participantIds),
       ]);
+
+      if (!owner) {
+        throw new ResourceNotFoundError({
+          resource: 'User',
+          id: watchroom.ownerId,
+        });
+      }
+
+      const language = owner.language === 'pl' ? 'pl' : 'en';
 
       const allNotInterestedSeriesIds = [...new Set(participantWatchlists.flatMap((p) => p.notInterestedSeriesIds))];
       const allDislikedSeriesIds = [...new Set(participantRatings.flatMap((p) => p.dislikedSeriesIds))];
@@ -149,11 +164,12 @@ export class GenerateRecommendationsAction {
         watchroom.name,
         watchroom.description,
         watchroom.seriesLengthPreference,
+        language,
       );
 
       const excludedSeriesIds = [...allRatedSeriesIds, ...allNotInterestedSeriesIds];
 
-      const resolutionResult = await this.seriesResolver.resolve(aiRecommendations, excludedSeriesIds, []);
+      const resolutionResult = await this.seriesResolver.resolve(aiRecommendations, excludedSeriesIds, [], language);
 
       if (resolutionResult.failed.length > 0 || resolutionResult.skipped.length > 0) {
         this.loggerService.warn({
@@ -298,7 +314,7 @@ export class GenerateRecommendationsAction {
     await Promise.allSettled(
       seriesIds.map(async (tmdbId) => {
         try {
-          const details = await this.tmdbService.getSeriesDetails(tmdbId);
+          const details = await this.tmdbService.getSeriesDetails(tmdbId, 'en');
           seriesInfoMap.set(tmdbId, {
             tmdbId,
             name: details.name,
@@ -325,6 +341,7 @@ export class GenerateRecommendationsAction {
     watchroomName: string,
     watchroomDescription: string | undefined,
     seriesLengthPreference: 'all' | 'excludeMiniSeries' | 'onlyMiniSeries',
+    language: Language,
   ): Promise<AIRecommendation[]> {
     const userMessage = this.promptBuilder.build(
       participantRatings,
@@ -335,6 +352,7 @@ export class GenerateRecommendationsAction {
       watchroomName,
       watchroomDescription,
       seriesLengthPreference,
+      language,
     );
 
     const response = await this.openRouterService.sendRequest<AIRecommendationsResponse>({

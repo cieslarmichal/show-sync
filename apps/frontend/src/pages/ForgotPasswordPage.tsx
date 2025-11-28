@@ -18,10 +18,7 @@ export default function ForgotPasswordPage() {
   const formSchema = useMemo(
     () =>
       z.object({
-        email: z
-          .string()
-          .email(t('validation.invalidEmail'))
-          .max(64, t('validation.emailMaxLength')),
+        email: z.string().email(t('validation.invalidEmail')).max(64, t('validation.emailMaxLength')),
       }),
     [t],
   );

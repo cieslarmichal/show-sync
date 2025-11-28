@@ -27,14 +27,8 @@ export default function RegisterForm({ onSuccess }: Props) {
   const formSchema = useMemo(
     () =>
       z.object({
-        name: z
-          .string()
-          .min(1, t('validation.nameRequired'))
-          .max(64, t('validation.nameMaxLength')),
-        email: z
-          .string()
-          .email(t('validation.invalidEmail'))
-          .max(255, t('validation.emailMaxLength')),
+        name: z.string().min(1, t('validation.nameRequired')).max(64, t('validation.nameMaxLength')),
+        email: z.string().email(t('validation.invalidEmail')).max(255, t('validation.emailMaxLength')),
         password: z
           .string()
           .min(8, t('validation.passwordMinLength'))

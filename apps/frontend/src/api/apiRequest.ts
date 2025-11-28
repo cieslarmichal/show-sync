@@ -1,3 +1,5 @@
+import i18n from 'i18next';
+
 import { config } from '../config';
 import { ApiError } from './ApiError.ts';
 import { refreshToken } from './queries/refreshToken';
@@ -72,6 +74,10 @@ export const apiRequest = async <T>(endpoint: string, options: ApiRequestConfig)
     if (token) {
       headers.Authorization = `Bearer ${token}`;
     }
+
+    // Add Accept-Language header based on current i18n language
+    const language = i18n.language || 'en';
+    headers['Accept-Language'] = language;
 
     const requestConfig: RequestInit = {
       method,
