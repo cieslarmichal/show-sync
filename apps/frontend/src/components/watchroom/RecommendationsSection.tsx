@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
-import { Sparkles, TvMinimalPlay, Info } from 'lucide-react';
+import { Sparkles, TvMinimalPlay, Info, EyeIcon } from 'lucide-react';
 
 import { generateRecommendations, checkRecommendationStatus, getRecommendations } from '../../api/queries/watchroom.ts';
 import { getSeriesDetailsBatch } from '../../api/queries/getSeriesDetailsBatch.ts';
@@ -555,7 +555,9 @@ export function RecommendationsSection({
 
                 {/* Watchlist */}
                 <div className="flex items-start gap-2 p-2 rounded-lg bg-background/60 border border-muted">
-                  <span className="text-base shrink-0">🎬</span>
+                  <span className="text-base shrink-0">
+                    <EyeIcon className="w-5 h-5" />
+                  </span>
                   <div className="space-y-0.5">
                     <p className="text-[10px] sm:text-xs font-semibold text-foreground">
                       {t('watchroom.recommendations.guideWatchlistTitle')}

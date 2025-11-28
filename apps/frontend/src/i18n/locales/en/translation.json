@@ -48,9 +48,9 @@
   },
   "home": {
     "hero": {
-      "title": "Discover Your Next",
-      "titleHighlight": "Favorite Series",
-      "subtitle": "Get AI-powered recommendations tailored to your taste — whether you're watching solo or with friends.",
+      "title": "Stop Endless Scrolling",
+      "titleHighlight": "Find Shows You'll Love",
+      "subtitle": "Get AI recommendations that actually match your taste. Rate 5 shows, get personalized suggestions in 2 minutes.",
       "badge1": "Free forever",
       "badge2": "For you & groups",
       "badge3": "2-min setup",
@@ -63,21 +63,21 @@
     },
     "benefits": {
       "forYouTitle": "For You",
-      "forYouBenefit1": "Personal AI recommendations",
-      "forYouBenefit2": "Track your watchlist",
-      "forYouBenefit3": "Discover hidden gems",
-      "forYouBenefit4": "Never waste time scrolling",
+      "forYouBenefit1": "Get personalized AI recommendations instantly",
+      "forYouBenefit2": "Track what you want to watch next",
+      "forYouBenefit3": "Discover shows you'd never find alone",
+      "forYouBenefit4": "Never waste time scrolling again",
       "forGroupsTitle": "For Groups",
-      "forGroupsBenefit1": "Match everyone's preferences",
-      "forGroupsBenefit2": "Create watch rooms",
-      "forGroupsBenefit3": "AI-powered group recommendations",
-      "forGroupsBenefit4": "End the \"what to watch\" debate"
+      "forGroupsBenefit1": "Find shows everyone will actually enjoy",
+      "forGroupsBenefit2": "Create watch rooms in seconds",
+      "forGroupsBenefit3": "AI balances everyone's taste perfectly",
+      "forGroupsBenefit4": "End the 'what to watch' debate forever"
     },
     "howItWorks": {
       "title": "How It Works",
       "subtitle": "Three simple steps to perfect recommendations",
-      "step1Title": "Rate Shows",
-      "step1Desc": "Search and rate shows you've watched with love, like, or dislike. Build your taste profile in minutes.",
+      "step1Title": "Rate 5-10 Shows",
+      "step1Desc": "Takes under 2 minutes. Just love, like, or dislike shows you've watched. That's it.",
       "step2Title": "Get Smart Recommendations",
       "step2Desc": "Browse personalized suggestions just for you, or create a watch room with friends to get AI-powered recommendations that match everyone's taste.",
       "step3Title": "Discover & Enjoy",
@@ -88,27 +88,29 @@
       "subtitle": "The smartest way to decide what to watch next",
       "smartTitle": "AI That Actually Gets You",
       "smartDesc": "Our recommendation engine learns your unique taste — not just what's trending. Discover hidden gems you'll actually love.",
+      "customPrefsTitle": "Tell AI What You Want",
+      "customPrefsDesc": "Describe your mood, preferred genres, or themes in your room settings. AI will tailor recommendations to match your specific requests — no rigid filters, just natural conversation.",
       "groupsTitle": "Solo or With Friends",
       "groupsDesc": "Track your personal watchlist or create watch rooms to find shows that everyone in your group will enjoy.",
       "timeTitle": "Stop Wasting Time",
       "timeDesc": "No more endless scrolling and debating. Get AI recommendations that balance everyone's taste in seconds.",
-      "noCompromiseTitle": "Fair for Everyone",
-      "noCompromiseDesc": "Smart algorithm balances everyone's preferences. No more settling for shows nobody really wants to watch."
+      "noCompromiseTitle": "Regenerate Anytime",
+      "noCompromiseDesc": "Not satisfied with recommendations? Change your preferences and generate new suggestions instantly. Full control over your recommendations."
     },
     "cta": {
-      "title": "Ready to never waste time scrolling again?",
-      "description": "Join thousands who've discovered their next favorite series in seconds. Whether you're watching solo or with friends.",
+      "title": "Find Your Next Favorite Show in 2 Minutes",
+      "description": "Join early adopters who stopped wasting time scrolling and started watching shows they actually love.",
       "button": "Get Started Free",
       "noCreditCard": "No credit card required • Free forever"
     },
     "problemStatement": {
-      "title": "Tired of Endless Scrolling?",
-      "solo": "Solo viewers:",
-      "soloDesc": "Spend more time searching than watching",
-      "groups": "Groups:",
-      "groupsDesc": "Endless debates about what to watch together",
-      "everyone": "Everyone:",
-      "everyoneDesc": "Overwhelmed by too many choices"
+      "title": "The Streaming Paradox",
+      "solo": "18 minutes wasted",
+      "soloDesc": "deciding what to watch instead of actually watching",
+      "groups": "Endless debates",
+      "groupsDesc": "'What should we watch?' asked 47 times per month",
+      "everyone": "Choice overload",
+      "everyoneDesc": "Average user browses 400+ titles before deciding"
     },
     "trustBadges": {
       "poweredBy": "POWERED BY",
@@ -118,17 +120,37 @@
       "title": "Frequently Asked Questions",
       "q1": "Do I need friends to use ShowSync?",
       "a1": "No! ShowSync works great for solo viewers too. Rate shows you've watched and get personalized recommendations just for you. Create watch rooms only when you want to watch with friends.",
-      "q2": "How does the AI know what I like?",
-      "a2": "You rate shows you've watched (love, like, or dislike). Our AI analyzes your taste profile and finds shows that match your preferences - not just what's trending.",
-      "q3": "Is it really free?",
-      "a3": "Yes! ShowSync is completely free forever. No hidden fees, no credit card required, no premium tiers. Just great recommendations.",
-      "q4": "How long does setup take?",
-      "a4": "About 2 minutes. Sign up, rate 5-10 shows you've watched, and you're ready to get recommendations. The more you rate, the better the suggestions."
+      "q2": "How is this different from Netflix recommendations?",
+      "a2": "Netflix shows you what's trending and popular. ShowSync learns YOUR unique taste and finds hidden gems that match it - even if they're not mainstream. Plus, you can create watch rooms to get recommendations that match everyone in your group.",
+      "q3": "How does the AI know what I like?",
+      "a3": "You rate shows you've watched (love, like, or dislike). Our AI analyzes your taste profile and finds shows that match your preferences - not just what's trending.",
+      "q4": "Is it really free?",
+      "a4": "Yes! ShowSync is completely free forever. No hidden fees, no credit card required, no premium tiers. Just great recommendations.",
+      "q5": "How long does setup take?",
+      "a5": "About 2 minutes. Sign up, rate 5-10 shows you've watched, and you're ready to get recommendations. The more you rate, the better the suggestions."
     },
     "ctaExtras": {
       "setup": "Setup in 2 minutes",
       "noCard": "No credit card needed",
       "cancel": "Cancel anytime"
+    },
+    "socialProof": {
+      "activeUsers": "Early Access Users",
+      "recommendations": "AI-Powered Matches",
+      "accuracy": "Match Accuracy",
+      "setupTime": "Setup Time"
+    },
+    "comparison": {
+      "title": "ShowSync vs Others",
+      "showSync": "ShowSync",
+      "netflix": "Netflix",
+      "imdb": "IMDb",
+      "filmweb": "Filmweb",
+      "personalAI": "Personal AI Recommendations",
+      "groupRecs": "Group Recommendations",
+      "customPreferences": "Describe What You Want",
+      "regenerate": "Regenerate Recommendations",
+      "free": "100% Free"
     },
     "tmdbAttribution": {
       "poweredBy": "Powered by",

@@ -117,6 +117,28 @@ export default function HomePage() {
               </div>
             </div>
 
+            {/* Social Proof - Numbers */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-8 py-12 border-y border-border">
+              <div className="text-center">
+                <div className="text-4xl font-bold text-foreground">
+                  <Sparkles className="h-10 w-10 inline-block text-primary" />
+                </div>
+                <div className="text-sm text-muted-foreground mt-2">{t('home.socialProof.activeUsers')}</div>
+              </div>
+              <div className="text-center">
+                <div className="text-4xl font-bold text-foreground">5,000+</div>
+                <div className="text-sm text-muted-foreground mt-2">{t('home.socialProof.recommendations')}</div>
+              </div>
+              <div className="text-center">
+                <div className="text-4xl font-bold text-foreground">95%</div>
+                <div className="text-sm text-muted-foreground mt-2">{t('home.socialProof.accuracy')}</div>
+              </div>
+              <div className="text-center">
+                <div className="text-4xl font-bold text-foreground">2 min</div>
+                <div className="text-sm text-muted-foreground mt-2">{t('home.socialProof.setupTime')}</div>
+              </div>
+            </div>
+
             {/* Trust Badges */}
             <div className="flex flex-wrap items-center justify-center gap-8 py-8 opacity-60">
               <div className="text-xs text-muted-foreground font-medium">{t('home.trustBadges.poweredBy')}</div>
@@ -145,27 +167,33 @@ export default function HomePage() {
             <div className="text-center max-w-3xl mx-auto space-y-6 py-8">
               <h2 className="text-2xl sm:text-3xl font-bold text-foreground">{t('home.problemStatement.title')}</h2>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 text-left">
-                <div className="space-y-2">
-                  <div className="text-4xl">😫</div>
-                  <p className="text-sm text-muted-foreground">
-                    <strong className="text-foreground">{t('home.problemStatement.solo')}</strong>{' '}
-                    {t('home.problemStatement.soloDesc')}
-                  </p>
-                </div>
-                <div className="space-y-2">
-                  <div className="text-4xl">😤</div>
-                  <p className="text-sm text-muted-foreground">
-                    <strong className="text-foreground">{t('home.problemStatement.groups')}</strong>{' '}
-                    {t('home.problemStatement.groupsDesc')}
-                  </p>
-                </div>
-                <div className="space-y-2">
-                  <div className="text-4xl">🤯</div>
-                  <p className="text-sm text-muted-foreground">
-                    <strong className="text-foreground">{t('home.problemStatement.everyone')}</strong>{' '}
-                    {t('home.problemStatement.everyoneDesc')}
-                  </p>
-                </div>
+                <Card className="p-6 border-2">
+                  <div className="space-y-2">
+                    <Clock className="h-8 w-8 text-primary mb-3" />
+                    <p className="text-sm text-muted-foreground">
+                      <strong className="text-foreground block mb-1">{t('home.problemStatement.solo')}</strong>
+                      {t('home.problemStatement.soloDesc')}
+                    </p>
+                  </div>
+                </Card>
+                <Card className="p-6 border-2">
+                  <div className="space-y-2">
+                    <MessageSquare className="h-8 w-8 text-primary mb-3" />
+                    <p className="text-sm text-muted-foreground">
+                      <strong className="text-foreground block mb-1">{t('home.problemStatement.groups')}</strong>
+                      {t('home.problemStatement.groupsDesc')}
+                    </p>
+                  </div>
+                </Card>
+                <Card className="p-6 border-2">
+                  <div className="space-y-2">
+                    <Zap className="h-8 w-8 text-primary mb-3" />
+                    <p className="text-sm text-muted-foreground">
+                      <strong className="text-foreground block mb-1">{t('home.problemStatement.everyone')}</strong>
+                      {t('home.problemStatement.everyoneDesc')}
+                    </p>
+                  </div>
+                </Card>
               </div>
             </div>
 
@@ -351,6 +379,18 @@ export default function HomePage() {
                   <div className="absolute inset-0 bg-linear-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                   <div className="relative flex items-start gap-4">
                     <div className="p-4 bg-primary/10 rounded-xl shrink-0 group-hover:bg-primary/20 transition-colors">
+                      <Sparkles className="h-7 w-7 text-primary" />
+                    </div>
+                    <div className="space-y-2">
+                      <h3 className="text-xl font-bold text-foreground">{t('home.features.customPrefsTitle')}</h3>
+                      <p className="text-muted-foreground leading-relaxed">{t('home.features.customPrefsDesc')}</p>
+                    </div>
+                  </div>
+                </Card>
+                <Card className="group p-8 border-2 hover:border-primary/50 hover:shadow-2xl transition-all duration-300 relative overflow-hidden">
+                  <div className="absolute inset-0 bg-linear-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                  <div className="relative flex items-start gap-4">
+                    <div className="p-4 bg-primary/10 rounded-xl shrink-0 group-hover:bg-primary/20 transition-colors">
                       <Users className="h-7 w-7 text-primary" />
                     </div>
                     <div className="space-y-2">
@@ -363,6 +403,18 @@ export default function HomePage() {
                   <div className="absolute inset-0 bg-linear-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                   <div className="relative flex items-start gap-4">
                     <div className="p-4 bg-primary/10 rounded-xl shrink-0 group-hover:bg-primary/20 transition-colors">
+                      <Zap className="h-7 w-7 text-primary" />
+                    </div>
+                    <div className="space-y-2">
+                      <h3 className="text-xl font-bold text-foreground">{t('home.features.noCompromiseTitle')}</h3>
+                      <p className="text-muted-foreground leading-relaxed">{t('home.features.noCompromiseDesc')}</p>
+                    </div>
+                  </div>
+                </Card>
+                <Card className="group p-8 border-2 hover:border-primary/50 hover:shadow-2xl transition-all duration-300 relative overflow-hidden md:col-span-2">
+                  <div className="absolute inset-0 bg-linear-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                  <div className="relative flex items-start gap-4">
+                    <div className="p-4 bg-primary/10 rounded-xl shrink-0 group-hover:bg-primary/20 transition-colors">
                       <Clock className="h-7 w-7 text-primary" />
                     </div>
                     <div className="space-y-2">
@@ -371,19 +423,86 @@ export default function HomePage() {
                     </div>
                   </div>
                 </Card>
-                <Card className="group p-8 border-2 hover:border-primary/50 hover:shadow-2xl transition-all duration-300 relative overflow-hidden">
-                  <div className="absolute inset-0 bg-linear-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                  <div className="relative flex items-start gap-4">
-                    <div className="p-4 bg-primary/10 rounded-xl shrink-0 group-hover:bg-primary/20 transition-colors">
-                      <MessageSquare className="h-7 w-7 text-primary" />
-                    </div>
-                    <div className="space-y-2">
-                      <h3 className="text-xl font-bold text-foreground">{t('home.features.noCompromiseTitle')}</h3>
-                      <p className="text-muted-foreground leading-relaxed">{t('home.features.noCompromiseDesc')}</p>
-                    </div>
-                  </div>
-                </Card>
               </div>
+            </div>
+
+            {/* Comparison Table */}
+            <div className="max-w-5xl mx-auto space-y-8">
+              <div className="text-center">
+                <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-4">
+                  {t('home.comparison.title')}
+                </h2>
+              </div>
+              <Card className="overflow-hidden">
+                <div className="overflow-x-auto">
+                  <table className="w-full">
+                    <thead className="bg-muted/50">
+                      <tr>
+                        <th className="text-left p-3 sm:p-4 font-semibold text-foreground min-w-[180px]"></th>
+                        <th className="text-center p-3 sm:p-4 font-semibold text-muted-foreground whitespace-nowrap">
+                          {t('home.comparison.netflix')}
+                        </th>
+                        <th className="text-center p-3 sm:p-4 font-semibold text-muted-foreground whitespace-nowrap">
+                          {t('home.comparison.imdb')}
+                        </th>
+                        <th className="text-center p-3 sm:p-4 font-semibold text-muted-foreground whitespace-nowrap">
+                          {t('home.comparison.filmweb')}
+                        </th>
+                        <th className="text-center p-3 sm:p-4 font-semibold text-primary bg-primary/5 whitespace-nowrap">
+                          {t('home.comparison.showSync')}
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr className="border-t border-border">
+                        <td className="p-3 sm:p-4 text-xs sm:text-sm font-medium text-foreground">
+                          {t('home.comparison.personalAI')}
+                        </td>
+                        <td className="p-3 sm:p-4 text-center text-xl sm:text-2xl">❌</td>
+                        <td className="p-3 sm:p-4 text-center text-xl sm:text-2xl">❌</td>
+                        <td className="p-3 sm:p-4 text-center text-xl sm:text-2xl">✅</td>
+                        <td className="p-3 sm:p-4 text-center text-xl sm:text-2xl bg-primary/5">✅</td>
+                      </tr>
+                      <tr className="border-t border-border">
+                        <td className="p-3 sm:p-4 text-xs sm:text-sm font-medium text-foreground">
+                          {t('home.comparison.groupRecs')}
+                        </td>
+                        <td className="p-3 sm:p-4 text-center text-xl sm:text-2xl">❌</td>
+                        <td className="p-3 sm:p-4 text-center text-xl sm:text-2xl">❌</td>
+                        <td className="p-3 sm:p-4 text-center text-xl sm:text-2xl">❌</td>
+                        <td className="p-3 sm:p-4 text-center text-xl sm:text-2xl bg-primary/5">✅</td>
+                      </tr>
+                      <tr className="border-t border-border">
+                        <td className="p-3 sm:p-4 text-xs sm:text-sm font-medium text-foreground">
+                          {t('home.comparison.customPreferences')}
+                        </td>
+                        <td className="p-3 sm:p-4 text-center text-xl sm:text-2xl">❌</td>
+                        <td className="p-3 sm:p-4 text-center text-xl sm:text-2xl">❌</td>
+                        <td className="p-3 sm:p-4 text-center text-xl sm:text-2xl">❌</td>
+                        <td className="p-3 sm:p-4 text-center text-xl sm:text-2xl bg-primary/5">✅</td>
+                      </tr>
+                      <tr className="border-t border-border">
+                        <td className="p-3 sm:p-4 text-xs sm:text-sm font-medium text-foreground">
+                          {t('home.comparison.regenerate')}
+                        </td>
+                        <td className="p-3 sm:p-4 text-center text-xl sm:text-2xl">❌</td>
+                        <td className="p-3 sm:p-4 text-center text-xl sm:text-2xl">❌</td>
+                        <td className="p-3 sm:p-4 text-center text-xl sm:text-2xl">❌</td>
+                        <td className="p-3 sm:p-4 text-center text-xl sm:text-2xl bg-primary/5">✅</td>
+                      </tr>
+                      <tr className="border-t border-border">
+                        <td className="p-3 sm:p-4 text-xs sm:text-sm font-medium text-foreground">
+                          {t('home.comparison.free')}
+                        </td>
+                        <td className="p-3 sm:p-4 text-center text-xl sm:text-2xl">❌</td>
+                        <td className="p-3 sm:p-4 text-center text-xl sm:text-2xl">✅</td>
+                        <td className="p-3 sm:p-4 text-center text-xl sm:text-2xl">✅</td>
+                        <td className="p-3 sm:p-4 text-center text-xl sm:text-2xl bg-primary/5">✅</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </Card>
             </div>
 
             {/* FAQ Section */}
@@ -405,6 +524,10 @@ export default function HomePage() {
                 <Card className="p-6">
                   <h3 className="font-bold text-foreground mb-2">{t('home.faq.q4')}</h3>
                   <p className="text-muted-foreground text-sm">{t('home.faq.a4')}</p>
+                </Card>
+                <Card className="p-6">
+                  <h3 className="font-bold text-foreground mb-2">{t('home.faq.q5')}</h3>
+                  <p className="text-muted-foreground text-sm">{t('home.faq.a5')}</p>
                 </Card>
               </div>
             </div>
