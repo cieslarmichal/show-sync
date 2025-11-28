@@ -429,9 +429,7 @@ export default function HomePage() {
             {/* Comparison Table */}
             <div className="max-w-5xl mx-auto space-y-8">
               <div className="text-center">
-                <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-4">
-                  {t('home.comparison.title')}
-                </h2>
+                <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-4">{t('home.comparison.title')}</h2>
               </div>
               <Card className="overflow-hidden">
                 <div className="overflow-x-auto">

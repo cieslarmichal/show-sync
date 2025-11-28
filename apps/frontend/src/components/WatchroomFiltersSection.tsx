@@ -31,14 +31,14 @@ export function WatchroomFiltersSection({ control }: WatchroomFiltersSectionProp
   ] as const;
 
   return (
-    <div className="space-y-6 border-t pt-4">
+    <div className="space-y-4 border-t pt-5">
       {/* Series Length Preference */}
       <FormField
         control={control}
         name="seriesLengthPreference"
         render={({ field }) => (
           <FormItem className="space-y-3">
-            <FormLabel className="text-sm">{t('watchroom.seriesLength')}</FormLabel>
+            <FormLabel className="text-sm font-semibold">{t('watchroom.seriesLength')}</FormLabel>
             <FormControl>
               <RadioGroup
                 onValueChange={field.onChange}
@@ -48,21 +48,22 @@ export function WatchroomFiltersSection({ control }: WatchroomFiltersSectionProp
                 {SERIES_LENGTH_OPTIONS.map((option) => (
                   <div
                     key={option.value}
-                    className="flex items-start space-x-2"
+                    className="flex items-start space-x-3 p-3 rounded-lg border border-border hover:bg-accent/50 hover:border-primary/30 transition-all cursor-pointer"
+                    onClick={() => field.onChange(option.value)}
                   >
                     <RadioGroupItem
                       value={option.value}
                       id={`length-${option.value}`}
-                      className="mt-0.5"
+                      className="mt-0.5 cursor-pointer"
                     />
                     <div className="flex-1">
                       <Label
                         htmlFor={`length-${option.value}`}
-                        className="text-sm font-normal cursor-pointer"
+                        className="text-sm font-medium cursor-pointer block"
                       >
                         {option.label}
                       </Label>
-                      <p className="text-xs text-muted-foreground mt-0.5">{option.description}</p>
+                      <p className="text-xs text-muted-foreground mt-1 leading-relaxed">{option.description}</p>
                     </div>
                   </div>
                 ))}

@@ -126,15 +126,29 @@ export function EditWatchRoomModal({
               name="description"
               render={({ field, fieldState }) => (
                 <FormItem>
-                  <FormLabel htmlFor="edit-room-description">{t('watchroom.descriptionLabel')}</FormLabel>
+                  <FormLabel
+                    htmlFor="edit-room-description"
+                    className="text-base font-semibold"
+                  >
+                    {t('watchroom.descriptionLabel')}
+                  </FormLabel>
                   <FormControl>
                     <Textarea
                       id="edit-room-description"
                       placeholder={t('watchroom.descriptionPlaceholder')}
                       aria-invalid={!!fieldState.error}
+                      rows={4}
+                      className="resize-none focus:ring-2 focus:ring-primary/20"
                       {...field}
                     />
                   </FormControl>
+                  <div className="bg-primary/5 border border-primary/20 rounded-md p-3 mt-2">
+                    <p className="text-xs text-foreground leading-relaxed">
+                      <span className="font-medium">💡 {t('watchroom.descriptionHintTitle')}</span>
+                      <br />
+                      {t('watchroom.descriptionHint')}
+                    </p>
+                  </div>
                   <FormMessage />
                 </FormItem>
               )}
