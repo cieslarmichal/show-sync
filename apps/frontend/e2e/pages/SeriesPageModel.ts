@@ -15,16 +15,16 @@ export class SeriesPageModel extends BasePageModel {
 
   constructor(page: Page) {
     super(page);
-    this.pageTitle = page.getByRole('heading', { name: /rate your shows/i });
-    this.searchInput = page.getByPlaceholder(/search for a tv show by title/i);
+    this.pageTitle = page.getByRole('heading', { name: /rate tv shows/i });
+    this.searchInput = page.getByPlaceholder(/search for tv shows/i);
     this.searchResults = page.getByTestId('search-results');
     this.ratingsSection = page.getByRole('heading', { name: /your ratings/i });
-    this.filterTabAll = page.getByRole('tab', { name: /all \(/i });
-    this.filterTabLoved = page.getByRole('tab', { name: /loved \(/i });
-    this.filterTabLiked = page.getByRole('tab', { name: /liked \(/i });
-    this.filterTabDisliked = page.getByRole('tab', { name: /dislike \(/i });
+    this.filterTabAll = page.getByRole('tab', { name: /^all \(/i });
+    this.filterTabLoved = page.getByRole('tab', { name: /^loved \(/i });
+    this.filterTabLiked = page.getByRole('tab', { name: /^liked \(/i });
+    this.filterTabDisliked = page.getByRole('tab', { name: /^disliked \(/i });
     this.emptyRatingsMessage = page.getByText(
-      /no rated shows yet|no loved shows yet|no liked shows yet|not for you yet/i,
+      /no rated shows yet|no loved shows yet|no liked shows yet|no disliked shows yet/i,
     );
   }
 
