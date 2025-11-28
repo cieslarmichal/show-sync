@@ -48,42 +48,91 @@
   },
   "home": {
     "hero": {
-      "title": "Stop arguing about",
-      "titleHighlight": "what to watch",
-      "subtitle": "Get personalized recommendations that everyone agrees on.",
-      "badge1": "Free to start",
-      "badge2": "No credit card needed",
-      "badge3": "Setup in 2 minutes",
+      "title": "Discover Your Next",
+      "titleHighlight": "Favorite Series",
+      "subtitle": "Get AI-powered recommendations tailored to your taste — whether you're watching solo or with friends.",
+      "badge1": "Free forever",
+      "badge2": "For you & groups",
+      "badge3": "2-min setup",
       "cta": "Get Started Free",
       "signIn": "Sign In"
     },
+    "perfectForEveryone": {
+      "title": "Perfect for Everyone",
+      "subtitle": "Whether you're watching alone or with friends"
+    },
+    "benefits": {
+      "forYouTitle": "For You",
+      "forYouBenefit1": "Personal AI recommendations",
+      "forYouBenefit2": "Track your watchlist",
+      "forYouBenefit3": "Discover hidden gems",
+      "forYouBenefit4": "Never waste time scrolling",
+      "forGroupsTitle": "For Groups",
+      "forGroupsBenefit1": "Match everyone's preferences",
+      "forGroupsBenefit2": "Create watch rooms",
+      "forGroupsBenefit3": "AI-powered group recommendations",
+      "forGroupsBenefit4": "End the \"what to watch\" debate"
+    },
     "howItWorks": {
       "title": "How It Works",
-      "subtitle": "Three simple steps. Zero arguments about what to watch.",
-      "step1Title": "1. Rate Your Shows",
-      "step1Desc": "Quickly rate shows you've watched. Love it, like it, or dislike it. Takes less than a minute to build your taste profile.",
-      "step2Title": "2. Invite Your Crew",
-      "step2Desc": "Create a watch room and share it with friends, family, or your partner. Or keep it for just yourself.",
-      "step3Title": "3. Watch the Magic Happen",
-      "step3Desc": "Get instant recommendations that balance everyone's taste. No scrolling for hours. No compromising."
+      "subtitle": "Three simple steps to perfect recommendations",
+      "step1Title": "Rate Shows",
+      "step1Desc": "Search and rate shows you've watched with love, like, or dislike. Build your taste profile in minutes.",
+      "step2Title": "Get Smart Recommendations",
+      "step2Desc": "Browse personalized suggestions just for you, or create a watch room with friends to get AI-powered recommendations that match everyone's taste.",
+      "step3Title": "Discover & Enjoy",
+      "step3Desc": "Review your personalized recommendations with AI explanations. Add to your watchlist or share with friends to decide together."
     },
     "features": {
       "title": "Why People Love ShowSync",
-      "subtitle": "The smartest way to decide what to watch next.",
-      "smartTitle": "Actually Smart Recommendations",
-      "smartDesc": "We analyze your unique taste and find hidden gems you'll love — not just the same popular shows everyone recommends.",
-      "groupsTitle": "Perfect for Groups or Solo",
-      "groupsDesc": "Whether it's date night, family time, or just you on the couch - get recommendations that work for any situation and adapt to everyone's watchlists.",
-      "timeTitle": "Save Hours of Scrolling",
-      "timeDesc": "Stop spending more time choosing than watching. Get your perfect match in seconds, not hours.",
-      "noCompromiseTitle": "No More Compromises",
-      "noCompromiseDesc": "Find shows that everyone will enjoy."
+      "subtitle": "The smartest way to decide what to watch next",
+      "smartTitle": "AI That Actually Gets You",
+      "smartDesc": "Our recommendation engine learns your unique taste — not just what's trending. Discover hidden gems you'll actually love.",
+      "groupsTitle": "Solo or With Friends",
+      "groupsDesc": "Track your personal watchlist or create watch rooms to find shows that everyone in your group will enjoy.",
+      "timeTitle": "Stop Wasting Time",
+      "timeDesc": "No more endless scrolling and debating. Get AI recommendations that balance everyone's taste in seconds.",
+      "noCompromiseTitle": "Fair for Everyone",
+      "noCompromiseDesc": "Smart algorithm balances everyone's preferences. No more settling for shows nobody really wants to watch."
     },
     "cta": {
-      "title": "Ready to end the \"what should we watch?\" debate?",
-      "description": "Join thousands of people who've already stopped wasting time scrolling. Get your first recommendation in under 2 minutes.",
+      "title": "Ready to never waste time scrolling again?",
+      "description": "Join thousands who've discovered their next favorite series in seconds. Whether you're watching solo or with friends.",
       "button": "Get Started Free",
-      "noCreditCard": "No credit card required • Free trial included"
+      "noCreditCard": "No credit card required • Free forever"
+    },
+    "problemStatement": {
+      "title": "Tired of Endless Scrolling?",
+      "solo": "Solo viewers:",
+      "soloDesc": "Spend more time searching than watching",
+      "groups": "Groups:",
+      "groupsDesc": "Endless debates about what to watch together",
+      "everyone": "Everyone:",
+      "everyoneDesc": "Overwhelmed by too many choices"
+    },
+    "trustBadges": {
+      "poweredBy": "POWERED BY",
+      "secure": "100% Secure"
+    },
+    "faq": {
+      "title": "Frequently Asked Questions",
+      "q1": "Do I need friends to use ShowSync?",
+      "a1": "No! ShowSync works great for solo viewers too. Rate shows you've watched and get personalized recommendations just for you. Create watch rooms only when you want to watch with friends.",
+      "q2": "How does the AI know what I like?",
+      "a2": "You rate shows you've watched (love, like, or dislike). Our AI analyzes your taste profile and finds shows that match your preferences - not just what's trending.",
+      "q3": "Is it really free?",
+      "a3": "Yes! ShowSync is completely free forever. No hidden fees, no credit card required, no premium tiers. Just great recommendations.",
+      "q4": "How long does setup take?",
+      "a4": "About 2 minutes. Sign up, rate 5-10 shows you've watched, and you're ready to get recommendations. The more you rate, the better the suggestions."
+    },
+    "ctaExtras": {
+      "setup": "Setup in 2 minutes",
+      "noCard": "No credit card needed",
+      "cancel": "Cancel anytime"
+    },
+    "tmdbAttribution": {
+      "poweredBy": "Powered by",
+      "disclaimer": "This product uses the TMDB API but is not endorsed or certified by TMDB."
     }
   },
   "dashboard": {
