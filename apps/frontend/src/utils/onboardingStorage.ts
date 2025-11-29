@@ -49,7 +49,7 @@ export const onboardingStorage = {
 
   shouldShowQuickStart(totalRatings: number): boolean {
     const state = this.get();
-    // Show if: not completed AND (not seen OR has very few ratings)
-    return !state.hasCompletedQuickStart && (!state.hasSeenQuickStart || totalRatings < 5);
+    // Show if: not completed AND not seen AND has very few ratings
+    return !state.hasCompletedQuickStart && !state.hasSeenQuickStart && totalRatings <= 4;
   },
 };
