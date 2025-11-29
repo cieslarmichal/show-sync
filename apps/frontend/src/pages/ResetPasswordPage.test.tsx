@@ -105,8 +105,8 @@ describe('ResetPasswordPage', () => {
       expect(screen.getByRole('heading', { name: 'Reset Password' })).toBeInTheDocument();
     });
 
-    expect(screen.getByLabelText('New Password')).toBeInTheDocument();
-    expect(screen.getByLabelText('Confirm Password')).toBeInTheDocument();
+    expect(screen.getByLabelText(/new password/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/confirm password/i)).toBeInTheDocument();
     expect(screen.getByTestId('reset-password-button')).toBeInTheDocument();
   });
 
@@ -131,7 +131,7 @@ describe('ResetPasswordPage', () => {
       expect(screen.getByRole('heading', { name: 'Reset Password' })).toBeInTheDocument();
     });
 
-    const newPasswordInput = screen.getByLabelText('New Password');
+    const newPasswordInput = screen.getByLabelText(/new password/i);
 
     // Test too short password
     await user.type(newPasswordInput, 'Short1');
@@ -172,8 +172,8 @@ describe('ResetPasswordPage', () => {
       expect(screen.getByRole('heading', { name: 'Reset Password' })).toBeInTheDocument();
     });
 
-    const newPasswordInput = screen.getByLabelText('New Password');
-    const confirmPasswordInput = screen.getByLabelText('Confirm Password');
+    const newPasswordInput = screen.getByLabelText(/new password/i);
+    const confirmPasswordInput = screen.getByLabelText(/confirm password/i);
 
     await user.type(newPasswordInput, 'ValidPassword123!');
     await user.type(confirmPasswordInput, 'DifferentPassword123');
@@ -239,8 +239,8 @@ describe('ResetPasswordPage', () => {
       expect(screen.getByRole('heading', { name: 'Reset Password' })).toBeInTheDocument();
     });
 
-    const newPasswordInput = screen.getByLabelText('New Password');
-    const confirmPasswordInput = screen.getByLabelText('Confirm Password');
+    const newPasswordInput = screen.getByLabelText(/new password/i);
+    const confirmPasswordInput = screen.getByLabelText(/confirm password/i);
     const submitButton = screen.getByTestId('reset-password-button');
 
     await user.type(newPasswordInput, 'ValidPassword123!');
@@ -286,8 +286,8 @@ describe('ResetPasswordPage', () => {
       expect(screen.getByRole('heading', { name: 'Reset Password' })).toBeInTheDocument();
     });
 
-    const newPasswordInput = screen.getByLabelText('New Password');
-    const confirmPasswordInput = screen.getByLabelText('Confirm Password');
+    const newPasswordInput = screen.getByLabelText(/new password/i);
+    const confirmPasswordInput = screen.getByLabelText(/confirm password/i);
     const submitButton = screen.getByTestId('reset-password-button');
 
     await user.type(newPasswordInput, 'ValidPassword123!');

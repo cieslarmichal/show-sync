@@ -43,7 +43,7 @@ describe('CreateWatchRoomModal', () => {
 
     await waitFor(() => {
       expect(screen.getByRole('dialog')).toBeInTheDocument();
-      expect(screen.getByText('Get TV show suggestions based on what you like.')).toBeInTheDocument();
+      expect(screen.getByText(/get personalized show suggestions based on everyone's taste/i)).toBeInTheDocument();
     });
   });
 
@@ -56,7 +56,7 @@ describe('CreateWatchRoomModal', () => {
 
     await waitFor(() => {
       expect(screen.getByLabelText(/room name/i)).toBeInTheDocument();
-      expect(screen.getByLabelText(/description/i)).toBeInTheDocument();
+      expect(screen.getByLabelText(/what are you looking for/i)).toBeInTheDocument();
     });
   });
 
@@ -109,13 +109,13 @@ describe('CreateWatchRoomModal', () => {
     await user.click(createButton);
 
     await waitFor(() => {
-      expect(screen.getByLabelText(/description/i)).toBeInTheDocument();
+      expect(screen.getByLabelText(/what are you looking for/i)).toBeInTheDocument();
     });
 
     const nameInput = screen.getByLabelText(/room name/i);
     await user.type(nameInput, 'Test Room');
 
-    const descriptionInput = screen.getByLabelText(/description/i);
+    const descriptionInput = screen.getByLabelText(/what are you looking for/i);
     await user.type(descriptionInput, 'a'.repeat(257));
 
     const submitButton = screen.getByRole('button', { name: /^create$/i });
@@ -150,7 +150,7 @@ describe('CreateWatchRoomModal', () => {
     });
 
     const nameInput = screen.getByLabelText(/room name/i);
-    const descriptionInput = screen.getByLabelText(/description/i);
+    const descriptionInput = screen.getByLabelText(/what are you looking for/i);
 
     await user.type(nameInput, 'Test Room');
     await user.type(descriptionInput, 'Test Description');

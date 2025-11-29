@@ -62,7 +62,7 @@ describe('EditWatchRoomModal', () => {
 
     await waitFor(() => {
       const nameInput = screen.getByLabelText(/room name/i) as HTMLInputElement;
-      const descriptionInput = screen.getByLabelText(/description/i) as HTMLTextAreaElement;
+      const descriptionInput = screen.getByLabelText(/what are you looking for/i) as HTMLTextAreaElement;
 
       expect(nameInput.value).toBe('Test Room');
       expect(descriptionInput.value).toBe('Test Description');
@@ -84,7 +84,7 @@ describe('EditWatchRoomModal', () => {
     await user.click(editButton);
 
     await waitFor(() => {
-      const descriptionInput = screen.getByLabelText(/description/i) as HTMLTextAreaElement;
+      const descriptionInput = screen.getByLabelText(/what are you looking for/i) as HTMLTextAreaElement;
       expect(descriptionInput.value).toBe('');
     });
   });
@@ -142,10 +142,10 @@ describe('EditWatchRoomModal', () => {
     await user.click(editButton);
 
     await waitFor(() => {
-      expect(screen.getByLabelText(/description/i)).toBeInTheDocument();
+      expect(screen.getByLabelText(/what are you looking for/i)).toBeInTheDocument();
     });
 
-    const descriptionInput = screen.getByLabelText(/description/i);
+    const descriptionInput = screen.getByLabelText(/what are you looking for/i);
     await user.clear(descriptionInput);
     await user.type(descriptionInput, 'a'.repeat(257));
 
@@ -181,7 +181,7 @@ describe('EditWatchRoomModal', () => {
     });
 
     const nameInput = screen.getByLabelText(/room name/i);
-    const descriptionInput = screen.getByLabelText(/description/i);
+    const descriptionInput = screen.getByLabelText(/what are you looking for/i);
 
     await user.clear(nameInput);
     await user.type(nameInput, 'Updated Room');
@@ -375,10 +375,10 @@ describe('EditWatchRoomModal', () => {
     await user.click(editButton);
 
     await waitFor(() => {
-      expect(screen.getByLabelText(/description/i)).toBeInTheDocument();
+      expect(screen.getByLabelText(/what are you looking for/i)).toBeInTheDocument();
     });
 
-    const descriptionInput = screen.getByLabelText(/description/i);
+    const descriptionInput = screen.getByLabelText(/what are you looking for/i);
     await user.clear(descriptionInput);
 
     const submitButton = screen.getByRole('button', { name: /save changes/i });
