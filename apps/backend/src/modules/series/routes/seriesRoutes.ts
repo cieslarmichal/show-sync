@@ -9,6 +9,7 @@ import type { Config } from '../../../core/config.ts';
 import type { DatabaseClient } from '../../../infrastructure/database/databaseClient.ts';
 import { AddSeriesRatingAction } from '../application/actions/addSeriesRatingAction.ts';
 import { AddSeriesWatchlistAction } from '../application/actions/addSeriesWatchlistAction.ts';
+import { GetPopularSeriesAction } from '../application/actions/getPopularSeriesAction.ts';
 import { GetSeriesDetailsBatchAction } from '../application/actions/getSeriesDetailsBatchAction.ts';
 import { GetSeriesExternalIdsAction } from '../application/actions/getSeriesExternalIdsAction.ts';
 import { GetSeriesRatingsAction } from '../application/actions/getSeriesRatingsAction.ts';
@@ -48,6 +49,7 @@ import {
   updateSeriesRatingParamsSchema,
   type SeriesWatchlistDto,
   type SeriesRatingDto,
+  seriesSchema,
 } from './seriesSchemas.ts';
 
 const parseLanguage = (acceptLanguageHeader: string | undefined): 'en' | 'pl' => {
@@ -106,6 +108,7 @@ export const seriesRoutes: FastifyPluginAsyncTypebox<{
 
   const tmdbService = new TmdbServiceImpl(config.tmdb.apiKey, config.tmdb.baseUrl, loggerService);
   const searchSeriesAction = new SearchSeriesAction(tmdbService);
+  const getPopularSeriesAction = new GetPopularSeriesAction(tmdbService);
   const getSeriesDetailsBatchAction = new GetSeriesDetailsBatchAction(tmdbService);
   const getSeriesExternalIdsAction = new GetSeriesExternalIdsAction(tmdbService);
   const seriesRatingRepository = new UserSeriesRatingRepositoryImpl(databaseClient);
@@ -130,6 +133,31 @@ export const seriesRoutes: FastifyPluginAsyncTypebox<{
 
   const authenticationMiddleware = createAuthenticationMiddleware(tokenService);
 
+  fastify.get('/series/popular', {
+    schema: {
+      response: {
+        200: Type.Object({
+          data: Type.Array(seriesSchema),
+        }),
+      },
+    },
+    preHandler: [authenticationMiddleware],
+    handler: async (request, reply) => {
+      const language = parseLanguage(request.headers['accept-language']);
+
+      const popularSeries = await getPopularSeriesAction.execute({ language });
+
+      const responseData = {
+        data: popularSeries.map(mapSeriesToResponse),
+      };
+
+      reply.header('Cache-Control', 'public, max-age=3600, s-maxage=604800, must-revalidate');
+      reply.header('Vary', 'Accept-Language');
+
+      return reply.send(responseData);
+    },
+  });
+
   fastify.get('/series/search', {
     schema: {
       querystring: seriesSearchQuerySchema,
@@ -149,7 +177,7 @@ export const seriesRoutes: FastifyPluginAsyncTypebox<{
         metadata: { total: result.totalResults },
       };
 
-      reply.header('Cache-Control', 'public, max-age=1800, must-revalidate');
+      reply.header('Cache-Control', 'public, max-age=3600, s-maxage=604800, must-revalidate');
       reply.header('Vary', 'Accept-Language');
 
       return reply.send(responseData);
@@ -172,7 +200,7 @@ export const seriesRoutes: FastifyPluginAsyncTypebox<{
 
       const responseData = mapSeriesExternalIdsToResponse(externalIds);
 
-      reply.header('Cache-Control', 'public, max-age=604800, must-revalidate');
+      reply.header('Cache-Control', 'public, max-age=3600, s-maxage=604800, must-revalidate');
       reply.header('Vary', 'Accept-Language');
 
       return reply.send(responseData);
@@ -207,7 +235,7 @@ export const seriesRoutes: FastifyPluginAsyncTypebox<{
 
       const responseData = results.map(mapSeriesDetailsToResponse);
 
-      reply.header('Cache-Control', 'public, max-age=86400, must-revalidate');
+      reply.header('Cache-Control', 'public, max-age=3600, s-maxage=604800, must-revalidate');
       reply.header('Vary', 'Accept-Language');
 
       return reply.send({ data: responseData });

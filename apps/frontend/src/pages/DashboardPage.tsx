@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react';
+import { useContext, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import { SeriesContext } from '../context/SeriesContext';
@@ -19,6 +19,8 @@ import { ChecklistItem } from '../components/ui/ChecklistItem';
 import { Heart, Lock, Sparkles, Users, ArrowRight, Lightbulb, UserPlus } from 'lucide-react';
 import { config } from '../config';
 import { useSEO } from '../hooks/useSEO';
+import { QuickStartModal } from '../components/onboarding/QuickStartModal';
+import { onboardingStorage } from '../utils/onboardingStorage';
 
 export default function DashboardPage() {
   const { t } = useTranslation();
@@ -29,6 +31,29 @@ export default function DashboardPage() {
   const { totalCount } = useContext(SeriesContext);
   const navigate = useNavigate();
   const [lockedDialogOpen, setLockedDialogOpen] = useState(false);
+  const [quickStartOpen, setQuickStartOpen] = useState(false);
+
+  // Show QuickStart modal when appropriate
+  useEffect(() => {
+    if (userDataInitialized && onboardingStorage.shouldShowQuickStart(totalCount)) {
+      // Small delay for better UX
+      const timer = setTimeout(() => {
+        setQuickStartOpen(true);
+        onboardingStorage.markAseen();
+      }, 500);
+      return () => clearTimeout(timer);
+    }
+  }, [userDataInitialized, totalCount]);
+
+  const handleQuickStartComplete = () => {
+    onboardingStorage.markAsCompleted();
+    setQuickStartOpen(false);
+  };
+
+  const handleQuickStartSkip = () => {
+    onboardingStorage.markAseen();
+    setQuickStartOpen(false);
+  };
 
   const canCreateRoom = totalCount >= config.series.minRatedShowsToCreateWatchRoom;
 
@@ -450,6 +475,13 @@ export default function DashboardPage() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* Quick Start Modal for onboarding */}
+      <QuickStartModal
+        open={quickStartOpen}
+        onComplete={handleQuickStartComplete}
+        onSkip={handleQuickStartSkip}
+      />
     </>
   );
 }

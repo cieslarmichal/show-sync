@@ -10,6 +10,7 @@ export const SeriesContextProvider = ({ children }: { children: ReactNode }) => 
   const [lovedCount, setLovedCount] = useState(0);
   const [likedCount, setLikedCount] = useState(0);
   const [totalCount, setTotalCount] = useState(0);
+  const [ratings, setRatings] = useState<Map<number, import('../api/types/series').Rating>>(new Map());
 
   const refreshCounts = useCallback(async () => {
     // Only fetch if user is authenticated
@@ -24,9 +25,16 @@ export const SeriesContextProvider = ({ children }: { children: ReactNode }) => 
       const loved = series.filter((s: SeriesRating) => s.rating === 'love').length;
       const liked = series.filter((s: SeriesRating) => s.rating === 'like').length;
 
+      // Build ratings map
+      const ratingsMap = new Map<number, import('../api/types/series').Rating>();
+      series.forEach((s: SeriesRating) => {
+        ratingsMap.set(s.seriesTmdbId, s.rating);
+      });
+
       setLovedCount(loved);
       setLikedCount(liked);
       setTotalCount(series.length);
+      setRatings(ratingsMap);
     } catch (error) {
       logger.error('Failed to load series counts:', error);
     }
@@ -47,9 +55,16 @@ export const SeriesContextProvider = ({ children }: { children: ReactNode }) => 
         const loved = series.filter((s: SeriesRating) => s.rating === 'love').length;
         const liked = series.filter((s: SeriesRating) => s.rating === 'like').length;
 
+        // Build ratings map
+        const ratingsMap = new Map<number, import('../api/types/series').Rating>();
+        series.forEach((s: SeriesRating) => {
+          ratingsMap.set(s.seriesTmdbId, s.rating);
+        });
+
         setLovedCount(loved);
         setLikedCount(liked);
         setTotalCount(series.length);
+        setRatings(ratingsMap);
       } catch (error) {
         logger.error('Failed to load series counts:', error);
       }
@@ -59,7 +74,7 @@ export const SeriesContextProvider = ({ children }: { children: ReactNode }) => 
   }, [userData, userDataInitialized]);
 
   return (
-    <SeriesContext.Provider value={{ lovedCount, likedCount, totalCount, refreshCounts }}>
+    <SeriesContext.Provider value={{ lovedCount, likedCount, totalCount, ratings, refreshCounts }}>
       {children}
     </SeriesContext.Provider>
   );

@@ -399,4 +399,65 @@ export class TmdbServiceImpl implements TmdbService {
       twitterId: apiExternalIds.twitter_id,
     };
   }
+
+  public async getPopularSeries(language: string): Promise<TmdbSeries[]> {
+    const cacheKey = `discover:top-rated:${language}`;
+
+    const cachedResult = this.searchCache.get(cacheKey);
+
+    if (cachedResult) {
+      return cachedResult.results;
+    }
+
+    const url = new URL(`${this.baseUrl}/discover/tv`);
+    url.searchParams.append('language', language);
+    url.searchParams.append('sort_by', 'vote_average.desc');
+    url.searchParams.append('vote_count.gte', '500'); // Minimum 500 votes
+    url.searchParams.append('vote_average.gte', '8'); // Minimum 8.0 rating
+    url.searchParams.append('with_origin_country', 'US|GB'); // US and UK series only
+    url.searchParams.append('without_genres', '16,10762'); // Exclude Animation (16) and Kids (10762)
+    url.searchParams.append('include_adult', 'false');
+
+    try {
+      const response = await fetch(url.toString(), {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${this.apiKey}`,
+        },
+      });
+
+      if (!response.ok) {
+        const errorBody = await response.text();
+        throw new ExternalServiceError({
+          service: 'TMDB API',
+          reason: `TMDB API request failed with status ${response.status.toString()}`,
+          responseBody: errorBody,
+        });
+      }
+
+      const data = (await response.json()) as TmdbApiSearchResponse;
+
+      const results: SeriesSearchResult = {
+        page: data.page,
+        results: data.results.map((apiSeries) => this.mapToSeries(apiSeries)),
+        totalPages: data.total_pages,
+        totalResults: data.total_results,
+      };
+
+      this.searchCache.set(cacheKey, results);
+
+      return results.results;
+    } catch (error) {
+      if (error instanceof ExternalServiceError) {
+        throw error;
+      }
+
+      throw new ExternalServiceError({
+        service: 'TMDB API',
+        reason: 'Failed to fetch top-rated series from TMDB API',
+        originalError: error,
+      });
+    }
+  }
 }
