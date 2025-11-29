@@ -15,7 +15,7 @@ export class GetPopularSeriesAction {
   public async execute(payload: GetPopularSeriesPayload): Promise<TmdbSeries[]> {
     const { language } = payload;
 
-    const popularSeries = await this.tmdbService.getPopularSeries({ language });
+    const popularSeries = await this.tmdbService.getPopularSeries(language);
 
     return popularSeries;
   }

@@ -1,5 +1,5 @@
-import type { Language } from '../../../../common/types/language.ts';
 import type { EmailTemplateName } from '../../../../common/emailService/emailTemplate.ts';
+import type { Language } from '../../../../common/types/language.ts';
 
 export interface Email {
   readonly id: string;
