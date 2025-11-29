@@ -265,10 +265,9 @@ export function RecommendationCard({
                     <div className="flex items-center gap-1.5 text-[11px] sm:text-sm text-muted-foreground">
                       {recommendation.seriesDetails.numberOfSeasons > 0 && (
                         <span>
-                          {recommendation.seriesDetails.numberOfSeasons}{' '}
-                          {recommendation.seriesDetails.numberOfSeasons === 1
-                            ? t('watchroom.recommendation.season')
-                            : t('watchroom.recommendation.seasons')}
+                          {t('watchroom.recommendation.seasons', {
+                            count: recommendation.seriesDetails.numberOfSeasons,
+                          })}
                         </span>
                       )}
                       {recommendation.seriesDetails.numberOfSeasons > 0 &&
