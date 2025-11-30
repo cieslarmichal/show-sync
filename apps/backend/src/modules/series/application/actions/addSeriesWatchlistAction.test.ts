@@ -6,7 +6,6 @@ import { createTestContext, type TestContext } from '../../../../../tests/helper
 import { ResourceAlreadyExistsError } from '../../../../common/errors/resourceAlreadyExistsError.ts';
 import { users, userSeriesWatchlist, userSeriesRatings } from '../../../../infrastructure/database/schema.ts';
 import { UserRepositoryImpl } from '../../../user/infrastructure/repositories/userRepositoryImpl.ts';
-import { UserSeriesRatingRepositoryImpl } from '../../infrastructure/repositories/userSeriesRatingRepositoryImpl.ts';
 import { UserSeriesWatchlistRepositoryImpl } from '../../infrastructure/repositories/userSeriesWatchlistRepositoryImpl.ts';
 
 import { AddSeriesWatchlistAction } from './addSeriesWatchlistAction.ts';
@@ -15,17 +14,14 @@ describe('AddSeriesWatchlistAction', () => {
   let testContext: TestContext;
   let userRepository: UserRepositoryImpl;
   let seriesWatchlistRepository: UserSeriesWatchlistRepositoryImpl;
-  let seriesRatingRepository: UserSeriesRatingRepositoryImpl;
   let addSeriesWatchlistAction: AddSeriesWatchlistAction;
 
   beforeEach(async () => {
     testContext = createTestContext();
     userRepository = new UserRepositoryImpl(testContext.databaseClient);
     seriesWatchlistRepository = new UserSeriesWatchlistRepositoryImpl(testContext.databaseClient);
-    seriesRatingRepository = new UserSeriesRatingRepositoryImpl(testContext.databaseClient);
     addSeriesWatchlistAction = new AddSeriesWatchlistAction(
       seriesWatchlistRepository,
-      seriesRatingRepository,
       testContext.databaseClient,
       testContext.loggerService,
     );
@@ -60,7 +56,7 @@ describe('AddSeriesWatchlistAction', () => {
       expect(watchlist.id).toBeDefined();
     });
 
-    it('throws ResourceAlreadyExistsError when series is already in watchlist', async () => {
+    it('throws ResourceAlreadyExistsError when series is already in watchlist with same type', async () => {
       const userData = Generator.userData();
       const user = await userRepository.create(userData);
 
@@ -69,19 +65,51 @@ describe('AddSeriesWatchlistAction', () => {
       await seriesWatchlistRepository.create({ userId: user.id, seriesTmdbId, type: 'notInterested' });
 
       await expect(
-        addSeriesWatchlistAction.execute({ userId: user.id, seriesTmdbId, type: 'notInterested' }, createTestExecutionContext()),
+        addSeriesWatchlistAction.execute(
+          { userId: user.id, seriesTmdbId, type: 'notInterested' },
+          createTestExecutionContext(),
+        ),
       ).rejects.toThrow(ResourceAlreadyExistsError);
     });
 
-    it('removes series rating when adding to watchlist', async () => {
+    it('updates watchlist type from notInterested to wantToWatch when series is already in watchlist', async () => {
       const userData = Generator.userData();
       const user = await userRepository.create(userData);
       const seriesTmdbId = Generator.number(1, 10000);
 
-      await seriesRatingRepository.create({ userId: user.id, seriesTmdbId, rating: 'like' });
+      const initialWatchlist = await seriesWatchlistRepository.create({
+        userId: user.id,
+        seriesTmdbId,
+        type: 'notInterested',
+      });
 
-      const ratingBefore = await seriesRatingRepository.findOne(user.id, seriesTmdbId);
-      expect(ratingBefore).toBeDefined();
+      const result = await addSeriesWatchlistAction.execute(
+        { userId: user.id, seriesTmdbId, type: 'wantToWatch' },
+        createTestExecutionContext(),
+      );
+
+      expect(result).toBeDefined();
+      expect(result.id).toBe(initialWatchlist.id);
+      expect(result.userId).toBe(user.id);
+      expect(result.seriesTmdbId).toBe(seriesTmdbId);
+      expect(result.type).toBe('wantToWatch');
+
+      const updatedWatchlist = await seriesWatchlistRepository.findOne(user.id, seriesTmdbId);
+      expect(updatedWatchlist).toBeDefined();
+      expect(updatedWatchlist?.type).toBe('wantToWatch');
+      expect(updatedWatchlist?.id).toBe(initialWatchlist.id);
+    });
+
+    it('updates watchlist type from wantToWatch to notInterested when series is already in watchlist', async () => {
+      const userData = Generator.userData();
+      const user = await userRepository.create(userData);
+      const seriesTmdbId = Generator.number(1, 10000);
+
+      const initialWatchlist = await seriesWatchlistRepository.create({
+        userId: user.id,
+        seriesTmdbId,
+        type: 'wantToWatch',
+      });
 
       const result = await addSeriesWatchlistAction.execute(
         { userId: user.id, seriesTmdbId, type: 'notInterested' },
@@ -89,11 +117,15 @@ describe('AddSeriesWatchlistAction', () => {
       );
 
       expect(result).toBeDefined();
+      expect(result.id).toBe(initialWatchlist.id);
       expect(result.userId).toBe(user.id);
       expect(result.seriesTmdbId).toBe(seriesTmdbId);
+      expect(result.type).toBe('notInterested');
 
-      const ratingAfter = await seriesRatingRepository.findOne(user.id, seriesTmdbId);
-      expect(ratingAfter).toBeNull();
+      const updatedWatchlist = await seriesWatchlistRepository.findOne(user.id, seriesTmdbId);
+      expect(updatedWatchlist).toBeDefined();
+      expect(updatedWatchlist?.type).toBe('notInterested');
+      expect(updatedWatchlist?.id).toBe(initialWatchlist.id);
     });
   });
 });

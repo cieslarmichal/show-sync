@@ -384,7 +384,7 @@ describe('Series Routes Integration Tests', () => {
       expect(body.type).toBe('notInterested');
     });
 
-    it('should return 409 when series is already in watchlist', async () => {
+    it('should return 409 when series is already in watchlist with same type', async () => {
       const accessToken = await registerAndLogin();
 
       const seriesTmdbId = 12345;
@@ -402,8 +402,44 @@ describe('Series Routes Integration Tests', () => {
         },
       });
 
-      // Try to add again
+      // Try to add again with same type
       const response = await server.inject({
+        method: 'POST',
+        url: '/series/watchlist',
+        headers: {
+          authorization: `Bearer ${accessToken}`,
+        },
+        payload: {
+          seriesTmdbId,
+          type: 'wantToWatch',
+        },
+      });
+
+      expect(response.statusCode).toBe(409);
+    });
+
+    it('should update watchlist type from wantToWatch to notInterested when posting with different type', async () => {
+      const accessToken = await registerAndLogin();
+
+      const seriesTmdbId = 12345;
+
+      // Add to watchlist first time
+      const addResponse = await server.inject({
+        method: 'POST',
+        url: '/series/watchlist',
+        headers: {
+          authorization: `Bearer ${accessToken}`,
+        },
+        payload: {
+          seriesTmdbId,
+          type: 'wantToWatch',
+        },
+      });
+
+      expect(addResponse.statusCode).toBe(201);
+
+      // Update to different type using POST (upsert)
+      const updateResponse = await server.inject({
         method: 'POST',
         url: '/series/watchlist',
         headers: {
@@ -415,7 +451,75 @@ describe('Series Routes Integration Tests', () => {
         },
       });
 
-      expect(response.statusCode).toBe(409);
+      expect(updateResponse.statusCode).toBe(201);
+
+      const body = updateResponse.json<SeriesWatchlistDto>();
+      expect(body.seriesTmdbId).toBe(seriesTmdbId);
+      expect(body.type).toBe('notInterested');
+
+      // Verify only one entry exists
+      const listResponse = await server.inject({
+        method: 'GET',
+        url: '/series/watchlist',
+        headers: {
+          authorization: `Bearer ${accessToken}`,
+        },
+      });
+
+      const listBody = listResponse.json<SeriesWatchlistListResponse>();
+      expect(listBody.data).toHaveLength(1);
+      expect(listBody.data[0]?.type).toBe('notInterested');
+    });
+
+    it('should update watchlist type from notInterested to wantToWatch when posting with different type', async () => {
+      const accessToken = await registerAndLogin();
+
+      const seriesTmdbId = 67890;
+
+      // Add to watchlist first time
+      await server.inject({
+        method: 'POST',
+        url: '/series/watchlist',
+        headers: {
+          authorization: `Bearer ${accessToken}`,
+        },
+        payload: {
+          seriesTmdbId,
+          type: 'notInterested',
+        },
+      });
+
+      // Update to different type using POST (upsert)
+      const updateResponse = await server.inject({
+        method: 'POST',
+        url: '/series/watchlist',
+        headers: {
+          authorization: `Bearer ${accessToken}`,
+        },
+        payload: {
+          seriesTmdbId,
+          type: 'wantToWatch',
+        },
+      });
+
+      expect(updateResponse.statusCode).toBe(201);
+
+      const body = updateResponse.json<SeriesWatchlistDto>();
+      expect(body.seriesTmdbId).toBe(seriesTmdbId);
+      expect(body.type).toBe('wantToWatch');
+
+      // Verify only one entry exists
+      const listResponse = await server.inject({
+        method: 'GET',
+        url: '/series/watchlist',
+        headers: {
+          authorization: `Bearer ${accessToken}`,
+        },
+      });
+
+      const listBody = listResponse.json<SeriesWatchlistListResponse>();
+      expect(listBody.data).toHaveLength(1);
+      expect(listBody.data[0]?.type).toBe('wantToWatch');
     });
 
     it('should return 401 when not authenticated', async () => {
@@ -502,8 +606,8 @@ describe('Series Routes Integration Tests', () => {
     });
   });
 
-  describe('PATCH /series/ratings/:seriesTmdbId', () => {
-    it('should update rating from like to love', async () => {
+  describe('POST /series/ratings - upsert behavior', () => {
+    it('should update rating from like to love when posting with same seriesTmdbId', async () => {
       const accessToken = await registerAndLogin();
 
       const seriesTmdbId = 12345;
@@ -523,26 +627,27 @@ describe('Series Routes Integration Tests', () => {
 
       expect(addResponse.statusCode).toBe(201);
 
-      // Update to 'love'
+      // Update to 'love' using POST (upsert)
       const updateResponse = await server.inject({
-        method: 'PATCH',
-        url: `/series/ratings/${String(seriesTmdbId)}`,
+        method: 'POST',
+        url: '/series/ratings',
         headers: {
           authorization: `Bearer ${accessToken}`,
         },
         payload: {
+          seriesTmdbId,
           rating: 'love',
         },
       });
 
-      expect(updateResponse.statusCode).toBe(200);
+      expect(updateResponse.statusCode).toBe(201);
 
       const body = updateResponse.json<SeriesRatingDto>();
       expect(body.seriesTmdbId).toBe(seriesTmdbId);
       expect(body.rating).toBe('love');
     });
 
-    it('should update rating from love to like', async () => {
+    it('should update rating from love to like when posting with same seriesTmdbId', async () => {
       const accessToken = await registerAndLogin();
 
       const seriesTmdbId = 67890;
@@ -560,63 +665,8 @@ describe('Series Routes Integration Tests', () => {
         },
       });
 
-      // Update to 'like'
+      // Update to 'like' using POST (upsert)
       const updateResponse = await server.inject({
-        method: 'PATCH',
-        url: `/series/ratings/${String(seriesTmdbId)}`,
-        headers: {
-          authorization: `Bearer ${accessToken}`,
-        },
-        payload: {
-          rating: 'like',
-        },
-      });
-
-      expect(updateResponse.statusCode).toBe(200);
-
-      const body = updateResponse.json<SeriesRatingDto>();
-      expect(body.seriesTmdbId).toBe(seriesTmdbId);
-      expect(body.rating).toBe('like');
-    });
-
-    it('should return 404 when rating series does not exist', async () => {
-      const accessToken = await registerAndLogin();
-
-      const seriesTmdbId = 99999;
-
-      const response = await server.inject({
-        method: 'PATCH',
-        url: `/series/ratings/${String(seriesTmdbId)}`,
-        headers: {
-          authorization: `Bearer ${accessToken}`,
-        },
-        payload: {
-          rating: 'love',
-        },
-      });
-
-      expect(response.statusCode).toBe(404);
-    });
-
-    it('should return 401 when not authenticated', async () => {
-      const response = await server.inject({
-        method: 'PATCH',
-        url: '/series/ratings/12345',
-        payload: {
-          rating: 'love',
-        },
-      });
-
-      expect(response.statusCode).toBe(401);
-    });
-
-    it('should return 400 for invalid rating', async () => {
-      const accessToken = await registerAndLogin();
-
-      const seriesTmdbId = 12345;
-
-      // Add rating first
-      await server.inject({
         method: 'POST',
         url: '/series/ratings',
         headers: {
@@ -628,19 +678,44 @@ describe('Series Routes Integration Tests', () => {
         },
       });
 
-      // Try to update with invalid rating
-      const response = await server.inject({
-        method: 'PATCH',
-        url: `/series/ratings/${String(seriesTmdbId)}`,
+      expect(updateResponse.statusCode).toBe(201);
+
+      const body = updateResponse.json<SeriesRatingDto>();
+      expect(body.seriesTmdbId).toBe(seriesTmdbId);
+      expect(body.rating).toBe('like');
+    });
+
+    it('should return 409 when trying to post same rating again', async () => {
+      const accessToken = await registerAndLogin();
+
+      const seriesTmdbId = 99999;
+
+      await server.inject({
+        method: 'POST',
+        url: '/series/ratings',
         headers: {
           authorization: `Bearer ${accessToken}`,
         },
         payload: {
-          rating: 'invalid',
+          seriesTmdbId,
+          rating: 'love',
         },
       });
 
-      expect(response.statusCode).toBe(400);
+      // Try to add the same rating again
+      const response = await server.inject({
+        method: 'POST',
+        url: '/series/ratings',
+        headers: {
+          authorization: `Bearer ${accessToken}`,
+        },
+        payload: {
+          seriesTmdbId,
+          rating: 'love',
+        },
+      });
+
+      expect(response.statusCode).toBe(409);
     });
   });
 

@@ -5,6 +5,7 @@ import type { TokenService } from '../../../common/auth/tokenService.ts';
 import { InputNotValidError } from '../../../common/errors/inputNotValidError.ts';
 import { UnauthorizedAccessError } from '../../../common/errors/unathorizedAccessError.ts';
 import type { LoggerService } from '../../../common/logger/loggerService.ts';
+import type { Language } from '../../../common/types/language.ts';
 import type { Config } from '../../../core/config.ts';
 import type { DatabaseClient } from '../../../infrastructure/database/databaseClient.ts';
 import { AddSeriesRatingAction } from '../application/actions/addSeriesRatingAction.ts';
@@ -17,7 +18,6 @@ import { GetSeriesWatchlistAction } from '../application/actions/getSeriesWatchl
 import { RemoveSeriesRatingAction } from '../application/actions/removeSeriesRatingAction.ts';
 import { RemoveSeriesWatchlistAction } from '../application/actions/removeSeriesWatchlistAction.ts';
 import { SearchSeriesAction } from '../application/actions/searchSeriesAction.ts';
-import { UpdateSeriesRatingAction } from '../application/actions/updateSeriesRatingAction.ts';
 import type { TmdbSeries, TmdbSeriesDetails, TmdbSeriesExternalIds } from '../domain/types/tmdbSeries.ts';
 import type { UserSeriesRating } from '../domain/types/userSeriesRating.ts';
 import type { UserSeriesWatchlist } from '../domain/types/userSeriesWatchlist.ts';
@@ -45,14 +45,12 @@ import {
   seriesSearchQuerySchema,
   seriesSearchResultSchema,
   type SeriesExternalIdsDto,
-  updateSeriesRatingRequestSchema,
-  updateSeriesRatingParamsSchema,
   type SeriesWatchlistDto,
   type SeriesRatingDto,
   seriesSchema,
 } from './seriesSchemas.ts';
 
-const parseLanguage = (acceptLanguageHeader: string | undefined): 'en' | 'pl' => {
+const parseLanguage = (acceptLanguageHeader: string | undefined): Language => {
   return acceptLanguageHeader === 'pl' ? 'pl' : 'en';
 };
 
@@ -115,17 +113,10 @@ export const seriesRoutes: FastifyPluginAsyncTypebox<{
   const getSeriesRatingsAction = new GetSeriesRatingsAction(seriesRatingRepository);
   const seriesWatchlistRepository = new UserSeriesWatchlistRepositoryImpl(databaseClient);
   const getSeriesWatchlistAction = new GetSeriesWatchlistAction(seriesWatchlistRepository);
-  const addSeriesRatingAction = new AddSeriesRatingAction(
-    seriesRatingRepository,
-    seriesWatchlistRepository,
-    databaseClient,
-    loggerService,
-  );
+  const addSeriesRatingAction = new AddSeriesRatingAction(seriesRatingRepository, databaseClient, loggerService);
   const removeSeriesRatingAction = new RemoveSeriesRatingAction(seriesRatingRepository, loggerService);
-  const updateSeriesRatingAction = new UpdateSeriesRatingAction(seriesRatingRepository, loggerService);
   const addSeriesWatchlistAction = new AddSeriesWatchlistAction(
     seriesWatchlistRepository,
-    seriesRatingRepository,
     databaseClient,
     loggerService,
   );
@@ -326,42 +317,6 @@ export const seriesRoutes: FastifyPluginAsyncTypebox<{
       );
 
       return reply.status(204).send();
-    },
-  });
-
-  fastify.patch('/series/ratings/:seriesTmdbId', {
-    schema: {
-      params: updateSeriesRatingParamsSchema,
-      body: updateSeriesRatingRequestSchema,
-      response: {
-        200: seriesRatingResponseSchema,
-      },
-    },
-    preHandler: [authenticationMiddleware],
-    handler: async (request, reply) => {
-      if (!request.user) {
-        throw new UnauthorizedAccessError({
-          reason: 'User not authenticated',
-        });
-      }
-
-      const { userId } = request.user;
-      const { seriesTmdbId } = request.params;
-      const { rating } = request.body;
-
-      const updated = await updateSeriesRatingAction.execute(
-        {
-          userId,
-          seriesTmdbId,
-          rating,
-        },
-        {
-          requestId: request.id,
-          userId,
-        },
-      );
-
-      return reply.send(mapSeriesRatingToResponse(updated));
     },
   });
 

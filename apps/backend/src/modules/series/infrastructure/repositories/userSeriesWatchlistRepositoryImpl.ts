@@ -52,7 +52,12 @@ export class UserSeriesWatchlistRepositoryImpl implements UserSeriesWatchlistRep
     return countResult?.count ?? 0;
   }
 
-  public async findMany(userId: string, page: number, pageSize: number, type?: WatchlistType): Promise<UserSeriesWatchlist[]> {
+  public async findMany(
+    userId: string,
+    page: number,
+    pageSize: number,
+    type?: WatchlistType,
+  ): Promise<UserSeriesWatchlist[]> {
     const conditions = [eq(userSeriesWatchlist.userId, userId)];
 
     if (type !== undefined) {
@@ -84,6 +89,25 @@ export class UserSeriesWatchlistRepositoryImpl implements UserSeriesWatchlistRep
     return watchlist ? this.mapToUserSeriesWatchlist(watchlist) : null;
   }
 
+  public async updateType(
+    data: { userId: string; seriesTmdbId: number; type: WatchlistType },
+    tx?: Transaction,
+  ): Promise<UserSeriesWatchlist> {
+    const db = tx ? tx : this.databaseClient.db;
+
+    const [updatedWatchlist] = await db
+      .update(userSeriesWatchlist)
+      .set({ type: data.type })
+      .where(and(eq(userSeriesWatchlist.userId, data.userId), eq(userSeriesWatchlist.seriesTmdbId, data.seriesTmdbId)))
+      .returning();
+
+    if (!updatedWatchlist) {
+      throw new Error('Failed to update watchlist type');
+    }
+
+    return this.mapToUserSeriesWatchlist(updatedWatchlist);
+  }
+
   public async delete(userId: string, seriesTmdbId: number, tx?: Transaction): Promise<void> {
     const db = tx ? tx : this.databaseClient.db;
 
@@ -92,7 +116,9 @@ export class UserSeriesWatchlistRepositoryImpl implements UserSeriesWatchlistRep
       .where(and(eq(userSeriesWatchlist.userId, userId), eq(userSeriesWatchlist.seriesTmdbId, seriesTmdbId)));
   }
 
-  private readonly mapToUserSeriesWatchlist = (dbWatchlist: typeof userSeriesWatchlist.$inferSelect): UserSeriesWatchlist => {
+  private readonly mapToUserSeriesWatchlist = (
+    dbWatchlist: typeof userSeriesWatchlist.$inferSelect,
+  ): UserSeriesWatchlist => {
     const watchlist: UserSeriesWatchlist = {
       id: dbWatchlist.id,
       userId: dbWatchlist.userId,

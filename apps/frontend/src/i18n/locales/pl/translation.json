@@ -50,7 +50,7 @@
     "hero": {
       "title": "Koniec z przewijaniem",
       "titleHighlight": "Seriale, które pokochasz",
-      "subtitle": "Otrzymuj rekomendacje AI dopasowane do Twojego gustu. Oceń 5 seriali, otrzymaj rekomendacje w 2 minuty.",
+      "subtitle": "Otrzymuj rekomendacje AI dopasowane do Twojego gustu. Oceń 5 seriali, otrzymuj rekomendacje w 2 minuty.",
       "badge1": "Darmowe na zawsze",
       "badge2": "Dla Ciebie i grup",
       "badge3": "Konfiguracja 2 min",
@@ -76,7 +76,7 @@
     "howItWorks": {
       "title": "Jak to działa",
       "subtitle": "Trzy proste kroki do idealnych rekomendacji",
-      "step1Title": "Oceń 5-10 seriali",
+      "step1Title": "Oceń seriale",
       "step1Desc": "Zajmie to mniej niż 2 minuty. Po prostu oceń seriale jako: uwielbiam, lubię lub nie lubię. To wszystko.",
       "step2Title": "Otrzymaj Rekomendacje",
       "step2Desc": "Przeglądaj spersonalizowane sugestie tylko dla Ciebie, lub stwórz pokój ze znajomymi, aby otrzymać rekomendacje AI dopasowane do gustu całej grupy.",
@@ -222,7 +222,10 @@
       "step4": "Otrzymaj rekomendacje"
     },
     "checklist": {
-      "rateShows": "Oceń {{count}} seriali",
+      "rateShows_one": "Oceń {{count}} serial",
+      "rateShows_few": "Oceń {{count}} seriale",
+      "rateShows_many": "Oceń {{count}} seriali",
+      "rateShows_other": "Oceń {{count}} seriali",
       "completed": "{{current}}/{{total}} ukończone"
     },
     "lockedDialog": {
@@ -243,9 +246,15 @@
       "greatJob": "🎉 Świetna robota!",
       "perfect": "Doskonale!",
       "milestoneReached": "🎯 Minimum osiągnięte! Możesz już tworzyć pokoje.",
-      "rateMoreHint": "Oceń jeszcze {{count}}, aby odblokować tworzenie pokoi",
+      "rateMoreHint_one": "Oceń jeszcze {{count}}, aby odblokować tworzenie pokoi",
+      "rateMoreHint_few": "Oceń jeszcze {{count}}, aby odblokować tworzenie pokoi",
+      "rateMoreHint_many": "Oceń jeszcze {{count}}, aby odblokować tworzenie pokoi",
+      "rateMoreHint_other": "Oceń jeszcze {{count}}, aby odblokować tworzenie pokoi",
       "skipButton": "Pomiń na razie",
-      "rateMore": "Oceń jeszcze {{count}}",
+      "rateMore_one": "Oceń jeszcze {{count}}",
+      "rateMore_few": "Oceń jeszcze {{count}}",
+      "rateMore_many": "Oceń jeszcze {{count}}",
+      "rateMore_other": "Oceń jeszcze {{count}}",
       "continueButton": "Kontynuuj",
       "letsGo": "Zaczynamy!",
       "savingButton": "Zapisywanie...",
@@ -396,7 +405,7 @@
     "searchLabel": "Wyszukaj seriale",
     "searchError": "Nie udało się wyszukać seriali",
     "noImage": "Brak dostępnego obrazu",
-    "noWatchlistItems": "Nie masz jeszcze żadnych elementów",
+    "noWatchlistItems": "Nie masz jeszcze żadnych seriali dodanych do obejrzenia",
     "noWatchlistItemsDesc": "Seriale, które dodasz do listy, pojawią się tutaj.",
     "ratingRemoved": "Ocena usunięta",
     "removeRatingError": "Nie udało się usunąć oceny. Spróbuj ponownie.",

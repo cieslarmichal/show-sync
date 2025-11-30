@@ -5,6 +5,7 @@ import { Heart, ThumbsUp, Sparkles } from 'lucide-react';
 
 import { getPopularSeries } from '../../api/queries/getPopularSeries';
 import { addSeriesRating } from '../../api/queries/addSeriesRating';
+import { removeSeriesRating } from '../../api/queries/removeSeriesRating';
 import type { Series, Rating } from '../../api/types/series';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../ui/Dialog';
 import { Button } from '../ui/Button';
@@ -57,25 +58,29 @@ export function QuickStartModal({ open, onComplete, onSkip }: QuickStartModalPro
 
     const previousRating = ratings.get(seriesId);
 
-    // Don't allow same rating click (no toggle off)
-    if (previousRating === rating) {
-      return;
-    }
+    // Toggle off if clicking the same rating
+    const newRating = previousRating === rating ? null : rating;
 
     // Update local state immediately for responsive UI
     setRatings((prev) => {
       const newRatings = new Map(prev);
-      newRatings.set(seriesId, rating);
+      if (newRating === null) {
+        newRatings.delete(seriesId);
+      } else {
+        newRatings.set(seriesId, newRating);
+      }
       return newRatings;
     });
 
     try {
-      // Make API call with new rating
-      if (rating) {
-        await addSeriesRating(seriesId, rating);
+      // Make API call with new rating or remove it
+      if (newRating === null) {
+        await removeSeriesRating(seriesId);
+      } else {
+        await addSeriesRating(seriesId, newRating);
 
         // Positive feedback only when reaching milestone for first time
-        if (rating === 'love' || rating === 'like') {
+        if (newRating === 'love' || newRating === 'like') {
           const progress = Array.from(ratings.values()).filter((r) => r === 'like' || r === 'love').length;
           const previousProgress = previousRating === 'like' || previousRating === 'love' ? progress : progress - 1;
 
@@ -308,7 +313,7 @@ function SeriesQuickRateCard({ series, currentRating, onRate, disabled }: Series
               className={
                 currentRating === 'love'
                   ? 'h-11 w-11 sm:h-12 sm:w-12 p-0 shrink-0 bg-red-600 hover:bg-red-700 text-white border-2 border-white/30 shadow-lg scale-110 transition-transform'
-                  : 'h-11 w-11 sm:h-12 sm:w-12 p-0 shrink-0 bg-red-600/80 hover:bg-red-600 text-white border-2 border-white/20 hover:scale-105 transition-transform'
+                  : 'h-11 w-11 sm:h-12 sm:w-12 p-0 shrink-0 bg-white/90 hover:bg-white text-red-600 border-2 border-white/20 hover:scale-105 transition-transform'
               }
               disabled={disabled}
               title={t('dashboard.quickStart.loveTooltip')}
@@ -325,7 +330,7 @@ function SeriesQuickRateCard({ series, currentRating, onRate, disabled }: Series
               className={
                 currentRating === 'like'
                   ? 'h-11 w-11 sm:h-12 sm:w-12 p-0 shrink-0 bg-primary hover:bg-primary/90 text-white border-2 border-white/30 shadow-lg scale-110 transition-transform'
-                  : 'h-11 w-11 sm:h-12 sm:w-12 p-0 shrink-0 bg-white/90 hover:bg-white text-foreground border-2 border-white/20 hover:scale-105 transition-transform'
+                  : 'h-11 w-11 sm:h-12 sm:w-12 p-0 shrink-0 bg-white/90 hover:bg-white text-primary border-2 border-white/20 hover:scale-105 transition-transform'
               }
               disabled={disabled}
               title={t('dashboard.quickStart.likeTooltip')}

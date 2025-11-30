@@ -84,14 +84,6 @@ export const seriesRatingParamsSchema = Type.Object({
   seriesTmdbId: Type.Number(),
 });
 
-export const updateSeriesRatingRequestSchema = Type.Object({
-  rating: seriesRatingSchema,
-});
-
-export const updateSeriesRatingParamsSchema = Type.Object({
-  seriesTmdbId: Type.Number(),
-});
-
 export const seriesRatingQuerySchema = Type.Object({
   page: Type.Optional(Type.Number({ minimum: 1 })),
   pageSize: Type.Optional(Type.Number({ minimum: 1, maximum: 100 })),
@@ -137,8 +129,6 @@ export type SeriesWatchlistListResponse = Static<typeof seriesWatchlistListSchem
 
 export type AddSeriesRatingRequest = Static<typeof addSeriesRatingRequestSchema>;
 export type SeriesRatingParams = Static<typeof seriesRatingParamsSchema>;
-export type UpdateSeriesRatingRequest = Static<typeof updateSeriesRatingRequestSchema>;
-export type UpdateSeriesRatingParams = Static<typeof updateSeriesRatingParamsSchema>;
 export type SeriesRatingQuery = Static<typeof seriesRatingQuerySchema>;
 export type AddSeriesWatchlistRequest = Static<typeof addSeriesWatchlistRequestSchema>;
 export type SeriesWatchlistParams = Static<typeof seriesWatchlistParamsSchema>;

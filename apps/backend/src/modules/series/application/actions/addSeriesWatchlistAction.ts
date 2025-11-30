@@ -2,7 +2,6 @@ import { ResourceAlreadyExistsError } from '../../../../common/errors/resourceAl
 import type { LoggerService } from '../../../../common/logger/loggerService.ts';
 import type { ExecutionContext } from '../../../../common/types/executionContext.ts';
 import type { DatabaseClient } from '../../../../infrastructure/database/databaseClient.ts';
-import type { UserSeriesRatingRepository } from '../../domain/repositories/userSeriesRatingRepository.ts';
 import type { UserSeriesWatchlistRepository } from '../../domain/repositories/userSeriesWatchlistRepository.ts';
 import type { UserSeriesWatchlist, WatchlistType } from '../../domain/types/userSeriesWatchlist.ts';
 
@@ -14,18 +13,15 @@ interface AddSeriesWatchlistPayload {
 
 export class AddSeriesWatchlistAction {
   private readonly seriesWatchlistRepository: UserSeriesWatchlistRepository;
-  private readonly seriesRatingRepository: UserSeriesRatingRepository;
   private readonly databaseClient: DatabaseClient;
   private readonly loggerService: LoggerService;
 
   public constructor(
     seriesWatchlistRepository: UserSeriesWatchlistRepository,
-    seriesRatingRepository: UserSeriesRatingRepository,
     databaseClient: DatabaseClient,
     loggerService: LoggerService,
   ) {
     this.seriesWatchlistRepository = seriesWatchlistRepository;
-    this.seriesRatingRepository = seriesRatingRepository;
     this.databaseClient = databaseClient;
     this.loggerService = loggerService;
   }
@@ -33,40 +29,31 @@ export class AddSeriesWatchlistAction {
   public async execute(payload: AddSeriesWatchlistPayload, context: ExecutionContext): Promise<UserSeriesWatchlist> {
     const { userId, seriesTmdbId, type } = payload;
 
-    const existing = await this.seriesWatchlistRepository.findOne(userId, seriesTmdbId);
-
-    if (existing) {
-      throw new ResourceAlreadyExistsError({
-        resource: 'Series Watchlist',
-        reason: 'Series is already in watchlist',
-        userId,
-        seriesTmdbId: seriesTmdbId.toString(),
-      });
-    }
-
     const startTime = Date.now();
 
     try {
       const result = await this.databaseClient.db.transaction(
         async (tx) => {
-          const seriesRating = await this.seriesRatingRepository.findOne(userId, seriesTmdbId, tx);
+          const existing = await this.seriesWatchlistRepository.findOne(userId, seriesTmdbId, tx);
 
-          if (seriesRating) {
-            await this.seriesRatingRepository.delete(userId, seriesTmdbId, tx);
+          if (!existing) {
+            return await this.seriesWatchlistRepository.create({ userId, seriesTmdbId, type }, tx);
+          }
 
-            this.loggerService.info({
-              message: 'Series rating removed before adding to watchlist',
-              event: 'series.rating.removed',
-              requestId: context.requestId,
+          if (existing.type === type) {
+            throw new ResourceAlreadyExistsError({
+              resource: 'Series Watchlist',
+              reason: 'Series is already in watchlist with the same type',
               userId,
-              seriesTmdbId,
+              seriesTmdbId: seriesTmdbId.toString(),
+              type,
             });
           }
 
-          return await this.seriesWatchlistRepository.create({ userId, seriesTmdbId, type }, tx);
+          return await this.seriesWatchlistRepository.updateType({ userId, seriesTmdbId, type }, tx);
         },
         {
-          isolationLevel: 'read committed',
+          isolationLevel: 'serializable',
         },
       );
 

@@ -27,7 +27,7 @@ export default function DashboardPage() {
 
   useSEO('dashboard');
 
-  const { userDataInitialized } = useContext(AuthContext);
+  const { userData, userDataInitialized } = useContext(AuthContext);
   const { totalCount } = useContext(SeriesContext);
   const navigate = useNavigate();
   const [lockedDialogOpen, setLockedDialogOpen] = useState(false);
@@ -35,23 +35,23 @@ export default function DashboardPage() {
 
   // Show QuickStart modal when appropriate
   useEffect(() => {
-    if (userDataInitialized && onboardingStorage.shouldShowQuickStart(totalCount)) {
+    if (userDataInitialized && userData && onboardingStorage.shouldShowQuickStart(userData.id, totalCount)) {
       // Small delay for better UX
       const timer = setTimeout(() => {
         setQuickStartOpen(true);
-        onboardingStorage.markAseen();
       }, 500);
       return () => clearTimeout(timer);
     }
-  }, [userDataInitialized, totalCount]);
+  }, [userDataInitialized, userData, totalCount]);
 
   const handleQuickStartComplete = () => {
-    onboardingStorage.markAsCompleted();
+    if (userData) {
+      onboardingStorage.markAsCompleted(userData.id);
+    }
     setQuickStartOpen(false);
   };
 
   const handleQuickStartSkip = () => {
-    onboardingStorage.markAseen();
     setQuickStartOpen(false);
   };
 

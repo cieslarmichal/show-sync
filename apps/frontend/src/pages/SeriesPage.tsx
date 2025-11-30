@@ -7,7 +7,6 @@ import { useTranslation } from 'react-i18next';
 import { getMySeriesRatings } from '../api/queries/getMySeriesRatings.ts';
 import { addSeriesRating } from '../api/queries/addSeriesRating.ts';
 import { removeSeriesRating } from '../api/queries/removeSeriesRating.ts';
-import { updateSeriesRating } from '../api/queries/updateSeriesRating.ts';
 import { getMySeriesWatchlist } from '../api/queries/getMySeriesWatchlist.ts';
 import { addSeriesWatchlist } from '../api/queries/addSeriesWatchlist.ts';
 import { removeSeriesWatchlist } from '../api/queries/removeSeriesWatchlist.ts';
@@ -72,6 +71,9 @@ export default function SeriesPage() {
 
   const handleAddRating = async (series: Series, rating: Rating) => {
     try {
+      const existingRating = myRatings.find((s) => s.seriesTmdbId === series.id);
+      const oldRatingValue = existingRating?.rating;
+
       // If series is in watchlist, remove it first
       if (watchlistSeriesIds.has(series.id)) {
         await removeSeriesWatchlist(series.id);
@@ -85,14 +87,25 @@ export default function SeriesPage() {
       await addSeriesRating(series.id, rating);
       setRatedSeriesIds((prev) => new Set(prev).add(series.id));
 
-      // Add to ratings list
-      const newRating: SeriesRating = {
-        seriesTmdbId: series.id,
-        rating: rating,
-      };
-      setMyRatings((prev) => [...prev, newRating]);
+      // Add or update rating in the list
+      if (existingRating) {
+        // Update existing rating
+        setMyRatings((prev) => prev.map((r) => (r.seriesTmdbId === series.id ? { ...r, rating } : r)));
 
-      // Update counts
+        // Update counts for the rating change
+        if (oldRatingValue === 'love') setLovedCount((prev) => prev - 1);
+        else if (oldRatingValue === 'like') setLikedCount((prev) => prev - 1);
+        else if (oldRatingValue === 'dislike') setDislikedCount((prev) => prev - 1);
+      } else {
+        // Add new rating
+        const newRating: SeriesRating = {
+          seriesTmdbId: series.id,
+          rating: rating,
+        };
+        setMyRatings((prev) => [...prev, newRating]);
+      }
+
+      // Update counts for new rating
       if (rating === 'love') {
         setLovedCount((prev) => prev + 1);
       } else if (rating === 'like') {
@@ -104,7 +117,10 @@ export default function SeriesPage() {
       await refreshCounts(); // Sync with context
 
       const ratingEmoji = rating === 'love' ? '❤️' : rating === 'like' ? '👍' : '👎';
-      toast.success(t('series.messages.rated', { name: series.name, emoji: ratingEmoji }));
+      const message = existingRating
+        ? t('series.ratingUpdated', { emoji: ratingEmoji })
+        : t('series.messages.rated', { name: series.name, emoji: ratingEmoji });
+      toast.success(message);
     } catch {
       toast.error(t('series.errors.saveRating'));
     }
@@ -142,7 +158,7 @@ export default function SeriesPage() {
       const oldRating = myRatings.find((s) => s.seriesTmdbId === seriesTmdbId);
       const oldRatingValue = oldRating?.rating;
 
-      await updateSeriesRating(seriesTmdbId, rating);
+      await addSeriesRating(seriesTmdbId, rating);
 
       setMyRatings((prev) => prev.map((r) => (r.seriesTmdbId === seriesTmdbId ? { ...r, rating } : r)));
 
@@ -166,10 +182,12 @@ export default function SeriesPage() {
 
   const handleAddToWatchlist = async (series: Series, type: WatchlistType): Promise<void> => {
     try {
-      // If series is in ratings list, remove it first
+      const removedRating = myRatings.find((s) => s.seriesTmdbId === series.id);
+
+      await addSeriesWatchlist(series.id, type);
+
+      // Update local state if series was in ratings (backend removes it automatically)
       if (ratedSeriesIds.has(series.id)) {
-        await removeSeriesRating(series.id);
-        const removedRating = myRatings.find((s) => s.seriesTmdbId === series.id);
         setRatedSeriesIds((prev) => {
           const newSet = new Set(prev);
           newSet.delete(series.id);
@@ -183,7 +201,6 @@ export default function SeriesPage() {
         else if (removedRating?.rating === 'dislike') setDislikedCount((prev) => prev - 1);
       }
 
-      await addSeriesWatchlist(series.id, type);
       setWatchlistSeriesIds((prev) => new Set(prev).add(series.id));
 
       await refreshCounts();
