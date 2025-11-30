@@ -51,9 +51,9 @@
       "title": "Koniec z przewijaniem",
       "titleHighlight": "Seriale, które pokochasz",
       "subtitle": "Otrzymuj rekomendacje AI dopasowane do Twojego gustu. Oceń 5 seriali, otrzymuj rekomendacje w 2 minuty.",
-      "badge1": "Darmowe na zawsze",
+      "badge1": "100% darmowe na zawsze",
       "badge2": "Dla Ciebie i grup",
-      "badge3": "Konfiguracja 2 min",
+      "badge3": "Bez ukrytych kosztów",
       "cta": "Rozpocznij za darmo",
       "signIn": "Zaloguj się"
     },
@@ -99,9 +99,9 @@
     },
     "cta": {
       "title": "Znajdź swój kolejny ulubiony serial w 2 minuty",
-      "description": "Dołącz do pierwszych użytkowników, którzy przestali marnować czas na przewijanie i zaczęli oglądać seriale, które naprawdę kochają.",
+      "description": "Dołącz do pierwszych użytkowników, którzy przestali marnować czas na przewijanie i zaczęli oglądać seriale, które naprawdę kochają. W 100% darmowe na zawsze — bez sztuczek, bez planów premium.",
       "button": "Rozpocznij za darmo",
-      "noCreditCard": "Bez karty kredytowej • Darmowe na zawsze"
+      "noCreditCard": "Bez karty kredytowej • Bez planów premium • Darmowe na zawsze"
     },
     "problemStatement": {
       "title": "Paradoks streamingu",
@@ -124,8 +124,8 @@
       "a2": "Netflix pokazuje, co jest popularne i w trendach. ShowSync uczy się TWOJEGO unikalnego gustu i znajduje ukryte perełki, które do niego pasują - nawet jeśli nie są mainstreamowe. Plus, możesz tworzyć pokoje oglądania, aby otrzymać rekomendacje dla całej grupy.",
       "q3": "Skąd AI wie, co lubię?",
       "a3": "Oceniasz seriale, które oglądałeś (uwielbiam, lubię lub nie lubię). Nasze AI analizuje Twój profil i znajduje seriale, które pasują do Twoich preferencji - nie tylko to, co jest popularne.",
-      "q4": "Czy naprawdę jest darmowe?",
-      "a4": "Tak! ShowSync jest całkowicie darmowe na zawsze. Bez ukrytych opłat, bez karty kredytowej, bez planów premium. Po prostu świetne rekomendacje.",
+      "q4": "Czy naprawdę jest darmowe? Bez planów premium?",
+      "a4": "Tak, w 100% darmowe na zawsze! Bez ukrytych opłat, bez karty kredytowej, bez planów premium, bez paywalli, bez limitów. Każda funkcja jest darmowa dla wszystkich, zawsze. Wierzymy, że świetne rekomendacje powinny być dostępne dla każdego.",
       "q5": "Ile czasu zajmuje konfiguracja?",
       "a5": "Około 2 minuty. Zarejestruj się, oceń 5-10 seriali, które oglądałeś i jesteś gotowy do otrzymywania rekomendacji. Im więcej ocenisz, tym lepsze sugestie."
     },
@@ -596,7 +596,7 @@
       "dailyQuota": "{{current}}/{{max}} dziennych rekomendacji",
       "inviteOptional": "Wskazówka: Zaproś znajomych dla grupowych rekomendacji lub generuj samemu!",
       "inviteHint": "💡 Wskazówka: Zaproś znajomych, aby otrzymać rekomendacje dopasowane do gustu całej grupy!",
-      "guideTitle": "📺 Jak oceniać rekomendacje",
+      "guideTitle": "Jak oceniać rekomendacje?",
       "guideSubtitle": "Każda akcja pomoże nam lepiej poznać Twoje gusta!",
       "guideLoveTitle": "Uwielbiam",
       "guideLoveDesc": "Dodaj do ulubionych - znajdziemy więcej podobnych seriali!",
@@ -605,7 +605,7 @@
       "guideDislikeTitle": "Nie lubię",
       "guideDislikeDesc": "Nie Twój klimat? Będziemy unikać podobnych seriali.",
       "guideWatchlistTitle": "Chcę zobaczyć",
-      "guideWatchlistDesc": "Wygląda ciekawie! Zapisz, aby obejrzeć później.",
+      "guideWatchlistDesc": "Wygląda ciekawie! Dodamy go do Twojej listy do obejrzenia.",
       "guideNotInterestedTitle": "Nie interesuje mnie",
       "guideNotInterestedDesc": "Po prostu pomiń - bez wpływu na przyszłe rekomendacje.",
       "guideProTip": "💡 Wskazówka",
@@ -869,6 +869,21 @@
     "notFound": {
       "title": "Strona nie znaleziona - ShowSync",
       "description": "Strona, której szukasz, nie istnieje.",
+      "noindex": true
+    },
+    "watchRoomDetails": {
+      "title": "Pokój oglądania - ShowSync",
+      "description": "Zobacz swój pokój oglądania i otrzymuj spersonalizowane rekomendacje.",
+      "noindex": true
+    },
+    "joinWatchRoom": {
+      "title": "Dołącz do pokoju - ShowSync",
+      "description": "Dołącz do pokoju oglądania i odkrywaj seriale razem.",
+      "noindex": true
+    },
+    "logout": {
+      "title": "Wylogowywanie - ShowSync",
+      "description": "Wylogowywanie z konta ShowSync.",
       "noindex": true
     }
   }

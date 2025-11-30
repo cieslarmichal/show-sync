@@ -11,9 +11,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../co
 import { Button } from '../components/ui/Button.tsx';
 import { RoomInfoCard } from '../components/watchroom/RoomInfoCard.tsx';
 import { RecommendationsSection } from '../components/watchroom/RecommendationsSection.tsx';
+import { useSEO } from '../hooks/useSEO';
 
 export default function WatchRoomDetailsPage() {
   const { t } = useTranslation();
+  useSEO('watchRoomDetails');
   const { watchroomId } = useParams<{ watchroomId: string }>();
   const [room, setRoom] = useState<WatchroomDetails | null>(null);
   const [isLoading, setIsLoading] = useState(true);

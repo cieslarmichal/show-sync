@@ -51,9 +51,9 @@
       "title": "Stop Endless Scrolling",
       "titleHighlight": "Find Shows You'll Love",
       "subtitle": "Get AI recommendations that actually match your taste. Rate 5 shows, get personalized suggestions in 2 minutes.",
-      "badge1": "Free forever",
+      "badge1": "100% Free Forever",
       "badge2": "For you & groups",
-      "badge3": "2-min setup",
+      "badge3": "No hidden costs",
       "cta": "Get Started Free",
       "signIn": "Sign In"
     },
@@ -99,9 +99,9 @@
     },
     "cta": {
       "title": "Find Your Next Favorite Show in 2 Minutes",
-      "description": "Join early adopters who stopped wasting time scrolling and started watching shows they actually love.",
+      "description": "Join early adopters who stopped wasting time scrolling and started watching shows they actually love. 100% free forever — no tricks, no premium tiers.",
       "button": "Get Started Free",
-      "noCreditCard": "No credit card required • Free forever"
+      "noCreditCard": "No credit card • No premium plans • Free forever"
     },
     "problemStatement": {
       "title": "The Streaming Paradox",
@@ -124,8 +124,8 @@
       "a2": "Netflix shows you what's trending and popular. ShowSync learns YOUR unique taste and finds hidden gems that match it - even if they're not mainstream. Plus, you can create watch rooms to get recommendations that match everyone in your group.",
       "q3": "How does the AI know what I like?",
       "a3": "You rate shows you've watched (love, like, or dislike). Our AI analyzes your taste profile and finds shows that match your preferences - not just what's trending.",
-      "q4": "Is it really free?",
-      "a4": "Yes! ShowSync is completely free forever. No hidden fees, no credit card required, no premium tiers. Just great recommendations.",
+      "q4": "Is it really free? No premium plans?",
+      "a4": "Yes, 100% free forever! No hidden fees, no credit card required, no premium tiers, no paywalls, no limits. Every feature is free for everyone, always. We believe great recommendations should be accessible to all.",
       "q5": "How long does setup take?",
       "a5": "About 2 minutes. Sign up, rate 5-10 shows you've watched, and you're ready to get recommendations. The more you rate, the better the suggestions."
     },
@@ -594,7 +594,7 @@
       "dailyQuota": "{{current}}/{{max}} daily recommendations",
       "inviteOptional": "Tip: Invite friends for group recommendations, or generate solo!",
       "inviteHint": "💡 Tip: Invite friends to get recommendations tailored to your whole group's taste!",
-      "guideTitle": "📺 How to Rate Your Recommendations",
+      "guideTitle": "How to Rate Your Recommendations?",
       "guideSubtitle": "Each action you take helps us understand your taste better!",
       "guideLoveTitle": "Love It",
       "guideLoveDesc": "Add it to your profile as a favorite - we'll find more shows like this!",
@@ -863,6 +863,21 @@
     "notFound": {
       "title": "Page Not Found - ShowSync",
       "description": "The page you're looking for doesn't exist.",
+      "noindex": true
+    },
+    "watchRoomDetails": {
+      "title": "Watch Room - ShowSync",
+      "description": "View your watch room and get personalized recommendations.",
+      "noindex": true
+    },
+    "joinWatchRoom": {
+      "title": "Join Watch Room - ShowSync",
+      "description": "Join a watch room and discover shows together.",
+      "noindex": true
+    },
+    "logout": {
+      "title": "Logging Out - ShowSync",
+      "description": "Logging out of your ShowSync account.",
       "noindex": true
     }
   }

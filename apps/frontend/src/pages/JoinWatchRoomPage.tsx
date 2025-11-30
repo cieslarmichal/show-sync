@@ -10,9 +10,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../co
 import { Button } from '../components/ui/Button.tsx';
 import { config } from '../config.ts';
 import { useTranslation } from 'react-i18next';
+import { useSEO } from '../hooks/useSEO';
 
 export default function JoinWatchRoomPage() {
   const { t } = useTranslation();
+  useSEO('joinWatchRoom');
   const { publicLinkId } = useParams<{ publicLinkId: string }>();
   const [room, setRoom] = useState<Watchroom | null>(null);
   const [isLoading, setIsLoading] = useState(true);
