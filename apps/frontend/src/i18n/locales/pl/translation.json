@@ -205,32 +205,19 @@
     },
     "watchroom": {
       "title": "Twoje pokoje oglądania",
-      "description": "Twórz pokoje oglądania dla lepszych rekomendacji",
-      "badge": "Rekomendacje",
-      "feature1Title": "Inteligentne rekomendacje",
-      "feature1Desc": "Otrzymuj natychmiastowe sugestie na podstawie tego, co wszyscy lubią",
-      "feature2Title": "Idealne dopasowania",
-      "feature2Desc": "Znajdź seriale, które pasują każdemu",
-      "feature3Title": "Łatwe w użyciu",
-      "feature3Desc": "Wystarczy utworzyć pokój, zaprosić znajomych i zacząć oglądać",
+      "description": "Generuj rekomendacje AI dla siebie lub z przyjaciółmi",
+      "feature1Title": "Rekomendacje AI",
+      "feature1Desc": "Pokoje generują spersonalizowane sugestie na podstawie gustów wszystkich członków",
+      "feature2Title": "Dla Ciebie lub grupy",
+      "feature2Desc": "Twórz pokoje solo dla siebie lub zaproś znajomych na wspólne oglądanie",
+      "feature3Title": "Natychmiastowe wyniki",
+      "feature3Desc": "Otrzymaj rekomendacje w kilka sekund - bez przewijania i debatowania",
       "createButton": "Stwórz pokój oglądania"
-    },
-    "flow": {
-      "step1": "Oceń seriale",
-      "step2": "Stwórz pokój",
-      "step3": "Zaproś znajomych",
-      "step4": "Otrzymaj rekomendacje"
-    },
-    "checklist": {
-      "rateShows_one": "Oceń {{count}} serial",
-      "rateShows_few": "Oceń {{count}} seriale",
-      "rateShows_many": "Oceń {{count}} seriali",
-      "rateShows_other": "Oceń {{count}} seriali",
-      "completed": "{{current}}/{{total}} ukończone"
     },
     "lockedDialog": {
       "title": "Odblokuj pokoje oglądania",
       "description": "Twórz pokoje, aby otrzymywać grupowe rekomendacje",
+      "rateShowsMessage": "Oceń co najmniej {{count}} seriali, aby odblokować tworzenie pokoi:",
       "tip": "Wskazówka:",
       "tipMessage": "Ocenienie co najmniej {{count}} seriali odblokowuje dokładniejsze rekomendacje!",
       "later": "Może później",

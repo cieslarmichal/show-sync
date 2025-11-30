@@ -15,8 +15,7 @@ import {
 } from '../components/ui/Dialog';
 import { Skeleton } from '../components/ui/Skeleton';
 import { Progress } from '../components/ui/Progress';
-import { ChecklistItem } from '../components/ui/ChecklistItem';
-import { Heart, Lock, Sparkles, Users, ArrowRight, Lightbulb, UserPlus } from 'lucide-react';
+import { Heart, Lock, Sparkles, Users, Lightbulb } from 'lucide-react';
 import { config } from '../config';
 import { useSEO } from '../hooks/useSEO';
 import { QuickStartModal } from '../components/onboarding/QuickStartModal';
@@ -59,10 +58,6 @@ export default function DashboardPage() {
   };
 
   const canCreateRoom = totalCount >= config.series.minRatedShowsToCreateWatchRoom;
-
-  // Derived values used for display
-  const toReachGoodAccuracy = Math.max(config.series.goodAccuracy - totalCount, 0);
-  const toReachMaxAccuracy = Math.max(config.series.maxAccuracy - totalCount, 0);
 
   // Progress milestones for visual markers
   const progressMilestones = [
@@ -145,74 +140,6 @@ export default function DashboardPage() {
                 <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-foreground mb-4 tracking-tight leading-[1.1]">
                   {t('dashboard.title')}
                 </h1>
-
-                {/* Visual flow indicator - Desktop */}
-                <div className="hidden md:flex items-center justify-center gap-3 pt-10">
-                  <button
-                    onClick={() => navigate('/series')}
-                    className="flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 transition-all hover:bg-primary/15 hover:scale-105 cursor-pointer"
-                  >
-                    <Heart className="w-4 h-4 text-primary" />
-                    <span className="text-sm font-medium text-foreground">{t('dashboard.flow.step1')}</span>
-                  </button>
-                  <ArrowRight className="w-5 h-5 text-muted-foreground animate-pulse" />
-                  <button
-                    onClick={() => (canCreateRoom ? navigate('/watchrooms') : setLockedDialogOpen(true))}
-                    className="flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 transition-all hover:bg-primary/15 hover:scale-105 cursor-pointer"
-                  >
-                    <Users className="w-4 h-4 text-primary" />
-                    <span className="text-sm font-medium text-foreground">{t('dashboard.flow.step2')}</span>
-                  </button>
-                  <ArrowRight className="w-5 h-5 text-muted-foreground animate-pulse" />
-                  <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20">
-                    <UserPlus className="w-4 h-4 text-primary" />
-                    <span className="text-sm font-medium text-foreground">{t('dashboard.flow.step3')}</span>
-                  </div>
-                  <ArrowRight className="w-5 h-5 text-muted-foreground animate-pulse" />
-                  <button
-                    onClick={() => (canCreateRoom ? navigate('/watchrooms') : setLockedDialogOpen(true))}
-                    className="flex items-center gap-2 px-4 py-2 rounded-full bg-linear-to-r from-violet-500/10 to-purple-500/10 border border-violet-500/30 shadow-sm transition-all hover:shadow-md hover:scale-105 cursor-pointer"
-                  >
-                    <Sparkles className="w-4 h-4 text-violet-600 dark:text-violet-400" />
-                    <span className="text-sm font-medium text-violet-700 dark:text-violet-300">
-                      {t('dashboard.flow.step4')}
-                    </span>
-                  </button>
-                </div>
-
-                {/* Visual flow indicator - Mobile (vertical) */}
-                <div className="flex md:hidden flex-col items-center gap-2 pt-2">
-                  <button
-                    onClick={() => navigate('/series')}
-                    className="flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 cursor-pointer transition-all hover:bg-primary/15 hover:scale-105"
-                  >
-                    <Heart className="w-4 h-4 text-primary" />
-                    <span className="text-sm font-medium text-foreground">{t('dashboard.flow.step1')}</span>
-                  </button>
-                  <ArrowRight className="w-4 h-4 text-muted-foreground rotate-90 animate-pulse" />
-                  <button
-                    onClick={() => (canCreateRoom ? navigate('/watchrooms') : setLockedDialogOpen(true))}
-                    className="flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 cursor-pointer transition-all hover:bg-primary/15 hover:scale-105"
-                  >
-                    <Users className="w-4 h-4 text-primary" />
-                    <span className="text-sm font-medium text-foreground">{t('dashboard.flow.step2')}</span>
-                  </button>
-                  <ArrowRight className="w-4 h-4 text-muted-foreground rotate-90 animate-pulse" />
-                  <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20">
-                    <UserPlus className="w-4 h-4 text-primary" />
-                    <span className="text-sm font-medium text-foreground">{t('dashboard.flow.step3')}</span>
-                  </div>
-                  <ArrowRight className="w-4 h-4 text-muted-foreground rotate-90 animate-pulse" />
-                  <button
-                    onClick={() => (canCreateRoom ? navigate('/watchrooms') : setLockedDialogOpen(true))}
-                    className="flex items-center gap-2 px-4 py-2 rounded-full bg-linear-to-r from-violet-500/10 to-purple-500/10 border border-violet-500/30 shadow-sm cursor-pointer transition-all hover:shadow-md hover:scale-105"
-                  >
-                    <Sparkles className="w-4 h-4 text-violet-600 dark:text-violet-400" />
-                    <span className="text-sm font-medium text-violet-700 dark:text-violet-300">
-                      {t('dashboard.flow.step4')}
-                    </span>
-                  </button>
-                </div>
               </div>
 
               {/* Main Actions Section */}
@@ -254,56 +181,11 @@ export default function DashboardPage() {
                           showMilestones={true}
                           className="my-2"
                         />
-                        <div className="flex items-center justify-center gap-1.5 pt-2">
-                          {totalCount === 0 ? (
-                            <div className="text-center space-y-2 py-2">
-                              <p className="text-sm text-muted-foreground flex items-center justify-center gap-2">
-                                <Lightbulb className="w-4 h-4 text-amber-500" />
-                                <span className="font-medium text-foreground">
-                                  {t('dashboard.ratingProgress.startRating')}
-                                </span>
-                              </p>
-                              <p className="text-xs text-muted-foreground">
-                                {t('dashboard.ratingProgress.moreIsBetter')}
-                              </p>
-                            </div>
-                          ) : totalCount < config.series.goodAccuracy ? (
-                            <span className="text-xs text-muted-foreground">
-                              {t('dashboard.ratingProgress.rateMore', { count: toReachGoodAccuracy })}
-                            </span>
-                          ) : totalCount < config.series.maxAccuracy ? (
-                            <span className="text-xs text-violet-600 dark:text-violet-400 font-medium flex items-center gap-1.5">
-                              <Sparkles className="w-3 h-3 animate-pulse" />
-                              {t('dashboard.ratingProgress.goodUnlocked', { count: toReachMaxAccuracy })}
-                            </span>
-                          ) : (
-                            <span className="text-xs text-emerald-600 dark:text-emerald-400 font-medium flex items-center gap-1.5">
-                              <Sparkles className="w-3 h-3" />
-                              {t('dashboard.ratingProgress.bestUnlocked')}
-                              {totalCount > config.series.maxAccuracy &&
-                                ` • +${totalCount - config.series.maxAccuracy} ${t('dashboard.ratingProgress.extra')}`}
-                            </span>
-                          )}
-                        </div>
-                      </div>
-
-                      {/* Setup Requirements */}
-                      <div className="space-y-3">
-                        <div className="text-sm font-medium text-foreground">
-                          {t('dashboard.ratingProgress.unlockLabel')}
-                        </div>
-                        <ChecklistItem
-                          number={1}
-                          title={t('dashboard.checklist.rateShows', {
-                            count: config.series.minRatedShowsToCreateWatchRoom,
-                          })}
-                          subtitle={t('dashboard.checklist.completed', {
-                            current: Math.min(totalCount, config.series.minRatedShowsToCreateWatchRoom),
-                            total: config.series.minRatedShowsToCreateWatchRoom,
-                          })}
-                          completed={totalCount >= config.series.minRatedShowsToCreateWatchRoom}
-                          onClick={() => navigate('/series')}
-                        />
+                        {totalCount === 0 && (
+                          <p className="text-xs text-center text-muted-foreground pt-2">
+                            {t('dashboard.ratingProgress.moreIsBetter')}
+                          </p>
+                        )}
                       </div>
                     </CardContent>
                     <CardFooter className="flex flex-col gap-2">
@@ -338,16 +220,8 @@ export default function DashboardPage() {
                   </Card>
 
                   {/* Card 2: Create a Watch Room */}
-                  <Card className="flex flex-col h-full border-2 hover:border-primary/50 transition-all duration-300 hover:shadow-xl hover:-translate-y-0.5 relative overflow-hidden">
-                    {/* Subtle badge for "recommendations happen here" */}
-                    <div className="absolute top-4 right-4 z-10">
-                      <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-violet-500/10 dark:bg-violet-400/10 border border-violet-500/20 dark:border-violet-400/20 text-violet-700 dark:text-violet-300 shadow-sm text-xs font-medium animate-fade-in backdrop-blur-sm">
-                        <Sparkles className="w-3 h-3" />
-                        {t('dashboard.watchroom.badge')}
-                      </div>
-                    </div>
-
-                    <CardHeader className="relative pb-3">
+                  <Card className="flex flex-col h-full border-2 hover:border-primary/50 transition-all duration-300 hover:shadow-xl hover:-translate-y-0.5">
+                    <CardHeader>
                       <div className="flex items-center gap-4">
                         <div className="p-3 bg-linear-to-br from-primary/10 to-primary/5 rounded-xl shadow-sm">
                           <Users
@@ -355,15 +229,14 @@ export default function DashboardPage() {
                             aria-hidden="true"
                           />
                         </div>
-                        <div className="flex-1 pr-20">
+                        <div className="flex-1">
                           <CardTitle className="text-xl font-semibold">{t('dashboard.watchroom.title')}</CardTitle>
                           <CardDescription className="text-sm">{t('dashboard.watchroom.description')}</CardDescription>
                         </div>
                       </div>
                     </CardHeader>
-                    <CardContent className="grow relative pt-1 pb-6">
-                      {/* Feature highlights with icons */}
-                      <div className="space-y-3.5">
+                    <CardContent className="grow space-y-4">
+                      <div className="space-y-3">
                         <div className="flex items-start gap-3 group">
                           <div className="p-1.5 bg-primary/10 rounded-lg shrink-0 mt-0.5 group-hover:bg-primary/15 transition-colors">
                             <Sparkles className="w-4 h-4 text-primary" />
@@ -448,28 +321,19 @@ export default function DashboardPage() {
         <DialogContent>
           <DialogHeader>
             <DialogTitle className="text-2xl flex items-center gap-2">
-              <Sparkles className="w-6 h-6 text-primary" />
+              <Lock className="w-6 h-6 text-primary" />
               {t('dashboard.lockedDialog.title')}
             </DialogTitle>
             <DialogDescription className="text-base">{t('dashboard.lockedDialog.description')}</DialogDescription>
           </DialogHeader>
-          <div className="space-y-3 py-2">
-            <ChecklistItem
-              number={1}
-              title={t('dashboard.checklist.rateShows', { count: config.series.minRatedShowsToCreateWatchRoom })}
-              subtitle={t('dashboard.checklist.completed', {
-                current: Math.min(totalCount, config.series.minRatedShowsToCreateWatchRoom),
-                total: config.series.minRatedShowsToCreateWatchRoom,
-              })}
-              completed={totalCount >= config.series.minRatedShowsToCreateWatchRoom}
-            />
-            <div className="pt-3 border-t border-border">
-              <p className="text-xs text-muted-foreground flex items-start gap-2 leading-relaxed">
-                <span className="text-base">💡</span>
-                <span>
-                  <strong className="text-foreground">{t('dashboard.lockedDialog.tip')}</strong>{' '}
-                  {t('dashboard.lockedDialog.tipMessage', { count: config.series.goodAccuracy })}
-                </span>
+          <div className="text-center py-6">
+            <p className="text-muted-foreground mb-3">
+              {t('dashboard.lockedDialog.rateShowsMessage', { count: config.series.minRatedShowsToCreateWatchRoom })}
+            </p>
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 rounded-lg">
+              <Heart className="w-4 h-4 text-primary" />
+              <p className="text-2xl font-bold text-foreground">
+                {totalCount}<span className="text-muted-foreground">/{config.series.minRatedShowsToCreateWatchRoom}</span>
               </p>
             </div>
           </div>

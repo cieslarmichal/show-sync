@@ -232,60 +232,62 @@ export function RoomInfoCard({
                 </span>
               </div>
             </CardHeader>
-          <CardContent className="pt-0">
-            <div className="space-y-1.5">
-              {room.participants.map((participant) => (
-                <div
-                  key={participant.id}
-                  className="group flex items-center justify-between p-2 rounded-lg border bg-card hover:border-primary/40 hover:bg-muted/30 transition-all duration-200"
-                  data-testid="participants-list"
-                >
-                  <div className="flex items-center gap-2">
-                    <div className="w-7 h-7 rounded-full bg-primary/10 flex items-center justify-center ring-2 ring-background group-hover:ring-primary/20 transition-all">
-                      <span className="text-xs font-bold text-primary">{participant.name.charAt(0).toUpperCase()}</span>
+            <CardContent className="pt-0">
+              <div className="space-y-1.5">
+                {room.participants.map((participant) => (
+                  <div
+                    key={participant.id}
+                    className="group flex items-center justify-between p-2 rounded-lg border bg-card hover:border-primary/40 hover:bg-muted/30 transition-all duration-200"
+                    data-testid="participants-list"
+                  >
+                    <div className="flex items-center gap-2">
+                      <div className="w-7 h-7 rounded-full bg-primary/10 flex items-center justify-center ring-2 ring-background group-hover:ring-primary/20 transition-all">
+                        <span className="text-xs font-bold text-primary">
+                          {participant.name.charAt(0).toUpperCase()}
+                        </span>
+                      </div>
+                      <span className="font-semibold text-xs text-foreground">{participant.name}</span>
+                      {participant.id === room.ownerId && (
+                        <Badge
+                          variant="outline"
+                          className="text-[10px] bg-primary/5 text-primary border-primary/30 font-medium px-1 py-0"
+                        >
+                          {t('watchroom.roomInfo.owner')}
+                        </Badge>
+                      )}
                     </div>
-                    <span className="font-semibold text-xs text-foreground">{participant.name}</span>
-                    {participant.id === room.ownerId && (
-                      <Badge
-                        variant="outline"
-                        className="text-[10px] bg-primary/5 text-primary border-primary/30 font-medium px-1 py-0"
-                      >
-                        {t('watchroom.roomInfo.owner')}
-                      </Badge>
+                    {isOwner && participant.id !== currentUserId && (
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() =>
+                              setConfirmRemoveDialog({
+                                open: true,
+                                participantId: participant.id,
+                                participantName: participant.name,
+                              })
+                            }
+                            className="h-7 w-7 hover:bg-destructive/10 hover:text-destructive rounded-lg opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-all"
+                            aria-label={`Remove ${participant.name} from room`}
+                          >
+                            <UserMinus className="w-3.5 h-3.5" />
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent
+                          side="bottom"
+                          className="hidden sm:block"
+                        >
+                          <p>{t('watchroom.participants.remove', { name: participant.name })}</p>
+                        </TooltipContent>
+                      </Tooltip>
                     )}
                   </div>
-                  {isOwner && participant.id !== currentUserId && (
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={() =>
-                            setConfirmRemoveDialog({
-                              open: true,
-                              participantId: participant.id,
-                              participantName: participant.name,
-                            })
-                          }
-                          className="h-7 w-7 hover:bg-destructive/10 hover:text-destructive rounded-lg opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-all"
-                          aria-label={`Remove ${participant.name} from room`}
-                        >
-                          <UserMinus className="w-3.5 h-3.5" />
-                        </Button>
-                      </TooltipTrigger>
-                      <TooltipContent
-                        side="bottom"
-                        className="hidden sm:block"
-                      >
-                        <p>{t('watchroom.participants.remove', { name: participant.name })}</p>
-                      </TooltipContent>
-                    </Tooltip>
-                  )}
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
         )}
       </div>
 

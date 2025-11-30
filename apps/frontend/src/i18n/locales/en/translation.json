@@ -205,30 +205,19 @@
     },
     "watchroom": {
       "title": "Your Watch Rooms",
-      "description": "Create watch rooms for better recommendations",
-      "badge": "Recommendations",
-      "feature1Title": "Smart Recommendations",
-      "feature1Desc": "Get instant show suggestions based on what everyone likes",
-      "feature2Title": "Perfect Matches",
-      "feature2Desc": "Find shows that balance everyone's taste",
-      "feature3Title": "Easy to Use",
-      "feature3Desc": "Just create a room, invite friends, and get watching",
+      "description": "Generate AI recommendations for yourself or with friends",
+      "feature1Title": "AI Recommendations",
+      "feature1Desc": "Rooms generate personalized suggestions based on everyone's taste",
+      "feature2Title": "Solo or Group",
+      "feature2Desc": "Create rooms for yourself or invite friends to watch together",
+      "feature3Title": "Instant Results",
+      "feature3Desc": "Get recommendations in seconds - no scrolling or debating",
       "createButton": "Create Watch Room"
-    },
-    "flow": {
-      "step1": "Rate Shows",
-      "step2": "Create Room",
-      "step3": "Invite Friends",
-      "step4": "Get Recommendations"
-    },
-    "checklist": {
-      "rateShows_one": "Rate {{count}} show",
-      "rateShows_other": "Rate {{count}} shows",
-      "completed": "{{current}}/{{total}} completed"
     },
     "lockedDialog": {
       "title": "Unlock Watch Rooms",
       "description": "Create rooms to get group recommendations",
+      "rateShowsMessage": "Rate at least {{count}} shows to unlock room creation:",
       "tip": "Pro tip:",
       "tipMessage": "Rating at least {{count}} shows unlocks more accurate recommendations!",
       "later": "Maybe Later",
