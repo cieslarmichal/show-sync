@@ -214,23 +214,24 @@ export function RoomInfoCard({
           </CardHeader>
         </Card>
 
-        {/* Participants Card */}
-        <Card className="border shadow-sm">
-          <CardHeader className="pb-3">
-            <div className="flex items-center justify-between gap-2">
-              <div className="flex items-center gap-2">
-                <div className="w-7 h-7 rounded-lg bg-primary/10 flex items-center justify-center">
-                  <Users className="w-4 h-4 text-primary" />
+        {/* Participants Card - Only show if more than 1 participant */}
+        {room.participants.length > 1 && (
+          <Card className="border shadow-sm">
+            <CardHeader className="pb-3">
+              <div className="flex items-center justify-between gap-2">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-7 sm:w-8 h-7 sm:h-8 rounded-lg bg-primary/10 flex items-center justify-center">
+                    <Users className="w-4 sm:w-4.5 h-4 sm:h-4.5 text-primary" />
+                  </div>
+                  <CardTitle className="text-base sm:text-xl font-bold tracking-tight">
+                    {t('watchroom.roomInfo.participants')}
+                  </CardTitle>
                 </div>
-                <CardTitle className="text-sm sm:text-base font-bold tracking-tight">
-                  {t('watchroom.roomInfo.participants')}
-                </CardTitle>
+                <span className="text-xs text-muted-foreground">
+                  {room.participants.length}/{config.watchroom.maxParticipants}
+                </span>
               </div>
-              <span className="text-xs text-muted-foreground">
-                {room.participants.length}/{config.watchroom.maxParticipants}
-              </span>
-            </div>
-          </CardHeader>
+            </CardHeader>
           <CardContent className="pt-0">
             <div className="space-y-1.5">
               {room.participants.map((participant) => (
@@ -285,6 +286,7 @@ export function RoomInfoCard({
             </div>
           </CardContent>
         </Card>
+        )}
       </div>
 
       {/* Delete Room Dialog */}

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
-import { Sparkles, X } from 'lucide-react';
+import { Sparkles, Info, Eye, EyeOff, X, Users } from 'lucide-react';
 
 import { generateRecommendations, checkRecommendationStatus, getRecommendations } from '../../api/queries/watchroom.ts';
 import { getSeriesDetailsBatch } from '../../api/queries/getSeriesDetailsBatch.ts';
@@ -13,6 +13,7 @@ import type { SeriesDetails } from '../../api/types/series.ts';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/Card.tsx';
 import { Button } from '../ui/Button.tsx';
 import { Skeleton } from '../ui/Skeleton.tsx';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '../ui/Dialog.tsx';
 
 import { RecommendationCard } from './RecommendationCard.tsx';
 import { RecommendationFeedbackForm } from '../RecommendationFeedbackForm.tsx';
@@ -27,11 +28,7 @@ interface RecommendationsSectionProps {
   participantCount: number;
 }
 
-export function RecommendationsSection({
-  watchroomId,
-  isOwner,
-  participantCount,
-}: RecommendationsSectionProps) {
+export function RecommendationsSection({ watchroomId, isOwner, participantCount }: RecommendationsSectionProps) {
   const [recommendations, setRecommendations] = useState<RecommendationWithDetails[]>([]);
   const [isLoadingRecommendations, setIsLoadingRecommendations] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
@@ -40,9 +37,9 @@ export function RecommendationsSection({
   const [fadingOutCards, setFadingOutCards] = useState<Set<string>>(new Set());
   const [quota, setQuota] = useState<{ current: number; max: number } | null>(null);
   const [isLoadingQuota, setIsLoadingQuota] = useState(false);
-  const [isGuideDismissed, setIsGuideDismissed] = useState(() => {
-    const dismissed = localStorage.getItem('recommendations-guide-dismissed');
-    return dismissed === 'true';
+  const [showNewRecommendations, setShowNewRecommendations] = useState(false);
+  const [inviteHintDismissed, setInviteHintDismissed] = useState(() => {
+    return localStorage.getItem('invite-hint-dismissed') === 'true';
   });
   const { t } = useTranslation();
 
@@ -178,6 +175,8 @@ export function RecommendationsSection({
                 count: fetchedRecommendations.length,
               }),
             });
+            setShowNewRecommendations(true);
+            setTimeout(() => setShowNewRecommendations(false), 1000);
             setIsGenerating(false);
             return;
           }
@@ -266,13 +265,8 @@ export function RecommendationsSection({
   const isQuotaExhausted = quota ? quota.current >= quota.max : false;
   const isNearLimit = quota ? quota.current >= quota.max - 2 : false;
 
-  const handleDismissGuide = () => {
-    setIsGuideDismissed(true);
-    localStorage.setItem('recommendations-guide-dismissed', 'true');
-  };
-
   return (
-    <Card className="border shadow-sm overflow-hidden">
+    <Card className="border shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden">
       <CardHeader className="relative pb-4 sm:pb-5">
         <div className="flex items-start justify-between gap-3 sm:gap-4">
           <div className="space-y-1.5 sm:space-y-2">
@@ -281,6 +275,88 @@ export function RecommendationsSection({
                 <Sparkles className="w-4 sm:w-4.5 h-4 sm:h-4.5 text-primary-foreground" />
               </div>
               <CardTitle className="text-base sm:text-xl font-bold">{t('watchroom.recommendations.title')}</CardTitle>
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-7 w-7 rounded-full hover:bg-primary/10"
+                  >
+                    <Info className="w-4 h-4 text-muted-foreground" />
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="max-w-md">
+                  <DialogHeader>
+                    <DialogTitle className="text-lg font-bold">{t('watchroom.recommendations.guideTitle')}</DialogTitle>
+                  </DialogHeader>
+                  <div className="space-y-3">
+                    <p className="text-sm text-muted-foreground">{t('watchroom.recommendations.guideSubtitle')}</p>
+
+                    <div className="space-y-2.5">
+                      <div className="flex items-start gap-3">
+                        <span className="text-xl shrink-0">❤️</span>
+                        <div>
+                          <p className="text-sm font-semibold">{t('watchroom.recommendations.guideLoveTitle')}</p>
+                          <p className="text-xs text-muted-foreground">
+                            {t('watchroom.recommendations.guideLoveDesc')}
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="flex items-start gap-3">
+                        <span className="text-xl shrink-0">👍</span>
+                        <div>
+                          <p className="text-sm font-semibold">{t('watchroom.recommendations.guideLikeTitle')}</p>
+                          <p className="text-xs text-muted-foreground">
+                            {t('watchroom.recommendations.guideLikeDesc')}
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="flex items-start gap-3">
+                        <span className="text-xl shrink-0">👎</span>
+                        <div>
+                          <p className="text-sm font-semibold">{t('watchroom.recommendations.guideDislikeTitle')}</p>
+                          <p className="text-xs text-muted-foreground">
+                            {t('watchroom.recommendations.guideDislikeDesc')}
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="flex items-start gap-3">
+                        <Eye className="w-5 h-5 shrink-0 mt-0.5 text-foreground" />
+                        <div>
+                          <p className="text-sm font-semibold">{t('watchroom.recommendations.guideWatchlistTitle')}</p>
+                          <p className="text-xs text-muted-foreground">
+                            {t('watchroom.recommendations.guideWatchlistDesc')}
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="flex items-start gap-3">
+                        <EyeOff className="w-5 h-5 shrink-0 mt-0.5 text-foreground" />
+                        <div>
+                          <p className="text-sm font-semibold">
+                            {t('watchroom.recommendations.guideNotInterestedTitle')}
+                          </p>
+                          <p className="text-xs text-muted-foreground">
+                            {t('watchroom.recommendations.guideNotInterestedDesc')}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="pt-2 border-t">
+                      <p className="text-xs font-semibold text-foreground mb-1">
+                        {t('watchroom.recommendations.guideProTip')}
+                      </p>
+                      <p className="text-xs text-muted-foreground leading-relaxed">
+                        {t('watchroom.recommendations.guideProTipDesc')}
+                      </p>
+                    </div>
+                  </div>
+                </DialogContent>
+              </Dialog>
             </div>
             <CardDescription className="text-xs sm:text-sm">
               {t('watchroom.recommendations.description')}
@@ -288,34 +364,57 @@ export function RecommendationsSection({
           </div>
           {isOwner && (
             <div className="flex flex-col items-end gap-2">
-              <Button
-                onClick={handleGenerateRecommendations}
-                disabled={isGenerating || isQuotaExhausted}
-                className="shadow-sm hover:shadow-md transition-all disabled:opacity-50 h-9 sm:h-10 text-sm px-4"
-                data-testid="generate-recommendations-button"
-              >
-                {isGenerating ? (
-                  <>
-                    <Sparkles className="w-4 h-4 mr-2 animate-spin" />
-                    {t('watchroom.recommendations.generating')}
-                  </>
-                ) : (
-                  <>
-                    <Sparkles className="w-4 h-4 mr-2" />
-                    {t('watchroom.recommendations.generate')}
-                  </>
+              <div className="relative inline-block">
+                {!isGenerating && !isQuotaExhausted && recommendations.length === 0 && (
+                  <div className="absolute -inset-0.5 bg-linear-to-r from-purple-600 via-pink-600 to-purple-600 rounded-lg blur-sm animate-pulse" />
                 )}
-              </Button>
+                <Button
+                  onClick={handleGenerateRecommendations}
+                  disabled={isGenerating || isQuotaExhausted}
+                  className={`shadow-lg hover:shadow-xl transition-all disabled:opacity-50 h-10 sm:h-11 text-sm px-6 relative min-w-[220px] ${
+                    !isGenerating && !isQuotaExhausted && recommendations.length === 0
+                      ? 'bg-linear-to-r from-primary via-primary/90 to-primary/80 hover:from-primary/90 hover:via-primary hover:to-primary'
+                      : ''
+                  }`}
+                  data-testid="generate-recommendations-button"
+                >
+                  {isGenerating ? (
+                    <>
+                      <Sparkles className="w-4 h-4 mr-2 animate-spin shrink-0" />
+                      {t('watchroom.recommendations.generating')}
+                    </>
+                  ) : (
+                    <>
+                      <Sparkles className="w-4 h-4 mr-2 shrink-0" />
+                      {t('watchroom.recommendations.generate')}
+                    </>
+                  )}
+                </Button>
+              </div>
               {!isLoadingQuota && quota && (
-                <span className={`text-xs sm:text-sm ${
-                  isQuotaExhausted
-                    ? 'text-destructive font-medium'
-                    : isNearLimit
-                    ? 'text-amber-600 dark:text-amber-500 font-medium'
-                    : 'text-muted-foreground'
-                }`}>
-                  {t('watchroom.recommendations.dailyQuota', { current: quota.current, max: quota.max })}
-                </span>
+                <div className="w-full space-y-1">
+                  <div className="flex items-center justify-between text-xs sm:text-sm">
+                    <span
+                      className={`${
+                        isQuotaExhausted
+                          ? 'text-destructive font-medium'
+                          : isNearLimit
+                            ? 'text-amber-600 dark:text-amber-500 font-medium'
+                            : 'text-muted-foreground'
+                      }`}
+                    >
+                      {t('watchroom.recommendations.dailyQuota', { current: quota.current, max: quota.max })}
+                    </span>
+                  </div>
+                  <div className="w-full h-1.5 bg-muted rounded-full overflow-hidden">
+                    <div
+                      className={`h-full transition-all duration-500 ${
+                        isQuotaExhausted ? 'bg-destructive' : isNearLimit ? 'bg-amber-500' : 'bg-primary'
+                      }`}
+                      style={{ width: `${(quota.current / quota.max) * 100}%` }}
+                    />
+                  </div>
+                </div>
               )}
             </div>
           )}
@@ -359,29 +458,18 @@ export function RecommendationsSection({
               <div className="w-20 sm:w-28 md:w-32 h-20 sm:h-28 md:h-32 rounded-2xl bg-linear-to-br from-primary/30 via-primary/20 to-primary/10 mx-auto mb-6 sm:mb-8 flex items-center justify-center shadow-lg">
                 <Sparkles className="w-10 sm:w-14 md:w-16 h-10 sm:h-14 md:h-16 text-primary animate-pulse" />
               </div>
-              
+
               <h3 className="text-xl sm:text-2xl md:text-3xl font-bold text-foreground mb-3 sm:mb-4">
                 {isOwner
                   ? t('watchroom.recommendations.readyToGenerate')
                   : t('watchroom.recommendations.waitingForOwner')}
               </h3>
-              
-              <p className="text-sm sm:text-base md:text-lg text-muted-foreground max-w-2xl mx-auto mb-6 sm:mb-8 leading-relaxed">
-                {isOwner ? (
-                  t('watchroom.recommendations.clickGenerateDesc')
-                ) : (
-                  t('watchroom.recommendations.ownerWillGenerate')
-                )}
-              </p>
 
-              {isOwner && (
-                <div className="inline-flex items-center gap-2 px-5 py-3 rounded-lg bg-primary/10 border border-primary/20">
-                  <Sparkles className="w-5 h-5 text-primary" />
-                  <p className="text-sm sm:text-base font-medium text-foreground">
-                    {t('watchroom.recommendations.useButtonAbove')}
-                  </p>
-                </div>
-              )}
+              <p className="text-sm sm:text-base md:text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+                {isOwner
+                  ? t('watchroom.recommendations.clickGenerateDesc')
+                  : t('watchroom.recommendations.ownerWillGenerate')}
+              </p>
 
               {participantCount < 2 && (
                 <p className="text-xs sm:text-sm text-muted-foreground mt-4">
@@ -389,110 +477,33 @@ export function RecommendationsSection({
                 </p>
               )}
             </div>
-
-            {/* Rating Guide - closable */}
-            {!isGuideDismissed && (
-              <div className="rounded-lg border-2 border-primary/20 bg-linear-to-br from-primary/5 via-primary/3 to-background p-4 sm:p-5 space-y-3 sm:space-y-4 relative">
-                <Button
-                  onClick={handleDismissGuide}
-                  variant="ghost"
-                  size="icon"
-                  className="absolute top-3 right-3 sm:top-4 sm:right-4 h-8 w-8"
-                  aria-label="Dismiss guide"
-                >
-                  <X className="w-4 h-4" />
-                </Button>
-                <div className="space-y-1.5">
-                  <h4 className="text-sm sm:text-base font-bold text-foreground flex items-center gap-2">
-                    {t('watchroom.recommendations.guideTitle')}
-                  </h4>
-                  <p className="text-[11px] sm:text-xs text-muted-foreground">
-                    {t('watchroom.recommendations.guideSubtitle')}
-                  </p>
-                </div>
-
-                <div className="grid gap-2.5 sm:gap-3">
-                  {/* Love Action */}
-                  <div className="flex items-start gap-2.5 sm:gap-3 p-2.5 sm:p-3 rounded-lg bg-background/60 border border-muted">
-                    <span className="text-lg sm:text-xl shrink-0 mt-0.5">❤️</span>
-                    <div className="space-y-0.5">
-                      <p className="text-xs sm:text-sm font-semibold text-foreground">
-                        {t('watchroom.recommendations.guideLoveTitle')}
-                      </p>
-                      <p className="text-[10px] sm:text-xs text-muted-foreground leading-relaxed">
-                        {t('watchroom.recommendations.guideLoveDesc')}
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* Like Action */}
-                  <div className="flex items-start gap-2.5 sm:gap-3 p-2.5 sm:p-3 rounded-lg bg-background/60 border border-muted">
-                    <span className="text-lg sm:text-xl shrink-0 mt-0.5">👍</span>
-                    <div className="space-y-0.5">
-                      <p className="text-xs sm:text-sm font-semibold text-foreground">
-                        {t('watchroom.recommendations.guideLikeTitle')}
-                      </p>
-                      <p className="text-[10px] sm:text-xs text-muted-foreground leading-relaxed">
-                        {t('watchroom.recommendations.guideLikeDesc')}
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* Dislike Action */}
-                  <div className="flex items-start gap-2.5 sm:gap-3 p-2.5 sm:p-3 rounded-lg bg-background/60 border border-muted">
-                    <span className="text-lg sm:text-xl shrink-0 mt-0.5">👎</span>
-                    <div className="space-y-0.5">
-                      <p className="text-xs sm:text-sm font-semibold text-foreground">
-                        {t('watchroom.recommendations.guideDislikeTitle')}
-                      </p>
-                      <p className="text-[10px] sm:text-xs text-muted-foreground leading-relaxed">
-                        {t('watchroom.recommendations.guideDislikeDesc')}
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* Watchlist Action */}
-                  <div className="flex items-start gap-2.5 sm:gap-3 p-2.5 sm:p-3 rounded-lg bg-background/60 border border-muted">
-                    <span className="text-lg sm:text-xl shrink-0 mt-0.5">🎬</span>
-                    <div className="space-y-0.5">
-                      <p className="text-xs sm:text-sm font-semibold text-foreground">
-                        {t('watchroom.recommendations.guideWatchlistTitle')}
-                      </p>
-                      <p className="text-[10px] sm:text-xs text-muted-foreground leading-relaxed">
-                        {t('watchroom.recommendations.guideWatchlistDesc')}
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* Not Interested Action */}
-                  <div className="flex items-start gap-2.5 sm:gap-3 p-2.5 sm:p-3 rounded-lg bg-background/60 border border-muted">
-                    <span className="text-lg sm:text-xl shrink-0 mt-0.5">⏭️</span>
-                    <div className="space-y-0.5">
-                      <p className="text-xs sm:text-sm font-semibold text-foreground">
-                        {t('watchroom.recommendations.guideNotInterestedTitle')}
-                      </p>
-                      <p className="text-[10px] sm:text-xs text-muted-foreground leading-relaxed">
-                        {t('watchroom.recommendations.guideNotInterestedDesc')}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Pro Tip */}
-                <div className="rounded-lg bg-primary/10 border border-primary/20 p-2.5 sm:p-3 space-y-1">
-                  <p className="text-xs sm:text-sm font-semibold text-primary flex items-center gap-1.5">
-                    {t('watchroom.recommendations.guideProTip')}
-                  </p>
-                  <p className="text-[10px] sm:text-xs text-foreground/80 leading-relaxed">
-                    {t('watchroom.recommendations.guideProTipDesc')}
-                  </p>
-                </div>
-              </div>
-            )}
           </div>
         ) : (
           <div className="space-y-3 sm:space-y-4">
-            <div className="space-y-4">
+            {/* Invite hint for solo users */}
+            {participantCount === 1 && !inviteHintDismissed && (
+              <div className="relative flex items-center gap-3 p-3 sm:p-4 rounded-lg bg-primary/5 border border-primary/20">
+                <Users className="w-5 h-5 text-primary shrink-0" />
+                <p className="text-xs sm:text-sm text-muted-foreground flex-1">
+                  {t('watchroom.recommendations.inviteHint')}
+                </p>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => {
+                    setInviteHintDismissed(true);
+                    localStorage.setItem('invite-hint-dismissed', 'true');
+                  }}
+                  className="h-6 w-6 shrink-0"
+                  aria-label="Dismiss"
+                >
+                  <X className="w-3.5 h-3.5" />
+                </Button>
+              </div>
+            )}
+            <div
+              className={`space-y-4 transition-opacity duration-500 ${showNewRecommendations ? 'opacity-0 animate-fade-in' : 'opacity-100'}`}
+            >
               {visibleRecommendations.map((recommendation) => (
                 <RecommendationCard
                   key={recommendation.id}
