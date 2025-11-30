@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
-import { Sparkles, TvMinimalPlay, Info, EyeIcon } from 'lucide-react';
+import { Sparkles, X } from 'lucide-react';
 
 import { generateRecommendations, checkRecommendationStatus, getRecommendations } from '../../api/queries/watchroom.ts';
 import { getSeriesDetailsBatch } from '../../api/queries/getSeriesDetailsBatch.ts';
@@ -13,7 +13,7 @@ import type { SeriesDetails } from '../../api/types/series.ts';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/Card.tsx';
 import { Button } from '../ui/Button.tsx';
 import { Skeleton } from '../ui/Skeleton.tsx';
-import { Tooltip, TooltipTrigger, TooltipContent } from '../ui/Tooltip.tsx';
+
 import { RecommendationCard } from './RecommendationCard.tsx';
 import { RecommendationFeedbackForm } from '../RecommendationFeedbackForm.tsx';
 
@@ -25,14 +25,12 @@ interface RecommendationsSectionProps {
   watchroomId: string;
   isOwner: boolean;
   participantCount: number;
-  onCopyLink: () => void;
 }
 
 export function RecommendationsSection({
   watchroomId,
   isOwner,
   participantCount,
-  onCopyLink,
 }: RecommendationsSectionProps) {
   const [recommendations, setRecommendations] = useState<RecommendationWithDetails[]>([]);
   const [isLoadingRecommendations, setIsLoadingRecommendations] = useState(false);
@@ -42,6 +40,10 @@ export function RecommendationsSection({
   const [fadingOutCards, setFadingOutCards] = useState<Set<string>>(new Set());
   const [quota, setQuota] = useState<{ current: number; max: number } | null>(null);
   const [isLoadingQuota, setIsLoadingQuota] = useState(false);
+  const [isGuideDismissed, setIsGuideDismissed] = useState(() => {
+    const dismissed = localStorage.getItem('recommendations-guide-dismissed');
+    return dismissed === 'true';
+  });
   const { t } = useTranslation();
 
   const fetchRecommendations = async () => {
@@ -263,101 +265,63 @@ export function RecommendationsSection({
 
   const isQuotaExhausted = quota ? quota.current >= quota.max : false;
   const isNearLimit = quota ? quota.current >= quota.max - 2 : false;
-  const remainingGenerations = quota ? Math.max(0, quota.max - quota.current) : null;
+
+  const handleDismissGuide = () => {
+    setIsGuideDismissed(true);
+    localStorage.setItem('recommendations-guide-dismissed', 'true');
+  };
 
   return (
     <Card className="border shadow-sm overflow-hidden">
-      <CardHeader className="relative pb-3">
-        <div className="flex items-start justify-between gap-2 sm:gap-3">
-          <div className="space-y-1 sm:space-y-1.5">
-            <div className="flex items-center gap-2">
-              <div className="w-6 sm:w-7 h-6 sm:h-7 rounded-lg bg-linear-to-br from-primary to-primary/70 flex items-center justify-center">
-                <Sparkles className="w-3.5 sm:w-4 h-3.5 sm:h-4 text-primary-foreground" />
+      <CardHeader className="relative pb-4 sm:pb-5">
+        <div className="flex items-start justify-between gap-3 sm:gap-4">
+          <div className="space-y-1.5 sm:space-y-2">
+            <div className="flex items-center gap-2.5">
+              <div className="w-7 sm:w-8 h-7 sm:h-8 rounded-lg bg-linear-to-br from-primary to-primary/70 flex items-center justify-center">
+                <Sparkles className="w-4 sm:w-4.5 h-4 sm:h-4.5 text-primary-foreground" />
               </div>
-              <CardTitle className="text-sm sm:text-lg font-bold">{t('watchroom.recommendations.title')}</CardTitle>
+              <CardTitle className="text-base sm:text-xl font-bold">{t('watchroom.recommendations.title')}</CardTitle>
             </div>
-            <CardDescription className="text-[11px] sm:text-xs hidden sm:block">
+            <CardDescription className="text-xs sm:text-sm">
               {t('watchroom.recommendations.description')}
             </CardDescription>
           </div>
           {isOwner && (
-            <div className="flex flex-col items-end gap-1.5">
+            <div className="flex flex-col items-end gap-2">
               <Button
                 onClick={handleGenerateRecommendations}
                 disabled={isGenerating || isQuotaExhausted}
-                className="shadow-sm hover:shadow-md transition-all disabled:opacity-50 h-8 text-xs"
+                className="shadow-sm hover:shadow-md transition-all disabled:opacity-50 h-9 sm:h-10 text-sm px-4"
                 data-testid="generate-recommendations-button"
               >
                 {isGenerating ? (
                   <>
-                    <Sparkles className="w-3.5 h-3.5 mr-1.5 animate-spin" />
+                    <Sparkles className="w-4 h-4 mr-2 animate-spin" />
                     {t('watchroom.recommendations.generating')}
                   </>
                 ) : (
                   <>
-                    <Sparkles className="w-3.5 h-3.5 mr-1.5" />
+                    <Sparkles className="w-4 h-4 mr-2" />
                     {t('watchroom.recommendations.generate')}
                   </>
                 )}
               </Button>
               {!isLoadingQuota && quota && (
-                <div className="flex items-center gap-1 text-xs">
-                  {isQuotaExhausted ? (
-                    <>
-                      <span className="text-destructive font-medium">
-                        {t('watchroom.recommendations.limitReached', { current: quota.current, max: quota.max })}
-                      </span>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <button className="inline-flex">
-                            <Info className="w-3.5 h-3.5" />
-                          </button>
-                        </TooltipTrigger>
-                        <TooltipContent>
-                          <p>{t('watchroom.recommendations.limitInfo')}</p>
-                        </TooltipContent>
-                      </Tooltip>
-                    </>
-                  ) : isNearLimit ? (
-                    <>
-                      <span className="text-amber-600 dark:text-amber-500 font-medium">
-                        {t('watchroom.recommendations.remaining', { count: remainingGenerations ?? 0 })}
-                      </span>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <button className="inline-flex">
-                            <Info className="w-3.5 h-3.5" />
-                          </button>
-                        </TooltipTrigger>
-                        <TooltipContent>
-                          <p>{t('watchroom.recommendations.nearLimitInfo', { max: quota.max })}</p>
-                        </TooltipContent>
-                      </Tooltip>
-                    </>
-                  ) : (
-                    <>
-                      <span className="text-muted-foreground">
-                        {t('watchroom.recommendations.used', { current: quota.current, max: quota.max })}
-                      </span>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <button className="inline-flex">
-                            <Info className="w-3.5 h-3.5" />
-                          </button>
-                        </TooltipTrigger>
-                        <TooltipContent>
-                          <p>{t('watchroom.recommendations.usedInfo', { max: quota.max })}</p>
-                        </TooltipContent>
-                      </Tooltip>
-                    </>
-                  )}
-                </div>
+                <span className={`text-xs sm:text-sm ${
+                  isQuotaExhausted
+                    ? 'text-destructive font-medium'
+                    : isNearLimit
+                    ? 'text-amber-600 dark:text-amber-500 font-medium'
+                    : 'text-muted-foreground'
+                }`}>
+                  {t('watchroom.recommendations.dailyQuota', { current: quota.current, max: quota.max })}
+                </span>
               )}
             </div>
           )}
         </div>
       </CardHeader>
-      <CardContent className="pt-2 sm:pt-3">
+      <CardContent className="pt-3 sm:pt-4">
         {isLoadingRecommendations ? (
           <div className="space-y-3 sm:space-y-4">
             <p className="text-[11px] sm:text-sm text-muted-foreground px-1">
@@ -389,124 +353,142 @@ export function RecommendationsSection({
             ))}
           </div>
         ) : recommendations.length === 0 ? (
-          <div className="space-y-4 sm:space-y-6">
-            {/* Rating Guide - shown before generating recommendations */}
-            <div className="rounded-lg border-2 border-primary/20 bg-linear-to-br from-primary/5 via-primary/3 to-background p-4 sm:p-5 space-y-3 sm:space-y-4">
-              <div className="space-y-1.5">
-                <h4 className="text-sm sm:text-base font-bold text-foreground flex items-center gap-2">
-                  {t('watchroom.recommendations.guideTitle')}
-                </h4>
-                <p className="text-[11px] sm:text-xs text-muted-foreground">
-                  {t('watchroom.recommendations.guideSubtitle')}
-                </p>
+          <div className="space-y-6">
+            {/* Main CTA - Generate Recommendations */}
+            <div className="text-center py-12 sm:py-16 md:py-20 px-4 sm:px-6">
+              <div className="w-20 sm:w-28 md:w-32 h-20 sm:h-28 md:h-32 rounded-2xl bg-linear-to-br from-primary/30 via-primary/20 to-primary/10 mx-auto mb-6 sm:mb-8 flex items-center justify-center shadow-lg">
+                <Sparkles className="w-10 sm:w-14 md:w-16 h-10 sm:h-14 md:h-16 text-primary animate-pulse" />
               </div>
-
-              <div className="grid gap-2.5 sm:gap-3">
-                {/* Love Action */}
-                <div className="flex items-start gap-2.5 sm:gap-3 p-2.5 sm:p-3 rounded-lg bg-background/60 border border-muted">
-                  <span className="text-lg sm:text-xl shrink-0 mt-0.5">❤️</span>
-                  <div className="space-y-0.5">
-                    <p className="text-xs sm:text-sm font-semibold text-foreground">
-                      {t('watchroom.recommendations.guideLoveTitle')}
-                    </p>
-                    <p className="text-[10px] sm:text-xs text-muted-foreground leading-relaxed">
-                      {t('watchroom.recommendations.guideLoveDesc')}
-                    </p>
-                  </div>
-                </div>
-
-                {/* Like Action */}
-                <div className="flex items-start gap-2.5 sm:gap-3 p-2.5 sm:p-3 rounded-lg bg-background/60 border border-muted">
-                  <span className="text-lg sm:text-xl shrink-0 mt-0.5">👍</span>
-                  <div className="space-y-0.5">
-                    <p className="text-xs sm:text-sm font-semibold text-foreground">
-                      {t('watchroom.recommendations.guideLikeTitle')}
-                    </p>
-                    <p className="text-[10px] sm:text-xs text-muted-foreground leading-relaxed">
-                      {t('watchroom.recommendations.guideLikeDesc')}
-                    </p>
-                  </div>
-                </div>
-
-                {/* Dislike Action */}
-                <div className="flex items-start gap-2.5 sm:gap-3 p-2.5 sm:p-3 rounded-lg bg-background/60 border border-muted">
-                  <span className="text-lg sm:text-xl shrink-0 mt-0.5">👎</span>
-                  <div className="space-y-0.5">
-                    <p className="text-xs sm:text-sm font-semibold text-foreground">
-                      {t('watchroom.recommendations.guideDislikeTitle')}
-                    </p>
-                    <p className="text-[10px] sm:text-xs text-muted-foreground leading-relaxed">
-                      {t('watchroom.recommendations.guideDislikeDesc')}
-                    </p>
-                  </div>
-                </div>
-
-                {/* Watchlist Action */}
-                <div className="flex items-start gap-2.5 sm:gap-3 p-2.5 sm:p-3 rounded-lg bg-background/60 border border-muted">
-                  <span className="text-lg sm:text-xl shrink-0 mt-0.5">🎬</span>
-                  <div className="space-y-0.5">
-                    <p className="text-xs sm:text-sm font-semibold text-foreground">
-                      {t('watchroom.recommendations.guideWatchlistTitle')}
-                    </p>
-                    <p className="text-[10px] sm:text-xs text-muted-foreground leading-relaxed">
-                      {t('watchroom.recommendations.guideWatchlistDesc')}
-                    </p>
-                  </div>
-                </div>
-
-                {/* Not Interested Action */}
-                <div className="flex items-start gap-2.5 sm:gap-3 p-2.5 sm:p-3 rounded-lg bg-background/60 border border-muted">
-                  <span className="text-lg sm:text-xl shrink-0 mt-0.5">⏭️</span>
-                  <div className="space-y-0.5">
-                    <p className="text-xs sm:text-sm font-semibold text-foreground">
-                      {t('watchroom.recommendations.guideNotInterestedTitle')}
-                    </p>
-                    <p className="text-[10px] sm:text-xs text-muted-foreground leading-relaxed">
-                      {t('watchroom.recommendations.guideNotInterestedDesc')}
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Pro Tip */}
-              <div className="rounded-lg bg-primary/10 border border-primary/20 p-2.5 sm:p-3 space-y-1">
-                <p className="text-xs sm:text-sm font-semibold text-primary flex items-center gap-1.5">
-                  {t('watchroom.recommendations.guideProTip')}
-                </p>
-                <p className="text-[10px] sm:text-xs text-foreground/80 leading-relaxed">
-                  {t('watchroom.recommendations.guideProTipDesc')}
-                </p>
-              </div>
-            </div>
-
-            {/* Empty state message */}
-            <div className="text-center py-8 sm:py-12 md:py-16 px-3 sm:px-6">
-              <div className="w-14 sm:w-20 md:w-24 h-14 sm:h-20 md:h-24 rounded-2xl bg-linear-to-br from-primary/20 via-primary/10 to-primary/5 mx-auto mb-3 sm:mb-6 md:mb-8 flex items-center justify-center shadow-inner">
-                <TvMinimalPlay className="w-7 sm:w-10 md:w-12 h-7 sm:h-10 md:h-12 text-primary animate-pulse" />
-              </div>
-              <h3 className="text-sm sm:text-lg md:text-xl font-bold text-foreground mb-2 sm:mb-3">
-                {t('watchroom.recommendations.noRecommendations')}
+              
+              <h3 className="text-xl sm:text-2xl md:text-3xl font-bold text-foreground mb-3 sm:mb-4">
+                {isOwner
+                  ? t('watchroom.recommendations.readyToGenerate')
+                  : t('watchroom.recommendations.waitingForOwner')}
               </h3>
-              <p className="text-[11px] sm:text-sm md:text-base text-muted-foreground max-w-lg mx-auto leading-relaxed">
+              
+              <p className="text-sm sm:text-base md:text-lg text-muted-foreground max-w-2xl mx-auto mb-6 sm:mb-8 leading-relaxed">
                 {isOwner ? (
-                  participantCount < 2 ? (
-                    <>
-                      {t('watchroom.recommendations.inviteMore')}{' '}
-                      <button
-                        onClick={onCopyLink}
-                        className="text-primary hover:text-primary/80 underline underline-offset-2 font-semibold transition-colors inline-flex items-center gap-1"
-                      >
-                        {t('watchroom.recommendations.copyInvite')}
-                      </button>
-                    </>
-                  ) : (
-                    t('watchroom.recommendations.clickGenerate')
-                  )
+                  t('watchroom.recommendations.clickGenerateDesc')
                 ) : (
-                  t('watchroom.recommendations.ownerGenerates')
+                  t('watchroom.recommendations.ownerWillGenerate')
                 )}
               </p>
+
+              {isOwner && (
+                <div className="inline-flex items-center gap-2 px-5 py-3 rounded-lg bg-primary/10 border border-primary/20">
+                  <Sparkles className="w-5 h-5 text-primary" />
+                  <p className="text-sm sm:text-base font-medium text-foreground">
+                    {t('watchroom.recommendations.useButtonAbove')}
+                  </p>
+                </div>
+              )}
+
+              {participantCount < 2 && (
+                <p className="text-xs sm:text-sm text-muted-foreground mt-4">
+                  {t('watchroom.recommendations.inviteOptional')}
+                </p>
+              )}
             </div>
+
+            {/* Rating Guide - closable */}
+            {!isGuideDismissed && (
+              <div className="rounded-lg border-2 border-primary/20 bg-linear-to-br from-primary/5 via-primary/3 to-background p-4 sm:p-5 space-y-3 sm:space-y-4 relative">
+                <Button
+                  onClick={handleDismissGuide}
+                  variant="ghost"
+                  size="icon"
+                  className="absolute top-3 right-3 sm:top-4 sm:right-4 h-8 w-8"
+                  aria-label="Dismiss guide"
+                >
+                  <X className="w-4 h-4" />
+                </Button>
+                <div className="space-y-1.5">
+                  <h4 className="text-sm sm:text-base font-bold text-foreground flex items-center gap-2">
+                    {t('watchroom.recommendations.guideTitle')}
+                  </h4>
+                  <p className="text-[11px] sm:text-xs text-muted-foreground">
+                    {t('watchroom.recommendations.guideSubtitle')}
+                  </p>
+                </div>
+
+                <div className="grid gap-2.5 sm:gap-3">
+                  {/* Love Action */}
+                  <div className="flex items-start gap-2.5 sm:gap-3 p-2.5 sm:p-3 rounded-lg bg-background/60 border border-muted">
+                    <span className="text-lg sm:text-xl shrink-0 mt-0.5">❤️</span>
+                    <div className="space-y-0.5">
+                      <p className="text-xs sm:text-sm font-semibold text-foreground">
+                        {t('watchroom.recommendations.guideLoveTitle')}
+                      </p>
+                      <p className="text-[10px] sm:text-xs text-muted-foreground leading-relaxed">
+                        {t('watchroom.recommendations.guideLoveDesc')}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Like Action */}
+                  <div className="flex items-start gap-2.5 sm:gap-3 p-2.5 sm:p-3 rounded-lg bg-background/60 border border-muted">
+                    <span className="text-lg sm:text-xl shrink-0 mt-0.5">👍</span>
+                    <div className="space-y-0.5">
+                      <p className="text-xs sm:text-sm font-semibold text-foreground">
+                        {t('watchroom.recommendations.guideLikeTitle')}
+                      </p>
+                      <p className="text-[10px] sm:text-xs text-muted-foreground leading-relaxed">
+                        {t('watchroom.recommendations.guideLikeDesc')}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Dislike Action */}
+                  <div className="flex items-start gap-2.5 sm:gap-3 p-2.5 sm:p-3 rounded-lg bg-background/60 border border-muted">
+                    <span className="text-lg sm:text-xl shrink-0 mt-0.5">👎</span>
+                    <div className="space-y-0.5">
+                      <p className="text-xs sm:text-sm font-semibold text-foreground">
+                        {t('watchroom.recommendations.guideDislikeTitle')}
+                      </p>
+                      <p className="text-[10px] sm:text-xs text-muted-foreground leading-relaxed">
+                        {t('watchroom.recommendations.guideDislikeDesc')}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Watchlist Action */}
+                  <div className="flex items-start gap-2.5 sm:gap-3 p-2.5 sm:p-3 rounded-lg bg-background/60 border border-muted">
+                    <span className="text-lg sm:text-xl shrink-0 mt-0.5">🎬</span>
+                    <div className="space-y-0.5">
+                      <p className="text-xs sm:text-sm font-semibold text-foreground">
+                        {t('watchroom.recommendations.guideWatchlistTitle')}
+                      </p>
+                      <p className="text-[10px] sm:text-xs text-muted-foreground leading-relaxed">
+                        {t('watchroom.recommendations.guideWatchlistDesc')}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Not Interested Action */}
+                  <div className="flex items-start gap-2.5 sm:gap-3 p-2.5 sm:p-3 rounded-lg bg-background/60 border border-muted">
+                    <span className="text-lg sm:text-xl shrink-0 mt-0.5">⏭️</span>
+                    <div className="space-y-0.5">
+                      <p className="text-xs sm:text-sm font-semibold text-foreground">
+                        {t('watchroom.recommendations.guideNotInterestedTitle')}
+                      </p>
+                      <p className="text-[10px] sm:text-xs text-muted-foreground leading-relaxed">
+                        {t('watchroom.recommendations.guideNotInterestedDesc')}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Pro Tip */}
+                <div className="rounded-lg bg-primary/10 border border-primary/20 p-2.5 sm:p-3 space-y-1">
+                  <p className="text-xs sm:text-sm font-semibold text-primary flex items-center gap-1.5">
+                    {t('watchroom.recommendations.guideProTip')}
+                  </p>
+                  <p className="text-[10px] sm:text-xs text-foreground/80 leading-relaxed">
+                    {t('watchroom.recommendations.guideProTipDesc')}
+                  </p>
+                </div>
+              </div>
+            )}
           </div>
         ) : (
           <div className="space-y-3 sm:space-y-4">
@@ -522,75 +504,6 @@ export function RecommendationsSection({
                   onAddRating={(seriesTmdbId) => handleAddRating(seriesTmdbId, recommendation.id)}
                 />
               ))}
-            </div>
-
-            {/* Compact Rating Guide - shown below recommendations */}
-            <div className="rounded-lg border-2 border-primary/20 bg-linear-to-br from-primary/5 via-primary/3 to-background p-3 sm:p-4 space-y-2.5 sm:space-y-3">
-              <div className="flex items-start gap-2">
-                <Info className="w-4 sm:w-4.5 h-4 sm:h-4.5 text-primary shrink-0 mt-0.5" />
-                <div className="space-y-1.5">
-                  <h4 className="text-xs sm:text-sm font-bold text-foreground">
-                    {t('watchroom.recommendations.guideTitle')}
-                  </h4>
-                  <p className="text-[10px] sm:text-xs text-muted-foreground">
-                    {t('watchroom.recommendations.guideSubtitle')}
-                  </p>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                {/* Love/Like/Dislike */}
-                <div className="flex items-start gap-2 p-2 rounded-lg bg-background/60 border border-muted">
-                  <span className="text-base shrink-0">❤️👍👎</span>
-                  <div className="space-y-0.5">
-                    <p className="text-[10px] sm:text-xs font-semibold text-foreground">
-                      {t('watchroom.recommendations.guideLoveTitle')} / {t('watchroom.recommendations.guideLikeTitle')}{' '}
-                      / {t('watchroom.recommendations.guideDislikeTitle')}
-                    </p>
-                    <p className="text-[9px] sm:text-[10px] text-muted-foreground leading-relaxed">
-                      {t('watchroom.recommendations.guideLoveDesc')}
-                    </p>
-                  </div>
-                </div>
-
-                {/* Watchlist */}
-                <div className="flex items-start gap-2 p-2 rounded-lg bg-background/60 border border-muted">
-                  <span className="text-base shrink-0">
-                    <EyeIcon className="w-5 h-5" />
-                  </span>
-                  <div className="space-y-0.5">
-                    <p className="text-[10px] sm:text-xs font-semibold text-foreground">
-                      {t('watchroom.recommendations.guideWatchlistTitle')}
-                    </p>
-                    <p className="text-[9px] sm:text-[10px] text-muted-foreground leading-relaxed">
-                      {t('watchroom.recommendations.guideWatchlistDesc')}
-                    </p>
-                  </div>
-                </div>
-
-                {/* Not Interested */}
-                <div className="flex items-start gap-2 p-2 rounded-lg bg-background/60 border border-muted sm:col-span-2">
-                  <span className="text-base shrink-0">⏭️</span>
-                  <div className="space-y-0.5">
-                    <p className="text-[10px] sm:text-xs font-semibold text-foreground">
-                      {t('watchroom.recommendations.guideNotInterestedTitle')}
-                    </p>
-                    <p className="text-[9px] sm:text-[10px] text-muted-foreground leading-relaxed">
-                      {t('watchroom.recommendations.guideNotInterestedDesc')}
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Pro Tip */}
-              <div className="rounded-lg bg-primary/10 border border-primary/20 p-2 sm:p-2.5 space-y-0.5">
-                <p className="text-[10px] sm:text-xs font-semibold text-primary flex items-center gap-1">
-                  {t('watchroom.recommendations.guideProTip')}
-                </p>
-                <p className="text-[9px] sm:text-[10px] text-foreground/80 leading-relaxed">
-                  {t('watchroom.recommendations.guideProTipDesc')}
-                </p>
-              </div>
             </div>
 
             {/* Feedback Form */}

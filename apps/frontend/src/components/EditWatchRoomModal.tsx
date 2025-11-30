@@ -63,11 +63,27 @@ export function EditWatchRoomModal({
 
   async function onSubmit(values: FormValues) {
     try {
-      await updateWatchroom(watchroomId, {
-        name: values.name,
-        description: values.description || undefined,
-        seriesLengthPreference: values.seriesLengthPreference,
-      });
+      const updates: Partial<FormValues> = {};
+
+      if (values.name !== currentName) {
+        updates.name = values.name;
+      }
+
+      if (values.description !== (currentDescription || '')) {
+        updates.description = values.description;
+      }
+
+      if (values.seriesLengthPreference !== (currentSeriesLengthPreference || 'all')) {
+        updates.seriesLengthPreference = values.seriesLengthPreference;
+      }
+
+      if (Object.keys(updates).length === 0) {
+        toast.info(t('watchroom.noChanges'));
+        setOpen(false);
+        return;
+      }
+
+      await updateWatchroom(watchroomId, updates);
 
       toast.success(t('watchroom.updateSuccess'));
       setOpen(false);

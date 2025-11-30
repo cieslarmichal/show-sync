@@ -102,9 +102,9 @@ export default function WatchRoomDetailsPage() {
           <span className="inline sm:hidden">{t('common.back')}</span>
         </Button>
 
-        <div className="grid grid-cols-1 lg:grid-cols-[380px,1fr] gap-4 lg:gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-[420px,1fr] gap-5 lg:gap-8">
           {/* Left Sidebar - Room Info & Participants */}
-          <div className="space-y-3 lg:space-y-4">
+          <div className="space-y-4 lg:space-y-5">
             <RoomInfoCard
               room={room}
               isOwner={isOwner}
@@ -123,7 +123,6 @@ export default function WatchRoomDetailsPage() {
                 watchroomId={watchroomId}
                 isOwner={isOwner}
                 participantCount={room.participants.length}
-                onCopyLink={handleCopyLink}
               />
             </div>
           )}
