@@ -1,4 +1,5 @@
 import { useState, useEffect, useContext } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { toast } from 'sonner';
 import { Heart, ThumbsUp, ThumbsDown } from 'lucide-react';
 import SearchSeries from '../components/SearchSeries.tsx';
@@ -17,6 +18,7 @@ import { useSEO } from '../hooks/useSEO';
 
 export default function SeriesPage() {
   const { t } = useTranslation();
+  const [searchParams, setSearchParams] = useSearchParams();
 
   useSEO('series');
 
@@ -25,7 +27,12 @@ export default function SeriesPage() {
   const [watchlistSeriesIds, setWatchlistSeriesIds] = useState<Set<number>>(new Set());
   const [myRatings, setMyRatings] = useState<SeriesRating[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [ratingFilter, setRatingFilter] = useState<'all' | Rating>('all');
+  
+  // Initialize ratingFilter from URL or default to 'all'
+  const initialFilter = searchParams.get('filter') as 'all' | Rating | null;
+  const [ratingFilter, setRatingFilter] = useState<'all' | Rating>(
+    initialFilter && ['all', 'love', 'like', 'dislike'].includes(initialFilter) ? initialFilter : 'all'
+  );
   const [lovedCount, setLovedCount] = useState(0);
   const [likedCount, setLikedCount] = useState(0);
   const [dislikedCount, setDislikedCount] = useState(0);
@@ -252,7 +259,17 @@ export default function SeriesPage() {
 
               <Tabs
                 value={ratingFilter}
-                onValueChange={(value: string) => setRatingFilter(value as 'all' | Rating)}
+                onValueChange={(value: string) => {
+                  const newFilter = value as 'all' | Rating;
+                  setRatingFilter(newFilter);
+                  // Update URL search params
+                  if (newFilter === 'all') {
+                    searchParams.delete('filter');
+                  } else {
+                    searchParams.set('filter', newFilter);
+                  }
+                  setSearchParams(searchParams);
+                }}
                 className="w-full"
               >
                 <TabsList className="mb-8 bg-muted/50 p-1.5 rounded-xl inline-flex">

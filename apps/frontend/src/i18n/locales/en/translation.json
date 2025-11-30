@@ -188,20 +188,17 @@
     "unlockWatchRooms": "Unlock Watch Rooms",
     "unlockWatchRoomsDesc": "Create rooms to get group recommendations and invite others",
     "ratingProgress": {
-      "title": "Build Your Taste Profile",
-      "description": "Rate shows to unlock smarter recommendations",
-      "progress": "Shows Rated",
+      "title": "Build Your Profile",
+      "description": "Rate shows to get better recommendations",
       "startRating": "Start rating shows!",
-      "moreIsBetter": "The more you rate, the better your recommendations",
-      "rateMore": "{{count}} more to reach Good accuracy",
-      "goodUnlocked": "Good! {{count}} more to reach Best accuracy",
-      "bestUnlocked": "Best accuracy unlocked!",
-      "extra": "extra",
-      "unlockLabel": "Unlock Watch Rooms:",
+      "moreIsBetter": "The more you rate, the better recommendations",
       "startButton": "Start Rating Shows",
-      "rateMoreButton": "Rate More Shows",
-      "milestoneGood": "Good",
-      "milestoneBest": "Best"
+      "rateMoreButton": "Rate More Shows"
+    },
+    "stats": {
+      "rated": "Rated",
+      "loved": "Loved",
+      "liked": "Liked"
     },
     "watchroom": {
       "title": "Your Watch Rooms",

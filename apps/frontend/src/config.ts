@@ -17,10 +17,7 @@ const appConfig = {
   },
   series: {
     minRatedShowsToCreateWatchRoom: 3,
-    // Accuracy tiers for recommendations
-    basicAccuracy: 3, // Minimum to get recommendations
     goodAccuracy: 8, // Good quality matches
-    maxAccuracy: 15, // Best possible matches
   },
 };
 
@@ -34,9 +31,7 @@ const configSchema = z.object({
   }),
   series: z.object({
     minRatedShowsToCreateWatchRoom: z.number().min(1),
-    basicAccuracy: z.number().min(1),
     goodAccuracy: z.number().min(1),
-    maxAccuracy: z.number().min(1),
   }),
 });
 

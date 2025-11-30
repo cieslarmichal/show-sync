@@ -14,8 +14,7 @@ import {
   DialogTitle,
 } from '../components/ui/Dialog';
 import { Skeleton } from '../components/ui/Skeleton';
-import { Progress } from '../components/ui/Progress';
-import { Heart, Lock, Sparkles, Users, Lightbulb } from 'lucide-react';
+import { Heart, Lock, Sparkles, Users, ThumbsUp } from 'lucide-react';
 import { config } from '../config';
 import { useSEO } from '../hooks/useSEO';
 import { QuickStartModal } from '../components/onboarding/QuickStartModal';
@@ -27,7 +26,7 @@ export default function DashboardPage() {
   useSEO('dashboard');
 
   const { userData, userDataInitialized } = useContext(AuthContext);
-  const { totalCount } = useContext(SeriesContext);
+  const { totalCount, lovedCount, likedCount } = useContext(SeriesContext);
   const navigate = useNavigate();
   const [lockedDialogOpen, setLockedDialogOpen] = useState(false);
   const [quickStartOpen, setQuickStartOpen] = useState(false);
@@ -58,20 +57,6 @@ export default function DashboardPage() {
   };
 
   const canCreateRoom = totalCount >= config.series.minRatedShowsToCreateWatchRoom;
-
-  // Progress milestones for visual markers
-  const progressMilestones = [
-    {
-      value: config.series.goodAccuracy,
-      label: t('dashboard.ratingProgress.milestoneGood'),
-      color: 'bg-gradient-to-r from-violet-500 to-purple-400',
-    },
-    {
-      value: config.series.maxAccuracy,
-      label: t('dashboard.ratingProgress.milestoneBest'),
-      color: 'bg-gradient-to-r from-emerald-500 to-emerald-400',
-    },
-  ];
 
   // Lightweight, card-level skeletons while data initializes (keeps layout stable)
   const renderSkeletons = () => (
@@ -164,29 +149,70 @@ export default function DashboardPage() {
                       </div>
                     </CardHeader>
                     <CardContent className="grow space-y-6">
-                      {/* Progress Bar Section */}
-                      <div className="space-y-3">
-                        <div className="flex items-center justify-between">
-                          <div className="text-sm font-semibold text-foreground">
-                            {t('dashboard.ratingProgress.progress')}
+                      {/* Statistics Cards */}
+                      {totalCount > 0 ? (
+                        <div className="grid grid-cols-3 gap-3">
+                          <button
+                            onClick={() => navigate('/series')}
+                            className="p-4 rounded-xl bg-muted/50 hover:bg-muted transition-all hover:scale-105 active:scale-95 cursor-pointer group border border-transparent hover:border-primary/20"
+                          >
+                            <div className="text-center space-y-1">
+                              <div className="text-2xl font-bold text-foreground group-hover:text-primary transition-colors">
+                                {totalCount}
+                              </div>
+                              <div className="text-xs text-muted-foreground font-medium">
+                                {t('dashboard.stats.rated')}
+                              </div>
+                            </div>
+                          </button>
+                          <button
+                            onClick={() => navigate('/series?filter=love')}
+                            className="p-4 rounded-xl bg-red-50 dark:bg-red-950/20 hover:bg-red-100 dark:hover:bg-red-950/30 transition-all hover:scale-105 active:scale-95 cursor-pointer group border border-red-200/50 dark:border-red-900/50 hover:border-red-300 dark:hover:border-red-800"
+                          >
+                            <div className="text-center space-y-1">
+                              <div className="flex items-center justify-center gap-1">
+                                <Heart className="w-4 h-4 text-red-500 fill-red-500" />
+                                <div className="text-2xl font-bold text-red-600 dark:text-red-400">
+                                  {lovedCount}
+                                </div>
+                              </div>
+                              <div className="text-xs text-red-600 dark:text-red-400 font-medium">
+                                {t('dashboard.stats.loved')}
+                              </div>
+                            </div>
+                          </button>
+                          <button
+                            onClick={() => navigate('/series?filter=like')}
+                            className="p-4 rounded-xl bg-emerald-50 dark:bg-emerald-950/20 hover:bg-emerald-100 dark:hover:bg-emerald-950/30 transition-all hover:scale-105 active:scale-95 cursor-pointer group border border-emerald-200/50 dark:border-emerald-900/50 hover:border-emerald-300 dark:hover:border-emerald-800"
+                          >
+                            <div className="text-center space-y-1">
+                              <div className="flex items-center justify-center gap-1">
+                                <ThumbsUp className="w-4 h-4 text-emerald-500 fill-emerald-500" />
+                                <div className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">
+                                  {likedCount}
+                                </div>
+                              </div>
+                              <div className="text-xs text-emerald-600 dark:text-emerald-400 font-medium">
+                                {t('dashboard.stats.liked')}
+                              </div>
+                            </div>
+                          </button>
+                        </div>
+                      ) : (
+                        <div className="text-center py-8 space-y-3">
+                          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary/10">
+                            <Heart className="w-8 h-8 text-primary" />
                           </div>
-                          <div className="text-sm font-bold text-primary">
-                            {totalCount}/{config.series.maxAccuracy}
+                          <div>
+                            <p className="text-sm font-medium text-foreground mb-1">
+                              {t('dashboard.ratingProgress.startRating')}
+                            </p>
+                            <p className="text-xs text-muted-foreground">
+                              {t('dashboard.ratingProgress.moreIsBetter')}
+                            </p>
                           </div>
                         </div>
-                        <Progress
-                          value={totalCount}
-                          max={config.series.maxAccuracy}
-                          milestones={progressMilestones}
-                          showMilestones={true}
-                          className="my-2"
-                        />
-                        {totalCount === 0 && (
-                          <p className="text-xs text-center text-muted-foreground pt-2">
-                            {t('dashboard.ratingProgress.moreIsBetter')}
-                          </p>
-                        )}
-                      </div>
+                      )}
                     </CardContent>
                     <CardFooter className="flex flex-col gap-2">
                       <Button
@@ -265,7 +291,7 @@ export default function DashboardPage() {
                         </div>
                         <div className="flex items-start gap-3 group">
                           <div className="p-1.5 bg-primary/10 rounded-lg shrink-0 mt-0.5 group-hover:bg-primary/15 transition-colors">
-                            <Lightbulb className="w-4 h-4 text-primary" />
+                            <ThumbsUp className="w-4 h-4 text-primary" />
                           </div>
                           <div className="flex-1 min-w-0">
                             <p className="text-sm text-foreground font-semibold leading-snug mb-1">

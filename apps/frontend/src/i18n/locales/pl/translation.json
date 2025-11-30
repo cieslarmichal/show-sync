@@ -190,18 +190,15 @@
     "ratingProgress": {
       "title": "Zbuduj swój profil",
       "description": "Oceń seriale, aby otrzymywać lepsze rekomendacje",
-      "progress": "Ocenionych seriali",
       "startRating": "Zacznij oceniać seriale!",
       "moreIsBetter": "Im więcej ocenisz, tym lepsze rekomendacje",
-      "rateMore": "Jeszcze {{count}}, aby osiągnąć dobrą dokładność",
-      "goodUnlocked": "Dobrze! Jeszcze {{count}}, aby osiągnąć najlepszą dokładność",
-      "bestUnlocked": "Najlepsza dokładność odblokowana!",
-      "extra": "dodatkowe",
-      "unlockLabel": "Odblokuj pokoje oglądania:",
       "startButton": "Zacznij oceniać seriale",
-      "rateMoreButton": "Oceń więcej seriali",
-      "milestoneGood": "Dobrze",
-      "milestoneBest": "Najlepiej"
+      "rateMoreButton": "Oceń więcej seriali"
+    },
+    "stats": {
+      "rated": "Ocenionych",
+      "loved": "Ulubionych",
+      "liked": "Lubianych"
     },
     "watchroom": {
       "title": "Twoje pokoje oglądania",
