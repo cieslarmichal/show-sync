@@ -42,7 +42,7 @@ describe('Footer', () => {
   it('should render app description', () => {
     renderFooter();
 
-    expect(screen.getByText(/Find Your Next Favorite Show/i)).toBeInTheDocument();
+    expect(screen.getByText(/Discover Your Next Favorite Series/i)).toBeInTheDocument();
   });
 
   it('should render contact section', () => {

@@ -50,8 +50,8 @@
     "hero": {
       "title": "Koniec z przewijaniem",
       "titleHighlight": "Seriale, które pokochasz",
-      "subtitle": "Otrzymuj rekomendacje AI dopasowane do Twojego gustu. Oceń 5 seriali, otrzymuj rekomendacje w 2 minuty.",
-      "badge1": "100% darmowe na zawsze",
+      "subtitle": "Otrzymuj rekomendacje AI dopasowane do Twojego gustu. Oceń 5 seriali i zacznij w 2 minuty.",
+      "badge1": "100% Darmowe Na Zawsze",
       "badge2": "Dla Ciebie i grup",
       "badge3": "Bez ukrytych kosztów",
       "cta": "Rozpocznij za darmo",
@@ -59,24 +59,24 @@
     },
     "perfectForEveryone": {
       "title": "Idealne dla Wszystkich",
-      "subtitle": "Czy oglądasz sam, czy ze znajomymi"
+      "subtitle": "Niezależnie czy oglądasz sam, czy ze znajomymi"
     },
     "benefits": {
       "forYouTitle": "Dla Ciebie",
       "forYouBenefit1": "Otrzymuj spersonalizowane rekomendacje AI natychmiast",
-      "forYouBenefit2": "Śledź, co chcesz obejrzeć następne",
+      "forYouBenefit2": "Śledź, co chcesz obejrzeć następnym",
       "forYouBenefit3": "Odkrywaj seriale, których sam byś nie znalazł",
       "forYouBenefit4": "Nigdy więcej nie marnuj czasu na przewijanie",
       "forGroupsTitle": "Dla Grup",
-      "forGroupsBenefit1": "Znajdź seriale, które spodoba się wszystkim",
-      "forGroupsBenefit2": "Twórz pokoje oglądania w sekundy",
+      "forGroupsBenefit1": "Znajdź seriale, które spodobają się wszystkim",
+      "forGroupsBenefit2": "Twórz pokoje oglądania w kilka sekund",
       "forGroupsBenefit3": "AI idealnie równoważy gusta wszystkich",
       "forGroupsBenefit4": "Koniec z pytaniem 'co obejrzymy' na zawsze"
     },
     "howItWorks": {
       "title": "Jak to działa",
       "subtitle": "Trzy proste kroki do idealnych rekomendacji",
-      "step1Title": "Oceń seriale",
+      "step1Title": "Oceń 5-10 seriali",
       "step1Desc": "Zajmie to mniej niż 2 minuty. Po prostu oceń seriale jako: uwielbiam, lubię lub nie lubię. To wszystko.",
       "step2Title": "Otrzymaj Rekomendacje",
       "step2Desc": "Przeglądaj spersonalizowane sugestie tylko dla Ciebie, lub stwórz pokój ze znajomymi, aby otrzymać rekomendacje AI dopasowane do gustu całej grupy.",
@@ -91,7 +91,7 @@
       "customPrefsTitle": "Powiedz AI czego szukasz",
       "customPrefsDesc": "Opisz swój nastrój, preferowane gatunki lub motywy w ustawieniach pokoju. AI dostosuje rekomendacje do Twoich konkretnych życzyń — bez sztywnych filtrów, tylko naturalna rozmowa.",
       "groupsTitle": "Sam lub ze znajomymi",
-      "groupsDesc": "Śledź swoją osobistą listę i twórz pokoje, aby znaleźć seriale, które spodoba się całej grupie.",
+      "groupsDesc": "Śledź swoją osobistą listę i twórz pokoje, aby znaleźć seriale, które spodobają się całej grupie.",
       "timeTitle": "Przestań marnować czas",
       "timeDesc": "Koniec z niekończącym się przewijaniem i dyskusjami. Otrzymaj rekomendacje AI, które równoważą gusta wszystkich w sekundę.",
       "noCompromiseTitle": "Wygeneruj ponownie kiedy chcesz",
@@ -99,16 +99,16 @@
     },
     "cta": {
       "title": "Znajdź swój kolejny ulubiony serial w 2 minuty",
-      "description": "Dołącz do pierwszych użytkowników, którzy przestali marnować czas na przewijanie i zaczęli oglądać seriale, które naprawdę kochają. W 100% darmowe na zawsze — bez sztuczek, bez planów premium.",
+      "description": "Dołącz do pierwszych użytkowników, którzy przestali marnować czas na przewijanie i zaczęli oglądać seriale, które naprawdę kochają.",
       "button": "Rozpocznij za darmo",
-      "noCreditCard": "Bez karty kredytowej • Bez planów premium • Darmowe na zawsze"
+      "noCreditCard": "100% darmowe — bez planów premium, wszystkie funkcje dostępne"
     },
     "problemStatement": {
       "title": "Paradoks streamingu",
       "solo": "18 minut zmarnowanych",
       "soloDesc": "na decyzję, co obejrzeć zamiast samego oglądania",
-      "groups": "Niekończące dyskusje",
-      "groupsDesc": "'Co obejrzymy?' pytane 47 razy miesięcznie",
+      "groups": "Niekończące się dyskusje",
+      "groupsDesc": "Co obejrzymy? — pytanie zadawane 47 razy miesięcznie",
       "everyone": "Przeładowanie wyborem",
       "everyoneDesc": "Przeciętny użytkownik przegląda 400+ tytułów przed decyzją"
     },
@@ -131,8 +131,8 @@
     },
     "ctaExtras": {
       "setup": "Konfiguracja w 2 minuty",
-      "noCard": "Bez karty kredytowej",
-      "cancel": "Anuluj w dowolnym momencie"
+      "noCard": "Pełny dostęp",
+      "cancel": "Zawsze darmowe"
     },
     "socialProof": {
       "activeUsers": "Użytkownicy Early Access",
@@ -742,7 +742,7 @@
     "goDashboard": "Przejdź do panelu"
   },
   "footer": {
-    "tagline": "Znajdź swój następny ulubiony serial",
+    "tagline": "Odkryj swój następny ulubiony serial",
     "madeWith": "Stworzone z",
     "by": "przez",
     "navigation": "Nawigacja",

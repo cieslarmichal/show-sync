@@ -50,7 +50,7 @@
     "hero": {
       "title": "Stop Endless Scrolling",
       "titleHighlight": "Find Shows You'll Love",
-      "subtitle": "Get AI recommendations that actually match your taste. Rate 5 shows, get personalized suggestions in 2 minutes.",
+      "subtitle": "Get AI recommendations that actually match your taste. Rate 5 shows and get started in 2 minutes.",
       "badge1": "100% Free Forever",
       "badge2": "For you & groups",
       "badge3": "No hidden costs",
@@ -99,9 +99,9 @@
     },
     "cta": {
       "title": "Find Your Next Favorite Show in 2 Minutes",
-      "description": "Join early adopters who stopped wasting time scrolling and started watching shows they actually love. 100% free forever — no tricks, no premium tiers.",
+      "description": "Join early adopters who stopped wasting time scrolling and started watching shows they actually love.",
       "button": "Get Started Free",
-      "noCreditCard": "No credit card • No premium plans • Free forever"
+      "noCreditCard": "100% free — no premium plans, all features available"
     },
     "problemStatement": {
       "title": "The Streaming Paradox",
@@ -131,7 +131,7 @@
     },
     "ctaExtras": {
       "setup": "Setup in 2 minutes",
-      "noCard": "No credit card needed",
+      "noCard": "Full access",
       "cancel": "Cancel anytime"
     },
     "socialProof": {
@@ -736,7 +736,7 @@
     "goDashboard": "Go to Dashboard"
   },
   "footer": {
-    "tagline": "Find Your Next Favorite Show",
+    "tagline": "Discover Your Next Favorite Series",
     "madeWith": "Made with",
     "by": "by",
     "navigation": "Navigation",
