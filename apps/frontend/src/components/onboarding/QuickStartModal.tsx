@@ -127,12 +127,19 @@ export function QuickStartModal({ open, onComplete, onSkip }: QuickStartModalPro
     }
   };
 
+  const handleClose = async () => {
+    if (!isSubmitting) {
+      await refreshCounts();
+      onSkip();
+    }
+  };
+
   return (
     <Dialog
       open={open}
       onOpenChange={(isOpen) => {
         if (!isOpen && !isSubmitting) {
-          onSkip();
+          handleClose();
         }
       }}
     >
@@ -300,56 +307,55 @@ function SeriesQuickRateCard({ series, currentRating, onRate, disabled }: Series
           </div>
         )}
 
-        {/* Bottom gradient - always visible */}
-        <div className="absolute inset-x-0 bottom-0 h-24 bg-linear-to-t from-black/80 via-black/50 to-transparent pointer-events-none" />
+        {/* Subtle bottom gradient for button area */}
+        <div className="absolute inset-x-0 bottom-0 h-16 bg-linear-to-t from-black/70 via-black/30 to-transparent pointer-events-none" />
 
-        {/* Overlay with actions - simplified to 2 options */}
-        <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/40 to-transparent opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-all duration-300 flex flex-col items-center justify-end pb-4 sm:pb-5 px-3">
-          <div className="flex gap-2 sm:gap-3 w-full justify-center">
-            <Button
-              size="sm"
-              variant={currentRating === 'love' ? 'default' : 'secondary'}
-              onClick={() => onRate(series.id, 'love')}
+        {/* Netflix-style buttons at bottom */}
+        <div className="absolute inset-x-0 bottom-0 flex items-center justify-center gap-4 pb-2.5 px-2">
+          <Button
+            size="icon"
+            variant="ghost"
+            onClick={() => onRate(series.id, 'love')}
+            disabled={disabled}
+            className={
+              currentRating === 'love'
+                ? 'w-9 h-9 rounded-full bg-white hover:bg-white flex items-center justify-center border-2 border-red-500 shadow-lg transition-transform hover:scale-110 p-0'
+                : 'w-9 h-9 rounded-full bg-black/50 hover:bg-black/70 backdrop-blur-sm flex items-center justify-center border-2 border-white/70 hover:border-white transition-all hover:scale-110 p-0'
+            }
+            title={t('dashboard.quickStart.loveTooltip')}
+            aria-label={t('dashboard.quickStart.loveLabel')}
+          >
+            <Heart
               className={
                 currentRating === 'love'
-                  ? 'h-11 w-11 sm:h-12 sm:w-12 p-0 shrink-0 bg-red-600 hover:bg-red-700 text-white border-2 border-white/30 shadow-lg scale-110 transition-transform'
-                  : 'h-11 w-11 sm:h-12 sm:w-12 p-0 shrink-0 bg-white/90 hover:bg-white text-red-600 border-2 border-white/20 hover:scale-105 transition-transform'
+                  ? 'w-4 h-4 fill-red-500 text-red-500'
+                  : 'w-4 h-4 text-white hover:scale-110 transition-transform'
               }
-              disabled={disabled}
-              title={t('dashboard.quickStart.loveTooltip')}
-              aria-label={t('dashboard.quickStart.loveLabel')}
-            >
-              <Heart
-                className={currentRating === 'love' ? 'w-5 h-5 sm:w-6 sm:h-6 fill-current' : 'w-5 h-5 sm:w-6 sm:h-6'}
-              />
-            </Button>
-            <Button
-              size="sm"
-              variant={currentRating === 'like' ? 'default' : 'secondary'}
-              onClick={() => onRate(series.id, 'like')}
+            />
+          </Button>
+
+          <Button
+            size="icon"
+            variant="ghost"
+            onClick={() => onRate(series.id, 'like')}
+            disabled={disabled}
+            className={
+              currentRating === 'like'
+                ? 'w-9 h-9 rounded-full bg-white hover:bg-white flex items-center justify-center border-2 border-primary shadow-lg transition-transform hover:scale-110 p-0'
+                : 'w-9 h-9 rounded-full bg-black/50 hover:bg-black/70 backdrop-blur-sm flex items-center justify-center border-2 border-white/70 hover:border-white transition-all hover:scale-110 p-0'
+            }
+            title={t('dashboard.quickStart.likeTooltip')}
+            aria-label={t('dashboard.quickStart.likeLabel')}
+          >
+            <ThumbsUp
               className={
                 currentRating === 'like'
-                  ? 'h-11 w-11 sm:h-12 sm:w-12 p-0 shrink-0 bg-primary hover:bg-primary/90 text-white border-2 border-white/30 shadow-lg scale-110 transition-transform'
-                  : 'h-11 w-11 sm:h-12 sm:w-12 p-0 shrink-0 bg-white/90 hover:bg-white text-primary border-2 border-white/20 hover:scale-105 transition-transform'
+                  ? 'w-4 h-4 text-primary'
+                  : 'w-4 h-4 text-white hover:scale-110 transition-transform'
               }
-              disabled={disabled}
-              title={t('dashboard.quickStart.likeTooltip')}
-              aria-label={t('dashboard.quickStart.likeLabel')}
-            >
-              <ThumbsUp className="w-5 h-5 sm:w-6 sm:h-6" />
-            </Button>
-          </div>
+            />
+          </Button>
         </div>
-
-        {/* Current rating badge with animation */}
-        {currentRating && currentRating !== 'dislike' && (
-          <div className="absolute top-2 right-2 bg-linear-to-br from-primary to-primary/80 rounded-full p-2.5 shadow-xl z-10 animate-in zoom-in-50 duration-300">
-            {currentRating === 'love' && (
-              <Heart className="w-4 h-4 sm:w-5 sm:h-5 fill-current text-white drop-shadow" />
-            )}
-            {currentRating === 'like' && <ThumbsUp className="w-4 h-4 sm:w-5 sm:h-5 text-white drop-shadow" />}
-          </div>
-        )}
       </div>
 
       {/* Series title */}

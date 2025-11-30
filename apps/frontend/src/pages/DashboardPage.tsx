@@ -52,6 +52,9 @@ export default function DashboardPage() {
   };
 
   const handleQuickStartSkip = () => {
+    if (userData) {
+      onboardingStorage.markAsCompleted(userData.id);
+    }
     setQuickStartOpen(false);
   };
 
@@ -303,7 +306,7 @@ export default function DashboardPage() {
                         />
                       </div>
                     </CardContent>
-                    <CardFooter>
+                    <CardFooter className="flex flex-col gap-2">
                       <Button
                         className="w-full h-12 font-semibold hover:scale-[1.02] active:scale-[0.98] transition-all shadow-md hover:shadow-lg"
                         size="lg"
@@ -319,6 +322,18 @@ export default function DashboardPage() {
                           t('dashboard.ratingProgress.rateMoreButton')
                         )}
                       </Button>
+                      {totalCount < config.series.minRatedShowsToCreateWatchRoom && (
+                        <Button
+                          variant="outline"
+                          className="w-full"
+                          onClick={() => setQuickStartOpen(true)}
+                        >
+                          <span className="flex items-center gap-2">
+                            <Sparkles className="w-4 h-4" />
+                            {t('dashboard.quickStart.title')}
+                          </span>
+                        </Button>
+                      )}
                     </CardFooter>
                   </Card>
 
