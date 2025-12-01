@@ -159,6 +159,9 @@
   },
   "dashboard": {
     "title": "Twój panel",
+    "welcome": {
+      "greeting": "Witaj, {{name}}"
+    },
     "ratingProgressTitle": "Zbuduj swój profil",
     "ratingProgressSubtitle": "Oceń seriale, aby otrzymywać lepsze rekomendacje",
     "showsRated": "Ocenionych seriali",
@@ -193,16 +196,28 @@
       "startRating": "Zacznij oceniać seriale!",
       "moreIsBetter": "Im więcej ocenisz, tym lepsze rekomendacje",
       "startButton": "Zacznij oceniać seriale",
-      "rateMoreButton": "Oceń więcej seriali"
+      "rateMoreButton": "Oceń więcej seriali",
+      "emptyDescription": "Oceń {{count}} seriale, aby odblokować pokoje i rekomendacje"
     },
     "stats": {
       "rated": "Ocenionych",
-      "loved": "Ulubionych",
-      "liked": "Lubianych"
+      "loved": "ulubionych",
+      "liked": "lubianych"
+    },
+    "profileQuality": {
+      "progress": "Postęp profilu",
+      "motivation": "Oceń jeszcze {{count}}, aby osiągnąć doskonałą jakość",
+      "excellent": "Doskonała jakość profilu",
+      "totalRated": "{{count}} ocenionych seriali razem"
     },
     "watchroom": {
       "title": "Twoje pokoje oglądania",
       "description": "Generuj rekomendacje AI dla siebie lub z przyjaciółmi",
+      "simpleDescription": "Stwórz pokój i znajdź idealny serial dla siebie lub grupy - AI dopasuje rekomendacje do gustów wszystkich",
+      "progress": "Do odblokowania",
+      "rateMoreButton": "Oceń jeszcze {{count}} seriali",
+      "unlockHint": "Oceń jeszcze {{count}}, aby odblokować",
+      "getStarted": "Oceń 3 seriale, aby odblokować pokoje",
       "feature1Title": "Rekomendacje AI",
       "feature1Desc": "Pokoje generują spersonalizowane sugestie na podstawie gustów wszystkich członków",
       "feature2Title": "Dla Ciebie lub grupy",
@@ -211,17 +226,10 @@
       "feature3Desc": "Otrzymaj rekomendacje w kilka sekund - bez przewijania i debatowania",
       "createButton": "Stwórz pokój oglądania"
     },
-    "lockedDialog": {
-      "title": "Odblokuj pokoje oglądania",
-      "description": "Twórz pokoje, aby otrzymywać grupowe rekomendacje",
-      "rateShowsMessage": "Oceń co najmniej {{count}} seriali, aby odblokować tworzenie pokoi:",
-      "tip": "Wskazówka:",
-      "tipMessage": "Ocenienie co najmniej {{count}} seriali odblokowuje dokładniejsze rekomendacje!",
-      "later": "Może później",
-      "rateNow": "Zacznij oceniać"
-    },
     "quickStart": {
       "title": "Szybki start: Oceń kilka seriali",
+      "link": "Potrzebujesz pomocy? Szybki start",
+      "linkSimple": "Szybki start",
       "instruction": "Wybierz ocenę dla każdego serialu - pomożemy Ci znaleźć idealne dopasowania!",
       "description": "Pomóż nam zrozumieć Twój gust. Oceń co najmniej {{count}} seriali, aby odblokować pokoje oglądania!",
       "progress": "{{current}}/{{max}} ocenionych",

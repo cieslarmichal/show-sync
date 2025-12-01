@@ -5,16 +5,8 @@ import { SeriesContext } from '../context/SeriesContext';
 import { Button } from '../components/ui/Button';
 import { useTranslation } from 'react-i18next';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '../components/ui/Card';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from '../components/ui/Dialog';
 import { Skeleton } from '../components/ui/Skeleton';
-import { Heart, Lock, Sparkles, Users, ThumbsUp } from 'lucide-react';
+import { Heart, Sparkles, Users, ThumbsUp } from 'lucide-react';
 import { config } from '../config';
 import { useSEO } from '../hooks/useSEO';
 import { QuickStartModal } from '../components/onboarding/QuickStartModal';
@@ -28,7 +20,6 @@ export default function DashboardPage() {
   const { userData, userDataInitialized } = useContext(AuthContext);
   const { totalCount, lovedCount, likedCount } = useContext(SeriesContext);
   const navigate = useNavigate();
-  const [lockedDialogOpen, setLockedDialogOpen] = useState(false);
   const [quickStartOpen, setQuickStartOpen] = useState(false);
 
   // Show QuickStart modal when appropriate
@@ -116,24 +107,26 @@ export default function DashboardPage() {
       <div className="min-h-screen bg-background">
         <div className="relative overflow-hidden">
           {/* Subtle grid background */}
-          <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808008_1px,transparent_1px),linear-gradient(to_bottom,#80808008_1px,transparent_1px)] bg-size-[4rem_4rem]" />
+          <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808002_1px,transparent_1px),linear-gradient(to_bottom,#80808002_1px,transparent_1px)] bg-size-[4rem_4rem]" />
 
           <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-20">
-            <div className="animate-fade-in space-y-12">
-              {/* Welcome Section */}
-              <div className="text-center space-y-4">
-                <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-foreground mb-4 tracking-tight leading-[1.1]">
-                  {t('dashboard.title')}
-                </h1>
-              </div>
+            <div className="animate-fade-in space-y-8">
+              {/* Welcome Header */}
+              {userDataInitialized && userData && (
+                <div className="text-center">
+                  <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground tracking-tight">
+                    {t('dashboard.welcome.greeting', { name: userData.name })}
+                  </h1>
+                </div>
+              )}
 
               {/* Main Actions Section */}
               {userDataInitialized ? (
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8 mt-15">
+                <div className="max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
                   {/* Card 1: Your Profile / Match Power */}
-                  <Card className="flex flex-col h-full border-2 hover:border-primary/50 transition-all duration-300 hover:shadow-xl hover:-translate-y-0.5">
+                  <Card className="flex flex-col h-full border border-border shadow-sm">
                     <CardHeader>
-                      <div className="flex items-center gap-4">
+                      <div className="flex items-center gap-4 pb-2">
                         <div className="p-3 bg-primary/10 rounded-lg">
                           <Heart
                             className="h-6 w-6 text-primary"
@@ -149,74 +142,72 @@ export default function DashboardPage() {
                       </div>
                     </CardHeader>
                     <CardContent className="grow space-y-6">
-                      {/* Statistics Cards */}
                       {totalCount > 0 ? (
-                        <div className="grid grid-cols-3 gap-3">
-                          <button
-                            onClick={() => navigate('/series')}
-                            className="p-4 rounded-xl bg-muted/50 hover:bg-muted transition-all hover:scale-105 active:scale-95 cursor-pointer group border border-transparent hover:border-primary/20"
-                          >
-                            <div className="text-center space-y-1">
-                              <div className="text-2xl font-bold text-foreground group-hover:text-primary transition-colors">
-                                {totalCount}
+                        totalCount < config.series.goodAccuracy ? (
+                          /* Progress to good quality */
+                          <div className="p-4 rounded-xl bg-muted/30 border border-border">
+                            <div className="space-y-4">
+                              <div className="flex items-center justify-between">
+                                <span className="text-sm font-medium text-foreground">
+                                  {t('dashboard.profileQuality.progress')}
+                                </span>
+                                <span className="text-lg font-bold text-primary">
+                                  {totalCount}/{config.series.goodAccuracy}
+                                </span>
                               </div>
-                              <div className="text-xs text-muted-foreground font-medium">
-                                {t('dashboard.stats.rated')}
+                              <div className="w-full bg-muted/50 rounded-full h-3 overflow-hidden shadow-inner">
+                                <div
+                                  className="h-full bg-linear-to-r from-primary to-primary/80 transition-all duration-700 ease-out rounded-full shadow-sm"
+                                  style={{ width: `${(totalCount / config.series.goodAccuracy) * 100}%` }}
+                                />
+                              </div>
+                              <p className="text-xs text-muted-foreground text-center">
+                                {t('dashboard.profileQuality.motivation', {
+                                  count: config.series.goodAccuracy - totalCount,
+                                })}
+                              </p>
+                            </div>
+                          </div>
+                        ) : (
+                          /* Achievement unlocked - elegant stats display */
+                          <div className="p-4 rounded-xl bg-muted/30 border border-border">
+                            <div className="flex flex-wrap items-center gap-3 text-sm">
+                              <div className="flex items-center gap-2">
+                                <Heart className="w-5 h-5 text-red-500 fill-red-500" />
+                                <span className="font-medium text-foreground">
+                                  {lovedCount} {t('dashboard.stats.loved').toLowerCase()}
+                                </span>
+                              </div>
+                              <span className="text-muted-foreground">•</span>
+                              <div className="flex items-center gap-2">
+                                <ThumbsUp className="w-5 h-5 text-emerald-500 fill-emerald-500" />
+                                <span className="font-medium text-foreground">
+                                  {likedCount} {t('dashboard.stats.liked').toLowerCase()}
+                                </span>
+                              </div>
+                              <span className="text-muted-foreground">•</span>
+                              <div className="flex items-center gap-2">
+                                <Sparkles className="w-5 h-5 text-primary" />
+                                <span className="font-medium text-primary">
+                                  {t('dashboard.profileQuality.excellent')}
+                                </span>
                               </div>
                             </div>
-                          </button>
-                          <button
-                            onClick={() => navigate('/series?filter=love')}
-                            className="p-4 rounded-xl bg-red-50 dark:bg-red-950/20 hover:bg-red-100 dark:hover:bg-red-950/30 transition-all hover:scale-105 active:scale-95 cursor-pointer group border border-red-200/50 dark:border-red-900/50 hover:border-red-300 dark:hover:border-red-800"
-                          >
-                            <div className="text-center space-y-1">
-                              <div className="flex items-center justify-center gap-1">
-                                <Heart className="w-4 h-4 text-red-500 fill-red-500" />
-                                <div className="text-2xl font-bold text-red-600 dark:text-red-400">
-                                  {lovedCount}
-                                </div>
-                              </div>
-                              <div className="text-xs text-red-600 dark:text-red-400 font-medium">
-                                {t('dashboard.stats.loved')}
-                              </div>
-                            </div>
-                          </button>
-                          <button
-                            onClick={() => navigate('/series?filter=like')}
-                            className="p-4 rounded-xl bg-emerald-50 dark:bg-emerald-950/20 hover:bg-emerald-100 dark:hover:bg-emerald-950/30 transition-all hover:scale-105 active:scale-95 cursor-pointer group border border-emerald-200/50 dark:border-emerald-900/50 hover:border-emerald-300 dark:hover:border-emerald-800"
-                          >
-                            <div className="text-center space-y-1">
-                              <div className="flex items-center justify-center gap-1">
-                                <ThumbsUp className="w-4 h-4 text-emerald-500 fill-emerald-500" />
-                                <div className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">
-                                  {likedCount}
-                                </div>
-                              </div>
-                              <div className="text-xs text-emerald-600 dark:text-emerald-400 font-medium">
-                                {t('dashboard.stats.liked')}
-                              </div>
-                            </div>
-                          </button>
-                        </div>
+                          </div>
+                        )
                       ) : (
-                        <div className="text-center py-8 space-y-3">
-                          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary/10">
-                            <Heart className="w-8 h-8 text-primary" />
-                          </div>
-                          <div>
-                            <p className="text-sm font-medium text-foreground mb-1">
-                              {t('dashboard.ratingProgress.startRating')}
-                            </p>
-                            <p className="text-xs text-muted-foreground">
-                              {t('dashboard.ratingProgress.moreIsBetter')}
-                            </p>
-                          </div>
+                        <div className="p-6 rounded-xl bg-muted/30 border border-border text-center flex items-center justify-center min-h-[120px]">
+                          <p className="text-sm text-foreground font-medium leading-relaxed">
+                            {t('dashboard.ratingProgress.emptyDescription', {
+                              count: config.series.minRatedShowsToCreateWatchRoom,
+                            })}
+                          </p>
                         </div>
                       )}
                     </CardContent>
-                    <CardFooter className="flex flex-col gap-2">
+                    <CardFooter className="flex flex-col sm:flex-row gap-2">
                       <Button
-                        className="w-full h-12 font-semibold hover:scale-[1.02] active:scale-[0.98] transition-all shadow-md hover:shadow-lg"
+                        className="flex-1 h-12 font-semibold hover:scale-[1.02] active:scale-[0.98] transition-all shadow-md hover:shadow-lg"
                         size="lg"
                         onClick={() => navigate('/series')}
                         data-testid="rate-more-series-button"
@@ -231,24 +222,21 @@ export default function DashboardPage() {
                         )}
                       </Button>
                       {totalCount < config.series.minRatedShowsToCreateWatchRoom && (
-                        <Button
-                          variant="outline"
-                          className="w-full"
+                        <button
                           onClick={() => setQuickStartOpen(true)}
+                          className="text-sm text-muted-foreground hover:text-foreground hover:underline transition-all flex items-center justify-center gap-1.5 mt-2 cursor-pointer"
                         >
-                          <span className="flex items-center gap-2">
-                            <Sparkles className="w-4 h-4" />
-                            {t('dashboard.quickStart.title')}
-                          </span>
-                        </Button>
+                          <Sparkles className="w-3.5 h-3.5" />
+                          {t('dashboard.quickStart.linkSimple')}
+                        </button>
                       )}
                     </CardFooter>
                   </Card>
 
                   {/* Card 2: Create a Watch Room */}
-                  <Card className="flex flex-col h-full border-2 hover:border-primary/50 transition-all duration-300 hover:shadow-xl hover:-translate-y-0.5">
+                  <Card className="flex flex-col h-full border border-border shadow-sm">
                     <CardHeader>
-                      <div className="flex items-center gap-4">
+                      <div className="flex items-center gap-4 pb-2">
                         <div className="p-3 bg-linear-to-br from-primary/10 to-primary/5 rounded-xl shadow-sm">
                           <Users
                             className="h-6 w-6 text-primary"
@@ -261,73 +249,48 @@ export default function DashboardPage() {
                         </div>
                       </div>
                     </CardHeader>
-                    <CardContent className="grow space-y-4">
-                      <div className="space-y-3">
-                        <div className="flex items-start gap-3 group">
-                          <div className="p-1.5 bg-primary/10 rounded-lg shrink-0 mt-0.5 group-hover:bg-primary/15 transition-colors">
-                            <Sparkles className="w-4 h-4 text-primary" />
+                    <CardContent className="grow space-y-6">
+                      {!canCreateRoom && totalCount > 0 && (
+                        <div className="p-4 rounded-xl bg-muted/30 border border-border space-y-3">
+                          <div className="flex items-center justify-between">
+                            <span className="text-sm font-medium text-foreground">
+                              {t('dashboard.watchroom.progress')}
+                            </span>
+                            <span className="text-lg font-bold text-primary">
+                              {totalCount}/{config.series.minRatedShowsToCreateWatchRoom}
+                            </span>
                           </div>
-                          <div className="flex-1 min-w-0">
-                            <p className="text-sm text-foreground font-semibold leading-snug mb-1">
-                              {t('dashboard.watchroom.feature1Title')}
-                            </p>
-                            <p className="text-xs text-muted-foreground leading-relaxed">
-                              {t('dashboard.watchroom.feature1Desc')}
-                            </p>
+                          <div className="w-full bg-muted/50 rounded-full h-3 overflow-hidden shadow-inner">
+                            <div
+                              className="h-full bg-linear-to-r from-primary to-primary/80 transition-all duration-700 ease-out rounded-full shadow-sm"
+                              style={{ width: `${(totalCount / config.series.minRatedShowsToCreateWatchRoom) * 100}%` }}
+                            />
                           </div>
+                          <p className="text-xs text-muted-foreground text-center">
+                            {t('dashboard.watchroom.unlockHint', {
+                              count: config.series.minRatedShowsToCreateWatchRoom - totalCount,
+                            })}
+                          </p>
                         </div>
-                        <div className="flex items-start gap-3 group">
-                          <div className="p-1.5 bg-primary/10 rounded-lg shrink-0 mt-0.5 group-hover:bg-primary/15 transition-colors">
-                            <Heart className="w-4 h-4 text-primary" />
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <p className="text-sm text-foreground font-semibold leading-snug mb-1">
-                              {t('dashboard.watchroom.feature2Title')}
-                            </p>
-                            <p className="text-xs text-muted-foreground leading-relaxed">
-                              {t('dashboard.watchroom.feature2Desc')}
-                            </p>
-                          </div>
-                        </div>
-                        <div className="flex items-start gap-3 group">
-                          <div className="p-1.5 bg-primary/10 rounded-lg shrink-0 mt-0.5 group-hover:bg-primary/15 transition-colors">
-                            <ThumbsUp className="w-4 h-4 text-primary" />
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <p className="text-sm text-foreground font-semibold leading-snug mb-1">
-                              {t('dashboard.watchroom.feature3Title')}
-                            </p>
-                            <p className="text-xs text-muted-foreground leading-relaxed">
-                              {t('dashboard.watchroom.feature3Desc')}
-                            </p>
-                          </div>
-                        </div>
-                      </div>
+                      )}
                     </CardContent>
-                    <CardFooter className="flex flex-col items-start gap-3 w-full relative">
-                      <div className="w-full">
-                        <Button
-                          className="w-full h-12 font-semibold hover:scale-[1.02] active:scale-[0.98] transition-all shadow-md hover:shadow-lg"
-                          onClick={() => (canCreateRoom ? navigate('/watchrooms') : setLockedDialogOpen(true))}
-                          size="lg"
-                          data-testid="create-room-button"
-                        >
-                          {!canCreateRoom ? (
-                            <span className="inline-flex items-center gap-2">
-                              <Lock
-                                className="w-4 h-4"
-                                aria-hidden="true"
-                              />
-                              {t('dashboard.watchroom.createButton')}
-                            </span>
-                          ) : (
-                            <span className="inline-flex items-center gap-2">
-                              <Sparkles className="w-4 h-4" />
-                              {t('dashboard.watchroom.createButton')}
-                            </span>
-                          )}
-                        </Button>
-                      </div>
+                    <CardFooter className="w-full">
+                      <Button
+                        className={`w-full h-12 font-semibold transition-all shadow-md ${
+                          !canCreateRoom
+                            ? 'cursor-not-allowed opacity-60'
+                            : 'hover:scale-[1.02] active:scale-[0.98] hover:shadow-lg'
+                        }`}
+                        onClick={() => navigate('/watchrooms')}
+                        size="lg"
+                        data-testid="create-room-button"
+                        disabled={!canCreateRoom}
+                      >
+                        <span className="inline-flex items-center gap-2">
+                          <Users className="w-4 h-4" />
+                          {t('dashboard.watchroom.createButton')}
+                        </span>
+                      </Button>
                     </CardFooter>
                   </Card>
                 </div>
@@ -338,48 +301,6 @@ export default function DashboardPage() {
           </div>
         </div>
       </div>
-
-      {/* Locked dialog for guidance when watch room is gated */}
-      <Dialog
-        open={lockedDialogOpen}
-        onOpenChange={setLockedDialogOpen}
-      >
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle className="text-2xl flex items-center gap-2">
-              <Lock className="w-6 h-6 text-primary" />
-              {t('dashboard.lockedDialog.title')}
-            </DialogTitle>
-            <DialogDescription className="text-base">{t('dashboard.lockedDialog.description')}</DialogDescription>
-          </DialogHeader>
-          <div className="text-center py-6">
-            <p className="text-muted-foreground mb-3">
-              {t('dashboard.lockedDialog.rateShowsMessage', { count: config.series.minRatedShowsToCreateWatchRoom })}
-            </p>
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 rounded-lg">
-              <Heart className="w-4 h-4 text-primary" />
-              <p className="text-2xl font-bold text-foreground">
-                {totalCount}<span className="text-muted-foreground">/{config.series.minRatedShowsToCreateWatchRoom}</span>
-              </p>
-            </div>
-          </div>
-          <DialogFooter className="sm:justify-between gap-3">
-            <Button
-              variant="secondary"
-              onClick={() => setLockedDialogOpen(false)}
-              className="w-full sm:w-auto"
-            >
-              {t('dashboard.lockedDialog.later')}
-            </Button>
-            <Button
-              onClick={() => navigate('/series')}
-              className="w-full sm:w-auto"
-            >
-              {t('dashboard.lockedDialog.rateNow')}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
 
       {/* Quick Start Modal for onboarding */}
       <QuickStartModal

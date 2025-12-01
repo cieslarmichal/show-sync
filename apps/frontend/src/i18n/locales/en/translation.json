@@ -159,6 +159,9 @@
   },
   "dashboard": {
     "title": "Your Dashboard",
+    "welcome": {
+      "greeting": "Welcome, {{name}}"
+    },
     "ratingProgressTitle": "Build Your Taste Profile",
     "ratingProgressSubtitle": "Rate shows to unlock smarter recommendations",
     "showsRated": "Shows Rated",
@@ -193,16 +196,28 @@
       "startRating": "Start rating shows!",
       "moreIsBetter": "The more you rate, the better recommendations",
       "startButton": "Start Rating Shows",
-      "rateMoreButton": "Rate More Shows"
+      "rateMoreButton": "Rate More Shows",
+      "emptyDescription": "Rate {{count}} shows to unlock rooms and recommendations"
     },
     "stats": {
       "rated": "Rated",
-      "loved": "Loved",
-      "liked": "Liked"
+      "loved": "loved",
+      "liked": "liked"
+    },
+    "profileQuality": {
+      "progress": "Profile Progress",
+      "motivation": "Rate {{count}} more for excellent quality",
+      "excellent": "Excellent Profile Quality",
+      "totalRated": "{{count}} shows rated in total"
     },
     "watchroom": {
       "title": "Your Watch Rooms",
       "description": "Generate AI recommendations for yourself or with friends",
+      "simpleDescription": "Create a room and find the perfect show for yourself or your group - AI matches everyone's taste",
+      "progress": "To Unlock",
+      "rateMoreButton": "Rate {{count}} more shows",
+      "unlockHint": "Rate {{count}} more to unlock",
+      "getStarted": "Rate 3 shows to unlock rooms",
       "feature1Title": "AI Recommendations",
       "feature1Desc": "Rooms generate personalized suggestions based on everyone's taste",
       "feature2Title": "Solo or Group",
@@ -211,17 +226,10 @@
       "feature3Desc": "Get recommendations in seconds - no scrolling or debating",
       "createButton": "Create Watch Room"
     },
-    "lockedDialog": {
-      "title": "Unlock Watch Rooms",
-      "description": "Create rooms to get group recommendations",
-      "rateShowsMessage": "Rate at least {{count}} shows to unlock room creation:",
-      "tip": "Pro tip:",
-      "tipMessage": "Rating at least {{count}} shows unlocks more accurate recommendations!",
-      "later": "Maybe Later",
-      "rateNow": "Start Rating"
-    },
     "quickStart": {
       "title": "Quick Start: Rate Some Shows",
+      "link": "Need help? Quick start",
+      "linkSimple": "Quick start",
       "instruction": "Select your rating for each show - we'll help you find perfect matches!",
       "description": "Help us understand your taste. Rate at least {{count}} shows to unlock watch rooms!",
       "progress": "{{current}}/{{max}} rated",

@@ -27,11 +27,11 @@ export default function SeriesPage() {
   const [watchlistSeriesIds, setWatchlistSeriesIds] = useState<Set<number>>(new Set());
   const [myRatings, setMyRatings] = useState<SeriesRating[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  
+
   // Initialize ratingFilter from URL or default to 'all'
   const initialFilter = searchParams.get('filter') as 'all' | Rating | null;
   const [ratingFilter, setRatingFilter] = useState<'all' | Rating>(
-    initialFilter && ['all', 'love', 'like', 'dislike'].includes(initialFilter) ? initialFilter : 'all'
+    initialFilter && ['all', 'love', 'like', 'dislike'].includes(initialFilter) ? initialFilter : 'all',
   );
   const [lovedCount, setLovedCount] = useState(0);
   const [likedCount, setLikedCount] = useState(0);
