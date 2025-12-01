@@ -76,7 +76,7 @@ export const apiRequest = async <T>(endpoint: string, options: ApiRequestConfig)
     // Add Accept-Language header based on current language from localStorage
     // This avoids issues with i18n initialization timing
     const storedLanguage = typeof window !== 'undefined' ? localStorage.getItem('i18nextLng') : null;
-    const language = storedLanguage === 'pl' ? 'pl' : 'en';
+    const language = storedLanguage === 'en' ? 'en' : 'pl';
     headers['Accept-Language'] = language;
 
     const requestConfig: RequestInit = {
