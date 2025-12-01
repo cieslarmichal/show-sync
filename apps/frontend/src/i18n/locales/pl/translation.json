@@ -214,6 +214,7 @@
       "title": "Twoje pokoje oglądania",
       "description": "Generuj rekomendacje AI dla siebie lub z przyjaciółmi",
       "simpleDescription": "Stwórz pokój i znajdź idealny serial dla siebie lub grupy - AI dopasuje rekomendacje do gustów wszystkich",
+      "emptyDescription": "Najpierw oceń {{count}} seriale, aby móc tworzyć pokoje",
       "progress": "Do odblokowania",
       "rateMoreButton": "Oceń jeszcze {{count}} seriali",
       "unlockHint": "Oceń jeszcze {{count}}, aby odblokować",

@@ -58,7 +58,7 @@
     "apiKey": "test-open-router-api-key"
   },
   "recommendations": {
-    "maxRequestsPerUser": 100
+    "dailyRequests": 100
   },
   "resend": {
     "apiKey": "api-key"

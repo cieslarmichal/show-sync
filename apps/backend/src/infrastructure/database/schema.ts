@@ -156,6 +156,8 @@ export const recommendationRequests = pgTable(
   (table) => [
     index('idx_recommendation_requests_watchroom_id').on(table.watchroomId),
     index('idx_recommendation_requests_status').on(table.status),
+    index('idx_recommendation_requests_user_id_status').on(table.userId, table.status),
+    index('idx_recommendation_requests_user_id_status_created_at').on(table.userId, table.status, table.createdAt),
   ],
 );
 

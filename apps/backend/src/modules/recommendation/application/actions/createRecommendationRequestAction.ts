@@ -19,18 +19,18 @@ export class CreateRecommendationRequestAction {
   private readonly watchroomRepository: WatchroomRepository;
   private readonly recommendationRequestRepository: RecommendationRequestRepository;
   private readonly loggerService: LoggerService;
-  private readonly maxRequestsPerUser: number;
+  private readonly dailyRequests: number;
 
   public constructor(
     watchroomRepository: WatchroomRepository,
     recommendationRequestRepository: RecommendationRequestRepository,
     loggerService: LoggerService,
-    maxRequestsPerUser: number,
+    dailyRequests: number,
   ) {
     this.watchroomRepository = watchroomRepository;
     this.recommendationRequestRepository = recommendationRequestRepository;
     this.loggerService = loggerService;
-    this.maxRequestsPerUser = maxRequestsPerUser;
+    this.dailyRequests = dailyRequests;
   }
 
   public async execute(
@@ -62,21 +62,20 @@ export class CreateRecommendationRequestAction {
       });
     }
 
-    // Check if user has exceeded the maximum recommendation limit
-    const currentCount = await this.recommendationRequestRepository.count(userId);
+    const currentCount = await this.recommendationRequestRepository.countCompletedTodayAndCurrentlyProcessing(userId);
 
-    if (currentCount >= this.maxRequestsPerUser) {
+    if (currentCount >= this.dailyRequests) {
       this.loggerService.warn({
         message: 'User exceeded maximum recommendation limit',
         event: 'watchroom.recommendation_request.create.limit_exceeded',
         requestId: context.requestId,
         userId,
         currentCount,
-        maxLimit: this.maxRequestsPerUser,
+        dailyRequests: this.dailyRequests,
       });
 
       throw new OperationNotValidError({
-        reason: `Maximum request limit reached (${String(this.maxRequestsPerUser)}).`,
+        reason: `Maximum request limit reached (${String(this.dailyRequests)}).`,
       });
     }
 

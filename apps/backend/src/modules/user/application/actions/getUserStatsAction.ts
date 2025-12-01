@@ -39,7 +39,7 @@ export class GetUserStatsAction {
       this.userSeriesRatingRepository.count(userId),
       this.userSeriesWatchlistRepository.count(userId, 'wantToWatch'),
       this.watchroomRepository.count(userId),
-      this.recommendationRequestRepository.count(userId),
+      this.recommendationRequestRepository.countCompleted(userId),
     ]);
 
     return {

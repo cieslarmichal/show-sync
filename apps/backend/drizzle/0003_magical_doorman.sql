@@ -1,0 +1,2 @@
+CREATE INDEX "idx_recommendation_requests_user_id_status" ON "recommendation_requests" USING btree ("user_id","status");--> statement-breakpoint
+CREATE INDEX "idx_recommendation_requests_user_id_status_created_at" ON "recommendation_requests" USING btree ("user_id","status","created_at");

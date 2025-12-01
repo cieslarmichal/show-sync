@@ -125,7 +125,7 @@
     "maxRetryDelayMs": 30000
   },
   "recommendations": {
-    "maxRequestsPerUser": 10
+    "dailyRequests": 10
   },
   "watchroom": {
     "maxParticipants": 6

@@ -148,7 +148,7 @@ export default function DashboardPage() {
                           <div className="p-4 rounded-xl bg-muted/30 border border-border">
                             <div className="space-y-4">
                               <div className="flex items-center justify-between">
-                                <span className="text-sm font-medium text-foreground">
+                                <span className="text-sm font-semibold text-foreground">
                                   {t('dashboard.profileQuality.progress')}
                                 </span>
                                 <span className="text-lg font-bold text-primary">
@@ -170,25 +170,23 @@ export default function DashboardPage() {
                           </div>
                         ) : (
                           /* Achievement unlocked - elegant stats display */
-                          <div className="p-4 rounded-xl bg-muted/30 border border-border">
-                            <div className="flex flex-wrap items-center gap-3 text-sm">
-                              <div className="flex items-center gap-2">
-                                <Heart className="w-5 h-5 text-red-500 fill-red-500" />
-                                <span className="font-medium text-foreground">
+                          <div className="p-4 rounded-xl bg-muted/30 border border-primary/20">
+                            <div className="flex flex-wrap items-center gap-4">
+                              <div className="flex items-center gap-2 text-sm">
+                                <Heart className="w-4 h-4 text-red-500 fill-red-500" />
+                                <span className="font-semibold text-foreground">
                                   {lovedCount} {t('dashboard.stats.loved').toLowerCase()}
                                 </span>
                               </div>
-                              <span className="text-muted-foreground">•</span>
-                              <div className="flex items-center gap-2">
-                                <ThumbsUp className="w-5 h-5 text-emerald-500 fill-emerald-500" />
-                                <span className="font-medium text-foreground">
+                              <div className="flex items-center gap-2 text-sm">
+                                <ThumbsUp className="w-4 h-4 text-emerald-500 fill-emerald-500" />
+                                <span className="font-semibold text-foreground">
                                   {likedCount} {t('dashboard.stats.liked').toLowerCase()}
                                 </span>
                               </div>
-                              <span className="text-muted-foreground">•</span>
-                              <div className="flex items-center gap-2">
-                                <Sparkles className="w-5 h-5 text-primary" />
-                                <span className="font-medium text-primary">
+                              <div className="px-3 py-0.5 rounded-full bg-primary/10">
+                                <span className="flex items-center gap-1.5 text-sm font-semibold text-primary">
+                                  <Sparkles className="w-4 h-4" />
                                   {t('dashboard.profileQuality.excellent')}
                                 </span>
                               </div>
@@ -237,7 +235,7 @@ export default function DashboardPage() {
                   <Card className="flex flex-col h-full border border-border shadow-sm">
                     <CardHeader>
                       <div className="flex items-center gap-4 pb-2">
-                        <div className="p-3 bg-linear-to-br from-primary/10 to-primary/5 rounded-xl shadow-sm">
+                        <div className="p-3 bg-primary/10 rounded-lg">
                           <Users
                             className="h-6 w-6 text-primary"
                             aria-hidden="true"
@@ -253,7 +251,7 @@ export default function DashboardPage() {
                       {!canCreateRoom && totalCount > 0 && (
                         <div className="p-4 rounded-xl bg-muted/30 border border-border space-y-3">
                           <div className="flex items-center justify-between">
-                            <span className="text-sm font-medium text-foreground">
+                            <span className="text-sm font-semibold text-foreground">
                               {t('dashboard.watchroom.progress')}
                             </span>
                             <span className="text-lg font-bold text-primary">

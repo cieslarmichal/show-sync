@@ -131,7 +131,7 @@ const configSchema = Type.Object({
     maxRetryDelayMs: Type.Number({ minimum: 5000, maximum: 120000 }),
   }),
   recommendations: Type.Object({
-    maxRequestsPerUser: Type.Number({ minimum: 1, maximum: 1000 }),
+    dailyRequests: Type.Number({ minimum: 1, maximum: 1000 }),
   }),
   watchroom: Type.Object({
     maxParticipants: Type.Number({ minimum: 1, maximum: 10 }),

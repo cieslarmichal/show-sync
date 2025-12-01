@@ -1,4 +1,4 @@
-import { eq, desc, count, and } from 'drizzle-orm';
+import { eq, desc, count, and, or, gte } from 'drizzle-orm';
 
 import { IdService } from '../../../../common/id/idService.ts';
 import type { DatabaseClient } from '../../../../infrastructure/database/databaseClient.ts';
@@ -70,11 +70,33 @@ export class RecommendationRequestRepositoryImpl implements RecommendationReques
     return this.mapToRecommendationRequest(request);
   }
 
-  public async count(userId: string): Promise<number> {
+  public async countCompleted(userId: string): Promise<number> {
+    const whereClause = and(eq(recommendationRequests.userId, userId), eq(recommendationRequests.status, 'completed'));
+
     const [result] = await this.databaseClient.db
       .select({ count: count() })
       .from(recommendationRequests)
-      .where(and(eq(recommendationRequests.userId, userId), eq(recommendationRequests.status, 'completed')));
+      .where(whereClause);
+
+    return result?.count ?? 0;
+  }
+
+  public async countCompletedTodayAndCurrentlyProcessing(userId: string): Promise<number> {
+    const startOfDayUTC = new Date();
+    startOfDayUTC.setUTCHours(0, 0, 0, 0);
+
+    const whereClause = and(
+      eq(recommendationRequests.userId, userId),
+      or(
+        and(eq(recommendationRequests.status, 'completed'), gte(recommendationRequests.createdAt, startOfDayUTC)),
+        eq(recommendationRequests.status, 'pending'),
+      ),
+    );
+
+    const [result] = await this.databaseClient.db
+      .select({ count: count() })
+      .from(recommendationRequests)
+      .where(whereClause);
 
     return result?.count ?? 0;
   }

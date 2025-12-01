@@ -22,8 +22,8 @@ export class GetUserQuotaAction {
   public async execute(payload: GetUserQuotaActionPayload): Promise<GetUserQuotaActionResult> {
     const { userId } = payload;
 
-    const recommendationCount = await this.recommendationRequestRepository.count(userId);
-    const maxRecommendationCount = this.config.recommendations.maxRequestsPerUser;
+    const recommendationCount = await this.recommendationRequestRepository.countCompleted(userId);
+    const maxRecommendationCount = this.config.recommendations.dailyRequests;
 
     return {
       recommendationCount,

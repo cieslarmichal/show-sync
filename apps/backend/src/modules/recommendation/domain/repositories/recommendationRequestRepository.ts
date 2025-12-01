@@ -12,5 +12,6 @@ export interface RecommendationRequestRepository {
   findById(id: string): Promise<RecommendationRequest | null>;
   updateStatus(id: string, status: RecommendationRequestStatus, tx?: Transaction): Promise<void>;
   findLatestByWatchroomId(watchroomId: string): Promise<RecommendationRequest | null>;
-  count(userId: string): Promise<number>;
+  countCompleted(userId: string): Promise<number>;
+  countCompletedTodayAndCurrentlyProcessing(userId: string): Promise<number>;
 }
