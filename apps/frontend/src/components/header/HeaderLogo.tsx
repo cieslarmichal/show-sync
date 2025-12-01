@@ -11,14 +11,15 @@ export function HeaderLogo() {
     <div className="shrink-0 flex items-center">
       <Link
         to={userData ? '/dashboard' : '/'}
-        className="flex items-center gap-1.5 sm:gap-2 group"
+        className="flex items-center gap-2 group transition-opacity hover:opacity-90"
+        aria-label="ShowSync - Home"
       >
         <img
           src={effectiveTheme === 'dark' ? '/logo-white.svg' : '/logo.svg'}
           alt="ShowSync Logo"
-          className="h-7 w-7 sm:h-8 sm:w-8 transition-transform group-hover:scale-105"
+          className="h-8 w-8 transition-transform duration-200 group-hover:scale-110"
         />
-        <h2 className="text-base sm:text-lg font-semibold tracking-tight">ShowSync</h2>
+        <h2 className="text-lg font-bold tracking-tight bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text">ShowSync</h2>
       </Link>
     </div>
   );

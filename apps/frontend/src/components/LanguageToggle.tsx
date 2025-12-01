@@ -14,10 +14,10 @@ export function LanguageToggle() {
         <Button
           variant="ghost"
           size="icon"
-          className="h-9 w-9"
+          className="h-9 w-9 hover:bg-accent transition-colors"
           aria-label={t('language.toggle')}
         >
-          <Globe className="h-4 w-4" />
+          <Globe className="h-[18px] w-[18px]" />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
