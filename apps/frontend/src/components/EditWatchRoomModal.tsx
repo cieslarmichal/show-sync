@@ -69,11 +69,13 @@ export function EditWatchRoomModal({
         updates.name = values.name;
       }
 
-      if (values.description !== (currentDescription || '')) {
-        updates.description = values.description;
+      const newDescription = values.description?.trim() || undefined;
+      const oldDescription = currentDescription?.trim() || undefined;
+      if (newDescription !== oldDescription) {
+        updates.description = newDescription;
       }
 
-      if (values.seriesLengthPreference !== (currentSeriesLengthPreference || 'all')) {
+      if (currentSeriesLengthPreference && values.seriesLengthPreference !== currentSeriesLengthPreference) {
         updates.seriesLengthPreference = values.seriesLengthPreference;
       }
 

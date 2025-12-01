@@ -501,9 +501,7 @@ export function RecommendationsSection({ watchroomId, isOwner, participantCount 
                 </Button>
               </div>
             )}
-            <div
-              className={`space-y-4 transition-opacity duration-500 ${showNewRecommendations ? 'opacity-0 animate-fade-in' : 'opacity-100'}`}
-            >
+            <div className={`space-y-4 ${showNewRecommendations ? 'animate-fade-in' : ''}`}>
               {visibleRecommendations.map((recommendation) => (
                 <RecommendationCard
                   key={recommendation.id}

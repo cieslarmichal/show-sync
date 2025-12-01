@@ -186,7 +186,7 @@ export const userRoutes: FastifyPluginAsyncTypebox<{
           name: request.body.name,
           email: request.body.email,
           password: request.body.password,
-          language: request.body.language || 'en',
+          language: request.body.language || 'pl',
         },
         {
           requestId: request.id,

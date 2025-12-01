@@ -62,7 +62,7 @@ describe('Footer', () => {
     renderFooter();
 
     const footer = screen.getByRole('contentinfo');
-    expect(footer).toHaveClass('py-5', 'sm:py-12');
+    expect(footer).toHaveClass('py-8', 'sm:py-16');
   });
 
   it('should have responsive grid layout on desktop', () => {

@@ -19,7 +19,9 @@ export function HeaderLogo() {
           alt="ShowSync Logo"
           className="h-8 w-8 transition-transform duration-200 group-hover:scale-110"
         />
-        <h2 className="text-lg font-bold tracking-tight bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text">ShowSync</h2>
+        <h2 className="text-lg font-bold tracking-tight bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text">
+          ShowSync
+        </h2>
       </Link>
     </div>
   );

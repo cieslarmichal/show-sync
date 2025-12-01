@@ -8,7 +8,7 @@ export function DesktopNavigation() {
   const sections = useNavigationSections(userData);
 
   return (
-    <nav 
+    <nav
       className="hidden md:flex absolute left-1/2 transform -translate-x-1/2"
       aria-label="Main navigation"
     >

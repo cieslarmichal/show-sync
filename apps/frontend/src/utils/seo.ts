@@ -15,25 +15,25 @@ export interface SEOConfig {
 }
 
 const DEFAULT_SEO: SEOConfig = {
-  title: 'ShowSync - AI-Powered Show Recommendations for You & Groups',
+  title: 'ShowSync - Rekomendacje Seriali AI dla Ciebie i Grup',
   description:
-    'Discover your next favorite series with AI-powered recommendations. Perfect for solo watching or group watch parties. Stop endless scrolling and start watching.',
+    'Odkryj swój kolejny ulubiony serial dzięki rekomendacjom AI. Idealne do samotnego oglądania lub wspólnych seansów. Przestań przewijać i zacznij oglądać.',
   keywords: [
-    'tv show recommendations',
-    'ai recommendations',
-    'personalized recommendations',
-    'watch party',
-    'group recommendations',
-    'show matching',
-    'tv shows',
-    'watch together',
-    'streaming recommendations',
-    'what to watch next',
-    'solo watching',
-    'individual recommendations',
+    'rekomendacje seriali',
+    'rekomendacje ai',
+    'personalizowane rekomendacje',
+    'wspólne oglądanie',
+    'rekomendacje grupowe',
+    'dopasowanie seriali',
+    'seriale tv',
+    'oglądanie razem',
+    'rekomendacje streamingu',
+    'co obejrzeć',
+    'oglądanie solo',
+    'indywidualne rekomendacje',
   ],
   ogType: 'website',
-  locale: 'en_US',
+  locale: 'pl_PL',
 };
 
 /**
@@ -134,7 +134,7 @@ export function generateStructuredData(type: 'WebSite' | 'Organization' | 'WebAp
       '@context': 'https://schema.org',
       '@type': 'WebSite',
       name: 'ShowSync',
-      description: 'AI-powered series recommendations for groups',
+      description: 'Rekomendacje seriali AI dla grup',
       url: baseUrl,
       potentialAction: {
         '@type': 'SearchAction',
@@ -149,16 +149,16 @@ export function generateStructuredData(type: 'WebSite' | 'Organization' | 'WebAp
       '@context': 'https://schema.org',
       '@type': 'Organization',
       name: 'ShowSync',
-      description: 'Find the perfect series for your group',
+      description: 'Znajdź idealny serial dla Twojej grupy',
       url: baseUrl,
       logo: `${baseUrl}/logo.svg`,
       contactPoint: {
         '@type': 'ContactPoint',
         email: 'contact@show-sync.com',
-        telephone: '+48-792-448-282',
+        telephone: '+48-795-252-322',
         contactType: 'Customer Service',
         areaServed: 'Worldwide',
-        availableLanguage: ['English', 'Polish'],
+        availableLanguage: ['Polish', 'English'],
       },
       address: {
         '@type': 'PostalAddress',
@@ -170,7 +170,7 @@ export function generateStructuredData(type: 'WebSite' | 'Organization' | 'WebAp
       '@context': 'https://schema.org',
       '@type': 'WebApplication',
       name: 'ShowSync',
-      description: 'AI-powered series recommendations for groups and watch parties',
+      description: 'Rekomendacje seriali AI dla grup i wspólnych seansów',
       url: baseUrl,
       applicationCategory: 'Entertainment',
       operatingSystem: 'Web',

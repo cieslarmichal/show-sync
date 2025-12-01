@@ -21,8 +21,8 @@ i18n
   .use(initReactI18next)
   .init({
     resources,
-    fallbackLng: 'en',
-    supportedLngs: ['en', 'pl'],
+    fallbackLng: 'pl',
+    supportedLngs: ['pl', 'en'],
     defaultNS: 'translation',
     interpolation: {
       escapeValue: false,
@@ -39,20 +39,20 @@ const updateZodLocale = async (language: string) => {
   try {
     // Dynamically import the Zod locale
 
-    z.config(z.locales.en());
-    const locale = language === 'pl' ? 'pl' : 'en';
+    z.config(z.locales.pl());
+    const locale = language === 'en' ? 'en' : 'pl';
 
-    if (locale === 'en') {
-      z.config(z.locales.en());
+    if (locale === 'pl') {
+      z.config(z.locales.pl());
       return;
     } else {
-      z.config(z.locales.pl());
+      z.config(z.locales.en());
       return;
     }
   } catch {
-    // Fallback to English if locale import fails
-    console.warn(`Failed to load Zod locale for ${language}, falling back to English`);
-    const zodLocale = await import('zod/v4/locales/en.js');
+    // Fallback to Polish if locale import fails
+    console.warn(`Failed to load Zod locale for ${language}, falling back to Polish`);
+    const zodLocale = await import('zod/v4/locales/pl.js');
     z.config(zodLocale.default());
   }
 };

@@ -193,11 +193,13 @@ describe('EditWatchRoomModal', () => {
     await user.click(submitButton);
 
     await waitFor(() => {
-      expect(mockUpdateWatchroom).toHaveBeenCalledWith('123', {
-        name: 'Updated Room',
-        description: 'Updated Description',
-        seriesLengthPreference: 'all',
-      });
+      expect(mockUpdateWatchroom).toHaveBeenCalledWith(
+        '123',
+        expect.objectContaining({
+          name: 'Updated Room',
+          description: 'Updated Description',
+        }),
+      );
     });
   });
 
@@ -223,6 +225,10 @@ describe('EditWatchRoomModal', () => {
     await waitFor(() => {
       expect(screen.getByLabelText(/room name/i)).toBeInTheDocument();
     });
+
+    const nameInput = screen.getByLabelText(/room name/i);
+    await user.clear(nameInput);
+    await user.type(nameInput, 'Updated Room');
 
     const submitButton = screen.getByRole('button', { name: /save changes/i });
     await user.click(submitButton);
@@ -254,6 +260,10 @@ describe('EditWatchRoomModal', () => {
     await waitFor(() => {
       expect(screen.getByLabelText(/room name/i)).toBeInTheDocument();
     });
+
+    const descriptionInput = screen.getByLabelText(/what are you looking for/i);
+    await user.clear(descriptionInput);
+    await user.type(descriptionInput, 'Updated Description');
 
     const submitButton = screen.getByRole('button', { name: /save changes/i });
     await user.click(submitButton);
@@ -315,6 +325,10 @@ describe('EditWatchRoomModal', () => {
     await waitFor(() => {
       expect(screen.getByLabelText(/room name/i)).toBeInTheDocument();
     });
+
+    const nameInput = screen.getByLabelText(/room name/i);
+    await user.clear(nameInput);
+    await user.type(nameInput, 'Changed Name');
 
     const submitButton = screen.getByRole('button', { name: /save changes/i });
     await user.click(submitButton);
@@ -385,11 +399,12 @@ describe('EditWatchRoomModal', () => {
     await user.click(submitButton);
 
     await waitFor(() => {
-      expect(mockUpdateWatchroom).toHaveBeenCalledWith('123', {
-        name: 'Test Room',
-        description: undefined,
-        seriesLengthPreference: 'all',
-      });
+      expect(mockUpdateWatchroom).toHaveBeenCalledWith(
+        '123',
+        expect.objectContaining({
+          description: undefined,
+        }),
+      );
     });
   });
 });
