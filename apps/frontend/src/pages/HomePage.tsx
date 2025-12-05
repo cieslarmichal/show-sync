@@ -66,15 +66,11 @@ export default function HomePage() {
               </p>
               <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 mb-10 text-sm px-4">
                 <div className="flex items-center gap-2 px-4 py-2 bg-primary/10 rounded-full border border-primary/20">
-                  <Sparkles className="h-4 w-4 text-primary shrink-0" />
-                  <span className="text-foreground font-medium">{t('home.hero.badge1')}</span>
-                </div>
-                <div className="flex items-center gap-2 px-4 py-2 bg-primary/10 rounded-full border border-primary/20">
                   <Users className="h-4 w-4 text-primary shrink-0" />
                   <span className="text-foreground font-medium">{t('home.hero.badge2')}</span>
                 </div>
                 <div className="flex items-center gap-2 px-4 py-2 bg-primary/10 rounded-full border border-primary/20">
-                  <Zap className="h-4 w-4 text-primary shrink-0" />
+                  <Sparkles className="h-4 w-4 text-primary shrink-0" />
                   <span className="text-foreground font-medium">{t('home.hero.badge3')}</span>
                 </div>
               </div>
@@ -164,34 +160,53 @@ export default function HomePage() {
             </div>
 
             {/* Problem Statement */}
-            <div className="text-center max-w-3xl mx-auto space-y-6 py-8">
-              <h2 className="text-2xl sm:text-3xl font-bold text-foreground">{t('home.problemStatement.title')}</h2>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 text-left">
-                <Card className="p-6 border-2">
-                  <div className="space-y-2">
-                    <Clock className="h-8 w-8 text-primary mb-3" />
-                    <p className="text-sm text-muted-foreground">
-                      <strong className="text-foreground block mb-1">{t('home.problemStatement.solo')}</strong>
-                      {t('home.problemStatement.soloDesc')}
-                    </p>
+            <div className="text-center max-w-5xl mx-auto space-y-8 py-12">
+              <div className="space-y-4">
+                <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground">
+                  {t('home.problemStatement.title')}
+                </h2>
+                <p className="text-lg sm:text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
+                  {t('home.problemStatement.subtitle')}
+                </p>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 lg:gap-8 text-left">
+                <Card className="p-8 border-2 hover:border-primary/40 hover:shadow-xl transition-all duration-300">
+                  <div className="space-y-4">
+                    <div className="p-3 bg-primary/10 rounded-lg w-fit">
+                      <Clock className="h-8 w-8 text-primary" />
+                    </div>
+                    <div className="space-y-2">
+                      <h3 className="text-lg font-bold text-foreground">{t('home.problemStatement.solo')}</h3>
+                      <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
+                        {t('home.problemStatement.soloDesc')}
+                      </p>
+                    </div>
                   </div>
                 </Card>
-                <Card className="p-6 border-2">
-                  <div className="space-y-2">
-                    <MessageSquare className="h-8 w-8 text-primary mb-3" />
-                    <p className="text-sm text-muted-foreground">
-                      <strong className="text-foreground block mb-1">{t('home.problemStatement.groups')}</strong>
-                      {t('home.problemStatement.groupsDesc')}
-                    </p>
+                <Card className="p-8 border-2 hover:border-primary/40 hover:shadow-xl transition-all duration-300">
+                  <div className="space-y-4">
+                    <div className="p-3 bg-primary/10 rounded-lg w-fit">
+                      <MessageSquare className="h-8 w-8 text-primary" />
+                    </div>
+                    <div className="space-y-2">
+                      <h3 className="text-lg font-bold text-foreground">{t('home.problemStatement.groups')}</h3>
+                      <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
+                        {t('home.problemStatement.groupsDesc')}
+                      </p>
+                    </div>
                   </div>
                 </Card>
-                <Card className="p-6 border-2">
-                  <div className="space-y-2">
-                    <Zap className="h-8 w-8 text-primary mb-3" />
-                    <p className="text-sm text-muted-foreground">
-                      <strong className="text-foreground block mb-1">{t('home.problemStatement.everyone')}</strong>
-                      {t('home.problemStatement.everyoneDesc')}
-                    </p>
+                <Card className="p-8 border-2 hover:border-primary/40 hover:shadow-xl transition-all duration-300">
+                  <div className="space-y-4">
+                    <div className="p-3 bg-primary/10 rounded-lg w-fit">
+                      <Zap className="h-8 w-8 text-primary" />
+                    </div>
+                    <div className="space-y-2">
+                      <h3 className="text-lg font-bold text-foreground">{t('home.problemStatement.everyone')}</h3>
+                      <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
+                        {t('home.problemStatement.everyoneDesc')}
+                      </p>
+                    </div>
                   </div>
                 </Card>
               </div>
@@ -543,7 +558,6 @@ export default function HomePage() {
               >
                 {t('home.cta.button')}
               </Button>
-              <p className="text-sm text-muted-foreground mt-6">{t('home.cta.noCreditCard')}</p>
               <div className="mt-8 flex items-center justify-center gap-6 text-xs text-muted-foreground">
                 <div className="flex items-center gap-2">
                   <CheckCircle2 className="h-4 w-4 text-primary" />

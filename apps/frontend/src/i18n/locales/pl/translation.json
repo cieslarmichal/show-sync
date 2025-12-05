@@ -51,7 +51,6 @@
       "title": "Koniec z przewijaniem",
       "titleHighlight": "Seriale, które pokochasz",
       "subtitle": "Otrzymuj rekomendacje AI dopasowane do Twojego gustu. Oceń 5 seriali i zacznij w 2 minuty.",
-      "badge1": "100% Darmowe Na Zawsze",
       "badge2": "Dla Ciebie i grup",
       "badge3": "Bez ukrytych kosztów",
       "cta": "Rozpocznij za darmo",
@@ -88,8 +87,8 @@
       "subtitle": "Najmądrzejszy sposób na decyzję, co obejrzeć dalej",
       "smartTitle": "AI, które Cię rozumie",
       "smartDesc": "Nasz silnik rekomendacji uczy się Twojego unikalnego gustu — nie tylko tego, co jest popularne. Odkrywaj perełki, które naprawdę pokochasz.",
-      "customPrefsTitle": "Powiedz AI czego szukasz",
-      "customPrefsDesc": "Opisz swój nastrój, preferowane gatunki lub motywy w ustawieniach pokoju. AI dostosuje rekomendacje do Twoich konkretnych życzyń — bez sztywnych filtrów, tylko naturalna rozmowa.",
+      "customPrefsTitle": "Powiedz nam czego szukasz",
+      "customPrefsDesc": "Opisz swój nastrój, preferowane gatunki lub motywy w ustawieniach pokoju. AI dostosuje rekomendacje do Twoich konkretnych życzeń.",
       "groupsTitle": "Sam lub ze znajomymi",
       "groupsDesc": "Śledź swoją osobistą listę i twórz pokoje, aby znaleźć seriale, które spodobają się całej grupie.",
       "timeTitle": "Przestań marnować czas",
@@ -100,17 +99,17 @@
     "cta": {
       "title": "Znajdź swój kolejny ulubiony serial w 2 minuty",
       "description": "Dołącz do pierwszych użytkowników, którzy przestali marnować czas na przewijanie i zaczęli oglądać seriale, które naprawdę kochają.",
-      "button": "Rozpocznij za darmo",
-      "noCreditCard": "100% darmowe — bez planów premium, wszystkie funkcje dostępne"
+      "button": "Rozpocznij za darmo"
     },
     "problemStatement": {
-      "title": "Paradoks streamingu",
-      "solo": "18 minut zmarnowanych",
-      "soloDesc": "na decyzję, co obejrzeć zamiast samego oglądania",
-      "groups": "Niekończące się dyskusje",
-      "groupsDesc": "Co obejrzymy? — pytanie zadawane 47 razy miesięcznie",
-      "everyone": "Przeładowanie wyborem",
-      "everyoneDesc": "Przeciętny użytkownik przegląda 400+ tytułów przed decyzją"
+      "title": "Paradoks streamingowy",
+      "subtitle": "Tracimy czas na wybór serialu zamiast wykorzystać go na oglądanie.",
+      "solo": "18 minut straconych na decyzję",
+      "soloDesc": "Zamiast włączyć film, analizujemy – i przewijamy katalog.",
+      "groups": "Niekończące się rozmowy \"co obejrzymy?\"",
+      "groupsDesc": "To pytanie pada średnio 47 razy miesięcznie… i rzadko kończy się szybkim wyborem.",
+      "everyone": "Przeciążenie wyborem",
+      "everyoneDesc": "Przeciętny użytkownik przegląda ponad 400 tytułów, zanim podejmie decyzję."
     },
     "trustBadges": {
       "poweredBy": "WSPIERANE PRZEZ",
@@ -119,13 +118,13 @@
     "faq": {
       "title": "Najczęściej zadawane pytania",
       "q1": "Czy potrzebuję znajomych, aby korzystać z ShowSync?",
-      "a1": "Nie! ShowSync świetnie działa również dla osób oglądających samemu. Oceń seriale, które oglądałeś i otrzymuj spersonalizowane rekomendacje tylko dla Ciebie. Twórz pokoje oglądania tylko wtedy, gdy chcesz oglądać ze znajomymi.",
+      "a1": "Nie! ShowSync świetnie działa również dla osób oglądających samemu. Oceń seriale, które oglądałeś i otrzymuj spersonalizowane rekomendacje tylko dla Ciebie.",
       "q2": "Czym to się różni od rekomendacji Netflix?",
-      "a2": "Netflix pokazuje, co jest popularne i w trendach. ShowSync uczy się TWOJEGO unikalnego gustu i znajduje ukryte perełki, które do niego pasują - nawet jeśli nie są mainstreamowe. Plus, możesz tworzyć pokoje oglądania, aby otrzymać rekomendacje dla całej grupy.",
+      "a2": "Netflix pokazuje, co jest popularne i w trendach. ShowSync uczy się TWOJEGO unikalnego gustu i znajduje ukryte perełki, które do niego pasują - nawet jeśli nie są mainstreamowe. Dodatkowo, możesz tworzyć pokoje oglądania, aby otrzymać rekomendacje dla całej grupy.",
       "q3": "Skąd AI wie, co lubię?",
-      "a3": "Oceniasz seriale, które oglądałeś (uwielbiam, lubię lub nie lubię). Nasze AI analizuje Twój profil i znajduje seriale, które pasują do Twoich preferencji - nie tylko to, co jest popularne.",
+      "a3": "Oceniasz seriale, które oglądałeś. Analizujemy Twój profil i znajdujemy seriale, które pasują do Twoich preferencji - nie tylko to, co jest popularne.",
       "q4": "Czy naprawdę jest darmowe? Bez planów premium?",
-      "a4": "Tak, w 100% darmowe na zawsze! Bez ukrytych opłat, bez karty kredytowej, bez planów premium, bez paywalli, bez limitów. Każda funkcja jest darmowa dla wszystkich, zawsze. Wierzymy, że świetne rekomendacje powinny być dostępne dla każdego.",
+      "a4": "Tak, w 100% darmowe na zawsze! Bez ukrytych opłat, bez karty kredytowej, bez planów premium i bez limitów. Każda funkcja jest darmowa dla wszystkich, zawsze.",
       "q5": "Ile czasu zajmuje konfiguracja?",
       "a5": "Około 2 minuty. Zarejestruj się, oceń 5-10 seriali, które oglądałeś i jesteś gotowy do otrzymywania rekomendacji. Im więcej ocenisz, tym lepsze sugestie."
     },

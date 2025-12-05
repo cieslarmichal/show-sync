@@ -51,7 +51,6 @@
       "title": "Stop Endless Scrolling",
       "titleHighlight": "Find Shows You'll Love",
       "subtitle": "Get AI recommendations that actually match your taste. Rate 5 shows and get started in 2 minutes.",
-      "badge1": "100% Free Forever",
       "badge2": "For you & groups",
       "badge3": "No hidden costs",
       "cta": "Get Started Free",
@@ -88,8 +87,8 @@
       "subtitle": "The smartest way to decide what to watch next",
       "smartTitle": "AI That Actually Gets You",
       "smartDesc": "Our recommendation engine learns your unique taste — not just what's trending. Discover hidden gems you'll actually love.",
-      "customPrefsTitle": "Tell AI What You Want",
-      "customPrefsDesc": "Describe your mood, preferred genres, or themes in your room settings. AI will tailor recommendations to match your specific requests — no rigid filters, just natural conversation.",
+      "customPrefsTitle": "Tell Us What You Want",
+      "customPrefsDesc": "Describe your mood, preferred genres, or themes in your room settings. AI will tailor recommendations to match your specific requests.",
       "groupsTitle": "Solo or With Friends",
       "groupsDesc": "Track your personal watchlist or create watch rooms to find shows that everyone in your group will enjoy.",
       "timeTitle": "Stop Wasting Time",
@@ -100,17 +99,17 @@
     "cta": {
       "title": "Find Your Next Favorite Show in 2 Minutes",
       "description": "Join early adopters who stopped wasting time scrolling and started watching shows they actually love.",
-      "button": "Get Started Free",
-      "noCreditCard": "100% free — no premium plans, all features available"
+      "button": "Get Started Free"
     },
     "problemStatement": {
       "title": "The Streaming Paradox",
-      "solo": "18 minutes wasted",
-      "soloDesc": "deciding what to watch instead of actually watching",
-      "groups": "Endless debates",
-      "groupsDesc": "'What should we watch?' asked 47 times per month",
+      "subtitle": "We waste time choosing instead of watching.",
+      "solo": "18 minutes wasted on decisions",
+      "soloDesc": "Instead of watching, we analyze – and endlessly scroll through catalogs.",
+      "groups": "Never-ending 'what should we watch?' conversations",
+      "groupsDesc": "This question is asked an average of 47 times per month… and rarely leads to a quick decision.",
       "everyone": "Choice overload",
-      "everyoneDesc": "Average user browses 400+ titles before deciding"
+      "everyoneDesc": "The average user browses over 400 titles before making a decision."
     },
     "trustBadges": {
       "poweredBy": "POWERED BY",
@@ -119,13 +118,13 @@
     "faq": {
       "title": "Frequently Asked Questions",
       "q1": "Do I need friends to use ShowSync?",
-      "a1": "No! ShowSync works great for solo viewers too. Rate shows you've watched and get personalized recommendations just for you. Create watch rooms only when you want to watch with friends.",
+      "a1": "No! ShowSync works great for solo viewers too. Rate shows you've watched and get personalized recommendations just for you.",
       "q2": "How is this different from Netflix recommendations?",
       "a2": "Netflix shows you what's trending and popular. ShowSync learns YOUR unique taste and finds hidden gems that match it - even if they're not mainstream. Plus, you can create watch rooms to get recommendations that match everyone in your group.",
       "q3": "How does the AI know what I like?",
-      "a3": "You rate shows you've watched (love, like, or dislike). Our AI analyzes your taste profile and finds shows that match your preferences - not just what's trending.",
+      "a3": "You rate shows you've watched. We analyze your taste profile and find shows that match your preferences - not just what's trending.",
       "q4": "Is it really free? No premium plans?",
-      "a4": "Yes, 100% free forever! No hidden fees, no credit card required, no premium tiers, no paywalls, no limits. Every feature is free for everyone, always. We believe great recommendations should be accessible to all.",
+      "a4": "Yes, 100% free forever! No hidden fees, no credit card required, no premium tiers, no limits. Every feature is free for everyone, always.",
       "q5": "How long does setup take?",
       "a5": "About 2 minutes. Sign up, rate 5-10 shows you've watched, and you're ready to get recommendations. The more you rate, the better the suggestions."
     },
