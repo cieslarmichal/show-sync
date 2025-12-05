@@ -196,7 +196,7 @@
       "moreIsBetter": "The more you rate, the better recommendations",
       "startButton": "Start Rating Shows",
       "rateMoreButton": "Rate More Shows",
-      "emptyDescription": "Rate {{count}} shows to unlock rooms and recommendations"
+      "emptyDescription": "Rate {{count}} shows to unlock recommendations"
     },
     "stats": {
       "rated": "Rated",

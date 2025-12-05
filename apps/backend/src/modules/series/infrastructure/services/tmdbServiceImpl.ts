@@ -411,12 +411,11 @@ export class TmdbServiceImpl implements TmdbService {
 
     const url = new URL(`${this.baseUrl}/discover/tv`);
     url.searchParams.append('language', language);
-    url.searchParams.append('sort_by', 'vote_average.desc');
-    url.searchParams.append('vote_count.gte', '500'); // Minimum 500 votes
-    url.searchParams.append('vote_average.gte', '8'); // Minimum 8.0 rating
-    url.searchParams.append('with_origin_country', 'US|GB'); // US and UK series only
+    url.searchParams.append('sort_by', 'vote_count.desc');
+    url.searchParams.append('vote_count.gte', '2500');
+    url.searchParams.append('vote_average.gte', '8.4');
+    url.searchParams.append('with_origin_country', 'US|GB');
     url.searchParams.append('without_genres', '16,10762'); // Exclude Animation (16) and Kids (10762)
-    url.searchParams.append('include_adult', 'false');
 
     try {
       const response = await fetch(url.toString(), {

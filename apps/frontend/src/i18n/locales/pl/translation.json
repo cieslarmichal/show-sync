@@ -196,7 +196,7 @@
       "moreIsBetter": "Im więcej ocenisz, tym lepsze rekomendacje",
       "startButton": "Zacznij oceniać seriale",
       "rateMoreButton": "Oceń więcej seriali",
-      "emptyDescription": "Oceń {{count}} seriale, aby odblokować pokoje i rekomendacje"
+      "emptyDescription": "Oceń {{count}} seriale, aby odblokować rekomendacje"
     },
     "stats": {
       "rated": "Ocenionych",

@@ -85,8 +85,7 @@ export default function JoinWatchRoomPage() {
     return (
       <div className="min-h-screen bg-background">
         <div className="relative overflow-hidden">
-          <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808008_1px,transparent_1px),linear-gradient(to_bottom,#80808008_1px,transparent_1px)] bg-size-[4rem_4rem]" />
-          <div className="relative flex items-start justify-center p-4 py-12 md:py-16">
+          <div className="flex items-start justify-center p-4 py-12 md:py-16">
             <p className="text-muted-foreground">{t('watchroom.loadingDetails')}</p>
           </div>
         </div>
@@ -98,8 +97,7 @@ export default function JoinWatchRoomPage() {
     return (
       <div className="min-h-screen bg-background">
         <div className="relative overflow-hidden">
-          <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808008_1px,transparent_1px),linear-gradient(to_bottom,#80808008_1px,transparent_1px)] bg-size-[4rem_4rem]" />
-          <div className="relative flex items-start justify-center p-4 py-12 md:py-16">
+          <div className="flex items-start justify-center p-4 py-12 md:py-16">
             <Card className="w-full max-w-md border-2 shadow-md">
               <CardHeader>
                 <CardTitle>{t('watchroom.notFoundTitle')}</CardTitle>
@@ -129,10 +127,7 @@ export default function JoinWatchRoomPage() {
   return (
     <div className="min-h-screen bg-background">
       <div className="relative overflow-hidden">
-        {/* Subtle grid background */}
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808008_1px,transparent_1px),linear-gradient(to_bottom,#80808008_1px,transparent_1px)] bg-size-[4rem_4rem]" />
-
-        <div className="relative flex items-start justify-center p-4 py-12 md:py-16 lg:py-20">
+        <div className="flex items-start justify-center p-4 py-12 md:py-16 lg:py-20">
           <Card className="w-full max-w-lg border-2 shadow-lg hover:shadow-xl transition-all bg-card">
             <CardHeader className="text-center pb-6 space-y-4">
               <div className="w-20 h-20 rounded-full bg-primary flex items-center justify-center mx-auto shadow-md">
