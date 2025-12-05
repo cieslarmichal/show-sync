@@ -48,85 +48,85 @@
   },
   "home": {
     "hero": {
-      "title": "Koniec z przewijaniem",
-      "titleHighlight": "Seriale, które pokochasz",
-      "subtitle": "Otrzymuj rekomendacje AI dopasowane do Twojego gustu. Oceń 5 seriali i zacznij w 2 minuty.",
-      "badge2": "Dla Ciebie i grup",
-      "badge3": "Bez ukrytych kosztów",
-      "cta": "Rozpocznij za darmo",
-      "signIn": "Zaloguj się"
+      "title": "Zmęczony(a) godzinami przewijania?",
+      "titleHighlight": "Znajdziemy twój kolejny hit w 2 minuty",
+      "subtitle": "Przestań marnować wieczory na przeglądanie. Oceń tylko 5 seriali, a my znajdziemy ukryte perełki idealnie dopasowane do twojego gustu.",
+      "badge2": "Sam lub ze znajomymi",
+      "badge3": "Zawsze w 100% darmowe",
+      "cta": "Zacznij oglądać lepsze seriale",
+      "signIn": "Mam już konto"
     },
     "perfectForEveryone": {
-      "title": "Idealne dla Wszystkich",
+      "title": "Idealne dla wszystkich",
       "subtitle": "Niezależnie czy oglądasz sam, czy ze znajomymi"
     },
     "benefits": {
-      "forYouTitle": "Dla Ciebie",
-      "forYouBenefit1": "Otrzymuj spersonalizowane rekomendacje AI natychmiast",
-      "forYouBenefit2": "Śledź, co chcesz obejrzeć następnym",
-      "forYouBenefit3": "Odkrywaj seriale, których sam byś nie znalazł",
-      "forYouBenefit4": "Nigdy więcej nie marnuj czasu na przewijanie",
-      "forGroupsTitle": "Dla Grup",
-      "forGroupsBenefit1": "Znajdź seriale, które spodobają się wszystkim",
-      "forGroupsBenefit2": "Twórz pokoje oglądania w kilka sekund",
-      "forGroupsBenefit3": "AI idealnie równoważy gusta wszystkich",
-      "forGroupsBenefit4": "Koniec z pytaniem 'co obejrzymy' na zawsze"
+      "forYouTitle": "Oglądasz solo?",
+      "forYouBenefit1": "Dostajesz seriale, które rzeczywiście skończysz, nie tylko zaczniesz",
+      "forYouBenefit2": "Buduj listę do obejrzenia bez godzin researchu",
+      "forYouBenefit3": "Odkrywaj ukryte perełki, na które sam byś nie trafił",
+      "forYouBenefit4": "Spędzaj wieczór oglądając, nie szukając",
+      "forGroupsTitle": "Oglądasz z innymi?",
+      "forGroupsBenefit1": "Wszyscy zadowoleni - koniec z kompromisami",
+      "forGroupsBenefit2": "Stwórz pokój szybciej niż zamówisz pizzę",
+      "forGroupsBenefit3": "Inteligentne dopasowanie uwzględniające gust każdego",
+      "forGroupsBenefit4": "Pomiń całą dramaturgię 'co oglądamy?'"
     },
     "howItWorks": {
-      "title": "Jak to działa",
-      "subtitle": "Trzy proste kroki do idealnych rekomendacji",
-      "step1Title": "Oceń 5-10 seriali",
-      "step1Desc": "Zajmie to mniej niż 2 minuty. Po prostu oceń seriale jako: uwielbiam, lubię lub nie lubię. To wszystko.",
-      "step2Title": "Otrzymaj Rekomendacje",
-      "step2Desc": "Przeglądaj spersonalizowane sugestie tylko dla Ciebie, lub stwórz pokój ze znajomymi, aby otrzymać rekomendacje AI dopasowane do gustu całej grupy.",
-      "step3Title": "Odkryj i Oglądaj",
-      "step3Desc": "Przejrzyj swoje spersonalizowane rekomendacje z wyjaśnieniami AI."
+      "title": "Start zajmuje 2 minuty",
+      "subtitle": "Poważnie. Za chwilę będziesz oglądać.",
+      "step1Title": "Powiedz nam co lubisz",
+      "step1Desc": "Oceń 5-10 seriali. Kochasz? Lubisz? Nienawidzisz? To wszystko czego potrzebujemy. Zajmie mniej czasu niż parzenie kawy.",
+      "step2Title": "Resztą zajmiemy się my",
+      "step2Desc": "Sam? Dostaniesz propozycje szyte na miarę. Ze znajomymi? Stwórz pokój, a my znajdziemy seriale, które uszczęśliwią wszystkich.",
+      "step3Title": "Kliknij play i ciesz się",
+      "step3Desc": "Koniec z paraliżem przewijania. Każda rekomendacja ma uzasadnienie, dlaczego myślimy, że Ci się spodoba. Po prostu wybierz i oglądaj."
     },
     "features": {
-      "title": "Dlaczego ludzie kochają ShowSync",
-      "subtitle": "Najmądrzejszy sposób na decyzję, co obejrzeć dalej",
-      "smartTitle": "AI, które Cię rozumie",
-      "smartDesc": "Nasz silnik rekomendacji uczy się Twojego unikalnego gustu — nie tylko tego, co jest popularne. Odkrywaj perełki, które naprawdę pokochasz.",
-      "customPrefsTitle": "Powiedz nam czego szukasz",
-      "customPrefsDesc": "Opisz swój nastrój, preferowane gatunki lub motywy w ustawieniach pokoju. AI dostosuje rekomendacje do Twoich konkretnych życzeń.",
-      "groupsTitle": "Sam lub ze znajomymi",
-      "groupsDesc": "Śledź swoją osobistą listę i twórz pokoje, aby znaleźć seriale, które spodobają się całej grupie.",
-      "timeTitle": "Przestań marnować czas",
-      "timeDesc": "Koniec z niekończącym się przewijaniem i dyskusjami. Otrzymaj rekomendacje AI, które równoważą gusta wszystkich w sekundę.",
-      "noCompromiseTitle": "Wygeneruj ponownie kiedy chcesz",
-      "noCompromiseDesc": "Nie satysfakcjonują Cię rekomendacje? Zmień preferencje i wygeneruj nowe natychmiast. Pełna kontrola nad rekomendacjami."
+      "title": "Dlaczego ludzie przechodzą na ShowSync",
+      "subtitle": "Bo życie jest za krótkie na złe rekomendacje",
+      "smartTitle": "Rekomendacje, które mają sens",
+      "smartDesc": "Zapomnij o ogólnikowych listach 'trendy'. Uczymy się tego co Ty lubisz oglądać. Potem znajdujemy tego więcej.",
+      "customPrefsTitle": "Konkretny nastrój dziś?",
+      "customPrefsDesc": "Chcesz coś przytulnego? Mrocznego? Śmiesznego ale nie za bardzo? Po prostu powiedz nam swój nastrój, a my dopasujemy. To jak przyjaciel, który zawsze wie co ci się spodoba.",
+      "groupsTitle": "Działa jak oglądasz",
+      "groupsDesc": "Budujesz osobistą listę? Jesteśmy tu. Planujesz wieczór filmowy ze znajomymi? Stwórz pokój, a znajdziemy coś co wszyscy naprawdę polubią.",
+      "timeTitle": "Twój czas jest cenny",
+      "timeDesc": "Przestań tracić 30 minut na decyzje. Znajdź swój kolejny ulubiony serial w sekundy, nie godziny.",
+      "noCompromiseTitle": "Nie podoba ci się? Spróbuj znowu",
+      "noCompromiseDesc": "Nie czujesz rekomendacji? Dostosuj preferencje i wygeneruj nowe. Bez zobowiązań, bez zadowalania się, bez kompromisów."
     },
     "cta": {
-      "title": "Znajdź swój kolejny ulubiony serial w 2 minuty",
-      "description": "Dołącz do pierwszych użytkowników, którzy przestali marnować czas na przewijanie i zaczęli oglądać seriale, które naprawdę kochają.",
-      "button": "Rozpocznij za darmo"
+      "title": "Przestań marnować wieczory na złe seriale",
+      "description": "Dołącz do tysięcy osób, które porzuciły niekończące się przewijanie i zaczęły oglądać seriale, które rzeczywiście kończą.",
+      "button": "Znajdź mój idealny serial teraz"
     },
     "problemStatement": {
-      "title": "Paradoks streamingowy",
-      "subtitle": "Tracimy czas na wybór serialu zamiast wykorzystać go na oglądanie.",
-      "solo": "18 minut straconych na decyzję",
-      "soloDesc": "Zamiast oglądać, szukamy i analizujemy co wybrać.",
-      "groups": "Niekończące się rozmowy \"co obejrzymy?\"",
-      "groupsDesc": "To pytanie pada średnio 47 razy miesięcznie… i rzadko kończy się szybkim wyborem.",
-      "everyone": "Przeciążenie wyborem",
-      "everyoneDesc": "Przeciętny użytkownik przegląda ponad 400 tytułów, zanim podejmie decyzję."
+      "title": "Brzmi znajomo?",
+      "subtitle": "Nie jesteś sam(a). Większość z nas traci więcej czasu na wybór niż na oglądanie.",
+      "solo": "Oglądasz sam? 18 minut w plecy",
+      "soloDesc": "Otwierasz Netflix z ekscytacją. 20 minut później wciąż przewijasz, czując się przytłoczony(a).",
+      "groups": "Ze znajomymi? Przygotuj się na debatę",
+      "groupsDesc": "'Co obejrzymy?' zamienia się w 30-minutową negocjację, gdzie nikt nie jest zadowolony z końcowego wyboru.",
+      "everyone": "Za dużo opcji, zero decyzji",
+      "everyoneDesc": "400+ tytułów przejrzanych. Rezultat? Rezygnujesz i znowu włączasz Biuro. Kolejny raz."
     },
     "trustBadges": {
       "poweredBy": "WSPIERANE PRZEZ",
       "secure": "100% Bezpieczne"
     },
     "faq": {
-      "title": "Najczęściej zadawane pytania",
-      "q1": "Czy potrzebuję znajomych, aby korzystać z ShowSync?",
-      "a1": "Nie! ShowSync świetnie działa również dla osób oglądających samemu. Oceń seriale, które oglądałeś i otrzymuj spersonalizowane rekomendacje tylko dla Ciebie.",
-      "q2": "Czym to się różni od rekomendacji Netflix?",
-      "a2": "Netflix pokazuje, co jest popularne i w trendach. ShowSync uczy się TWOJEGO unikalnego gustu i znajduje ukryte perełki, które do niego pasują - nawet jeśli nie są mainstreamowe. Dodatkowo, możesz tworzyć pokoje oglądania, aby otrzymać rekomendacje dla całej grupy.",
-      "q3": "Skąd AI wie, co lubię?",
-      "a3": "Oceniasz seriale, które oglądałeś. Analizujemy Twój profil i znajdujemy seriale, które pasują do Twoich preferencji - nie tylko to, co jest popularne.",
-      "q4": "Czy naprawdę jest darmowe? Bez planów premium?",
-      "a4": "Tak, w 100% darmowe na zawsze! Bez ukrytych opłat, bez karty kredytowej, bez planów premium i bez limitów. Każda funkcja jest darmowa dla wszystkich, zawsze.",
-      "q5": "Ile czasu zajmuje konfiguracja?",
-      "a5": "Około 2 minuty. Zarejestruj się, oceń 5-10 seriali, które oglądałeś i jesteś gotowy do otrzymywania rekomendacji. Im więcej ocenisz, tym lepsze sugestie."
+      "title": "Pytania, które możesz mieć",
+      "q1": "Mogę używać sam czy potrzebuję grupy?",
+      "a1": "Jedno i drugie! Używaj solo do swojej osobistej listy, albo twórz pokoje ze znajomymi. Działa jak oglądasz.",
+      "q2": "Co czyni to lepszym od rekomendacji Netflixa?",
+      "a2": "Netflix promuje trendy i oryginały. My skupiamy się na TWOIM guście - łącznie z dziwnymi rzeczami, starymi rzeczami, ukrytymi perłami. A grupowe rekomendacje, które naprawdę działają? Netflix tego nie potrafi.",
+      "q3": "Skąd wiecie co mi się spodoba?",
+      "a3": "Magia! Żartujemy - oceniasz seriale, które oglądałeś (kocham to, lubię to, lub meh). Analizujemy wzorce w Twoim guście i znajdujemy seriale, które pasują. Im więcej ocenisz, tym lepiej jesteśmy.",
+      "q4": "Jaki haczyk? Gdzie jest premium upsell?",
+      "a4": "Bez haczyka. 100% darmowe na zawsze. Bez karty kredytowej, bez ukrytych opłat, bez 'funkcji premium'. Budujemy coś fajnego i chcemy żeby wszyscy z tego korzystali.",
+      "q5": "Na serio, jak szybka jest konfiguracja?",
+      "a5": "2 minuty. Naprawdę. Zarejestruj się, oceń 5 seriali, gotowe. Możesz ocenić więcej później dla lepszych wyników, ale 5 wystarczy żeby zacząć dostawać świetne rekomendacje."
     },
     "ctaExtras": {
       "setup": "Konfiguracja w 2 minuty",
@@ -140,7 +140,7 @@
       "setupTime": "Czas konfiguracji"
     },
     "comparison": {
-      "title": "ShowSync vs Inni",
+      "title": "ShowSync vs inni",
       "showSync": "ShowSync",
       "netflix": "Netflix",
       "imdb": "IMDb",
