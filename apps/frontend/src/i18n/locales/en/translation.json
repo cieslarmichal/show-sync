@@ -48,58 +48,58 @@
   },
   "home": {
     "hero": {
-      "title": "Tired of Scrolling for Hours?",
-      "titleHighlight": "We'll Find Your Next Binge in 2 Minutes",
-      "subtitle": "Stop wasting evenings browsing. Just rate 5 shows you love, and we'll recommend hidden gems that match your exact taste.",
-      "badge2": "Works solo & with friends",
-      "badge3": "Always 100% free",
-      "cta": "Start Watching Better Shows",
-      "signIn": "I Have an Account"
+      "title": "What to watch tonight?",
+      "titleHighlight": "Find your next favorite show in minutes",
+      "subtitle": "Rate a few shows you've watched. Get recommendations that actually match your taste.",
+      "badge2": "For you or your group",
+      "badge3": "Free forever",
+      "cta": "Get Started",
+      "signIn": "Sign In"
     },
     "perfectForEveryone": {
       "title": "Perfect for Everyone",
       "subtitle": "Whether you're watching alone or with friends"
     },
     "benefits": {
-      "forYouTitle": "Flying Solo?",
-      "forYouBenefit1": "Get shows you'll actually finish, not just start",
-      "forYouBenefit2": "Build your watchlist without the endless research",
-      "forYouBenefit3": "Discover hidden gems you'd never stumble upon",
-      "forYouBenefit4": "Spend your evening watching, not searching",
-      "forGroupsTitle": "Watching with Others?",
-      "forGroupsBenefit1": "Everyone leaves happy - no more compromises",
-      "forGroupsBenefit2": "Set up a watch room faster than ordering pizza",
-      "forGroupsBenefit3": "Smart matches that consider everyone's taste",
-      "forGroupsBenefit4": "Skip the 'what should we watch?' drama entirely"
+      "forYouTitle": "Watching alone?",
+      "forYouBenefit1": "Shows picked for your taste",
+      "forYouBenefit2": "No more endless browsing",
+      "forYouBenefit3": "Discover shows you'd miss otherwise",
+      "forYouBenefit4": "More watching, less searching",
+      "forGroupsTitle": "Watching together?",
+      "forGroupsBenefit1": "Find shows everyone will enjoy",
+      "forGroupsBenefit2": "Create a room in seconds",
+      "forGroupsBenefit3": "Matches everyone's preferences",
+      "forGroupsBenefit4": "No more debates about what to watch"
     },
     "howItWorks": {
-      "title": "Getting Started Takes 2 Minutes",
-      "subtitle": "Seriously. You'll be watching in no time.",
-      "step1Title": "Tell Us What You Like",
-      "step1Desc": "Rate 5-10 shows. Love it? Like it? Hate it? That's all we need. Takes less time than making coffee.",
-      "step2Title": "We Do the Heavy Lifting",
-      "step2Desc": "Solo? Get instant picks tailored to you. With friends? Create a watch room and we'll find shows that make everyone happy.",
-      "step3Title": "Press Play & Enjoy",
-      "step3Desc": "No more scrolling paralysis. Every recommendation comes with a reason why we think you'll love it. Just pick and watch."
+      "title": "How it works",
+      "subtitle": "Three simple steps to better recommendations",
+      "step1Title": "Rate some shows",
+      "step1Desc": "Rate at least 3 shows you've watched.",
+      "step2Title": "Get recommendations",
+      "step2Desc": "For solo watching or create a room with friends to find shows everyone likes.",
+      "step3Title": "Watch and enjoy",
+      "step3Desc": "Each suggestion shows why we picked it. Skip any you're not interested in."
     },
     "features": {
-      "title": "Why People Are Switching to ShowSync",
-      "subtitle": "Because life's too short for bad recommendations",
-      "smartTitle": "Recommendations That Actually Make Sense",
-      "smartDesc": "Forget generic 'trending now' lists. We learn what YOU love - your guilty pleasures, your hidden favorites, your weird obsessions. Then we find more of that.",
-      "customPrefsTitle": "Feeling Specific Tonight?",
-      "customPrefsDesc": "Want something cozy? Dark? Funny but not too silly? Just tell us your mood and we'll adjust. It's like having a friend who always knows what you'd like.",
-      "groupsTitle": "Works However You Watch",
-      "groupsDesc": "Building your personal watchlist? We've got you. Planning movie night with friends? Create a room and we'll find shows everyone will actually enjoy.",
-      "timeTitle": "Your Time Is Precious",
-      "timeDesc": "Stop spending 30 minutes deciding what to watch. Get matched with your next favorite show in seconds, not hours.",
-      "noCompromiseTitle": "Don't Like Our Picks? Try Again",
-      "noCompromiseDesc": "Not feeling the recommendations? Tweak your preferences and regenerate. No commitment, no settling, no compromises."
+      "title": "What makes ShowSync different",
+      "subtitle": "Simple tools for better recommendations",
+      "smartTitle": "Personalized for you",
+      "smartDesc": "We learn from your ratings to suggest shows that match your taste, not what's trending.",
+      "customPrefsTitle": "Describe what you want",
+      "customPrefsDesc": "Looking for something specific? Tell us the mood or genre you're in and we'll adjust recommendations.",
+      "groupsTitle": "Solo or together",
+      "groupsDesc": "Build your personal watchlist or create rooms with friends to find shows everyone enjoys.",
+      "timeTitle": "Save time",
+      "timeDesc": "Stop browsing for 30 minutes. Find your next show in seconds.",
+      "noCompromiseTitle": "Not what you wanted?",
+      "noCompromiseDesc": "Adjust your preferences and get new recommendations anytime."
     },
     "cta": {
-      "title": "Stop Wasting Your Evenings on the Wrong Shows",
-      "description": "Join thousands who've already ditched the endless scrolling and started watching shows they actually finish.",
-      "button": "Find My Perfect Show Now"
+      "title": "Ready to find your next favorite show?",
+      "description": "Join others who stopped endless scrolling and started watching shows they love.",
+      "button": "Get Started Free"
     },
     "problemStatement": {
       "title": "Sound Familiar?",
@@ -126,7 +126,7 @@
       "q4": "What's the catch? Where's the premium upsell?",
       "a4": "No catch. 100% free forever. No credit card, no hidden fees, no 'premium features'. We're building something cool and want everyone to use it.",
       "q5": "Seriously, how fast is setup?",
-      "a5": "2 minutes. Really. Sign up, rate 5 shows, done. You can rate more later for better results, but 5 is enough to start getting great recommendations."
+      "a5": "2 minutes. Really. Sign up, rate 3 shows, done. You can rate more later for better results, but 5 is enough to start getting great recommendations."
     },
     "ctaExtras": {
       "setup": "Setup in 2 minutes",
@@ -737,6 +737,7 @@
     "quickLinks": "Quick Links",
     "contact": "Contact",
     "email": "Email",
+    "contactEmail": "contact@show-sync.com",
     "location": "Cracow, Poland",
     "rights": "All rights reserved.",
     "allRightsReserved": "All rights reserved.",

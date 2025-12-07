@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import { useContext } from 'react';
 import { AuthContext } from '../context/AuthContext';
 import { useTheme } from '../hooks/useTheme';
-import { Mail, Phone, MapPin, Heart, Tv, User, Github, Users, Bookmark } from 'lucide-react';
+import { Mail, MapPin, Heart, Tv, User, Github, Users, Bookmark } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
 export default function Footer() {
@@ -138,19 +138,7 @@ export default function Footer() {
                   href="mailto:contact@show-sync.com"
                   className="hover:text-foreground transition-colors hover:underline underline-offset-4 break-all"
                 >
-                  contact@show-sync.com
-                </a>
-              </div>
-              <div className="flex items-start gap-3 text-muted-foreground group">
-                <Phone
-                  className="h-[18px] w-[18px] shrink-0 mt-0.5"
-                  aria-hidden="true"
-                />
-                <a
-                  href="tel:+48792448282"
-                  className="hover:text-foreground transition-colors hover:underline underline-offset-4"
-                >
-                  +48 795 252 322
+                  {t('footer.contactEmail')}
                 </a>
               </div>
               <div className="flex items-start gap-3 text-muted-foreground group">
