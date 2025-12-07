@@ -161,6 +161,8 @@ export default function DashboardPage() {
                               <p className="text-xs text-muted-foreground text-center">
                                 {t('dashboard.profileQuality.motivation', {
                                   count: config.series.goodAccuracy - totalCount,
+                                  defaultValue_one: 'Rate {{count}} more for excellent quality',
+                                  defaultValue_other: 'Rate {{count}} more for excellent quality',
                                 })}
                               </p>
                             </div>
@@ -195,6 +197,8 @@ export default function DashboardPage() {
                           <p className="text-sm text-foreground font-medium leading-relaxed">
                             {t('dashboard.ratingProgress.emptyDescription', {
                               count: config.series.minRatedShowsToCreateWatchRoom,
+                              defaultValue_one: 'Rate {{count}} show to unlock recommendations',
+                              defaultValue_other: 'Rate {{count}} shows to unlock recommendations',
                             })}
                           </p>
                         </div>
@@ -264,6 +268,8 @@ export default function DashboardPage() {
                           <p className="text-xs text-muted-foreground text-center">
                             {t('dashboard.watchroom.unlockHint', {
                               count: config.series.minRatedShowsToCreateWatchRoom - totalCount,
+                              defaultValue_one: 'Rate {{count}} more to unlock',
+                              defaultValue_other: 'Rate {{count}} more to unlock',
                             })}
                           </p>
                         </div>

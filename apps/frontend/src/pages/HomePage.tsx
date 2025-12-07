@@ -11,7 +11,6 @@ import {
   Clock,
   CheckCircle2,
   Star,
-  ListChecks,
   Zap,
   MessageSquare,
 } from 'lucide-react';
@@ -72,19 +71,18 @@ export default function HomePage() {
                 </div>
               </div>
 
-              {/* Hero Visual Placeholder */}
+              {/* Hero Visual */}
               <div className="max-w-5xl mx-auto mb-12 px-4 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-300">
                 <div className="relative rounded-2xl overflow-hidden shadow-2xl border border-border bg-linear-to-br from-primary/5 to-primary/10">
-                  <div className="aspect-video flex items-center justify-center">
-                    <div className="text-center space-y-4 p-8">
-                      <BrainCircuit className="h-16 w-16 text-primary mx-auto opacity-50" />
-                      <p className="text-sm text-muted-foreground">
-                        [Hero Demo Image/GIF]
-                        <br />
-                        <span className="text-xs">Show app interface with recommendations</span>
-                      </p>
-                    </div>
-                  </div>
+                  <video
+                    className="w-full aspect-video object-cover"
+                    autoPlay
+                    loop
+                    muted
+                    playsInline
+                  >
+                    <source src="/hero.mp4" type="video/mp4" />
+                  </video>
                   {/* Decorative elements */}
                   <div className="absolute top-4 right-4 w-16 h-16 bg-primary/20 rounded-full blur-2xl" />
                   <div className="absolute bottom-4 left-4 w-20 h-20 bg-primary/10 rounded-full blur-2xl" />
@@ -288,7 +286,7 @@ export default function HomePage() {
                 </h2>
                 <p className="text-lg text-muted-foreground">{t('home.howItWorks.subtitle')}</p>
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-10 lg:gap-16 items-start">
                 {/* Step 1 with visual */}
                 <div className="flex flex-col group text-center h-full">
                   <div className="flex justify-center mb-6">
@@ -301,16 +299,17 @@ export default function HomePage() {
                       </div>
                     </div>
                   </div>
-                  <div className="space-y-3 mb-6 min-h-[140px]">
+                  <div className="space-y-3 mb-6 min-h-[100px]">
                     <h3 className="text-xl font-bold text-foreground">{t('home.howItWorks.step1Title')}</h3>
-                    <p className="text-muted-foreground leading-relaxed">{t('home.howItWorks.step1Desc')}</p>
+                    <p className="text-muted-foreground leading-relaxed text-sm">{t('home.howItWorks.step1Desc')}</p>
                   </div>
-                  {/* Visual placeholder */}
-                  <div className="rounded-xl overflow-hidden border border-border bg-muted/30 aspect-4/3 flex items-center justify-center mt-auto">
-                    <div className="text-xs text-muted-foreground text-center p-4">
-                      <ListChecks className="h-8 w-8 mx-auto mb-2 opacity-40" />
-                      [Rating Interface GIF]
-                    </div>
+                  {/* Visual */}
+                  <div className="rounded-2xl overflow-hidden border-2 border-border shadow-2xl bg-white dark:bg-background hover:shadow-[0_20px_50px_rgba(0,0,0,0.15)] hover:scale-[1.03] hover:-translate-y-1 transition-all duration-500 aspect-4/3 flex items-center justify-center p-3">
+                    <img
+                      src="/quick-start.png"
+                      alt="Rate your favorite series"
+                      className="w-full h-full object-contain"
+                    />
                   </div>
                 </div>
 
@@ -326,16 +325,17 @@ export default function HomePage() {
                       </div>
                     </div>
                   </div>
-                  <div className="space-y-3 mb-6 min-h-[140px]">
+                  <div className="space-y-3 mb-6 min-h-[100px]">
                     <h3 className="text-xl font-bold text-foreground">{t('home.howItWorks.step2Title')}</h3>
-                    <p className="text-muted-foreground leading-relaxed">{t('home.howItWorks.step2Desc')}</p>
+                    <p className="text-muted-foreground leading-relaxed text-sm">{t('home.howItWorks.step2Desc')}</p>
                   </div>
-                  {/* Visual placeholder */}
-                  <div className="rounded-xl overflow-hidden border border-border bg-muted/30 aspect-4/3 flex items-center justify-center mt-auto">
-                    <div className="text-xs text-muted-foreground text-center p-4">
-                      <Sparkles className="h-8 w-8 mx-auto mb-2 opacity-40" />
-                      [Recommendations GIF]
-                    </div>
+                  {/* Visual */}
+                  <div className="rounded-2xl overflow-hidden border-2 border-border shadow-2xl bg-white dark:bg-background hover:shadow-[0_20px_50px_rgba(0,0,0,0.15)] hover:scale-[1.03] hover:-translate-y-1 transition-all duration-500 aspect-4/3 flex items-center justify-center p-3">
+                    <img
+                      src="/recommendations.png"
+                      alt="Get AI-powered recommendations"
+                      className="w-full h-full object-contain"
+                    />
                   </div>
                 </div>
 
@@ -351,16 +351,17 @@ export default function HomePage() {
                       </div>
                     </div>
                   </div>
-                  <div className="space-y-3 mb-6 min-h-[140px]">
+                  <div className="space-y-3 mb-6 min-h-[100px]">
                     <h3 className="text-xl font-bold text-foreground">{t('home.howItWorks.step3Title')}</h3>
-                    <p className="text-muted-foreground leading-relaxed">{t('home.howItWorks.step3Desc')}</p>
+                    <p className="text-muted-foreground leading-relaxed text-sm">{t('home.howItWorks.step3Desc')}</p>
                   </div>
-                  {/* Visual placeholder */}
-                  <div className="rounded-xl overflow-hidden border border-border bg-muted/30 aspect-4/3 flex items-center justify-center mt-auto">
-                    <div className="text-xs text-muted-foreground text-center p-4">
-                      <PartyPopper className="h-8 w-8 mx-auto mb-2 opacity-40" />
-                      [Watch Room GIF]
-                    </div>
+                  {/* Visual */}
+                  <div className="rounded-2xl overflow-hidden border-2 border-border shadow-2xl bg-white dark:bg-background hover:shadow-[0_20px_50px_rgba(0,0,0,0.15)] hover:scale-[1.03] hover:-translate-y-1 transition-all duration-500 aspect-4/3 flex items-center justify-center p-3">
+                    <img
+                      src="/watchroom.png"
+                      alt="Watch together in sync"
+                      className="w-full h-full object-contain"
+                    />
                   </div>
                 </div>
               </div>

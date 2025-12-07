@@ -196,7 +196,10 @@
       "moreIsBetter": "Im więcej ocenisz, tym lepsze rekomendacje",
       "startButton": "Zacznij oceniać seriale",
       "rateMoreButton": "Oceń więcej seriali",
-      "emptyDescription": "Oceń {{count}} seriale, aby odblokować rekomendacje"
+      "emptyDescription_one": "Oceń {{count}} serial, aby odblokować rekomendacje",
+      "emptyDescription_few": "Oceń {{count}} seriale, aby odblokować rekomendacje",
+      "emptyDescription_many": "Oceń {{count}} seriali, aby odblokować rekomendacje",
+      "emptyDescription_other": "Oceń {{count}} seriali, aby odblokować rekomendacje"
     },
     "stats": {
       "rated": "Ocenionych",
@@ -205,7 +208,10 @@
     },
     "profileQuality": {
       "progress": "Postęp profilu",
-      "motivation": "Oceń jeszcze {{count}}, aby osiągnąć doskonałą jakość",
+      "motivation_one": "Oceń jeszcze {{count}} serial, aby osiągnąć doskonałą jakość",
+      "motivation_few": "Oceń jeszcze {{count}} seriale, aby osiągnąć doskonałą jakość",
+      "motivation_many": "Oceń jeszcze {{count}} seriali, aby osiągnąć doskonałą jakość",
+      "motivation_other": "Oceń jeszcze {{count}} seriali, aby osiągnąć doskonałą jakość",
       "excellent": "Doskonała jakość profilu",
       "totalRated": "{{count}} ocenionych seriali razem"
     },
@@ -216,7 +222,10 @@
       "emptyDescription": "Najpierw oceń {{count}} seriale, aby móc tworzyć pokoje",
       "progress": "Do odblokowania",
       "rateMoreButton": "Oceń jeszcze {{count}} seriali",
-      "unlockHint": "Oceń jeszcze {{count}}, aby odblokować",
+      "unlockHint_one": "Oceń jeszcze {{count}} serial, aby odblokować",
+      "unlockHint_few": "Oceń jeszcze {{count}} seriale, aby odblokować",
+      "unlockHint_many": "Oceń jeszcze {{count}} seriali, aby odblokować",
+      "unlockHint_other": "Oceń jeszcze {{count}} seriali, aby odblokować",
       "getStarted": "Oceń 3 seriale, aby odblokować pokoje",
       "feature1Title": "Rekomendacje AI",
       "feature1Desc": "Pokoje generują spersonalizowane sugestie na podstawie gustów wszystkich członków",
@@ -509,7 +518,7 @@
     "ofMembers": "z {{max}} członków",
     "roomAtCapacity": "Pokój jest pełny ({{max}} członków)",
     "signInToJoin": "Zaloguj się, aby dołączyć",
-    "createDescription": "Otrzymuj spersonalizowane sugestie seriali na podstawie gustu wszystkich. Użyj opisu, aby pokierować rekomendacjami AI.",
+    "createDescription": "Otrzymuj spersonalizowane sugestie seriali na podstawie gustu wszystkich.",
     "descriptionLabel": "Czego szukacie? (opcjonalne)",
     "descriptionHintTitle": "Wskazówka:",
     "descriptionHint": "Opisz swój nastrój, preferowane gatunki, motywy lub konkretny klimat. AI dostosuje rekomendacje do Twojego życzenia.",
