@@ -1,5 +1,5 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-import { StrictMode } from 'react';
+import { StrictMode, lazy, Suspense } from 'react';
 import { AuthContextProvider } from './context/AuthContextProvider.tsx';
 import { SeriesContextProvider } from './context/SeriesContextProvider.tsx';
 import { ThemeContextProvider } from './context/ThemeContextProvider.tsx';
@@ -7,23 +7,32 @@ import { useStructuredData } from './hooks/useSEO.ts';
 
 import Root from './pages/Root';
 import { CookiesProvider } from 'react-cookie';
-import HomePage from './pages/HomePage.tsx';
-import DashboardPage from './pages/DashboardPage.tsx';
 import { TooltipProvider } from './components/ui/Tooltip.tsx';
 import PrivateRoute from './auth/privateRoute.tsx';
-import LogoutPage from './pages/LogoutPage.tsx';
-import LoginPage from './pages/LoginPage.tsx';
-import RegisterPage from './pages/RegisterPage.tsx';
-import ForgotPasswordPage from './pages/ForgotPasswordPage.tsx';
-import ResetPasswordPage from './pages/ResetPasswordPage.tsx';
-import VerifyEmailPage from './pages/VerifyEmailPage.tsx';
-import SeriesPage from './pages/SeriesPage.tsx';
-import WatchlistPage from './pages/WatchlistPage.tsx';
-import WatchRoomsPage from './pages/WatchRoomsPage.tsx';
-import ProfilePage from './pages/ProfilePage.tsx';
-import JoinWatchRoomPage from './pages/JoinWatchRoomPage.tsx';
-import WatchRoomDetailsPage from './pages/WatchRoomDetailsPage.tsx';
-import NotFoundPage from './pages/NotFoundPage.tsx';
+
+// Lazy load pages for code splitting
+const HomePage = lazy(() => import('./pages/HomePage.tsx'));
+const DashboardPage = lazy(() => import('./pages/DashboardPage.tsx'));
+const LogoutPage = lazy(() => import('./pages/LogoutPage.tsx'));
+const LoginPage = lazy(() => import('./pages/LoginPage.tsx'));
+const RegisterPage = lazy(() => import('./pages/RegisterPage.tsx'));
+const ForgotPasswordPage = lazy(() => import('./pages/ForgotPasswordPage.tsx'));
+const ResetPasswordPage = lazy(() => import('./pages/ResetPasswordPage.tsx'));
+const VerifyEmailPage = lazy(() => import('./pages/VerifyEmailPage.tsx'));
+const SeriesPage = lazy(() => import('./pages/SeriesPage.tsx'));
+const WatchlistPage = lazy(() => import('./pages/WatchlistPage.tsx'));
+const WatchRoomsPage = lazy(() => import('./pages/WatchRoomsPage.tsx'));
+const ProfilePage = lazy(() => import('./pages/ProfilePage.tsx'));
+const JoinWatchRoomPage = lazy(() => import('./pages/JoinWatchRoomPage.tsx'));
+const WatchRoomDetailsPage = lazy(() => import('./pages/WatchRoomDetailsPage.tsx'));
+const NotFoundPage = lazy(() => import('./pages/NotFoundPage.tsx'));
+
+// Loading fallback component
+const PageLoader = () => (
+  <div className="flex min-h-screen items-center justify-center">
+    <div className="text-lg text-muted-foreground">Loading...</div>
+  </div>
+);
 
 const router = createBrowserRouter([
   {
@@ -32,91 +41,137 @@ const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <HomePage />,
+        element: (
+          <Suspense fallback={<PageLoader />}>
+            <HomePage />
+          </Suspense>
+        ),
       },
       {
         path: '/dashboard',
         element: (
-          <PrivateRoute>
-            <DashboardPage />
-          </PrivateRoute>
+          <Suspense fallback={<PageLoader />}>
+            <PrivateRoute>
+              <DashboardPage />
+            </PrivateRoute>
+          </Suspense>
         ),
       },
       {
         path: '/login',
-        element: <LoginPage />,
+        element: (
+          <Suspense fallback={<PageLoader />}>
+            <LoginPage />
+          </Suspense>
+        ),
       },
       {
         path: '/register',
-        element: <RegisterPage />,
+        element: (
+          <Suspense fallback={<PageLoader />}>
+            <RegisterPage />
+          </Suspense>
+        ),
       },
       {
         path: '/forgot-password',
-        element: <ForgotPasswordPage />,
+        element: (
+          <Suspense fallback={<PageLoader />}>
+            <ForgotPasswordPage />
+          </Suspense>
+        ),
       },
       {
         path: '/new-password',
-        element: <ResetPasswordPage />,
+        element: (
+          <Suspense fallback={<PageLoader />}>
+            <ResetPasswordPage />
+          </Suspense>
+        ),
       },
       {
         path: '/verify-email',
-        element: <VerifyEmailPage />,
+        element: (
+          <Suspense fallback={<PageLoader />}>
+            <VerifyEmailPage />
+          </Suspense>
+        ),
       },
       {
         path: '/logout',
         element: (
-          <PrivateRoute>
-            <LogoutPage />
-          </PrivateRoute>
+          <Suspense fallback={<PageLoader />}>
+            <PrivateRoute>
+              <LogoutPage />
+            </PrivateRoute>
+          </Suspense>
         ),
       },
       {
         path: '/series',
         element: (
-          <PrivateRoute>
-            <SeriesPage />
-          </PrivateRoute>
+          <Suspense fallback={<PageLoader />}>
+            <PrivateRoute>
+              <SeriesPage />
+            </PrivateRoute>
+          </Suspense>
         ),
       },
       {
         path: '/watchlist',
         element: (
-          <PrivateRoute>
-            <WatchlistPage />
-          </PrivateRoute>
+          <Suspense fallback={<PageLoader />}>
+            <PrivateRoute>
+              <WatchlistPage />
+            </PrivateRoute>
+          </Suspense>
         ),
       },
       {
         path: '/watchrooms',
         element: (
-          <PrivateRoute>
-            <WatchRoomsPage />
-          </PrivateRoute>
+          <Suspense fallback={<PageLoader />}>
+            <PrivateRoute>
+              <WatchRoomsPage />
+            </PrivateRoute>
+          </Suspense>
         ),
       },
       {
         path: '/watchrooms/:watchroomId',
         element: (
-          <PrivateRoute>
-            <WatchRoomDetailsPage />
-          </PrivateRoute>
+          <Suspense fallback={<PageLoader />}>
+            <PrivateRoute>
+              <WatchRoomDetailsPage />
+            </PrivateRoute>
+          </Suspense>
         ),
       },
       {
         path: '/watchrooms/public/:publicLinkId',
-        element: <JoinWatchRoomPage />,
+        element: (
+          <Suspense fallback={<PageLoader />}>
+            <JoinWatchRoomPage />
+          </Suspense>
+        ),
       },
       {
         path: '/my-profile',
         element: (
-          <PrivateRoute>
-            <ProfilePage />
-          </PrivateRoute>
+          <Suspense fallback={<PageLoader />}>
+            <PrivateRoute>
+              <ProfilePage />
+            </PrivateRoute>
+          </Suspense>
         ),
       },
       {
         path: '*',
-        element: <NotFoundPage />,
+        element: (
+          <Suspense fallback={<PageLoader />}>
+            <NotFoundPage />
+          </Suspense>
+        ),
       },
     ],
   },

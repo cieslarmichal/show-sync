@@ -80,8 +80,12 @@ export default function HomePage() {
                     loop
                     muted
                     playsInline
+                    preload="metadata"
                   >
-                    <source src="/hero.mp4" type="video/mp4" />
+                    <source
+                      src="/hero.mp4"
+                      type="video/mp4"
+                    />
                   </video>
                   {/* Decorative elements */}
                   <div className="absolute top-4 right-4 w-16 h-16 bg-primary/20 rounded-full blur-2xl" />
@@ -145,6 +149,7 @@ export default function HomePage() {
                   src="/tmdb-logo.svg"
                   alt="TMDB"
                   className="h-4"
+                  loading="lazy"
                 />
               </a>
               <div className="w-px h-6 bg-border" />
@@ -306,9 +311,10 @@ export default function HomePage() {
                   {/* Visual */}
                   <div className="rounded-2xl overflow-hidden border-2 border-border shadow-2xl bg-white dark:bg-background hover:shadow-[0_20px_50px_rgba(0,0,0,0.15)] hover:scale-[1.03] hover:-translate-y-1 transition-all duration-500 aspect-4/3 flex items-center justify-center p-3">
                     <img
-                      src="/quick-start.png"
+                      src="/quick-start.webp"
                       alt="Rate your favorite series"
                       className="w-full h-full object-contain"
+                      loading="lazy"
                     />
                   </div>
                 </div>
@@ -332,9 +338,10 @@ export default function HomePage() {
                   {/* Visual */}
                   <div className="rounded-2xl overflow-hidden border-2 border-border shadow-2xl bg-white dark:bg-background hover:shadow-[0_20px_50px_rgba(0,0,0,0.15)] hover:scale-[1.03] hover:-translate-y-1 transition-all duration-500 aspect-4/3 flex items-center justify-center p-3">
                     <img
-                      src="/recommendations.png"
+                      src="/recommendations.webp"
                       alt="Get AI-powered recommendations"
                       className="w-full h-full object-contain"
+                      loading="lazy"
                     />
                   </div>
                 </div>
@@ -358,9 +365,10 @@ export default function HomePage() {
                   {/* Visual */}
                   <div className="rounded-2xl overflow-hidden border-2 border-border shadow-2xl bg-white dark:bg-background hover:shadow-[0_20px_50px_rgba(0,0,0,0.15)] hover:scale-[1.03] hover:-translate-y-1 transition-all duration-500 aspect-4/3 flex items-center justify-center p-3">
                     <img
-                      src="/watchroom.png"
+                      src="/watchroom.webp"
                       alt="Watch together in sync"
                       className="w-full h-full object-contain"
+                      loading="lazy"
                     />
                   </div>
                 </div>
