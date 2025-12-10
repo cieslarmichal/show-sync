@@ -1,9 +1,10 @@
 import { Link, useSearchParams, Navigate } from 'react-router-dom';
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 import LoginForm from '../components/LoginForm';
 import { useSEO } from '../hooks/useSEO';
 import { AuthContext } from '../context/AuthContext';
 import { useTranslation } from 'react-i18next';
+import { toast } from 'sonner';
 
 export default function LoginPage() {
   const { userData, userDataInitialized } = useContext(AuthContext);
@@ -13,6 +14,13 @@ export default function LoginPage() {
 
   const [searchParams] = useSearchParams();
   const redirect = searchParams.get('redirect');
+
+  // Handle OAuth error
+  useEffect(() => {
+    if (searchParams.get('error') === 'oauth_failed') {
+      toast.error(t('auth.login.oauthFailed'));
+    }
+  }, [searchParams, t]);
 
   const registerUrl = redirect ? `/register?redirect=${encodeURIComponent(redirect)}` : '/register';
 

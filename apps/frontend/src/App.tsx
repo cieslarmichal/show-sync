@@ -16,6 +16,7 @@ const DashboardPage = lazy(() => import('./pages/DashboardPage.tsx'));
 const LogoutPage = lazy(() => import('./pages/LogoutPage.tsx'));
 const LoginPage = lazy(() => import('./pages/LoginPage.tsx'));
 const RegisterPage = lazy(() => import('./pages/RegisterPage.tsx'));
+const OAuthCallbackPage = lazy(() => import('./pages/OAuthCallbackPage.tsx'));
 const ForgotPasswordPage = lazy(() => import('./pages/ForgotPasswordPage.tsx'));
 const ResetPasswordPage = lazy(() => import('./pages/ResetPasswordPage.tsx'));
 const VerifyEmailPage = lazy(() => import('./pages/VerifyEmailPage.tsx'));
@@ -70,6 +71,14 @@ const router = createBrowserRouter([
         element: (
           <Suspense fallback={<PageLoader />}>
             <RegisterPage />
+          </Suspense>
+        ),
+      },
+      {
+        path: '/auth/callback',
+        element: (
+          <Suspense fallback={<PageLoader />}>
+            <OAuthCallbackPage />
           </Suspense>
         ),
       },

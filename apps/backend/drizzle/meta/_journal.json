@@ -5,29 +5,8 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1764114907860,
-      "tag": "0000_open_wendigo",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "7",
-      "when": 1764181167883,
-      "tag": "0001_fine_young_avengers",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "7",
-      "when": 1764347605369,
-      "tag": "0002_silent_glorian",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "7",
-      "when": 1764631767765,
-      "tag": "0003_magical_doorman",
+      "when": 1765388554459,
+      "tag": "0000_stiff_strong_guy",
       "breakpoints": true
     }
   ]

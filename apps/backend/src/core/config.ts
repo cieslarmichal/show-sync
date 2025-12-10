@@ -139,6 +139,13 @@ const configSchema = Type.Object({
   emailVerification: Type.Object({
     enabled: Type.Boolean(),
   }),
+  oauth: Type.Object({
+    google: Type.Object({
+      clientId: Type.String({ minLength: 1 }),
+      clientSecret: Type.String({ minLength: 1 }),
+      callbackUrl: Type.String({ minLength: 1 }),
+    }),
+  }),
 });
 
 export type Config = Static<typeof configSchema>;

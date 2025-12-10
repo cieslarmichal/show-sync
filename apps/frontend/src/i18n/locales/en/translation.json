@@ -281,7 +281,10 @@
       "resendVerification": "Resend verification email",
       "sending": "Sending...",
       "verificationSent": "Verification email sent! Please check your inbox.",
-      "verificationFailed": "Failed to send verification email. Please try again."
+      "verificationFailed": "Failed to send verification email. Please try again.",
+      "orContinueWith": "Or continue with",
+      "googleSignIn": "Sign in with Google",
+      "oauthFailed": "OAuth authentication failed. Please try again or use email/password login."
     },
     "register": {
       "title": "Start Discovering",
@@ -298,6 +301,8 @@
       "creatingAccount": "Creating account..",
       "hasAccount": "Already have an account?",
       "signIn": "Sign in",
+      "orContinueWith": "Or continue with",
+      "googleSignIn": "Sign up with Google",
       "passwordStrength": {
         "weak": "Weak",
         "fair": "Fair",

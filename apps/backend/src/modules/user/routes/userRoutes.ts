@@ -5,6 +5,8 @@ import type { TokenService } from '../../../common/auth/tokenService.ts';
 import { CryptoService } from '../../../common/crypto/cryptoService.ts';
 import { UnauthorizedAccessError } from '../../../common/errors/unathorizedAccessError.ts';
 import type { LoggerService } from '../../../common/logger/loggerService.ts';
+import { GoogleAuthService } from '../../../common/oauth/googleAuthService.ts';
+import type { Language } from '../../../common/types/language.ts';
 import type { Config } from '../../../core/config.ts';
 import type { DatabaseClient } from '../../../infrastructure/database/databaseClient.ts';
 import { RecommendationRequestRepositoryImpl } from '../../recommendation/infrastructure/repositories/recommendationRequestRepositoryImpl.ts';
@@ -19,6 +21,7 @@ import { FindUserAction } from '../application/actions/findUserAction.ts';
 import { GetUserQuotaAction } from '../application/actions/getUserQuotaAction.ts';
 import { GetUserStatsAction } from '../application/actions/getUserStatsAction.ts';
 import { LoginUserAction } from '../application/actions/loginUserAction.ts';
+import { LoginWithOAuthAction } from '../application/actions/loginWithOAuthAction.ts';
 import { LogoutUserAction } from '../application/actions/logoutUserAction.ts';
 import { RefreshTokenAction } from '../application/actions/refreshTokenAction.ts';
 import { ResendVerificationEmailAction } from '../application/actions/resendVerificationEmailAction.ts';
@@ -169,6 +172,74 @@ export const userRoutes: FastifyPluginAsyncTypebox<{
   const updateUserLanguageAction = new UpdateUserLanguageAction(userRepository, loggerService);
 
   const authenticationMiddleware = createAuthenticationMiddleware(tokenService);
+
+  const googleAuthService = new GoogleAuthService(config);
+
+  const loginWithOAuthAction = new LoginWithOAuthAction(
+    userRepository,
+    loggerService,
+    tokenService,
+    databaseClient,
+    userSessionRepository,
+    config,
+  );
+
+  fastify.get('/auth/google', {
+    schema: {
+      querystring: Type.Object({
+        language: Type.Union([Type.Literal('en'), Type.Literal('pl')]),
+      }),
+    },
+    handler: async (request, reply) => {
+      const { language } = request.query;
+
+      const authUrl = googleAuthService.getAuthorizationUrl(language);
+
+      return await reply.redirect(authUrl);
+    },
+  });
+
+  fastify.get('/auth/google/callback', {
+    schema: {
+      querystring: Type.Object({
+        code: Type.String({ minLength: 1 }),
+        state: Type.String({ minLength: 1 }),
+      }),
+      response: {
+        201: userSchema,
+      },
+    },
+    handler: async (request, reply) => {
+      const { code, state } = request.query;
+
+      // Extract language from state parameter (format: "lang:en" or "lang:pl")
+      let language: Language = 'en';
+      if (state.startsWith('lang:')) {
+        const langFromState = state.split(':')[1];
+        if (langFromState === 'en' || langFromState === 'pl') {
+          language = langFromState;
+        }
+      }
+
+      const result = await loginWithOAuthAction.execute(
+        {
+          provider: 'google',
+          code,
+          language,
+        },
+        {
+          requestId: request.id,
+        },
+      );
+
+      reply.setCookie(refreshTokenCookie.name, result.refreshToken, refreshTokenCookie.config);
+
+      const redirectUrl = new URL(`${config.frontendUrl}/auth/callback`);
+      redirectUrl.searchParams.set('access_token', result.accessToken);
+
+      return await reply.redirect(redirectUrl.toString());
+    },
+  });
 
   fastify.post('/users/register', {
     schema: {

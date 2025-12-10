@@ -53,6 +53,14 @@ export class SendResetPasswordEmailAction {
       return;
     }
 
+    if (user.oauthProvider && !user.password) {
+      this.loggerService.debug({
+        message: 'Password reset requested for OAuth-only user.',
+        event: 'password.reset.email.oauthOnlyUser',
+        userId: user.id,
+      });
+    }
+
     const resetPasswordToken = IdService.generateNanoid();
     const tokenHash = CryptoService.hashData(resetPasswordToken);
     const expiresAt = new Date(Date.now() + this.config.token.resetPassword.expiresIn * 1000);

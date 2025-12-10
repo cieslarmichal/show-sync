@@ -60,9 +60,13 @@ describe('CreateUserAction', () => {
       expect(result.name).toBe(userData.name);
       expect(result.createdAt).toBeDefined();
 
+      expect(result.password).toBeDefined();
       expect(result.password).not.toBe(userData.password);
-      const isPasswordValid = await passwordService.comparePasswords(userData.password, result.password);
-      expect(isPasswordValid).toBe(true);
+
+      if (result.password) {
+        const isPasswordValid = await passwordService.comparePasswords(userData.password, result.password);
+        expect(isPasswordValid).toBe(true);
+      }
     });
 
     it('throws ResourceAlreadyExistsError when user with email already exists', async () => {

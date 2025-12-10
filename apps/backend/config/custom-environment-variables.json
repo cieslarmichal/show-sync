@@ -22,5 +22,11 @@
   },
   "resend": {
     "apiKey": "RESEND_API_KEY"
+  },
+  "oauth": {
+    "google": {
+      "clientId": "GOOGLE_CLIENT_ID",
+      "clientSecret": "GOOGLE_CLIENT_SECRET"
+    }
   }
 }

@@ -4,5 +4,10 @@
   },
   "frontendUrl": "https://show-sync.com",
   "hashSaltRounds": 14,
-  "logLevel": "info"
+  "logLevel": "info",
+  "oauth": {
+    "google": {
+      "callbackUrl": "https://api.show-sync.com/auth/google/callback"
+    }
+  }
 }

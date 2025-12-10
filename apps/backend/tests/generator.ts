@@ -2,7 +2,10 @@ import { fakerPL as faker } from '@faker-js/faker';
 import { v7 as uuidv7 } from 'uuid';
 
 import type { Language } from '../src/common/types/language.ts';
+import type { DatabaseClient } from '../src/infrastructure/database/databaseClient.ts';
+import { users } from '../src/infrastructure/database/schema.ts';
 import type { CreateUserData } from '../src/modules/user/domain/repositories/userRepository.ts';
+import type { User } from '../src/modules/user/domain/types/user.ts';
 
 export class Generator {
   public static email(): string {
@@ -114,14 +117,58 @@ export class Generator {
     return this.arrayElement<Language>(['en', 'pl']);
   }
 
-  public static userData(input?: Partial<CreateUserData>): CreateUserData {
+  public static userData(input?: Partial<CreateUserData>): CreateUserData & { password: string } {
+    const defaultPassword = Generator.password();
+    const password = input?.password ?? defaultPassword;
+
     return {
       name: faker.person.fullName(),
       email: Generator.email(),
-      password: Generator.password(),
       isEmailVerified: true,
       language: Generator.language(),
       ...input,
+      password: password || defaultPassword,
+    };
+  }
+
+  public static async user(input: {
+    databaseClient: DatabaseClient;
+    email?: string;
+    password?: string | null;
+    name?: string;
+    oauthProvider?: string | null;
+    oauthProviderId?: string | null;
+    isEmailVerified?: boolean;
+    language?: Language;
+  }): Promise<User> {
+    const [user] = await input.databaseClient.db
+      .insert(users)
+      .values({
+        id: Generator.uuid(),
+        name: input.name || faker.person.fullName(),
+        email: input.email || Generator.email(),
+        password: input.password !== undefined ? input.password : Generator.password(),
+        oauthProvider: input.oauthProvider || null,
+        oauthProviderId: input.oauthProviderId || null,
+        isEmailVerified: input.isEmailVerified !== undefined ? input.isEmailVerified : true,
+        language: input.language || Generator.language(),
+      })
+      .returning();
+
+    if (!user) {
+      throw new Error('Failed to create user');
+    }
+
+    return {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      password: user.password,
+      oauthProvider: user.oauthProvider,
+      oauthProviderId: user.oauthProviderId,
+      isEmailVerified: user.isEmailVerified,
+      language: user.language as Language,
+      createdAt: user.createdAt,
     };
   }
 }

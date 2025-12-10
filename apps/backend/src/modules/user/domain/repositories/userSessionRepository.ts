@@ -21,7 +21,7 @@ export interface AcceptPreviousData {
 }
 
 export interface UserSessionRepository {
-  create(data: CreateUserSessionData): Promise<UserSession>;
+  create(data: CreateUserSessionData, tx?: Transaction): Promise<UserSession>;
   findById(sessionId: string, tx?: Transaction): Promise<UserSession | null>;
   findByCurrentHash(tokenHash: string, tx?: Transaction): Promise<UserSession | null>;
   rotateWithGrace(data: RotateWithGraceData, tx?: Transaction): Promise<UserSession>;

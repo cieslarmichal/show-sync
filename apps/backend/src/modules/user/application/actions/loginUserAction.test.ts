@@ -100,5 +100,25 @@ describe('LoginUserAction', () => {
         ),
       ).rejects.toThrow(UnauthorizedAccessError);
     });
+
+    it('throws UnauthorizedAccessError when user has no password (OAuth user)', async () => {
+      const userData = Generator.userData({
+        password: undefined,
+        oauthProvider: 'google',
+        oauthProviderId: 'google-123',
+      });
+
+      await userRepository.create(userData);
+
+      await expect(
+        loginUserAction.execute(
+          {
+            email: userData.email,
+            password: 'anypassword',
+          },
+          createTestExecutionContext(),
+        ),
+      ).rejects.toThrow(UnauthorizedAccessError);
+    });
   });
 });

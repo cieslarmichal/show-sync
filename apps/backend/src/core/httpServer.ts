@@ -9,6 +9,7 @@ import { TokenService } from '../common/auth/tokenService.ts';
 import { ExternalServiceError } from '../common/errors/externalServiceError.ts';
 import { ForbiddenAccessError } from '../common/errors/forbiddenAccessError.ts';
 import { InputNotValidError } from '../common/errors/inputNotValidError.ts';
+import { OAuthError } from '../common/errors/oAuthError.ts';
 import { OperationNotValidError } from '../common/errors/operationNotValidError.ts';
 import { ResourceAlreadyExistsError } from '../common/errors/resourceAlreadyExistsError.ts';
 import { ResourceNotFoundError } from '../common/errors/resourceNotFoundError.ts';
@@ -288,6 +289,21 @@ export class HttpServer {
         });
 
         return reply.status(502).send(error.toJSON());
+      }
+
+      if (error instanceof OAuthError) {
+        this.loggerService.error({
+          message: 'OAuth authentication error',
+          event: 'http.request.oauth_error',
+          ...baseContext,
+          errorContext: error.context,
+        });
+
+        // Redirect to frontend with error parameter
+        const redirectUrl = new URL(`${this.config.frontendUrl}/login`);
+        redirectUrl.searchParams.set('error', 'oauth_failed');
+
+        return reply.redirect(redirectUrl.toString());
       }
 
       this.loggerService.error({

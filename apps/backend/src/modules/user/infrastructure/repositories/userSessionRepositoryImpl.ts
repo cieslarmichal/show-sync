@@ -19,11 +19,13 @@ export class UserSessionRepositoryImpl implements UserSessionRepository {
     this.databaseClient = databaseClient;
   }
 
-  public async create(data: CreateUserSessionData): Promise<UserSession> {
+  public async create(data: CreateUserSessionData, tx?: Transaction): Promise<UserSession> {
     const id = data.id ?? IdService.generateUuid();
     const now = new Date();
 
-    const result = await this.databaseClient.db
+    const db = tx ?? this.databaseClient.db;
+
+    const result = await db
       .insert(userSessions)
       .values({
         id,

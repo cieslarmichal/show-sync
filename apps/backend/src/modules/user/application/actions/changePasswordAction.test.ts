@@ -58,9 +58,12 @@ describe('ChangePasswordAction', () => {
         throw new Error('User not found');
       }
 
-      const isNewPasswordValid = await passwordService.comparePasswords(newPassword, updatedUser.password);
+      expect(updatedUser.password).toBeDefined();
 
-      expect(isNewPasswordValid).toBe(true);
+      if (updatedUser.password) {
+        const isNewPasswordValid = await passwordService.comparePasswords(newPassword, updatedUser.password);
+        expect(isNewPasswordValid).toBe(true);
+      }
     });
 
     it('throws ResourceNotFoundError when user does not exist', async () => {
@@ -84,6 +87,27 @@ describe('ChangePasswordAction', () => {
 
       const hashedPassword = await passwordService.hashPassword(oldPassword);
       const user = await userRepository.create({ ...userData, password: hashedPassword });
+
+      await expect(
+        changePasswordAction.execute(
+          {
+            userId: user.id,
+            oldPassword: Generator.password(),
+            newPassword: Generator.password(),
+          },
+          createTestExecutionContext(),
+        ),
+      ).rejects.toThrow(OperationNotValidError);
+    });
+
+    it('throws OperationNotValidError when user has no password (OAuth user)', async () => {
+      const userData = Generator.userData({
+        password: undefined,
+        oauthProvider: 'google',
+        oauthProviderId: 'google-123',
+      });
+
+      const user = await userRepository.create(userData);
 
       await expect(
         changePasswordAction.execute(

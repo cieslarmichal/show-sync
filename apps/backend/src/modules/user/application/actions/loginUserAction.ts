@@ -70,6 +70,13 @@ export class LoginUserAction {
       });
     }
 
+    if (!user.password) {
+      throw new UnauthorizedAccessError({
+        reason: 'Invalid credentials',
+        email: normalizedEmail,
+      });
+    }
+
     const isPasswordValid = await this.passwordService.comparePasswords(loginData.password, user.password);
 
     if (!isPasswordValid) {

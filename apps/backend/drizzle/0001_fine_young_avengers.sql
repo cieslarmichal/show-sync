@@ -1,1 +1,0 @@
-ALTER TABLE "watchrooms" DROP COLUMN "available_platforms";

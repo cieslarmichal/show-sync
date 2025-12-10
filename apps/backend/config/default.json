@@ -132,5 +132,12 @@
   },
   "emailVerification": {
     "enabled": true
+  },
+  "oauth": {
+    "google": {
+      "clientId": null,
+      "clientSecret": null,
+      "callbackUrl": "http://localhost:5000/auth/google/callback"
+    }
   }
 }

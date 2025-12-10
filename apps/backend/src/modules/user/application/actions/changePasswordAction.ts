@@ -40,6 +40,19 @@ export class ChangePasswordAction {
       });
     }
 
+    // Block password change for OAuth-only users (no password set)
+    if (user.oauthProvider && !user.password) {
+      throw new OperationNotValidError({
+        reason: 'This account uses OAuth authentication and has no password.',
+      });
+    }
+
+    if (!user.password) {
+      throw new OperationNotValidError({
+        reason: 'User has no password set.',
+      });
+    }
+
     const arePasswordsEqual = await this.passwordService.comparePasswords(oldPassword, user.password);
 
     if (!arePasswordsEqual) {

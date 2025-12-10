@@ -4,6 +4,7 @@ CREATE TABLE "emails" (
 	"recipient" varchar(255) NOT NULL,
 	"status" varchar(20) NOT NULL,
 	"template_name" varchar(20) NOT NULL,
+	"language" varchar(2) DEFAULT 'en' NOT NULL,
 	"created_at" timestamp DEFAULT now() NOT NULL
 );
 --> statement-breakpoint
@@ -78,8 +79,11 @@ CREATE TABLE "users" (
 	"id" uuid PRIMARY KEY NOT NULL,
 	"name" varchar(64) NOT NULL,
 	"email" varchar(255) NOT NULL,
-	"password" text NOT NULL,
+	"password" text,
+	"oauth_provider" varchar(20),
+	"oauth_provider_id" text,
 	"is_email_verified" boolean DEFAULT false NOT NULL,
+	"language" varchar(2) DEFAULT 'en' NOT NULL,
 	"created_at" timestamp DEFAULT now() NOT NULL,
 	CONSTRAINT "users_email_unique" UNIQUE("email")
 );
@@ -97,7 +101,6 @@ CREATE TABLE "watchrooms" (
 	"description" varchar(256),
 	"owner_id" uuid NOT NULL,
 	"public_link_id" varchar(21) NOT NULL,
-	"available_platforms" text[] DEFAULT '{}',
 	"series_length_preference" varchar(20) DEFAULT 'all',
 	"created_at" timestamp DEFAULT now() NOT NULL,
 	CONSTRAINT "watchrooms_public_link_id_unique" UNIQUE("public_link_id")
@@ -125,6 +128,8 @@ CREATE INDEX "idx_recommendation_feedback_recommendation_request_id" ON "recomme
 CREATE INDEX "idx_recommendation_feedback_user_id" ON "recommendation_feedback" USING btree ("user_id");--> statement-breakpoint
 CREATE INDEX "idx_recommendation_requests_watchroom_id" ON "recommendation_requests" USING btree ("watchroom_id");--> statement-breakpoint
 CREATE INDEX "idx_recommendation_requests_status" ON "recommendation_requests" USING btree ("status");--> statement-breakpoint
+CREATE INDEX "idx_recommendation_requests_user_id_status" ON "recommendation_requests" USING btree ("user_id","status");--> statement-breakpoint
+CREATE INDEX "idx_recommendation_requests_user_id_status_created_at" ON "recommendation_requests" USING btree ("user_id","status","created_at");--> statement-breakpoint
 CREATE INDEX "idx_recommendations_recommendation_request_id" ON "recommendations" USING btree ("recommendation_request_id");--> statement-breakpoint
 CREATE INDEX "idx_recommendations_series_tmdb_id" ON "recommendations" USING btree ("series_tmdb_id");--> statement-breakpoint
 CREATE INDEX "idx_user_series_ratings_user_id" ON "user_series_ratings" USING btree ("user_id");--> statement-breakpoint

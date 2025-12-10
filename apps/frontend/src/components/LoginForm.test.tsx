@@ -15,13 +15,13 @@ describe('LoginForm', () => {
   it('should render sign in button', async () => {
     await renderWithProviders(<LoginForm />);
 
-    expect(screen.getByRole('button', { name: /sign in/i })).toBeInTheDocument();
+    expect(screen.getByTestId('login-submit-button')).toBeInTheDocument();
   });
 
   it('should disable submit button when form is invalid', async () => {
     await renderWithProviders(<LoginForm />);
 
-    const submitButton = screen.getByRole('button', { name: /sign in/i });
+    const submitButton = screen.getByTestId('login-submit-button');
     expect(submitButton).toBeDisabled();
   });
 
@@ -31,7 +31,7 @@ describe('LoginForm', () => {
 
     const emailInput = screen.getByLabelText(/email/i);
     const passwordInput = screen.getByPlaceholderText(/enter your password/i);
-    const submitButton = screen.getByRole('button', { name: /sign in/i });
+    const submitButton = screen.getByTestId('login-submit-button');
 
     await user.type(emailInput, 'test@example.com');
     await user.type(passwordInput, 'password123');

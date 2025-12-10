@@ -77,11 +77,15 @@ describe('ChangePasswordByTokenAction', () => {
         throw new Error('User not found');
       }
 
-      const isNewPasswordValid = await passwordService.comparePasswords(newPassword, updatedUser.password);
-      expect(isNewPasswordValid).toBe(true);
+      expect(updatedUser.password).toBeDefined();
 
-      const isOldPasswordStillValid = await passwordService.comparePasswords(oldPassword, updatedUser.password);
-      expect(isOldPasswordStillValid).toBe(false);
+      if (updatedUser.password) {
+        const isNewPasswordValid = await passwordService.comparePasswords(newPassword, updatedUser.password);
+        expect(isNewPasswordValid).toBe(true);
+
+        const isOldPasswordStillValid = await passwordService.comparePasswords(oldPassword, updatedUser.password);
+        expect(isOldPasswordStillValid).toBe(false);
+      }
     });
 
     it('marks token as used after successful password change', async () => {
@@ -280,8 +284,12 @@ describe('ChangePasswordByTokenAction', () => {
         throw new Error('User not found');
       }
 
-      const isOldPasswordValid = await passwordService.comparePasswords(oldPassword, unchangedUser.password);
-      expect(isOldPasswordValid).toBe(true);
+      expect(unchangedUser.password).toBeDefined();
+
+      if (unchangedUser.password) {
+        const isOldPasswordValid = await passwordService.comparePasswords(oldPassword, unchangedUser.password);
+        expect(isOldPasswordValid).toBe(true);
+      }
     });
   });
 });

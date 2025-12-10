@@ -66,6 +66,13 @@ export class ChangePasswordByTokenAction {
             });
           }
 
+          // Block password change for OAuth-only users (no password set)
+          if (user.oauthProvider && !user.password) {
+            throw new OperationNotValidError({
+              reason: 'This account uses OAuth authentication and has no password.',
+            });
+          }
+
           this.passwordService.validatePassword(newPassword);
 
           const hashedPassword = await this.passwordService.hashPassword(newPassword);

@@ -65,5 +65,11 @@
   },
   "emailVerification": {
     "enabled": false
+  },
+  "oauth": {
+    "google": {
+      "clientId": "test-google-client-id",
+      "clientSecret": "test-google-client-secret"
+    }
   }
 }

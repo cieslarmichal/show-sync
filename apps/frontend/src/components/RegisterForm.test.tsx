@@ -21,13 +21,13 @@ describe('RegisterForm', () => {
   it('should render sign up button', async () => {
     await renderWithProviders(<RegisterForm onSuccess={mockOnSuccess} />);
 
-    expect(screen.getByRole('button', { name: /sign up/i })).toBeInTheDocument();
+    expect(screen.getByTestId('register-submit-button')).toBeInTheDocument();
   });
 
   it('should disable submit button when form is invalid', async () => {
     await renderWithProviders(<RegisterForm onSuccess={mockOnSuccess} />);
 
-    const submitButton = screen.getByRole('button', { name: /sign up/i });
+    const submitButton = screen.getByTestId('register-submit-button');
     expect(submitButton).toBeDisabled();
   });
 
@@ -137,7 +137,7 @@ describe('RegisterForm', () => {
     const nameInput = screen.getByLabelText(/name/i);
     const emailInput = screen.getByLabelText(/email/i);
     const passwordInput = screen.getByPlaceholderText(/enter your password/i);
-    const submitButton = screen.getByRole('button', { name: /sign up/i });
+    const submitButton = screen.getByTestId('register-submit-button');
 
     await user.type(nameInput, 'Test User');
     await user.type(emailInput, 'test@example.com');
@@ -172,7 +172,7 @@ describe('RegisterForm', () => {
     const nameInput = screen.getByLabelText(/name/i);
     const emailInput = screen.getByLabelText(/email/i);
     const passwordInput = screen.getByPlaceholderText(/enter your password/i);
-    const submitButton = screen.getByRole('button', { name: /sign up/i });
+    const submitButton = screen.getByTestId('register-submit-button');
 
     await user.type(nameInput, 'Test User');
     await user.type(emailInput, 'test@example.com');
@@ -197,7 +197,7 @@ describe('RegisterForm', () => {
     const nameInput = screen.getByLabelText(/name/i);
     const emailInput = screen.getByLabelText(/email/i);
     const passwordInput = screen.getByPlaceholderText(/enter your password/i);
-    const submitButton = screen.getByRole('button', { name: /sign up/i });
+    const submitButton = screen.getByTestId('register-submit-button');
 
     await user.type(nameInput, 'Test User');
     await user.type(emailInput, 'test@example.com');
@@ -214,7 +214,7 @@ describe('RegisterForm', () => {
     // Check for submitting text (might be "Signing up..." or similar)
     await waitFor(
       () => {
-        const button = screen.getByRole('button', { name: /signing up/i });
+        const button = screen.getByRole('button', { name: /creating account/i });
         expect(button).toBeInTheDocument();
       },
       { timeout: 100 },
