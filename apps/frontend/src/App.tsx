@@ -1,5 +1,6 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { StrictMode, lazy, Suspense } from 'react';
+import { useTranslation } from 'react-i18next';
 import { AuthContextProvider } from './context/AuthContextProvider.tsx';
 import { SeriesContextProvider } from './context/SeriesContextProvider.tsx';
 import { ThemeContextProvider } from './context/ThemeContextProvider.tsx';
@@ -29,11 +30,15 @@ const WatchRoomDetailsPage = lazy(() => import('./pages/WatchRoomDetailsPage.tsx
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage.tsx'));
 
 // Loading fallback component
-const PageLoader = () => (
-  <div className="flex min-h-screen items-center justify-center">
-    <div className="text-lg text-muted-foreground">Loading...</div>
-  </div>
-);
+const PageLoader = () => {
+  const { t } = useTranslation();
+  
+  return (
+    <div className="flex min-h-screen items-center justify-center">
+      <div className="text-lg text-muted-foreground">{t('common.loading')}</div>
+    </div>
+  );
+};
 
 const router = createBrowserRouter([
   {

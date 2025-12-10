@@ -231,7 +231,7 @@ export function RecommendationCard({
               type="button"
             >
               <h4 className="text-sm sm:text-lg font-bold text-foreground group-hover/title:text-primary transition-colors flex items-center gap-1">
-                {recommendation.seriesDetails?.name || 'Loading...'}
+                {recommendation.seriesDetails?.name || t('common.loading')}
                 <ExternalLink className="w-3 sm:w-3.5 h-3 sm:h-3.5 opacity-0 group-hover/title:opacity-100 transition-opacity" />
               </h4>
             </button>
