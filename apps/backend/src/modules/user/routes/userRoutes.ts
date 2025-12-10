@@ -203,7 +203,7 @@ export const userRoutes: FastifyPluginAsyncTypebox<{
     schema: {
       querystring: Type.Object({
         code: Type.String({ minLength: 1 }),
-        state: Type.String({ minLength: 1 }),
+        state: Type.Optional(Type.String({ minLength: 1 })),
       }),
       response: {
         201: userSchema,
@@ -214,7 +214,7 @@ export const userRoutes: FastifyPluginAsyncTypebox<{
 
       // Extract language from state parameter (format: "lang:en" or "lang:pl")
       let language: Language = 'en';
-      if (state.startsWith('lang:')) {
+      if (state && state.startsWith('lang:')) {
         const langFromState = state.split(':')[1];
         if (langFromState === 'en' || langFromState === 'pl') {
           language = langFromState;
