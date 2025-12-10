@@ -32,7 +32,7 @@ const NotFoundPage = lazy(() => import('./pages/NotFoundPage.tsx'));
 // Loading fallback component
 const PageLoader = () => {
   const { t } = useTranslation();
-  
+
   return (
     <div className="flex min-h-screen items-center justify-center">
       <div className="text-lg text-muted-foreground">{t('common.loading')}</div>
