@@ -34,10 +34,10 @@ export default function Footer() {
             <h2 className="text-lg font-bold tracking-tight group-hover:text-primary transition-colors">ShowSync</h2>
           </Link>
           <a
-            href="mailto:contact@show-sync.com"
+            href={`mailto:${t('footer.contactEmail')}`}
             className="text-sm text-muted-foreground hover:text-foreground transition-colors hover:underline underline-offset-4"
           >
-            contact@show-sync.com
+            {t('footer.contactEmail')}
           </a>
         </div>
       </div>
@@ -135,7 +135,7 @@ export default function Footer() {
                   aria-hidden="true"
                 />
                 <a
-                  href="mailto:contact@show-sync.com"
+                  href={`mailto:${t('footer.contactEmail')}`}
                   className="hover:text-foreground transition-colors hover:underline underline-offset-4 break-all"
                 >
                   {t('footer.contactEmail')}
