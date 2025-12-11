@@ -291,6 +291,7 @@
       "sending": "Wysyłanie...",
       "verificationSent": "E-mail weryfikacyjny wysłany! Sprawdź swoją skrzynkę.",
       "verificationFailed": "Nie udało się wysłać e-maila weryfikacyjnego. Spróbuj ponownie.",
+      "or": "lub",
       "orContinueWith": "Lub kontynuuj z",
       "googleSignIn": "Zaloguj się przez Google",
       "oauthFailed": "Uwierzytelnianie OAuth nie powiodło się. Spróbuj ponownie lub użyj logowania e-mail/hasło."
@@ -310,6 +311,7 @@
       "creatingAccount": "Tworzenie konta...",
       "hasAccount": "Masz już konto?",
       "signIn": "Zaloguj się",
+      "or": "lub",
       "orContinueWith": "Lub kontynuuj z",
       "googleSignIn": "Zarejestruj się przez Google",
       "passwordStrength": {
