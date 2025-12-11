@@ -46,14 +46,15 @@ describe('LoginForm', () => {
     await renderWithProviders(<LoginForm />);
 
     const passwordInput = screen.getByPlaceholderText(/enter your password/i);
-    const toggleButton = screen.getAllByRole('button')[0]; // First button is the eye icon
+    const toggleButton = screen.getByRole('button', { name: /show password/i });
 
     expect(passwordInput).toHaveAttribute('type', 'password');
 
     await user.click(toggleButton);
     expect(passwordInput).toHaveAttribute('type', 'text');
 
-    await user.click(toggleButton);
+    const hideButton = screen.getByRole('button', { name: /hide password/i });
+    await user.click(hideButton);
     expect(passwordInput).toHaveAttribute('type', 'password');
   });
 });
