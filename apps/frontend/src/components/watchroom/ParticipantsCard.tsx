@@ -90,9 +90,7 @@ export function ParticipantsCard({ room, isOwner, currentUserId, onRoomUpdated, 
               </CardTitle>
               <p className="text-xs text-muted-foreground">
                 {room.participants.length} / {config.watchroom.maxParticipants}{' '}
-                {room.participants.length === 1
-                  ? t('watchroom.participants.member')
-                  : t('watchroom.participants.members')}
+                {t('watchroom.participants.member', { count: room.participants.length })}
               </p>
             </div>
           </div>

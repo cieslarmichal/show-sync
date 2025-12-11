@@ -74,7 +74,7 @@
           "subject": "Zweryfikuj swoje konto ShowSync"
         },
         "en": {
-          "templateFile": "verifyAccount.html",
+          "templateFile": "en_verifyAccount.html",
           "subject": "Verify your ShowSync account"
         }
       },
